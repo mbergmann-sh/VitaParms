@@ -19,6 +19,13 @@
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true" />
+    <!-- Kamera-App finden (Android 11 und neuer: Paketsichtbarkeit) -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
     <application
         android:name="org.qtproject.qt.android.bindings.QtApplication"
         android:hardwareAccelerated="true"
@@ -46,6 +53,12 @@
                 android:name="android.app.arguments"
                 android:value="-- %%INSERT_APP_ARGUMENTS%% --" />
         </activity>
+
+        <!-- Foto für die Krankenakte: öffnet die Kamera-App des Geräts und meldet das Ergebnis -->
+        <activity
+            android:name="de.mbergmann.vitaparms.CaptureActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Termin-Erinnerung zur gestellten Zeit anzeigen (auch wenn die App nicht läuft) -->
         <receiver

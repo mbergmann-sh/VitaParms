@@ -4,13 +4,15 @@ Touch-Version von VitaParms für Android-Tablets (iOS folgt). Sie verwendet dens
 das Desktop-Programm (`../core.pri`): dieselbe verschlüsselte Datenbank, dieselben Berichte und
 den Abgleich über die eigene Website.
 
-**Stand 0.18:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
+**Stand 0.19:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
 Atemfrequenz, Schmerzskala, freier Messzeitpunkt), Messwerte, Verlaufskurven, Stammblatt mit
 Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge, Medikamentenplan wie am Computer
 (Einnahme-Rhythmus, Bedarfs-/Notfallmedikation, PZN, Kennzeichnung, „An Einnahme erinnern“),
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
-Quartalswechsel-Erinnerung, Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), PDF/Excel-Ausgaben, Abgleich über Website und USB.
-**Folgt:** Krankenakte (Dokumente, Kamera), Assistent „Medikamente stellen“, Bestand und
+Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
+mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
+Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), PDF/Excel-Ausgaben, Abgleich über Website und USB.
+**Folgt:** Assistent „Medikamente stellen“, Bestand und
 Bestellungen, iOS.
 
 ## Voraussetzungen
@@ -79,6 +81,12 @@ SDK wird auch aus dem NDK-Pfad abgeleitet, den Qt Creator immer übergibt – un
 Bibliotheken für Debug und Release ins Paket. Beim qmake-Lauf erscheint dann
 „OpenSSL für Android: …/openssl.pri“.
 
+Darunter stehen die eingebundenen Bibliotheken („OpenSSL-Bibliothek: …/ssl_3/arm64-v8a/libssl_3.so“);
+fehlt eine, warnt qmake („OpenSSL-Bibliothek FEHLT“) – dann den Download in Qt Creator wiederholen.
+In der App zeigt *Einstellungen → Abgleich über die Website* unter den Knöpfen, ob TLS bereit ist
+(„TLS bereit: OpenSSL 3.x“) oder was fehlt. Nach einer Änderung an OpenSSL: *Erstellen → Alles
+neu erstellen* und die App neu installieren.
+
 Erscheint stattdessen „OpenSSL für Android nicht gefunden“, listet die nächste Zeile die
 durchsuchten Ordner. Dann (1) prüfen, ob der Download wirklich stattgefunden hat (im Ordner muss
 eine Datei `openssl.pri` liegen), oder (2) die Umgebungsvariable `VP_ANDROID_OPENSSL` auf den
@@ -98,6 +106,18 @@ kopieren und dort öffnen (vorher *Installation aus unbekannten Quellen* für de
 erlauben). Für eine dauerhafte Installation die APK mit einem eigenen Schlüssel signieren
 (*Build Android APK → Sign package*), sonst lässt sich ein Update später nicht über eine ältere
 Version installieren.
+
+## Krankenakte: Kamera, Teilen, Vorschau
+
+* **Fotos** macht die Kamera-App des Geräts (`CaptureActivity` startet `ACTION_IMAGE_CAPTURE`,
+  das Bild kommt über den FileProvider der App zurück). VitaParms braucht dafür keine
+  Kamera-Berechtigung; im Manifest steht nur die Abfrage (`<queries>`) der Kamera-App.
+* **Teilen** über das Android-Teilen-Menü (`Capture.share`, FileProvider). Die Freigaben des
+  FileProviders stehen in `android/res/xml/qtprovider_paths.xml` (ersetzt die Datei der
+  Qt-Vorlage und enthält deren Pfade).
+* **Vorschau und Volltext** der PDFs mit Qt PDF, falls installiert (Qt Maintenance Tool:
+  *Additional Libraries → Qt PDF*); sonst öffnet „In PDF-App öffnen“ das Dokument.
+* Beim Abgleich (Website, USB) gehen die Inhalte getrennt von der Datenbank – nur die fehlenden.
 
 ## Erster Start auf dem Tablet
 

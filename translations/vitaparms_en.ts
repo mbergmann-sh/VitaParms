@@ -196,72 +196,72 @@
 <context>
     <name>AkteExport</name>
     <message>
-        <location filename="../src/akteexport.cpp" line="73" />
+        <location filename="../src/akteexportcore.cpp" line="54" />
         <source>Temporärer Ordner konnte nicht angelegt werden.</source>
         <translation>Could not create a temporary folder.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="95" />
+        <location filename="../src/akteexportcore.cpp" line="76" />
         <source>Persönliche Daten, Diagnosen, Aufnahmewerte, aktuelle Medikation</source>
         <translation>Personal data, diagnoses, admission values, current medication</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="103" />
+        <location filename="../src/akteexportcore.cpp" line="84" />
         <source>Aktueller Medikamentenplan (Stand %1)</source>
         <translation>Current medication plan (as of %1)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="126" />
+        <location filename="../src/akteexportcore.cpp" line="107" />
         <source>Alle Messwerte %1 (%2 Messungen)</source>
         <translation>All readings %1 (%2 measurements)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="145" />
+        <location filename="../src/akteexportcore.cpp" line="126" />
         <source>Verlaufskurven mit Kennwerten %1</source>
         <translation>Trend charts with statistics %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="54" />
+        <location filename="../src/akteexportcore.cpp" line="35" />
         <source>Krankenakte_%1_%2.zip</source>
         <translation>MedicalRecord_%1_%2.zip</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="61" />
+        <location filename="../src/akteexportcore.cpp" line="42" />
         <source>ohne-Datum</source>
         <translation>no-date</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="76" />
+        <location filename="../src/akteexportcore.cpp" line="57" />
         <source>Krankenakte_</source>
         <translation>MedicalRecord_</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="93" />
+        <location filename="../src/akteexportcore.cpp" line="74" />
         <source>%1_Stammblatt.pdf</source>
         <translation>%1_MasterRecord.pdf</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="101" />
+        <location filename="../src/akteexportcore.cpp" line="82" />
         <source>%1_Medikamentenplan.pdf</source>
         <translation>%1_MedicationPlan.pdf</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="124" />
+        <location filename="../src/akteexportcore.cpp" line="105" />
         <source>%1_Verlauf_Vitalwerte.pdf</source>
         <translation>%1_VitalSigns_History.pdf</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="143" />
+        <location filename="../src/akteexportcore.cpp" line="124" />
         <source>%1_Verlaufsgrafik.pdf</source>
         <translation>%1_TrendChart.pdf</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="160" />
+        <location filename="../src/akteexportcore.cpp" line="141" />
         <source>00_Inhaltsverzeichnis.pdf</source>
         <translation>00_TableOfContents.pdf</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="170" />
+        <location filename="../src/akteexportcore.cpp" line="151" />
         <source>Dokumente/</source>
         <translation>Documents/</translation>
     </message>
@@ -269,137 +269,137 @@
 <context>
     <name>AkteExportDialog</name>
     <message>
-        <location filename="../src/akteexport.cpp" line="184" />
+        <location filename="../src/akteexport.cpp" line="45" />
         <source>Krankenakte packen / versenden – %1</source>
         <translation>Pack / send medical record – %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="188" />
+        <location filename="../src/akteexport.cpp" line="49" />
         <source>Inhalt</source>
         <translation>Contents</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="190" />
+        <location filename="../src/akteexport.cpp" line="51" />
         <source>Ausgewählte Dokumente (%1)</source>
         <translation>Selected documents (%1)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="191" />
+        <location filename="../src/akteexport.cpp" line="52" />
         <source>Alle angezeigten Dokumente – aktuelle Suche/Filter (%1)</source>
         <translation>All displayed documents – current search/filter (%1)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="192" />
+        <location filename="../src/akteexport.cpp" line="53" />
         <source>Alle Dokumente (%1)</source>
         <translation>All documents (%1)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="193" />
+        <location filename="../src/akteexport.cpp" line="54" />
         <source>Keine Dokumente, nur Berichte</source>
         <translation>No documents, reports only</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="198" />
+        <location filename="../src/akteexport.cpp" line="59" />
         <source>Stammblatt (Daten, Diagnosen, Aufnahmewerte, Medikation)</source>
         <translation>Master record (data, diagnoses, admission values, medication)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="200" />
+        <location filename="../src/akteexport.cpp" line="61" />
         <source>Medikamentenplan</source>
         <translation>Medication plan</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="203" />
+        <location filename="../src/akteexport.cpp" line="64" />
         <source>Verlauf und Grafik der Vitalwerte der letzten</source>
         <translation>History and chart of vital signs for the last</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="207" />
+        <location filename="../src/akteexport.cpp" line="68" />
         <source>alle</source>
         <translation>all</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="208" />
+        <location filename="../src/akteexport.cpp" line="69" />
         <source> Tage</source>
         <translation> days</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="215" />
+        <location filename="../src/akteexport.cpp" line="76" />
         <source>Hinweis für das Inhaltsverzeichnis (optional):</source>
         <translation>Note for the table of contents (optional):</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="218" />
+        <location filename="../src/akteexport.cpp" line="79" />
         <source>z. B. „Unterlagen zur Vorstellung in der Kardiologie am …“</source>
         <translation>e.g. “Documents for the cardiology appointment on …”</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="223" />
+        <location filename="../src/akteexport.cpp" line="84" />
         <source>Schutz der Gesundheitsdaten</source>
         <translation>Protection of health data</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="225" />
+        <location filename="../src/akteexport.cpp" line="86" />
         <source>Archiv mit Passwort verschlüsseln (AES-256) – empfohlen</source>
         <translation>Encrypt archive with a password (AES-256) – recommended</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="231" />
+        <location filename="../src/akteexport.cpp" line="92" />
         <source>&amp;Erzeugen</source>
         <translation>&amp;Generate</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="232" />
+        <location filename="../src/akteexport.cpp" line="93" />
         <source>Sicheres Zufallspasswort erzeugen und anzeigen</source>
         <translation>Generate and show a secure random password</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="235" />
+        <location filename="../src/akteexport.cpp" line="96" />
         <source>Passwort:</source>
         <translation>Password:</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="238" />
+        <location filename="../src/akteexport.cpp" line="99" />
         <source>Wiederholen:</source>
         <translation>Repeat:</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="239" />
+        <location filename="../src/akteexport.cpp" line="100" />
         <source>&lt;small&gt;Das Passwort bitte &lt;b&gt;getrennt&lt;/b&gt; übermitteln (Telefon, SMS) – nie in derselben E-Mail. Zum Öffnen braucht der Empfänger ein Programm mit AES-ZIP-Unterstützung, z. B. 7-Zip (Windows), Keka (macOS) oder das Archivprogramm von Linux; der Windows-Explorer allein kann solche Archive nicht öffnen.&lt;/small&gt;</source>
         <translation>&lt;small&gt;Please send the password &lt;b&gt;separately&lt;/b&gt; (phone, text message) – never in the same e-mail. The recipient needs a program with AES ZIP support to open it, e.g. 7-Zip (Windows), Keka (macOS) or the Linux archive manager; Windows Explorer alone cannot open such archives.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="251" />
+        <location filename="../src/akteexport.cpp" line="112" />
         <source>E-Mail (nur beim Versand)</source>
         <translation>E-mail (only when sending)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="254" />
+        <location filename="../src/akteexport.cpp" line="115" />
         <source>praxis@example.de</source>
         <translation>practice@example.com</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="255" />
+        <location filename="../src/akteexport.cpp" line="116" />
         <source>An:</source>
         <translation>To:</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="257" />
+        <location filename="../src/akteexport.cpp" line="118" />
         <source>, geb. %1</source>
         <translation>, born %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="258" />
+        <location filename="../src/akteexport.cpp" line="119" />
         <source>Unterlagen %1</source>
         <translation>Documents %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="259" />
+        <location filename="../src/akteexport.cpp" line="120" />
         <source>Betreff:</source>
         <translation>Subject:</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="261" />
+        <location filename="../src/akteexport.cpp" line="122" />
         <source>Guten Tag,
 
 anbei erhalten Sie Unterlagen von %1.
@@ -418,71 +418,71 @@ Kind regards
 </translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="267" />
+        <location filename="../src/akteexport.cpp" line="128" />
         <source>Text:</source>
         <translation>Text:</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="271" />
+        <location filename="../src/akteexport.cpp" line="132" />
         <source>ZIP &amp;speichern…</source>
         <translation>&amp;Save ZIP…</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="272" />
+        <location filename="../src/akteexport.cpp" line="133" />
         <source>Per E-&amp;Mail senden…</source>
         <translation>Send by e-&amp;mail…</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="273" />
+        <location filename="../src/akteexport.cpp" line="134" />
         <source>Schließen</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="317" />
+        <location filename="../src/akteexport.cpp" line="178" />
         <source>Das Archiv wäre leer – bitte Inhalte auswählen.</source>
         <translation>The archive would be empty – please select some contents.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="323" />
+        <location filename="../src/akteexport.cpp" line="184" />
         <source>Die Passwörter stimmen nicht überein.</source>
         <translation>The passwords do not match.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="327" />
+        <location filename="../src/akteexport.cpp" line="188" />
         <source>Bitte ein Passwort mit mindestens 8 Zeichen verwenden (oder „Erzeugen“ wählen).</source>
         <translation>Please use a password with at least 8 characters (or choose “Generate”).</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="338" />
+        <location filename="../src/akteexport.cpp" line="199" />
         <source>Krankenakte wird gepackt …</source>
         <translation>Packing medical record …</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="349" />
+        <location filename="../src/akteexport.cpp" line="210" />
         <source>Das Archiv konnte nicht erstellt werden:
 %1</source>
         <translation>The archive could not be created:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="359" />
+        <location filename="../src/akteexport.cpp" line="220" />
         <source>Krankenakte speichern</source>
         <translation>Save medical record</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="360" />
+        <location filename="../src/akteexport.cpp" line="221" />
         <source>ZIP-Archiv (*.zip)</source>
         <translation>ZIP archive (*.zip)</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="365" />
+        <location filename="../src/akteexport.cpp" line="226" />
         <source>Das Archiv wurde gespeichert:
 %1%2</source>
         <translation>The archive has been saved:
 %1%2</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="366" />
+        <location filename="../src/akteexport.cpp" line="227" />
         <source>
 
 Achtung: Das Archiv ist nicht verschlüsselt.</source>
@@ -491,17 +491,17 @@ Achtung: Das Archiv ist nicht verschlüsselt.</source>
 Warning: the archive is not encrypted.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="376" />
+        <location filename="../src/akteexport.cpp" line="237" />
         <source>Sie möchten Gesundheitsdaten &lt;b&gt;unverschlüsselt&lt;/b&gt; per E-Mail versenden.&lt;br&gt;&lt;br&gt;Normale E-Mails können unterwegs mitgelesen werden. Wirklich ohne Passwort senden?</source>
         <translation>You are about to send health data by e-mail &lt;b&gt;without encryption&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Ordinary e-mails can be read in transit. Really send without a password?</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="401" />
+        <location filename="../src/akteexport.cpp" line="262" />
         <source>Die E-Mail wurde im Mailprogramm vorbereitet. Bitte prüfen und dort absenden.</source>
         <translation>The e-mail has been prepared in your mail program. Please check it and send it from there.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="404" />
+        <location filename="../src/akteexport.cpp" line="265" />
         <source>Das Mailprogramm unterstützt keine automatischen Anhänge. Bitte die Datei
 %1
 aus dem geöffneten Ordner in die E-Mail ziehen.</source>
@@ -510,14 +510,14 @@ aus dem geöffneten Ordner in die E-Mail ziehen.</source>
 from the opened folder into the e-mail.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="408" />
+        <location filename="../src/akteexport.cpp" line="269" />
         <source>Es konnte kein Mailprogramm geöffnet werden. Das Archiv liegt hier:
 %1</source>
         <translation>No mail program could be opened. The archive is located here:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="413" />
+        <location filename="../src/akteexport.cpp" line="274" />
         <source>
 
 Denken Sie daran, dem Empfänger das Passwort auf anderem Weg mitzuteilen.</source>
@@ -526,7 +526,7 @@ Denken Sie daran, dem Empfänger das Passwort auf anderem Weg mitzuteilen.</sour
 Remember to send the password to the recipient by another channel.</translation>
     </message>
     <message>
-        <location filename="../src/akteexport.cpp" line="414" />
+        <location filename="../src/akteexport.cpp" line="275" />
         <source>
 
 Die Versandkopie bleibt im Ordner „VitaParms-Versand“ – nach dem Versand können Sie sie löschen.</source>
@@ -1848,12 +1848,12 @@ Which appointments should the changes apply to?</translation>
         <translation>Wrong key or not a VitaParms database.</translation>
     </message>
     <message>
-        <location filename="../src/database.cpp" line="598" />
+        <location filename="../src/database.cpp" line="605" />
         <source>Zieldatei kann nicht überschrieben werden.</source>
         <translation>Target file cannot be overwritten.</translation>
     </message>
     <message>
-        <location filename="../src/database.cpp" line="604" />
+        <location filename="../src/database.cpp" line="611" />
         <source>Zieldatei kann nicht angelegt werden.</source>
         <translation>Target file cannot be created.</translation>
     </message>
@@ -1861,17 +1861,17 @@ Which appointments should the changes apply to?</translation>
 <context>
     <name>DbMerge</name>
     <message>
-        <location filename="../src/dbsync.cpp" line="149" />
+        <location filename="../src/dbsync.cpp" line="152" />
         <source>Die Datenbank des anderen Geräts lässt sich nicht öffnen: %1</source>
         <translation>The database of the other device cannot be opened: %1</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="154" />
+        <location filename="../src/dbsync.cpp" line="157" />
         <source>Die Datenbank des anderen Geräts passt nicht zu dieser Datenbank (anderer Schlüssel).</source>
         <translation>The database of the other device does not match this database (different key).</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="158" />
+        <location filename="../src/dbsync.cpp" line="161" />
         <source>Die Datenbank des anderen Geräts stammt von einer älteren VitaParms-Version. Bitte VitaParms auf dem anderen Gerät aktualisieren.</source>
         <translation>The database of the other device comes from an older VitaParms version. Please update VitaParms on the other device.</translation>
     </message>
@@ -1879,83 +1879,108 @@ Which appointments should the changes apply to?</translation>
 <context>
     <name>DbSync</name>
     <message>
-        <location filename="../src/dbsync.cpp" line="403" />
+        <location filename="../src/dbsync.cpp" line="453" />
         <source>Der Abgleich ist nicht eingeschaltet.</source>
         <translation>Synchronisation is not switched on.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="405" />
+        <location filename="../src/dbsync.cpp" line="455" />
         <source>Die Adresse der Website fehlt oder ist ungültig.</source>
         <translation>The website address is missing or invalid.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="407" />
+        <location filename="../src/dbsync.cpp" line="457" />
         <source>Die Website muss über https:// erreichbar sein.</source>
         <translation>The website must be reachable via https://.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="408" />
+        <location filename="../src/dbsync.cpp" line="462" />
         <source>Der Upload-Schlüssel fehlt.</source>
         <translation>The upload key is missing.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="409" />
+        <location filename="../src/dbsync.cpp" line="463" />
         <source>Nur verschlüsselte Datenbanken können abgeglichen werden.</source>
         <translation>Only encrypted databases can be synchronised.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="534" />
+        <location filename="../src/dbsync.cpp" line="593" />
         <source> Anmeldekonten übernommen.</source>
         <translation> User accounts adopted.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="538" />
+        <location filename="../src/dbsync.cpp" line="597" />
         <source> Die Anmeldekonten wurden auf beiden Geräten geändert – die Konten dieses Geräts gelten.</source>
         <translation> The login accounts were changed on both devices – the accounts of this device apply.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="546" />
+        <location filename="../src/dbsync.cpp" line="605" />
         <source>Abgeglichen: %1 neu, %2 geändert, %3 gelöscht.</source>
         <translation>Synchronised: %1 new, %2 changed, %3 deleted.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="548" />
-        <location filename="../src/dbsync.cpp" line="552" />
+        <location filename="../src/dbsync.cpp" line="607" />
+        <location filename="../src/dbsync.cpp" line="612" />
         <source>Bereits auf dem neuesten Stand.</source>
         <translation>Already up to date.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="585" />
+        <location filename="../src/dbsync.cpp" line="658" />
         <source>Abgeglichen: %1 neu, %2 geändert, %3 gelöscht; eigener Stand hochgeladen.</source>
         <translation>Synchronised: %1 new, %2 changed, %3 deleted; own data uploaded.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="587" />
+        <location filename="../src/dbsync.cpp" line="660" />
         <source>Eigener Stand hochgeladen.</source>
         <translation>Own data uploaded.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="590" />
+        <location filename="../src/dbsync.cpp" line="665" />
         <source>Der Abgleich ist mehrfach mit anderen Geräten zusammengestoßen. Bitte gleich noch einmal versuchen.</source>
         <translation>Synchronisation collided with other devices several times. Please try again shortly.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="604" />
+        <location filename="../src/dbsync.cpp" line="692" />
+        <source>Dokumente: %1 hochgeladen, %2 geholt.</source>
+        <translation>Documents: %1 uploaded, %2 fetched.</translation>
+    </message>
+    <message>
+        <location filename="../src/dbsync.cpp" line="695" />
+        <source>%1 Dokument(e) noch ohne Inhalt – sie kommen mit dem nächsten Abgleich des Geräts, auf dem sie erfasst wurden.</source>
+        <translation>%1 document(s) still without content – it arrives with the next synchronisation of the device on which they were added.</translation>
+    </message>
+    <message>
+        <location filename="../src/dbsync.cpp" line="702" />
+        <source>TLS bereit: %1 (%2)</source>
+        <translation>TLS ready: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/dbsync.cpp" line="707" />
+        <source>Diese App kann keine verschlüsselten Verbindungen (HTTPS/TLS) aufbauen: Die OpenSSL-Bibliotheken (libssl_3.so, libcrypto_3.so) fehlen im Installationspaket. Abhilfe siehe mobile/README.md, Abschnitt „HTTPS“. Der Abgleich über das USB-Kabel funktioniert trotzdem.</source>
+        <translation>This app cannot establish encrypted connections (HTTPS/TLS): the OpenSSL libraries (libssl_3.so, libcrypto_3.so) are missing from the installation package. For a fix see mobile/README.md, section “HTTPS”. Synchronisation over the USB cable still works.</translation>
+    </message>
+    <message>
+        <location filename="../src/dbsync.cpp" line="711" />
+        <source>Verschlüsselte Verbindungen (HTTPS/TLS) sind nicht möglich: Es fehlt eine TLS-Bibliothek (%1).</source>
+        <translation>Encrypted connections (HTTPS/TLS) are not possible: a TLS library is missing (%1).</translation>
+    </message>
+    <message>
+        <location filename="../src/dbsync.cpp" line="732" />
         <source>Auf dem Server liegt eine Datenbank (Stand %1, %2).</source>
         <translation>There is a database on the server (revision %1, %2).</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="606" />
+        <location filename="../src/dbsync.cpp" line="734" />
         <source>Auf dem Server liegt noch keine Datenbank.</source>
         <translation>There is no database on the server yet.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="615" />
+        <location filename="../src/dbsync.cpp" line="743" />
         <source>Auf dem Server liegt noch keine Datenbank. Bitte zuerst am Desktop „Datenbank abgleichen“ wählen.</source>
         <translation>There is no database on the server yet. Please choose “Synchronise database” on the desktop first.</translation>
     </message>
     <message>
-        <location filename="../src/dbsync.cpp" line="634" />
+        <location filename="../src/dbsync.cpp" line="762" />
         <source>Die Datei %1 lässt sich nicht speichern.</source>
         <translation>The file %1 cannot be saved.</translation>
     </message>
@@ -2587,6 +2612,24 @@ Obesity class I (E66.0)</translation>
     </message>
 </context>
 <context>
+    <name>DocFiles</name>
+    <message>
+        <location filename="../src/docfiles.cpp" line="110" />
+        <source>Zu diesem Inhalt gibt es kein Dokument.</source>
+        <translation>There is no document for this content.</translation>
+    </message>
+    <message>
+        <location filename="../src/docfiles.cpp" line="115" />
+        <source>Der Inhalt eines Dokuments ist beschädigt oder gehört zu einer anderen Datenbank.</source>
+        <translation>The content of a document is damaged or belongs to another database.</translation>
+    </message>
+    <message>
+        <location filename="../src/docfiles.cpp" line="119" />
+        <source>Die Prüfsumme eines Dokuments stimmt nicht.</source>
+        <translation>The checksum of a document does not match.</translation>
+    </message>
+</context>
+<context>
     <name>DocumentDialog</name>
     <message>
         <location filename="../src/documentdialog.cpp" line="22" />
@@ -2738,155 +2781,170 @@ Obesity class I (E66.0)</translation>
 <context>
     <name>DocumentModel</name>
     <message>
-        <location filename="../src/documentspage.cpp" line="95" />
+        <location filename="../src/documentspage.cpp" line="96" />
         <source>Datum</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="96" />
+        <location filename="../src/documentspage.cpp" line="97" />
         <source>Art</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="97" />
+        <location filename="../src/documentspage.cpp" line="98" />
         <source>Titel</source>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="98" />
+        <location filename="../src/documentspage.cpp" line="99" />
         <source>Von</source>
         <translation>From</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="99" />
+        <location filename="../src/documentspage.cpp" line="100" />
         <source>Seiten</source>
         <translation>Pages</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="100" />
+        <location filename="../src/documentspage.cpp" line="101" />
         <source>Text</source>
         <translation>Text</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="101" />
+        <location filename="../src/documentspage.cpp" line="102" />
         <source>Fundstelle</source>
         <translation>Match</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="133" />
+        <location filename="../src/documentspage.cpp" line="134" />
         <source>%1 Seite(n), %2, Datei: %3</source>
         <translation>%1 page(s), %2, file: %3</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="136" />
+        <location filename="../src/documentspage.cpp" line="137" />
         <source>&lt;br&gt;&lt;small&gt;Kein durchsuchbarer Text (Scan).&lt;/small&gt;</source>
         <translation>&lt;br&gt;&lt;small&gt;No searchable text (scan).&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/documentspage.cpp" line="138" />
+        <source>&lt;br&gt;&lt;small&gt;Der Inhalt fehlt noch – er kommt mit dem nächsten Abgleich des Geräts, auf dem das Dokument erfasst wurde.&lt;/small&gt;</source>
+        <translation>&lt;br&gt;&lt;small&gt;The content is still missing – it arrives with the next synchronisation of the device on which the document was added.&lt;/small&gt;</translation>
     </message>
 </context>
 <context>
     <name>DocumentsPage</name>
     <message>
-        <location filename="../src/documentspage.cpp" line="175" />
+        <location filename="../src/documentspage.cpp" line="177" />
         <source>Suchen in Titel, Inhalt, Absender, Notizen … (mehrere Begriffe = alle müssen vorkommen)</source>
         <translation>Search title, content, sender, notes … (several terms = all must match)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="176" />
+        <location filename="../src/documentspage.cpp" line="178" />
         <source>Suchen in Titel, Absender, Notizen …</source>
         <translation>Search title, sender, notes …</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="178" />
+        <location filename="../src/documentspage.cpp" line="180" />
         <source>Suche:</source>
         <translation>Search:</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="252" />
+        <location filename="../src/documentspage.cpp" line="254" />
         <source>&amp;Hinzufügen…</source>
         <translation>&amp;Add…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="253" />
+        <location filename="../src/documentspage.cpp" line="255" />
         <source>PDF-Dateien oder Fotos/Scans (JPG, PNG, TIFF) übernehmen – auch per Drag &amp; Drop</source>
         <translation>Import PDF files or photos/scans (JPG, PNG, TIFF) – also by drag &amp; drop</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="254" />
+        <location filename="../src/documentspage.cpp" line="256" />
         <source>&amp;Bearbeiten…</source>
         <translation>&amp;Edit…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="255" />
+        <location filename="../src/documentspage.cpp" line="257" />
         <source>&amp;Löschen…</source>
         <translation>&amp;Delete…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="257" />
+        <location filename="../src/documentspage.cpp" line="259" />
         <source>Ö&amp;ffnen</source>
         <translation>&amp;Open</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="257" />
+        <location filename="../src/documentspage.cpp" line="259" />
         <source>Im Standard-PDF-Programm öffnen</source>
         <translation>Open in the default PDF viewer</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="258" />
+        <location filename="../src/documentspage.cpp" line="260" />
         <source>Speichern &amp;unter…</source>
         <translation>Save &amp;as…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="260" />
+        <location filename="../src/documentspage.cpp" line="262" />
         <source>&amp;Drucken…</source>
         <translation>&amp;Print…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="260" />
+        <location filename="../src/documentspage.cpp" line="262" />
         <source>Ausgewählte Dokumente drucken (mit Vorschau)</source>
         <translation>Print selected documents (with preview)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="261" />
+        <location filename="../src/documentspage.cpp" line="263" />
         <source>Liste drucken…</source>
         <translation>Print list…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="261" />
+        <location filename="../src/documentspage.cpp" line="263" />
         <source>Inhaltsverzeichnis der angezeigten Dokumente</source>
         <translation>Table of contents of the displayed documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="262" />
+        <location filename="../src/documentspage.cpp" line="264" />
         <source>Akte &amp;packen / senden…</source>
         <translation>&amp;Pack / send record…</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="263" />
+        <location filename="../src/documentspage.cpp" line="265" />
         <source>Dokumente und Berichte als (verschlüsseltes) ZIP speichern oder per E-Mail senden</source>
         <translation>Save documents and reports as an (encrypted) ZIP or send them by e-mail</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="296" />
+        <location filename="../src/documentspage.cpp" line="298" />
         <source>Alle Arten</source>
         <translation>All types</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="306" />
+        <location filename="../src/documentspage.cpp" line="308" />
         <source>Alle Jahre</source>
         <translation>All years</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="352" />
+        <location filename="../src/documentspage.cpp" line="354" />
         <source>%1 Dokument(e)</source>
         <translation>%1 document(s)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="353" />
+        <location filename="../src/documentspage.cpp" line="355" />
         <source>%1 von %2</source>
         <translation>%1 of %2</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="404" />
+        <location filename="../src/documentspage.cpp" line="366" />
+        <source>Krankenakte</source>
+        <translation>Medical record</translation>
+    </message>
+    <message>
+        <location filename="../src/documentspage.cpp" line="367" />
+        <source>%1 Dokument(e) haben noch keinen Inhalt – er kommt mit dem nächsten Abgleich des Geräts, auf dem sie erfasst wurden. Sie werden übersprungen.</source>
+        <translation>%1 document(s) have no content yet – it arrives with the next synchronisation of the device on which they were added. They are skipped.</translation>
+    </message>
+    <message>
+        <location filename="../src/documentspage.cpp" line="418" />
         <source>Noch keine Dokumente.
 
 Über „Hinzufügen…“ oder per Drag &amp; Drop können Sie PDF-Dateien (Befunde, Laborwerte, Entlassbriefe …) sowie Fotos/Scans übernehmen.</source>
@@ -2895,111 +2953,120 @@ Obesity class I (E66.0)</translation>
 Use “Add…” or drag &amp; drop to import PDF files (findings, lab results, discharge letters …) as well as photos/scans.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="406" />
+        <location filename="../src/documentspage.cpp" line="420" />
         <source>Dokument auswählen, um es hier anzuzeigen.</source>
         <translation>Select a document to show it here.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="407" />
+        <location filename="../src/documentspage.cpp" line="421" />
         <source>%1 Dokumente ausgewählt.</source>
         <translation>%1 documents selected.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="417" />
+        <location filename="../src/documentspage.cpp" line="431" />
         <source>%n Seite(n)</source>
         <translation>%n page(s)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="443" />
+        <location filename="../src/documentspage.cpp" line="437" />
+        <source>Der Inhalt dieses Dokuments fehlt noch.
+
+Er wurde auf einem anderen Gerät erfasst und kommt mit dem nächsten Abgleich (Website oder USB-Kabel).</source>
+        <translation>The content of this document is still missing.
+
+It was added on another device and arrives with the next synchronisation (website or USB cable).</translation>
+    </message>
+    <message>
+        <location filename="../src/documentspage.cpp" line="463" />
         <source>Vorschau nicht möglich (evtl. kennwortgeschützte PDF).
 „Öffnen“ verwendet das Standardprogramm.</source>
         <translation>Preview not possible (password-protected PDF?).
 “Open” uses the default program.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="445" />
+        <location filename="../src/documentspage.cpp" line="465" />
         <source>Eingebaute Vorschau nicht verfügbar (ohne Qt PDF übersetzt).
 „Öffnen“ zeigt das Dokument im Standard-PDF-Programm.</source>
         <translation>Built-in preview not available (built without Qt PDF).
 “Open” shows the document in the default PDF viewer.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="461" />
+        <location filename="../src/documentspage.cpp" line="481" />
         <source>Dokumente hinzufügen</source>
         <translation>Add documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="462" />
+        <location filename="../src/documentspage.cpp" line="482" />
         <source>PDF und Bilder (%1);;PDF-Dateien (*.pdf);;Alle Dateien (*)</source>
         <translation>PDF and images (%1);;PDF files (*.pdf);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="477" />
-        <location filename="../src/documentspage.cpp" line="489" />
-        <location filename="../src/documentspage.cpp" line="498" />
-        <location filename="../src/documentspage.cpp" line="504" />
-        <location filename="../src/documentspage.cpp" line="512" />
-        <location filename="../src/documentspage.cpp" line="547" />
+        <location filename="../src/documentspage.cpp" line="497" />
+        <location filename="../src/documentspage.cpp" line="509" />
+        <location filename="../src/documentspage.cpp" line="518" />
+        <location filename="../src/documentspage.cpp" line="524" />
+        <location filename="../src/documentspage.cpp" line="532" />
+        <location filename="../src/documentspage.cpp" line="567" />
         <source>Dokument hinzufügen</source>
         <translation>Add document</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="477" />
+        <location filename="../src/documentspage.cpp" line="497" />
         <source>%1 kann nicht gelesen werden.</source>
         <translation>%1 cannot be read.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="489" />
+        <location filename="../src/documentspage.cpp" line="509" />
         <source>%1 ist kein lesbares Bild.</source>
         <translation>%1 is not a readable image.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="499" />
+        <location filename="../src/documentspage.cpp" line="519" />
         <source>%1 ist weder eine PDF-Datei noch ein Bild und wird übersprungen.</source>
         <translation>%1 is neither a PDF file nor an image and will be skipped.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="505" />
+        <location filename="../src/documentspage.cpp" line="525" />
         <source>%1 ist sehr groß (%2). Trotzdem übernehmen?</source>
         <translation>%1 is very large (%2). Import anyway?</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="513" />
+        <location filename="../src/documentspage.cpp" line="533" />
         <source>„%1“ ist bereits in der Akte vorhanden (als „%2“ vom %3).
 Trotzdem erneut übernehmen?</source>
         <translation>“%1” is already in the record (as “%2” dated %3).
 Import again anyway?</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="547" />
+        <location filename="../src/documentspage.cpp" line="567" />
         <source>Speichern fehlgeschlagen:
 %1</source>
         <translation>Saving failed:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="553" />
+        <location filename="../src/documentspage.cpp" line="573" />
         <source>Zuletzt: %1 übernommen, %2 übersprungen</source>
         <translation>Last import: %1 added, %2 skipped</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="585" />
+        <location filename="../src/documentspage.cpp" line="605" />
         <source>Dokument bearbeiten</source>
         <translation>Edit document</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="596" />
+        <location filename="../src/documentspage.cpp" line="616" />
         <source>… und %1 weitere</source>
         <translation>… and %1 more</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="597" />
-        <location filename="../src/documentspage.cpp" line="606" />
+        <location filename="../src/documentspage.cpp" line="617" />
+        <location filename="../src/documentspage.cpp" line="626" />
         <source>Dokumente löschen</source>
         <translation>Delete documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="598" />
+        <location filename="../src/documentspage.cpp" line="618" />
         <source>%1 Dokument(e) endgültig aus der Akte löschen?
 
 %2</source>
@@ -3008,61 +3075,61 @@ Import again anyway?</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="615" />
+        <location filename="../src/documentspage.cpp" line="635" />
         <source>Öffnen</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="616" />
+        <location filename="../src/documentspage.cpp" line="636" />
         <source>%1 Dokumente gleichzeitig öffnen?</source>
         <translation>Open %1 documents at once?</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="638" />
-        <location filename="../src/documentspage.cpp" line="643" />
+        <location filename="../src/documentspage.cpp" line="658" />
+        <location filename="../src/documentspage.cpp" line="663" />
         <source>Dokument speichern</source>
         <translation>Save document</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="639" />
+        <location filename="../src/documentspage.cpp" line="659" />
         <source>PDF-Dateien (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="647" />
+        <location filename="../src/documentspage.cpp" line="667" />
         <source>Zielordner für %1 Dokumente</source>
         <translation>Target folder for %1 documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="655" />
+        <location filename="../src/documentspage.cpp" line="675" />
         <source>Dokumente speichern</source>
         <translation>Save documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="656" />
+        <location filename="../src/documentspage.cpp" line="676" />
         <source>%1 von %2 Dokument(en) gespeichert in
 %3</source>
         <translation>%1 of %2 document(s) saved in
 %3</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="666" />
         <location filename="../src/documentspage.cpp" line="686" />
+        <location filename="../src/documentspage.cpp" line="706" />
         <source>Drucken</source>
         <translation>Print</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="667" />
+        <location filename="../src/documentspage.cpp" line="687" />
         <source>Diese Programmversion kann PDFs nicht selbst drucken. Die Dokumente werden im Standard-PDF-Programm geöffnet und können dort gedruckt werden.</source>
         <translation>This version cannot print PDFs itself. The documents will be opened in the default PDF viewer and can be printed from there.</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="679" />
+        <location filename="../src/documentspage.cpp" line="699" />
         <source>Krankenakte – %1 Dokumente</source>
         <translation>Medical record – %1 documents</translation>
     </message>
     <message>
-        <location filename="../src/documentspage.cpp" line="681" />
+        <location filename="../src/documentspage.cpp" line="701" />
         <source>Drucken – %1 Dokument(e), %2 Seite(n)</source>
         <translation>Print – %1 document(s), %2 page(s)</translation>
     </message>
@@ -9344,92 +9411,92 @@ Choose “No” if the physical condition has actually only changed now – the 
 <context>
     <name>PdfTools</name>
     <message>
-        <location filename="../src/pdftools.cpp" line="57" />
+        <location filename="../src/pdftools.cpp" line="59" />
         <source>PDF ist kennwortgeschützt</source>
         <translation>PDF is password-protected</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="58" />
+        <location filename="../src/pdftools.cpp" line="60" />
         <source>Sicherheitsverfahren nicht unterstützt</source>
         <translation>Security scheme not supported</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="59" />
+        <location filename="../src/pdftools.cpp" line="61" />
         <source>keine gültige PDF-Datei</source>
         <translation>not a valid PDF file</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="61" />
+        <location filename="../src/pdftools.cpp" line="63" />
         <source>PDF konnte nicht gelesen werden</source>
         <translation>PDF could not be read</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="76" />
+        <location filename="../src/pdftools.cpp" line="78" />
         <source>keine PDF-Datei</source>
         <translation>not a PDF file</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="207" />
+        <location filename="../src/pdftools.cpp" line="226" />
         <source>Arztbrief</source>
         <translation>Doctor's letter</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="207" />
+        <location filename="../src/pdftools.cpp" line="226" />
         <source>Befund</source>
         <translation>Findings</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="207" />
+        <location filename="../src/pdftools.cpp" line="226" />
         <source>Laborwerte</source>
         <translation>Lab results</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="207" />
+        <location filename="../src/pdftools.cpp" line="226" />
         <source>Entlassbrief</source>
         <translation>Discharge letter</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="208" />
+        <location filename="../src/pdftools.cpp" line="227" />
         <source>Bildgebung</source>
         <translation>Imaging</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="208" />
+        <location filename="../src/pdftools.cpp" line="227" />
         <source>OP-Bericht</source>
         <translation>Surgery report</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="208" />
+        <location filename="../src/pdftools.cpp" line="227" />
         <source>Überweisung</source>
         <translation>Referral</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="208" />
+        <location filename="../src/pdftools.cpp" line="227" />
         <source>Rezept</source>
         <translation>Prescription</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="209" />
+        <location filename="../src/pdftools.cpp" line="228" />
         <source>Impfnachweis</source>
         <translation>Vaccination record</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="209" />
+        <location filename="../src/pdftools.cpp" line="228" />
         <source>Bescheinigung</source>
         <translation>Certificate</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="209" />
+        <location filename="../src/pdftools.cpp" line="228" />
         <source>Sonstiges</source>
         <translation>Other</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="279" />
+        <location filename="../src/pdftools.cpp" line="298" />
         <source>Drucker konnte nicht geöffnet werden.</source>
         <translation>The printer could not be opened.</translation>
     </message>
     <message>
-        <location filename="../src/pdftools.cpp" line="307" />
+        <location filename="../src/pdftools.cpp" line="326" />
         <source>Diese Programmversion wurde ohne Qt PDF übersetzt.</source>
         <translation>This version was built without Qt PDF.</translation>
     </message>
@@ -12254,19 +12321,19 @@ Restart VitaParms now? (You will need to log in again.)</translation>
 <context>
     <name>UsbSync::Channel</name>
     <message>
-        <location filename="../src/usbsync.cpp" line="112" />
+        <location filename="../src/usbsync.cpp" line="114" />
         <source>Datei fehlt: %1</source>
         <translation>File missing: %1</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="177" />
+        <location filename="../src/usbsync.cpp" line="179" />
         <source>Unbekannte Gegenstelle.</source>
         <translation>Unknown remote party.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="179" />
-        <location filename="../src/usbsync.cpp" line="188" />
-        <location filename="../src/usbsync.cpp" line="197" />
+        <location filename="../src/usbsync.cpp" line="181" />
+        <location filename="../src/usbsync.cpp" line="190" />
+        <location filename="../src/usbsync.cpp" line="199" />
         <source>Ungültige Nachricht.</source>
         <translation>Invalid message.</translation>
     </message>
@@ -12274,83 +12341,93 @@ Restart VitaParms now? (You will need to log in again.)</translation>
 <context>
     <name>UsbSyncClient</name>
     <message>
-        <location filename="../src/usbsync.cpp" line="521" />
+        <location filename="../src/usbsync.cpp" line="561" />
         <source>Keine Verbindung zum Tablet.</source>
         <translation>No connection to the tablet.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="539" />
+        <location filename="../src/usbsync.cpp" line="579" />
         <source>Das Tablet antwortet nicht.</source>
         <translation>The tablet does not respond.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="553" />
+        <location filename="../src/usbsync.cpp" line="593" />
         <source>Die Verbindung zum Tablet wurde getrennt.</source>
         <translation>The connection to the tablet was closed.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="569" />
+        <location filename="../src/usbsync.cpp" line="609" />
         <source>Keine Verbindung: %1</source>
         <translation>No connection: %1</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="585" />
+        <location filename="../src/usbsync.cpp" line="625" />
         <source>Der Code stimmt nicht. Bitte den Code eingeben, den das Tablet gerade anzeigt.</source>
         <translation>The code is not correct. Please enter the code the tablet is currently showing.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="587" />
+        <location filename="../src/usbsync.cpp" line="627" />
         <source>Am Tablet wurde seit dem Start von VitaParms noch kein Code angezeigt. Bitte dort Einstellungen → „USB-Abgleich mit dem Computer“ öffnen – oder das Codefeld leer lassen, wenn beide Geräte dieselbe Datenbank verwenden.</source>
         <translation>No code has been shown on the tablet since VitaParms started. Please open Settings → “USB sync with the computer” there – or leave the code field empty if both devices use the same database.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="591" />
+        <location filename="../src/usbsync.cpp" line="631" />
         <source>Am Tablet ist niemand angemeldet. Bitte VitaParms auf dem Tablet öffnen und anmelden – oder für die erste Einrichtung dort „USB-Abgleich mit dem Computer“ öffnen und den Code eingeben.</source>
         <translation>Nobody is logged in on the tablet. Please open VitaParms on the tablet and log in – or, for the first setup, open “USB sync with the computer” there and enter the code.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="594" />
+        <location filename="../src/usbsync.cpp" line="634" />
         <source>VitaParms auf Computer und Tablet passen nicht zusammen. Bitte beide auf denselben Stand bringen.</source>
         <translation>VitaParms on the computer and on the tablet do not match. Please update both to the same version.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="596" />
+        <location filename="../src/usbsync.cpp" line="636" />
         <source>VitaParms auf dem Tablet antwortet nicht. Bitte das Tablet entsperren, VitaParms öffnen und anmelden (die App muss im Vordergrund sein).</source>
         <translation>VitaParms on the tablet does not respond. Please unlock the tablet, open VitaParms and log in (the app must be in the foreground).</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="617" />
+        <location filename="../src/usbsync.cpp" line="657" />
         <source>Das Tablet verwendet eine andere Datenbank. Für die erste Einrichtung bitte am Tablet „USB-Abgleich mit dem Computer“ öffnen und den angezeigten Code eingeben.</source>
         <translation>The tablet uses a different database. For the first setup, please open “USB sync with the computer” on the tablet and enter the code shown.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="627" />
+        <location filename="../src/usbsync.cpp" line="667" />
         <source>Die Anmeldung am Tablet ist fehlgeschlagen.</source>
         <translation>Logging in to the tablet failed.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="643" />
-        <location filename="../src/usbsync.cpp" line="695" />
+        <location filename="../src/usbsync.cpp" line="683" />
+        <location filename="../src/usbsync.cpp" line="804" />
         <source>Datenbank des Tablets wird geholt …</source>
         <translation>Fetching the tablet’s database …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="645" />
+        <location filename="../src/usbsync.cpp" line="689" />
         <source>Wird zusammengeführt …</source>
         <translation>Merging …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="659" />
+        <location filename="../src/usbsync.cpp" line="707" />
+        <source>Dokumente werden vom Tablet geholt …</source>
+        <translation>Fetching documents from the tablet …</translation>
+    </message>
+    <message>
+        <location filename="../src/usbsync.cpp" line="713" />
         <source>Stand wird an das Tablet übertragen …</source>
         <translation>Sending the result to the tablet …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="680" />
+        <location filename="../src/usbsync.cpp" line="731" />
+        <source>Dokumente werden an das Tablet übertragen …</source>
+        <translation>Transferring documents to the tablet …</translation>
+    </message>
+    <message>
+        <location filename="../src/usbsync.cpp" line="789" />
         <source>Datenbank wird an das Tablet übertragen …</source>
         <translation>Sending the database to the tablet …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="702" />
+        <location filename="../src/usbsync.cpp" line="811" />
         <source>Die Datei konnte nicht gespeichert werden.</source>
         <translation>The file could not be saved.</translation>
     </message>
@@ -12593,12 +12670,17 @@ Tablet: %4 new, %5 changed, %6 deleted.</translation>
         <translation>This computer’s user accounts were transferred to the tablet.</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="497" />
+        <location filename="../src/usbsyncdialog.cpp" line="492" />
+        <source>Dokumente: %1 vom Tablet geholt, %2 an das Tablet übertragen.</source>
+        <translation>Documents: %1 fetched from the tablet, %2 transferred to the tablet.</translation>
+    </message>
+    <message>
+        <location filename="../src/usbsyncdialog.cpp" line="499" />
         <source>Computer → Tablet</source>
         <translation>Computer → tablet</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="498" />
+        <location filename="../src/usbsyncdialog.cpp" line="500" />
         <source>Die Datenbank auf dem Tablet wird durch die dieses Computers ersetzt.
 
 Der bisherige Stand des Tablets bleibt dort als Kopie erhalten. Danach auf dem Tablet mit einem Konto dieses Computers anmelden.
@@ -12611,23 +12693,23 @@ The tablet’s previous data is kept there as a copy. Afterwards, log in on the 
 Continue?</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="510" />
-        <location filename="../src/usbsyncdialog.cpp" line="533" />
+        <location filename="../src/usbsyncdialog.cpp" line="512" />
+        <location filename="../src/usbsyncdialog.cpp" line="535" />
         <source>Übertragung fehlgeschlagen: %1</source>
         <translation>Transfer failed: %1</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="512" />
+        <location filename="../src/usbsyncdialog.cpp" line="514" />
         <source>Die Datenbank wurde auf das Tablet übertragen. Bitte dort mit einem Konto dieses Computers anmelden.</source>
         <translation>The database has been transferred to the tablet. Please log in there with an account of this computer.</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="520" />
+        <location filename="../src/usbsyncdialog.cpp" line="522" />
         <source>Tablet → Computer</source>
         <translation>Tablet → computer</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="521" />
+        <location filename="../src/usbsyncdialog.cpp" line="523" />
         <source>Die Datenbank dieses Computers wird durch die des Tablets ersetzt.
 
 Der bisherige Stand bleibt als Kopie (*.vor-import-…) erhalten. Anschließend ist eine Anmeldung mit den Konten des Tablets nötig.
@@ -12640,7 +12722,7 @@ The previous data is kept as a copy (*.vor-import-…). Afterwards you need to l
 Continue?</translation>
     </message>
     <message>
-        <location filename="../src/usbsyncdialog.cpp" line="542" />
+        <location filename="../src/usbsyncdialog.cpp" line="544" />
         <source>Die Datei konnte nicht gespeichert werden.</source>
         <translation>The file could not be saved.</translation>
     </message>
@@ -12648,95 +12730,95 @@ Continue?</translation>
 <context>
     <name>UsbSyncServer</name>
     <message>
-        <location filename="../src/usbsync.cpp" line="49" />
+        <location filename="../src/usbsync.cpp" line="51" />
         <source>%1 neu, %2 geändert, %3 gelöscht</source>
         <translation>%1 new, %2 changed, %3 deleted</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="260" />
+        <location filename="../src/usbsync.cpp" line="262" />
         <source>Der USB-Abgleich lässt sich nicht starten: %1</source>
         <translation>USB sync cannot be started: %1</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="243" />
-        <location filename="../src/usbsync.cpp" line="267" />
-        <location filename="../src/usbsync.cpp" line="320" />
+        <location filename="../src/usbsync.cpp" line="245" />
+        <location filename="../src/usbsync.cpp" line="269" />
+        <location filename="../src/usbsync.cpp" line="322" />
         <source>Wartet auf den Computer …</source>
         <translation>Waiting for the computer …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="243" />
-        <location filename="../src/usbsync.cpp" line="333" />
-        <location filename="../src/usbsync.cpp" line="349" />
-        <location filename="../src/usbsync.cpp" line="456" />
-        <location filename="../src/usbsync.cpp" line="471" />
-        <location filename="../src/usbsync.cpp" line="483" />
+        <location filename="../src/usbsync.cpp" line="245" />
+        <location filename="../src/usbsync.cpp" line="335" />
+        <location filename="../src/usbsync.cpp" line="351" />
+        <location filename="../src/usbsync.cpp" line="463" />
+        <location filename="../src/usbsync.cpp" line="481" />
+        <location filename="../src/usbsync.cpp" line="523" />
         <source>Verbunden mit dem Computer %1.</source>
         <translation>Connected to the computer %1.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="395" />
+        <location filename="../src/usbsync.cpp" line="397" />
         <source>Mehrmals ein falscher Code – es gilt jetzt ein neuer Code.</source>
         <translation>Wrong code several times – a new code is now valid.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="419" />
+        <location filename="../src/usbsync.cpp" line="421" />
         <source>Nicht angemeldet.</source>
         <translation>Not logged in.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="426" />
+        <location filename="../src/usbsync.cpp" line="428" />
         <source>Datenbank vom Computer wird übernommen …</source>
         <translation>Taking over the database from the computer …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="430" />
+        <location filename="../src/usbsync.cpp" line="432" />
         <source>Nicht möglich.</source>
         <translation>Not possible.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="433" />
+        <location filename="../src/usbsync.cpp" line="435" />
         <source>Die Datei konnte nicht gespeichert werden.</source>
         <translation>The file could not be saved.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="438" />
+        <location filename="../src/usbsync.cpp" line="440" />
         <source>Die Datenbank des Computers wurde übernommen. Bitte mit einem Konto des Computers anmelden.</source>
         <translation>The computer’s database has been taken over. Please log in with an account of the computer.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="444" />
+        <location filename="../src/usbsync.cpp" line="446" />
         <source>Bitte zuerst auf dem Tablet anmelden.</source>
         <translation>Please log in on the tablet first.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="449" />
-        <location filename="../src/usbsync.cpp" line="477" />
+        <location filename="../src/usbsync.cpp" line="451" />
+        <location filename="../src/usbsync.cpp" line="517" />
         <source>Datenbank wird an den Computer übertragen …</source>
         <translation>Sending the database to the computer …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="460" />
+        <location filename="../src/usbsync.cpp" line="467" />
         <source>Stand des Computers wird eingearbeitet …</source>
         <translation>Merging the computer’s data …</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="472" />
+        <location filename="../src/usbsync.cpp" line="482" />
         <source>Mit dem Computer abgeglichen: %1.</source>
         <translation>Synchronised with the computer: %1.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="473" />
+        <location filename="../src/usbsync.cpp" line="483" />
         <source> Anmeldekonten übernommen.</source>
         <translation> User accounts adopted.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="484" />
+        <location filename="../src/usbsync.cpp" line="524" />
         <source>Die Datenbank dieses Geräts wurde an den Computer übertragen.</source>
         <translation>This device’s database has been sent to the computer.</translation>
     </message>
     <message>
-        <location filename="../src/usbsync.cpp" line="487" />
+        <location filename="../src/usbsync.cpp" line="527" />
         <source>Unbekannter Befehl.</source>
         <translation>Unknown command.</translation>
     </message>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Freigaben des FileProviders: Anzeige-App (PDF/Excel), Teilen, Foto der Kamera-App.
+     Ersetzt die gleichnamige Datei der Qt-Vorlage und enthält deren Pfade. -->
+<paths>
+    <files-path name="files" path="." />
+    <cache-path name="cache" path="." />
+    <external-path name="external" path="." />
+    <external-files-path name="external_files" path="." />
+    <external-cache-path name="external_cache" path="." />
+</paths>

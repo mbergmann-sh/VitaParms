@@ -66,6 +66,8 @@ public:
                                 QString *error);
     // Nach der ersten Anmeldung mit einer per downloadInitial() geholten Datenbank aufrufen
     static void adoptInitialState();
+    // Verschlüsselte Verbindungen (TLS/HTTPS) möglich? text: Bibliothek bzw. Ursache
+    static bool tlsAvailable(QString *text = nullptr);
     // Zustand des Servers (für "Verbindung testen"): rev < 0 bei Fehler
     static qint64 serverRevision(const QString &url, const QString &uploadKey, QString *message);
 

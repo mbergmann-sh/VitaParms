@@ -20,6 +20,9 @@
 //
 // Übertragen wird nur die verschlüsselte Datenbank; der Schlüssel verlässt kein Gerät.
 // Nachricht: "VPU1" · u32 Länge · JSON-Kopf · u64 Länge · Dateien (Größen im Kopf, "files").
+// Ab 0.19 (Kopf "docFiles"): die Datenbank geht ohne Dokumentinhalte; die Inhalte, die einer Seite
+// fehlen, folgen einzeln und verschlüsselt (getFiles/putFiles, siehe docfiles.h). Ältere Apps
+// ignorieren das Kennzeichen und übertragen die Datenbank wie bisher vollständig.
 // SPDX-License-Identifier: MIT
 #pragma once
 
@@ -154,6 +157,7 @@ public:
         int localInserted = 0, localUpdated = 0, localDeleted = 0;     // auf dem Computer
         int remoteInserted = 0, remoteUpdated = 0, remoteDeleted = 0;  // auf dem Tablet
         bool keysFromDevice = false, keysToDevice = false;
+        int filesFromDevice = 0, filesToDevice = 0;                    // Dokumentinhalte
     };
 
     bool connectTo(const QString &host, quint16 port, const QString &code, Info *info, QString *error);
@@ -173,6 +177,8 @@ signals:
 private:
     bool request(const QJsonObject &h, const QMap<QString, QString> &files, QJsonObject *reply,
                  QMap<QString, QString> *replyFiles, int timeoutMs, QString *error);
+    bool fetchFiles(const QStringList &ids, int *count, QString *error);     // Tablet → Computer
+    bool sendFiles(const QStringList &ids, int *count, QString *error);      // Computer → Tablet
 
     QTcpSocket *m_socket = nullptr;
     UsbSync::Channel *m_channel = nullptr;

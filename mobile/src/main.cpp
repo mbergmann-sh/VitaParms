@@ -13,6 +13,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QQmlApplicationEngine>
+#include <QQuickImageProvider>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QQuickWindow>
@@ -62,6 +63,23 @@ int main(int argc, char *argv[])
 #endif
     QQmlApplicationEngine engine;
     controller.setEngine(&engine);
+    // Seiten der Krankenakte: image://docpage/<Dokument-ID oder draft>/<Seite>
+    struct DocPages : QQuickImageProvider {
+        AppController *c;
+        explicit DocPages(AppController *ctl) : QQuickImageProvider(QQuickImageProvider::Image), c(ctl) {}
+        QImage requestImage(const QString &id, QSize *size, const QSize &requested) override {
+            const QStringList parts = id.section(QLatin1Char('?'), 0, 0).split(QLatin1Char('/'));
+            const int width = requested.width() > 0 ? requested.width() : 900;
+            QImage img = c->documentPageImage(parts.value(0), parts.value(1).toInt(), width);
+            if (img.isNull()) {                  // gelöscht oder (noch) ohne Inhalt: leere Fläche statt Warnung
+                img = QImage(1, 1, QImage::Format_ARGB32);
+                img.fill(Qt::transparent);
+            }
+            if (size) *size = img.size();
+            return img;
+        }
+    };
+    engine.addImageProvider(QStringLiteral("docpage"), new DocPages(&controller));
     engine.rootContext()->setContextProperty(QStringLiteral("app"), &controller);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty())

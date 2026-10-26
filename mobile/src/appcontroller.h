@@ -6,6 +6,9 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
+#include <QHash>
+#include <QImage>
+#include <QList>
 #include <QObject>
 #include <QTimer>
 #include <QVariant>
@@ -152,6 +155,27 @@ public:
     Q_INVOKABLE QString exportReport(const QString &kind, qint64 pid, const QVariantMap &options = {});
     Q_INVOKABLE bool openFile(const QString &path);
 
+    // ---- Krankenakte (appcontroller_docs.cpp)
+    Q_INVOKABLE QVariantList documents(qint64 pid, const QString &query = {}, const QString &category = {});
+    Q_INVOKABLE QStringList documentCategories(qint64 pid);
+    Q_INVOKABLE QStringList documentIssuers(qint64 pid);
+    Q_INVOKABLE QVariantMap documentInfo(qint64 id);
+    Q_INVOKABLE bool pdfPreviewAvailable() const;
+    Q_INVOKABLE QString startCapture();                       // Kamera-App öffnen → Pfad des Fotos
+    Q_INVOKABLE QString captureState(const QString &path);    // "pending", "ok", "cancel", "error"
+    Q_INVOKABLE bool draftAddImage(const QString &pathOrUrl);
+    Q_INVOKABLE QVariantMap draftAddFiles(const QVariantList &urls);
+    Q_INVOKABLE void draftRemovePage(int i);
+    Q_INVOKABLE void draftRotatePage(int i);
+    Q_INVOKABLE void draftClear();
+    Q_INVOKABLE QVariantMap draftInfo(qint64 pid);
+    Q_INVOKABLE qint64 saveDraft(qint64 pid, const QVariantMap &meta);
+    Q_INVOKABLE bool saveDocument(const QVariantMap &meta);
+    Q_INVOKABLE bool deleteDocument(qint64 id);
+    Q_INVOKABLE bool openDocument(qint64 id);
+    Q_INVOKABLE QVariantMap shareDocuments(qint64 pid, const QVariantList &ids, const QVariantMap &opts);
+    QImage documentPageImage(const QString &id, int page, int width);   // für image://docpage/<id|draft>/<Seite>
+
     // ---- Abgleich
     Q_INVOKABLE QVariantMap syncConfig();
     Q_INVOKABLE bool saveSyncConfig(const QVariantMap &m);
@@ -208,4 +232,10 @@ private:
     class TabletReminders *m_reminders = nullptr;
     bool m_usbConnected = false;
     QString m_usbStatus;
+    // Krankenakte: Dokument im Entstehen (Fotos oder eine PDF-Datei)
+    QList<QImage> m_draftPages;
+    QByteArray m_draftPdf;
+    QString m_draftFileName;
+    int m_draftRevision = 0;
+    QHash<QString, QImage> m_pageCache;           // gerenderte Seiten (Inhalte ändern sich nie)
 };

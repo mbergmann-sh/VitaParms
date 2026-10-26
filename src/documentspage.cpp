@@ -6,6 +6,7 @@
 #include "pdftools.h"
 #include "reportprinter.h"
 
+#include <QCoreApplication>
 #include <QApplication>
 #include <QComboBox>
 #include <QCryptographicHash>
@@ -112,7 +113,7 @@ QVariant DocumentModel::data(const QModelIndex &index, int role) const
         switch (index.column()) {
         case ColDate:     return d->docDate.isValid() ? loc.toString(d->docDate, QStringLiteral("dd.MM.yyyy")) : QString();
         case ColCategory: return d->category;
-        case ColTitle:    return d->title;
+        case ColTitle:    return d->hasData ? d->title : d->title + QStringLiteral(" ⏳");
         case ColIssuer:   return d->issuer;
         case ColPages:    return d->pages > 0 ? QVariant(d->pages) : QVariant();
         case ColText:     return d->hasText() ? QStringLiteral("✔") : QString();
@@ -134,6 +135,7 @@ QVariant DocumentModel::data(const QModelIndex &index, int role) const
                      .arg(d->fileName.toHtmlEscaped()));
         if (!d->notes.isEmpty()) t += QStringLiteral("<br><i>%1</i>").arg(d->notes.toHtmlEscaped());
         if (!d->hasText()) t += tr("<br><small>Kein durchsuchbarer Text (Scan).</small>");
+        if (!d->hasData) t += tr("<br><small>Der Inhalt fehlt noch – er kommt mit dem nächsten Abgleich des Geräts, auf dem das Dokument erfasst wurde.</small>");
         return t;
     }
     if (role == Qt::TextAlignmentRole && (index.column() == ColPages || index.column() == ColText))
@@ -355,6 +357,18 @@ void DocumentsPage::applyFilter()
     updateButtons();
 }
 
+// Ausgewählte Dokumente mit Inhalt; fehlen Inhalte (noch nicht abgeglichen), einmal darauf hinweisen
+static QList<MedicalDocument> withData(QWidget *parent, const QList<MedicalDocument> &sel)
+{
+    QList<MedicalDocument> l;
+    for (const MedicalDocument &d : sel) if (d.hasData) l << d;
+    if (l.size() < sel.size())
+        QMessageBox::information(parent, QCoreApplication::translate("DocumentsPage", "Krankenakte"),
+            QCoreApplication::translate("DocumentsPage", "%1 Dokument(e) haben noch keinen Inhalt – er kommt mit dem nächsten Abgleich "
+                                        "des Geräts, auf dem sie erfasst wurden. Sie werden übersprungen.").arg(sel.size() - l.size()));
+    return l;
+}
+
 QList<MedicalDocument> DocumentsPage::selectedDocs() const
 {
     QList<MedicalDocument> l;
@@ -419,6 +433,12 @@ void DocumentsPage::updatePreview()
         .arg(d.title.toHtmlEscaped(), info.join(QStringLiteral(" · "))));
     if (d.id == m_previewId) return;
     m_previewId = d.id;
+    if (!d.hasData) {
+        m_noPreview->setText(tr("Der Inhalt dieses Dokuments fehlt noch.\n\nEr wurde auf einem anderen Gerät erfasst und "
+                                "kommt mit dem nächsten Abgleich (Website oder USB-Kabel)."));
+        m_previewStack->setCurrentIndex(0);
+        return;
+    }
 #ifdef VP_HAVE_QTPDF
     // Für jedes Dokument ein neues QPdfDocument – QPdfView verwirft sonst
     // zwischengespeicherte Seitenbilder des vorherigen Dokuments nicht zuverlässig.
@@ -611,7 +631,7 @@ void DocumentsPage::deleteDocuments()
 
 void DocumentsPage::openExternal()
 {
-    const auto sel = selectedDocs();
+    const auto sel = withData(this, selectedDocs());
     if (sel.size() > 5 && QMessageBox::question(this, tr("Öffnen"),
             tr("%1 Dokumente gleichzeitig öffnen?").arg(sel.size())) != QMessageBox::Yes)
         return;
@@ -629,7 +649,7 @@ void DocumentsPage::openExternal()
 
 void DocumentsPage::saveCopies()
 {
-    const auto sel = selectedDocs();
+    const auto sel = withData(this, selectedDocs());
     if (sel.isEmpty()) return;
     QSettings s;
     const QString dir = s.value(QStringLiteral("paths/export"),
@@ -660,7 +680,7 @@ void DocumentsPage::saveCopies()
 
 void DocumentsPage::printSelected()
 {
-    const auto sel = selectedDocs();
+    const auto sel = withData(this, selectedDocs());
     if (sel.isEmpty()) return;
     if (!PdfTools::available()) {
         QMessageBox::information(this, tr("Drucken"),

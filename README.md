@@ -7,6 +7,10 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 > Messwerte. Es stellt keine Diagnosen und ersetzt keine ärztliche Beratung.
 > Die Verwendung erfolgt auf eigene Gefahr.
 
+![VitaParms – Hauptfenster mit Journal und dem Hinweis auf die Termine von heute und morgen (Demo-Daten)](docs/images/hauptfenster.png)
+
+*Hauptfenster mit Journal und dem Hinweis auf die Termine von heute und morgen (Demo-Modus mit erfundenen Daten).*
+
 ## Funktionen
 
 | Bereich | Umsetzung |
@@ -17,12 +21,12 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 | **Beipackzettel** | je Medikament im Internet nachschlagen (Apotheken Umschau per PZN, Gelbe Liste, Websuche, EMA, openFDA) und anzeigen; Original-PDF per Link oder Datei laden und **verschlüsselt in der Krankenakte** speichern |
 | **Benutzer** | beliebig viele, Auswahl über die Werkzeugleiste; **Hauptbenutzer 1 und 2** per `Strg+1` / `Strg+2`; *Benutzer → Drucken*: Stammblatt, Medikamentenliste, Erinnerungen (anstehende Termine) |
 | **Messung erfassen** | Kopfzeile mit Name/Vorname/Geburtsdatum aus dem Stammblatt; Datum/Uhrzeit vorbelegt und änderbar; Messzeitpunkt für **Tagesprofile** (nüchtern, 2 h nach dem Frühstück …, Liste editierbar); „Speichern & weitere Messung“ für Serien; **Minutenuhr** neben „Atemfrequenz“ (Start- und Endton) zum Zählen der Atemzüge |
-| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), Beobachtungen; Beispiel-Zusatzfelder Atemfrequenz und Schmerz (NRS) |
+| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), Beobachtungen; Beispiel-Zusatzfelder Atemfrequenz und Schmerz (NRS); **Peak-Flow-Warnhinweise** (grün/gelb/rot) bezogen auf den persönlichen Bestwert oder den Sollwert nach ERS 1994 (biologisches Geschlecht, Alter, Größe) |
 | **BZ-Tagesprofil** | *Messwerte → BZ-Tagesprofil…*: sieben Zeitpunkte (nüchtern vor dem Frühstück … vor dem Zubettgehen) mit einstellbaren Uhrzeiten; je Zeitpunkt ein Termin mit Erinnerung, „Messung erfassen…“ öffnet das Erfassungsfenster mit Betreff, Uhrzeit und Messzeitpunkt |
 | **Journal / Verlauf** | alle Werte, nach Datum absteigend (aktuellste zuerst), mehrere Messungen pro Tag, Zeitraumfilter |
 | **Grafik** | Tages-, Wochen-, Monats-, **Jahresverlauf** und freier Zeitraum (Wahl wird gespeichert); ab gut zwei Monaten **Tageswerte** (Mittelwert, Strich = Min–Max); Bereiche wählbar, **jede Kurve einzeln ein-/ausblendbar** (Klick auf die Legende oder Menü *Kurven*); Druck/PDF wahlweise **je Bereich eine Seite**; farblich unterscheidbar **und** mit unterschiedlichen Markerformen (auch bei Farbfehlsichtigkeit lesbar), Legende, Tooltips |
 | **Ausgabe** | Druck und Druckvorschau auf **DIN A4**, **PDF**, **Excel (.xlsx)** mit eingebetteter Grafik, Kennwerten (Min/Max/Mittel) und Rohdaten |
-| **Krankenakte** | PDF-Dokumente (Befunde, Laborwerte, Entlassbriefe …) je Benutzer nach Datum archivieren; Fotos/Scans (JPG, PNG, TIFF) werden beim Import in PDF umgewandelt; Drag & Drop; Vorschläge für Datum, Art und Titel; Dubletten-Erkennung; **Volltextsuche** im PDF-Inhalt; Vorschau; **selektiver Druck**; Inhaltsverzeichnis drucken |
+| **Krankenakte** | PDF-Dokumente (Befunde, Laborwerte, Entlassbriefe …) je Benutzer nach Datum archivieren; Fotos/Scans (JPG, PNG, TIFF) werden beim Import in PDF umgewandelt; Drag & Drop; Vorschläge für Datum, Art und Titel; Dubletten-Erkennung; **Volltextsuche** im PDF-Inhalt; Vorschau; **selektiver Druck**; Inhaltsverzeichnis drucken; **auf dem Tablet**: ansehen, suchen, mit der Kamera fotografieren (mehrere Seiten → ein PDF), Dateien übernehmen, teilen; beim Abgleich gehen die Inhalte **getrennt und nur bei Bedarf** |
 | **Akte versenden** | ausgewählte/gefilterte/alle Dokumente plus Stammblatt, Medikamentenplan, Verlauf und Grafik als **ZIP mit Inhaltsverzeichnis**; optional **AES-256-verschlüsselt**; E-Mail mit Anhang im Standard-Mailprogramm |
 | **Datenschutz** | Datenbank **vollständig verschlüsselt** (SQLite3 Multiple Ciphers, ChaCha20-Poly1305) inkl. aller Dokumente; Sicherungen ebenfalls verschlüsselt |
 | **Anmeldekonten** | Anmeldung beim Start; beliebig viele Konten mit den Rollen **Administrator** und **Anwender**; nach korrekter Anmeldung wird die Datenbank ohne Schlüsseleingabe entsperrt; Wiederherstellungsschlüssel für den Notfall; Abmelden/Sperren (`Strg+L`) |

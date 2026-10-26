@@ -14,7 +14,11 @@ Flickable {
     property var legs: app.legOptions()
     function reload() { d = personId ? app.personDetail(personId) : ({}) }
     onPersonIdChanged: reload()
-    Connections { target: app; function onDataChanged() { page.reload() } }
+    // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
+    property bool active: true
+    property bool stale: false
+    onActiveChanged: if (active && stale) { stale = false; page.reload() }
+    Connections { target: app; function onDataChanged() { if (page.active) page.reload(); else page.stale = true } }
     Component.onCompleted: reload()
     function fmt(iso) { if (!iso) return ""; const p = iso.split("-"); return p[2] + "." + p[1] + "." + p[0] }
 

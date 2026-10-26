@@ -144,6 +144,7 @@ struct MedicalDocument {
     QString   fullText;       // aus dem PDF gelesener Text (für die Suche)
     QDateTime addedAt;
     QJsonObject extra;
+    bool      hasData = true;   // Inhalt vorhanden (fehlt bis zum Abgleich, wenn auf einem anderen Gerät erfasst)
 
     bool hasText() const { return !fullText.trimmed().isEmpty(); }
 };

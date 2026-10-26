@@ -15,6 +15,10 @@
 #include <QFileInfo>
 #include <QEventLoop>
 #include <QImage>
+#include <QPainter>
+#include <QCryptographicHash>
+#include "pdftools.h"
+#include "sqlquery.h"
 #include <QQmlApplicationEngine>
 #include <QQmlProperty>
 #include <QQuickItem>
@@ -584,6 +588,145 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
     QQmlProperty::write(h, QStringLiteral("tab"), 4);
     shot(QStringLiteral("m16_medikamente_erinnerung"));
     check(app.deleteMedication(pid, m_testMed), "Medikament löschen");
+
+    // ---- Krankenakte (Stufe 3): Fotos → PDF, Datei übernehmen, Liste, Suche, Ansicht, Teilen
+    {
+        const bool en = app.language() == QStringLiteral("en");
+        const QString tmpDir = out + QStringLiteral("/akte");
+        QDir().mkpath(tmpDir);
+        auto page = [&](const QString &name, const QStringList &lines, const QColor &accent) {
+            QImage img(1240, 1754, QImage::Format_RGB32);     // A4 bei 150 dpi, wie ein Foto/Scan
+            img.fill(QColor(0xfb, 0xfa, 0xf6));
+            QPainter p(&img);
+            p.fillRect(0, 0, img.width(), 150, accent);
+            QFont f(QStringLiteral("Sans")); f.setPixelSize(54); f.setBold(true); p.setFont(f);
+            p.setPen(Qt::white);
+            p.drawText(QRect(70, 0, 1100, 150), Qt::AlignVCenter, lines.value(0));
+            f.setPixelSize(34); f.setBold(false); p.setFont(f); p.setPen(QColor(0x22, 0x22, 0x22));
+            int y = 260;
+            for (int i = 1; i < lines.size(); ++i, y += 64) p.drawText(70, y, lines.at(i));
+            p.setPen(QColor(0xbb, 0xbb, 0xbb));
+            for (; y < 1600; y += 56) p.drawLine(70, y, 1170, y);
+            p.end();
+            const QString path = tmpDir + QLatin1Char('/') + name;
+            img.save(path, "JPG", 85);
+            return path;
+        };
+        const QString p1 = page(QStringLiteral("brief1.jpg"), en ? QStringList{ QStringLiteral("Cardiology practice"), QStringLiteral("Discharge letter"), QStringLiteral("Findings: sinus rhythm, BP 135/85") }
+                                                               : QStringList{ QStringLiteral("Kardiologische Praxis"), QStringLiteral("Arztbrief"), QStringLiteral("Befund: Sinusrhythmus, RR 135/85") }, QColor(0x1f, 0x78, 0xb9));
+        const QString p2 = page(QStringLiteral("brief2.jpg"), en ? QStringList{ QStringLiteral("Page 2"), QStringLiteral("Recommendation: check-up in 6 months") }
+                                                               : QStringList{ QStringLiteral("Seite 2"), QStringLiteral("Empfehlung: Kontrolle in 6 Monaten") }, QColor(0x1f, 0x78, 0xb9));
+        app.draftClear();
+        check(app.draftAddImage(p1) && app.draftAddFiles({ QUrl::fromLocalFile(p2) }).value(QStringLiteral("ok")).toBool(), "Akte: zwei Fotos");
+        QVariantMap di = app.draftInfo(pid);
+        check(di.value(QStringLiteral("kind")).toString() == QStringLiteral("images") && di.value(QStringLiteral("pages")).toInt() == 2, "Akte: Entwurf zwei Seiten");
+        app.draftRotatePage(1); app.draftRotatePage(1); app.draftRotatePage(1); app.draftRotatePage(1);
+        check(app.saveDraft(pid, { { QStringLiteral("title"), QString() } }) == 0, "Akte: Titel nötig");
+        const QString t1 = en ? QStringLiteral("Cardiology letter") : QStringLiteral("Arztbrief Kardiologie");
+        const qint64 d1 = app.saveDraft(pid, { { QStringLiteral("title"), t1 }, { QStringLiteral("category"), en ? QStringLiteral("Doctor's letter") : QStringLiteral("Arztbrief") },
+                                               { QStringLiteral("issuer"), en ? QStringLiteral("Cardiology practice") : QStringLiteral("Kardiologische Praxis") },
+                                               { QStringLiteral("date"), QDate::currentDate().addDays(-12).toString(Qt::ISODate) } });
+        check(d1 > 0, "Akte: Fotos als PDF gespeichert");
+        const QVariantMap info = app.documentInfo(d1);
+        qInfo("Akte: %s, %d Seiten, %s", qPrintable(info.value(QStringLiteral("title")).toString()), info.value(QStringLiteral("pages")).toInt(),
+              qPrintable(info.value(QStringLiteral("size")).toString()));
+        check(info.value(QStringLiteral("pages")).toInt() == 2 && info.value(QStringLiteral("hasData")).toBool(), "Akte: zwei Seiten im PDF");
+        check(Database::instance().documentData(d1).startsWith("%PDF"), "Akte: Inhalt ist PDF");
+        // PDF-Datei übernehmen; dieselbe Datei ein zweites Mal wird erkannt
+        const QString pdfPath = tmpDir + QStringLiteral("/labor.pdf");
+        {
+            QFile f(pdfPath);
+            check(f.open(QIODevice::WriteOnly) && f.write(PdfTools::imagesToPdf({ QImage(page(QStringLiteral("labor.jpg"),
+                      en ? QStringList{ QStringLiteral("Laboratory"), QStringLiteral("Blood count"), QStringLiteral("HbA1c 6.4 %") }
+                         : QStringList{ QStringLiteral("Labor"), QStringLiteral("Blutbild"), QStringLiteral("HbA1c 6,4 %") }, QColor(0x2e, 0x7d, 0x32))) },
+                      QStringLiteral("Labor"))) > 0, "Akte: Test-PDF");
+        }
+        check(app.draftAddFiles({ QUrl::fromLocalFile(pdfPath) }).value(QStringLiteral("ok")).toBool()
+              && app.draftInfo(pid).value(QStringLiteral("kind")).toString() == QStringLiteral("pdf"), "Akte: PDF-Datei als Entwurf");
+        const qint64 d2 = app.saveDraft(pid, { { QStringLiteral("title"), en ? QStringLiteral("Blood count") : QStringLiteral("Blutbild") },
+                                               { QStringLiteral("category"), en ? QStringLiteral("Lab results") : QStringLiteral("Laborwerte") },
+                                               { QStringLiteral("date"), QDate::currentDate().addDays(-3).toString(Qt::ISODate) } });
+        check(d2 > 0, "Akte: PDF übernommen");
+        app.draftAddFiles({ QUrl::fromLocalFile(pdfPath) });
+        check(app.saveDraft(pid, { { QStringLiteral("title"), QStringLiteral("Doppelt") } }) == 0 && app.lastError().contains(en ? QStringLiteral("already") : QStringLiteral("bereits")), "Akte: Dublette erkannt");
+        app.draftClear();
+        // Liste, Suche, Art, Angaben ändern
+        check(app.documents(pid, QString(), QString()).size() >= 2, "Akte: Liste");
+        check(app.documents(pid, en ? QStringLiteral("cardio") : QStringLiteral("kardio"), QString()).size() == 1, "Akte: Suche");
+        {
+            const QString labCat = en ? QStringLiteral("Lab results") : QStringLiteral("Laborwerte");
+            const QVariantList labs = app.documents(pid, QString(), labCat);
+            bool allLab = !labs.isEmpty();
+            for (const QVariant &x : labs) allLab &= x.toMap().value(QStringLiteral("category")).toString() == labCat;
+            check(allLab && labs.size() < app.documents(pid, QString(), QString()).size(), "Akte: Art");
+        }
+        for (const QVariant &x : app.documents(pid, QString(), QString())) {
+            const qint64 id = x.toMap().value(QStringLiteral("id")).toLongLong();
+            const QByteArray data = Database::instance().documentData(id);
+            if (app.pdfPreviewAvailable() && x.toMap().value(QStringLiteral("hasData")).toBool() && app.documentPageImage(QString::number(id), 0, 140).isNull())
+                qInfo("Akte: keine Vorschau für %lld (%s, %lld Bytes, Anfang %s)", id, qPrintable(x.toMap().value(QStringLiteral("title")).toString()),
+                      qint64(data.size()), data.left(8).toHex().constData());
+        }
+        QVariantMap ed = app.documentInfo(d2);
+        ed.insert(QStringLiteral("notes"), en ? QStringLiteral("HbA1c slightly raised – recheck in 3 months") : QStringLiteral("HbA1c leicht erhöht – Kontrolle in 3 Monaten"));
+        check(app.saveDocument(ed) && app.documentInfo(d2).value(QStringLiteral("notes")).toString().contains(QStringLiteral("HbA1c")), "Akte: Angaben ändern");
+        if (app.pdfPreviewAvailable())
+            check(!app.documentPageImage(QString::number(d1), 1, 300).isNull(), "Akte: Seitenbild");
+        // Dokument, dessen Inhalt noch auf einem anderen Gerät liegt (Abgleich steht aus)
+        qint64 d3 = 0;
+        {
+            QByteArray pdf = "%PDF-1.4\n% fehlt\n";
+            MedicalDocument md; md.patientId = pid; md.title = en ? QStringLiteral("X-ray report (from the computer)") : QStringLiteral("Röntgenbefund (vom Computer)");
+            md.category = en ? QStringLiteral("Imaging") : QStringLiteral("Bildgebung"); md.docDate = QDate::currentDate().addDays(-30);
+            md.sha256 = QCryptographicHash::hash(pdf, QCryptographicHash::Sha256); md.pages = 1;
+            check(Database::instance().addDocument(md, pdf), "Akte: Dokument ohne Inhalt anlegen");
+            SqlQuery q(Database::instance().handleDb());
+            q.exec(QStringLiteral("DELETE FROM document_files WHERE document_id = %1").arg(md.id));
+            d3 = md.id;
+            check(!app.documentInfo(d3).value(QStringLiteral("hasData")).toBool() && !app.openDocument(d3), "Akte: Inhalt fehlt");
+        }
+        // Teilen: PDF-Dateien und verschlüsseltes ZIP mit Stammblatt
+        const QVariantMap s1 = app.shareDocuments(pid, { d1, d2 }, {});
+        check(s1.value(QStringLiteral("ok")).toBool() && s1.value(QStringLiteral("files")).toStringList().size() == 2, "Akte: als PDF teilen");
+        const QVariantMap s2 = app.shareDocuments(pid, { d1, d2 }, { { QStringLiteral("zip"), true }, { QStringLiteral("password"), QStringLiteral("Geheim-Passwort-1") } });
+        const QString zipPath = s2.value(QStringLiteral("files")).toStringList().value(0);
+        QFile zf(zipPath);
+        check(s2.value(QStringLiteral("ok")).toBool() && zf.open(QIODevice::ReadOnly) && zf.read(2) == "PK", "Akte: als ZIP teilen");
+        qInfo("Akte: ZIP %s (%lld Bytes)", qPrintable(QFileInfo(zipPath).fileName()), QFileInfo(zipPath).size());
+        check(!app.shareDocuments(pid, { d1 }, { { QStringLiteral("zip"), true }, { QStringLiteral("password"), QStringLiteral("kurz") } }).value(QStringLiteral("ok")).toBool(), "Akte: Passwort zu kurz");
+
+        // Bildschirmfotos
+        QQmlProperty::write(h, QStringLiteral("tab"), 6);
+        wait(400);
+        shot(QStringLiteral("m60_akte"));
+        call(h, "openDocument", d1);
+        wait(500);
+        shot(QStringLiteral("m61_dokument"));
+        stackPop();
+        // neues Dokument: zwei Fotos als Entwurf
+        call(h, "addDocument", QString());
+        wait(300);
+        if (QObject *ep = win->findChild<QObject *>(QStringLiteral("documentEditPage"))) {
+            app.draftAddImage(p1);
+            app.draftAddImage(p2);
+            QMetaObject::invokeMethod(ep, "refreshDraft", Q_ARG(QVariant, true));
+            if (QObject *t = win->findChild<QObject *>(QStringLiteral("docTitle")))
+                QQmlProperty::write(t, QStringLiteral("text"), en ? QStringLiteral("Discharge letter, hospital") : QStringLiteral("Entlassbrief Klinikum"));
+            wait(300);
+            shot(QStringLiteral("m62_dokument_neu"));
+        } else check(false, "Akte: Seite neues Dokument");
+        stackPop();
+        app.draftClear();
+        call(h, "shareDocuments", QVariantList{ d1, d2 });
+        wait(300);
+        if (QObject *z = win->findChild<QObject *>(QStringLiteral("shareZip"))) QQmlProperty::write(z, QStringLiteral("checked"), true);
+        wait(200);
+        shot(QStringLiteral("m63_teilen"));
+        if (QObject *sp = win->findChild<QObject *>(QStringLiteral("sharePopup"))) QMetaObject::invokeMethod(sp, "close");
+        wait(200);
+        check(app.deleteDocument(d1) && app.deleteDocument(d2) && app.deleteDocument(d3), "Akte: löschen");
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    }
 
     // Hochformat (Tablet gedreht)
     win->resize(800, 1280);

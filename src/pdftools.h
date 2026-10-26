@@ -30,6 +30,8 @@ Info analyze(const QByteArray &pdf);
 
 // Bilder (Foto/Scan) in ein einseitiges A4-PDF umwandeln
 QByteArray imageToPdf(const QImage &img, const QString &title);
+// mehrere Fotos/Scans (z. B. Seiten eines Briefs) in ein A4-PDF, eine Seite je Bild
+QByteArray imagesToPdf(const QList<QImage> &images, const QString &title);
 
 // Vorschläge für die Metadaten beim Import
 QDate   guessDate(const QString &fileName, const Info &info, const QDate &birthDate);

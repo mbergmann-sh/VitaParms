@@ -1,6 +1,79 @@
 <?xml version='1.0' encoding='utf-8'?>
 <TS version="2.1" language="en_US">
 <context>
+    <name>AkteExport</name>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="35" />
+        <source>Krankenakte_%1_%2.zip</source>
+        <translation>MedicalRecord_%1_%2.zip</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="42" />
+        <source>ohne-Datum</source>
+        <translation>no-date</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="54" />
+        <source>Temporärer Ordner konnte nicht angelegt werden.</source>
+        <translation>Could not create a temporary folder.</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="57" />
+        <source>Krankenakte_</source>
+        <translation>MedicalRecord_</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="74" />
+        <source>%1_Stammblatt.pdf</source>
+        <translation>%1_MasterRecord.pdf</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="76" />
+        <source>Persönliche Daten, Diagnosen, Aufnahmewerte, aktuelle Medikation</source>
+        <translation>Personal data, diagnoses, admission values, current medication</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="82" />
+        <source>%1_Medikamentenplan.pdf</source>
+        <translation>%1_MedicationPlan.pdf</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="84" />
+        <source>Aktueller Medikamentenplan (Stand %1)</source>
+        <translation>Current medication plan (as of %1)</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="105" />
+        <source>%1_Verlauf_Vitalwerte.pdf</source>
+        <translation>%1_VitalSigns_History.pdf</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="107" />
+        <source>Alle Messwerte %1 (%2 Messungen)</source>
+        <translation>All readings %1 (%2 measurements)</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="124" />
+        <source>%1_Verlaufsgrafik.pdf</source>
+        <translation>%1_TrendChart.pdf</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="126" />
+        <source>Verlaufskurven mit Kennwerten %1</source>
+        <translation>Trend charts with statistics %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="141" />
+        <source>00_Inhaltsverzeichnis.pdf</source>
+        <translation>00_TableOfContents.pdf</translation>
+    </message>
+    <message>
+        <location filename="../../src/akteexportcore.cpp" line="151" />
+        <source>Dokumente/</source>
+        <translation>Documents/</translation>
+    </message>
+</context>
+<context>
     <name>AppController</name>
     <message>
         <location filename="../src/appcontroller.cpp" line="55" />
@@ -28,210 +101,210 @@
         <translation>diverse</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="176" />
+        <location filename="../src/appcontroller.cpp" line="177" />
         <source>Die Kurzanleitung lässt sich nicht öffnen. Ist eine App zum Anzeigen von PDF-Dateien installiert?</source>
         <translation>The quick guide cannot be opened. Is an app for viewing PDF files installed?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="179" />
+        <location filename="../src/appcontroller.cpp" line="180" />
         <source>Die Kurzanleitung „Erste Schritte“ ist in dieser Installation nicht enthalten.</source>
         <translation>The quick guide “Getting Started” is not included in this installation.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="260" />
+        <location filename="../src/appcontroller.cpp" line="261" />
         <source>Name oder Passwort stimmt nicht.</source>
         <translation>Name or password is incorrect.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="445" />
+        <location filename="../src/appcontroller.cpp" line="446" />
         <source>Bitte auch die zugehörige Schlüsseldatei (.keys) wählen – oder am Computer „Datei → Datenbank exportieren“ verwenden, dann ist alles in einer Datei.</source>
         <translation>Please also select the matching key file (.keys) – or use “File → Export database” on the computer, then everything is in one file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="457" />
+        <location filename="../src/appcontroller.cpp" line="458" />
         <source>Die Datei enthält keine Anmeldekonten (.keys).</source>
         <translation>The file contains no login accounts (.keys).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="472" />
+        <location filename="../src/appcontroller.cpp" line="473" />
         <source>Das ist keine Kopplungsdatei von VitaParms.</source>
         <translation>This is not a VitaParms pairing file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="572" />
+        <location filename="../src/appcontroller.cpp" line="573" />
         <source>Vers.-Nr. %1</source>
         <translation>Ins. no. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="574" />
+        <location filename="../src/appcontroller.cpp" line="575" />
         <source>Tel. %1</source>
         <translation>Tel. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="575" />
+        <location filename="../src/appcontroller.cpp" line="576" />
         <source>mobil %1</source>
         <translation>mobile %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="635" />
+        <location filename="../src/appcontroller.cpp" line="636" />
         <source>Sollwert heute: %1 l/min (%2).</source>
         <translation>Predicted value today: %1 l/min (%2).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="638" />
+        <location filename="../src/appcontroller.cpp" line="639" />
         <source>Warnhinweise beziehen sich auf den %1 (%2 l/min): gelb unter %3, rot unter %4 l/min.</source>
         <translation>Warnings are based on the %1 (%2 l/min): yellow below %3, red below %4 l/min.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="639" />
+        <location filename="../src/appcontroller.cpp" line="640" />
         <source>persönlichen Bestwert</source>
         <translation>personal best</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="639" />
+        <location filename="../src/appcontroller.cpp" line="640" />
         <source>Sollwert</source>
         <translation>predicted value</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="642" />
+        <location filename="../src/appcontroller.cpp" line="643" />
         <source>Ohne Bezugswert gibt es keine Warnhinweise – bitte den persönlichen Bestwert eintragen.</source>
         <translation>Without a reference value there are no warnings – please enter the personal best.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="686" />
+        <location filename="../src/appcontroller.cpp" line="687" />
         <source>Bitte einen Namen eingeben.</source>
         <translation>Please enter a name.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="763" />
+        <location filename="../src/appcontroller.cpp" line="764" />
         <source>Nur Administratoren können Personen löschen.</source>
         <translation>Only administrators can delete persons.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="855" />
+        <location filename="../src/appcontroller.cpp" line="856" />
         <source>RR</source>
         <translation>BP</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="886" />
+        <location filename="../src/appcontroller.cpp" line="887" />
         <source>bei Aufnahme</source>
         <translation>on admission</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="968" />
+        <location filename="../src/appcontroller.cpp" line="969" />
         <source>Bitte mindestens einen Wert eingeben.</source>
         <translation>Please enter at least one value.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="970" />
+        <location filename="../src/appcontroller.cpp" line="971" />
         <source>Beim Blutdruck ist nur ein Wert (systolisch oder diastolisch) eingetragen.</source>
         <translation>Only one blood pressure value (systolic or diastolic) has been entered.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="972" />
+        <location filename="../src/appcontroller.cpp" line="973" />
         <source>Der systolische Wert (%1) ist nicht größer als der diastolische (%2) – vertauscht?</source>
         <translation>The systolic value (%1) is not greater than the diastolic value (%2) – swapped?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="974" />
+        <location filename="../src/appcontroller.cpp" line="975" />
         <source>Der Messzeitpunkt liegt in der Zukunft.</source>
         <translation>The measurement time is in the future.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="986" />
+        <location filename="../src/appcontroller.cpp" line="987" />
         <source>Person nicht gefunden.</source>
         <translation>Person not found.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1010" />
+        <location filename="../src/appcontroller.cpp" line="1011" />
         <source>Für den BMI wird die Körpergröße benötigt.</source>
         <translation>Height is required for the BMI.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1011" />
+        <location filename="../src/appcontroller.cpp" line="1012" />
         <source>BMI %1 kg/m²</source>
         <translation>BMI %1 kg/m²</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1014" />
+        <location filename="../src/appcontroller.cpp" line="1015" />
         <source> (Größe aus letzter Messung: %1 cm)</source>
         <translation> (height from last measurement: %1 cm)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1015" />
+        <location filename="../src/appcontroller.cpp" line="1016" />
         <source>, korrigiert für fehlende Gliedmaßen</source>
         <translation>, corrected for missing limbs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1029" />
-        <location filename="../src/appcontroller.cpp" line="1359" />
+        <location filename="../src/appcontroller.cpp" line="1030" />
+        <location filename="../src/appcontroller.cpp" line="1360" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>heute</source>
         <translation>today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1029" />
+        <location filename="../src/appcontroller.cpp" line="1030" />
         <source>gestern</source>
         <translation>yesterday</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1034" />
+        <location filename="../src/appcontroller.cpp" line="1035" />
         <source>Blutdruck</source>
         <translation>Blood pressure</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1204" />
+        <location filename="../src/appcontroller.cpp" line="1205" />
         <source>Stück</source>
         <translation>pcs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1265" />
+        <location filename="../src/appcontroller.cpp" line="1266" />
         <source>Bitte den Namen des Medikaments eingeben.</source>
         <translation>Please enter the name of the medication.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1285" />
+        <location filename="../src/appcontroller.cpp" line="1286" />
         <source>Bitte mindestens einen Wochentag für die Einnahme wählen.</source>
         <translation>Please choose at least one weekday for the intake.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1298" />
+        <location filename="../src/appcontroller.cpp" line="1299" />
         <source>Das Enddatum liegt vor dem Beginn.</source>
         <translation>The end date is before the start date.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1322" />
+        <location filename="../src/appcontroller.cpp" line="1323" />
         <source>Bitte die Uhrzeit im Format 08:00 eingeben.</source>
         <translation>Please enter the time in the format 08:00.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1326" />
+        <location filename="../src/appcontroller.cpp" line="1327" />
         <source>Bitte mindestens eine Uhrzeit für die Erinnerung wählen.</source>
         <translation>Please choose at least one time for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1327" />
+        <location filename="../src/appcontroller.cpp" line="1328" />
         <source>Bitte mindestens einen Tag für die Erinnerung wählen.</source>
         <translation>Please choose at least one day for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1359" />
+        <location filename="../src/appcontroller.cpp" line="1360" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>morgen</source>
         <translation>tomorrow</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1398" />
+        <location filename="../src/appcontroller.cpp" line="1399" />
         <source>letzte %1 Tage</source>
         <translation>last %1 days</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1398" />
+        <location filename="../src/appcontroller.cpp" line="1399" />
         <source>gesamter Verlauf</source>
         <translation>complete history</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1419" />
+        <location filename="../src/appcontroller.cpp" line="1420" />
         <source>Die Ausgabe konnte nicht erstellt werden.</source>
         <translation>The output could not be created.</translation>
     </message>
@@ -284,6 +357,107 @@
         <location filename="../src/appcontroller_appts.cpp" line="282" />
         <source>Speichern fehlgeschlagen.</source>
         <translation>Saving failed.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="137" />
+        <source>Die Kamera lässt sich nicht öffnen.</source>
+        <translation>The camera cannot be opened.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="141" />
+        <source>Fotografieren ist nur auf dem Tablet möglich – bitte „Datei wählen“ nehmen.</source>
+        <translation>Taking photos is only possible on the tablet – please use “Choose file”.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="164" />
+        <source>Das Bild lässt sich nicht lesen.</source>
+        <translation>The image cannot be read.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="168" />
+        <source>Foto_%1.pdf</source>
+        <translation>Photo_%1.pdf</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="188" />
+        <source>Bitte eine PDF-Datei einzeln übernehmen (Fotos lassen sich zu einem Dokument zusammenfassen).</source>
+        <translation>Please add a PDF file on its own (photos can be combined into one document).</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="195" />
+        <source>Dokument.pdf</source>
+        <translation>Document.pdf</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="200" />
+        <source>Nur PDF-Dateien und Bilder (JPEG, PNG) lassen sich übernehmen.</source>
+        <translation>Only PDF files and images (JPEG, PNG) can be added.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="208" />
+        <source>Scan</source>
+        <translation>Scan</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="260" />
+        <location filename="../src/appcontroller_docs.cpp" line="298" />
+        <source>Bitte einen Titel eingeben.</source>
+        <translation>Please enter a title.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="263" />
+        <source>Bitte zuerst ein Foto aufnehmen oder eine Datei wählen.</source>
+        <translation>Please take a photo or choose a file first.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="265" />
+        <source>Das PDF ließ sich nicht erstellen.</source>
+        <translation>The PDF could not be created.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="270" />
+        <source>Dieses Dokument ist bereits in der Akte: „%1“.</source>
+        <translation>This document is already in the record: “%1”.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="296" />
+        <source>Das Dokument gibt es nicht mehr.</source>
+        <translation>The document no longer exists.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="331" />
+        <source>Der Inhalt dieses Dokuments fehlt noch – er kommt mit dem nächsten Abgleich.</source>
+        <translation>The content of this document is still missing – it arrives with the next synchronisation.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="333" />
+        <source>Keine App zum Anzeigen von PDF-Dateien gefunden.</source>
+        <translation>No app for viewing PDF files found.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="347" />
+        <source>Bitte mindestens ein Dokument mit Inhalt wählen.</source>
+        <translation>Please choose at least one document with content.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="358" />
+        <source>Das Passwort sollte mindestens 8 Zeichen lang sein.</source>
+        <translation>The password should be at least 8 characters long.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="369" />
+        <source>Krankenakte – %1</source>
+        <translation>Medical record – %1</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="376" />
+        <source>Teilen mit …</source>
+        <translation>Share with …</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="377" />
+        <source>Teilen ist auf diesem Gerät nicht möglich.</source>
+        <translation>Sharing is not possible on this device.</translation>
     </message>
 </context>
 <context>
@@ -1417,12 +1591,12 @@
         <translation>Wrong key or not a VitaParms database.</translation>
     </message>
     <message>
-        <location filename="../../src/database.cpp" line="598" />
+        <location filename="../../src/database.cpp" line="605" />
         <source>Zieldatei kann nicht überschrieben werden.</source>
         <translation>Target file cannot be overwritten.</translation>
     </message>
     <message>
-        <location filename="../../src/database.cpp" line="604" />
+        <location filename="../../src/database.cpp" line="611" />
         <source>Zieldatei kann nicht angelegt werden.</source>
         <translation>Target file cannot be created.</translation>
     </message>
@@ -1438,17 +1612,17 @@
 <context>
     <name>DbMerge</name>
     <message>
-        <location filename="../../src/dbsync.cpp" line="149" />
+        <location filename="../../src/dbsync.cpp" line="152" />
         <source>Die Datenbank des anderen Geräts lässt sich nicht öffnen: %1</source>
         <translation>The database of the other device cannot be opened: %1</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="154" />
+        <location filename="../../src/dbsync.cpp" line="157" />
         <source>Die Datenbank des anderen Geräts passt nicht zu dieser Datenbank (anderer Schlüssel).</source>
         <translation>The database of the other device does not match this database (different key).</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="158" />
+        <location filename="../../src/dbsync.cpp" line="161" />
         <source>Die Datenbank des anderen Geräts stammt von einer älteren VitaParms-Version. Bitte VitaParms auf dem anderen Gerät aktualisieren.</source>
         <translation>The database of the other device comes from an older VitaParms version. Please update VitaParms on the other device.</translation>
     </message>
@@ -1456,83 +1630,108 @@
 <context>
     <name>DbSync</name>
     <message>
-        <location filename="../../src/dbsync.cpp" line="403" />
+        <location filename="../../src/dbsync.cpp" line="453" />
         <source>Der Abgleich ist nicht eingeschaltet.</source>
         <translation>Synchronisation is not switched on.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="405" />
+        <location filename="../../src/dbsync.cpp" line="455" />
         <source>Die Adresse der Website fehlt oder ist ungültig.</source>
         <translation>The website address is missing or invalid.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="407" />
+        <location filename="../../src/dbsync.cpp" line="457" />
         <source>Die Website muss über https:// erreichbar sein.</source>
         <translation>The website must be reachable via https://.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="408" />
+        <location filename="../../src/dbsync.cpp" line="462" />
         <source>Der Upload-Schlüssel fehlt.</source>
         <translation>The upload key is missing.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="409" />
+        <location filename="../../src/dbsync.cpp" line="463" />
         <source>Nur verschlüsselte Datenbanken können abgeglichen werden.</source>
         <translation>Only encrypted databases can be synchronised.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="534" />
+        <location filename="../../src/dbsync.cpp" line="593" />
         <source> Anmeldekonten übernommen.</source>
         <translation> User accounts adopted.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="538" />
+        <location filename="../../src/dbsync.cpp" line="597" />
         <source> Die Anmeldekonten wurden auf beiden Geräten geändert – die Konten dieses Geräts gelten.</source>
         <translation> The login accounts were changed on both devices – the accounts of this device apply.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="546" />
+        <location filename="../../src/dbsync.cpp" line="605" />
         <source>Abgeglichen: %1 neu, %2 geändert, %3 gelöscht.</source>
         <translation>Synchronised: %1 new, %2 changed, %3 deleted.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="548" />
-        <location filename="../../src/dbsync.cpp" line="552" />
+        <location filename="../../src/dbsync.cpp" line="607" />
+        <location filename="../../src/dbsync.cpp" line="612" />
         <source>Bereits auf dem neuesten Stand.</source>
         <translation>Already up to date.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="585" />
+        <location filename="../../src/dbsync.cpp" line="658" />
         <source>Abgeglichen: %1 neu, %2 geändert, %3 gelöscht; eigener Stand hochgeladen.</source>
         <translation>Synchronised: %1 new, %2 changed, %3 deleted; own data uploaded.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="587" />
+        <location filename="../../src/dbsync.cpp" line="660" />
         <source>Eigener Stand hochgeladen.</source>
         <translation>Own data uploaded.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="590" />
+        <location filename="../../src/dbsync.cpp" line="665" />
         <source>Der Abgleich ist mehrfach mit anderen Geräten zusammengestoßen. Bitte gleich noch einmal versuchen.</source>
         <translation>Synchronisation collided with other devices several times. Please try again shortly.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="604" />
+        <location filename="../../src/dbsync.cpp" line="692" />
+        <source>Dokumente: %1 hochgeladen, %2 geholt.</source>
+        <translation>Documents: %1 uploaded, %2 fetched.</translation>
+    </message>
+    <message>
+        <location filename="../../src/dbsync.cpp" line="695" />
+        <source>%1 Dokument(e) noch ohne Inhalt – sie kommen mit dem nächsten Abgleich des Geräts, auf dem sie erfasst wurden.</source>
+        <translation>%1 document(s) still without content – it arrives with the next synchronisation of the device on which they were added.</translation>
+    </message>
+    <message>
+        <location filename="../../src/dbsync.cpp" line="702" />
+        <source>TLS bereit: %1 (%2)</source>
+        <translation>TLS ready: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../../src/dbsync.cpp" line="707" />
+        <source>Diese App kann keine verschlüsselten Verbindungen (HTTPS/TLS) aufbauen: Die OpenSSL-Bibliotheken (libssl_3.so, libcrypto_3.so) fehlen im Installationspaket. Abhilfe siehe mobile/README.md, Abschnitt „HTTPS“. Der Abgleich über das USB-Kabel funktioniert trotzdem.</source>
+        <translation>This app cannot establish encrypted connections (HTTPS/TLS): the OpenSSL libraries (libssl_3.so, libcrypto_3.so) are missing from the installation package. For a fix see mobile/README.md, section “HTTPS”. Synchronisation over the USB cable still works.</translation>
+    </message>
+    <message>
+        <location filename="../../src/dbsync.cpp" line="711" />
+        <source>Verschlüsselte Verbindungen (HTTPS/TLS) sind nicht möglich: Es fehlt eine TLS-Bibliothek (%1).</source>
+        <translation>Encrypted connections (HTTPS/TLS) are not possible: a TLS library is missing (%1).</translation>
+    </message>
+    <message>
+        <location filename="../../src/dbsync.cpp" line="732" />
         <source>Auf dem Server liegt eine Datenbank (Stand %1, %2).</source>
         <translation>There is a database on the server (revision %1, %2).</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="606" />
+        <location filename="../../src/dbsync.cpp" line="734" />
         <source>Auf dem Server liegt noch keine Datenbank.</source>
         <translation>There is no database on the server yet.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="615" />
+        <location filename="../../src/dbsync.cpp" line="743" />
         <source>Auf dem Server liegt noch keine Datenbank. Bitte zuerst am Desktop „Datenbank abgleichen“ wählen.</source>
         <translation>There is no database on the server yet. Please choose “Synchronise database” on the desktop first.</translation>
     </message>
     <message>
-        <location filename="../../src/dbsync.cpp" line="634" />
+        <location filename="../../src/dbsync.cpp" line="762" />
         <source>Die Datei %1 lässt sich nicht speichern.</source>
         <translation>The file %1 cannot be saved.</translation>
     </message>
@@ -1586,6 +1785,167 @@
         <location filename="../qml/pages/DisclaimerPage.qml" line="28" />
         <source>Verstanden</source>
         <translation>Understood</translation>
+    </message>
+</context>
+<context>
+    <name>DocFiles</name>
+    <message>
+        <location filename="../../src/docfiles.cpp" line="110" />
+        <source>Zu diesem Inhalt gibt es kein Dokument.</source>
+        <translation>There is no document for this content.</translation>
+    </message>
+    <message>
+        <location filename="../../src/docfiles.cpp" line="115" />
+        <source>Der Inhalt eines Dokuments ist beschädigt oder gehört zu einer anderen Datenbank.</source>
+        <translation>The content of a document is damaged or belongs to another database.</translation>
+    </message>
+    <message>
+        <location filename="../../src/docfiles.cpp" line="119" />
+        <source>Die Prüfsumme eines Dokuments stimmt nicht.</source>
+        <translation>The checksum of a document does not match.</translation>
+    </message>
+</context>
+<context>
+    <name>DocumentEditPage</name>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="50" />
+        <source>Auf diesem Gerät ist keine Kamera-App verfügbar.</source>
+        <translation>No camera app is available on this device.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="68" />
+        <source>Bitte ein gültiges Datum eingeben (TT.MM.JJJJ).</source>
+        <translation>Please enter a valid date (DD.MM.YYYY).</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="72" />
+        <source>Dokument in die Akte übernommen.</source>
+        <translation>Document added to the record.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="75" />
+        <source>Angaben gespeichert.</source>
+        <translation>Details saved.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="94" />
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="95" />
+        <source>Neues Dokument</source>
+        <translation>New document</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="95" />
+        <source>Angaben bearbeiten</source>
+        <translation>Edit details</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="97" />
+        <source>In die Akte</source>
+        <translation>Add to record</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="97" />
+        <source>Speichern</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="113" />
+        <source>PDF-Datei: %1</source>
+        <translation>PDF file: %1</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="114" />
+        <source>Seiten (%1)</source>
+        <translation>Pages (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="147" />
+        <source>%1 Seite(n)</source>
+        <translation>%1 page(s)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="152" />
+        <source>Weitere Seite fotografieren</source>
+        <translation>Photograph another page</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="152" />
+        <source>Foto aufnehmen</source>
+        <translation>Take photo</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="153" />
+        <source>Weitere Bilder wählen</source>
+        <translation>Choose more images</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="153" />
+        <source>Datei wählen</source>
+        <translation>Choose file</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="157" />
+        <source>Mehrere Seiten (z. B. eines Arztbriefs) werden zu einem PDF zusammengefasst. Tipp: Dokument flach auf einen dunklen Untergrund legen, von oben und ohne Blitz fotografieren.</source>
+        <translation>Several pages (e.g. of a doctor's letter) are combined into one PDF. Tip: lay the document flat on a dark surface and photograph it from above without flash.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="160" />
+        <source>Angaben</source>
+        <translation>Details</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="165" />
+        <source>Titel *</source>
+        <translation>Title *</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="166" />
+        <source>z. B. Arztbrief Kardiologie, Blutbild</source>
+        <translation>e.g. cardiology letter, blood count</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="167" />
+        <source>Datum des Dokuments</source>
+        <translation>Date of the document</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="168" />
+        <source>Art</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="169" />
+        <source>Von (Praxis, Klinik, Labor)</source>
+        <translation>From (practice, hospital, laboratory)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="189" />
+        <source>Notizen</source>
+        <translation>Notes</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="191" />
+        <source>Datei: %1 · %2 · aufgenommen %3</source>
+        <translation>File: %1 · %2 · added %3</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="197" />
+        <source>Dokument wählen</source>
+        <translation>Choose document</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="199" />
+        <source>PDF und Bilder (*.pdf *.jpg *.jpeg *.png *.heic *.webp)</source>
+        <translation>PDF and images (*.pdf *.jpg *.jpeg *.png *.heic *.webp)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentEditPage.qml" line="199" />
+        <source>Alle Dateien (*)</source>
+        <translation>All files (*)</translation>
     </message>
 </context>
 <context>
@@ -1654,6 +2014,134 @@
         <location filename="../../forms/documentform.ui" line="108" />
         <source>Erste Seite</source>
         <translation>First page</translation>
+    </message>
+</context>
+<context>
+    <name>DocumentViewPage</name>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="28" />
+        <source>Zurück</source>
+        <translation>Back</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="53" />
+        <source>%1 Seite(n)</source>
+        <translation>%1 page(s)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="59" />
+        <source>In PDF-App öffnen</source>
+        <translation>Open in PDF app</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="61" />
+        <source>Teilen …</source>
+        <translation>Share …</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="62" />
+        <source>Angaben bearbeiten</source>
+        <translation>Edit details</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="63" />
+        <location filename="../qml/pages/DocumentViewPage.qml" line="111" />
+        <source>Löschen</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="102" />
+        <source>Der Inhalt dieses Dokuments fehlt noch. Es wurde auf einem anderen Gerät erfasst; der Inhalt kommt mit dem nächsten Abgleich (Website oder USB-Kabel).</source>
+        <translation>The content of this document is still missing. It was added on another device; the content arrives with the next synchronisation (website or USB cable).</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="103" />
+        <source>Eine Vorschau ist in dieser Version nicht eingebaut – „In PDF-App öffnen“ zeigt das Dokument an.</source>
+        <translation>This version has no built-in preview – “Open in PDF app” shows the document.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="109" />
+        <source>Dokument löschen?</source>
+        <translation>Delete document?</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="110" />
+        <source>„%1“ wird aus der Krankenakte gelöscht – auf allen Geräten, sobald abgeglichen wird.</source>
+        <translation>“%1” is deleted from the medical record – on all devices once synchronised.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentViewPage.qml" line="112" />
+        <source>Dokument gelöscht.</source>
+        <translation>Document deleted.</translation>
+    </message>
+</context>
+<context>
+    <name>DocumentsPage</name>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="59" />
+        <source>Foto aufnehmen</source>
+        <translation>Take photo</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="60" />
+        <source>Datei wählen</source>
+        <translation>Choose file</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="61" />
+        <source>Auswählen und teilen</source>
+        <translation>Select and share</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="64" />
+        <source>%1 teilen …</source>
+        <translation>Share %1 …</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="64" />
+        <source>Akte teilen …</source>
+        <translation>Share record …</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="66" />
+        <location filename="../qml/pages/DocumentsPage.qml" line="81" />
+        <source>Alle</source>
+        <translation>All</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="67" />
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="72" />
+        <source>Suchen (Titel, Art, Praxis, Text im Dokument …)</source>
+        <translation>Search (title, type, practice, text in the document …)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="93" />
+        <source>Keine Dokumente gefunden.</source>
+        <translation>No documents found.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="94" />
+        <source>Noch keine Dokumente. Fotografieren Sie einen Arztbrief oder Befund – mehrere Seiten werden zu einem PDF – oder übernehmen Sie eine PDF-Datei bzw. ein Bild aus dem Speicher des Tablets.</source>
+        <translation>No documents yet. Photograph a doctor's letter or report – several pages become one PDF – or add a PDF file or an image from the tablet's storage.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="103" />
+        <source>ohne Datum</source>
+        <translation>no date</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="148" />
+        <source>%1 Seite(n)</source>
+        <translation>%1 page(s)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/DocumentsPage.qml" line="153" />
+        <source>Inhalt folgt mit dem nächsten Abgleich.</source>
+        <translation>Content follows with the next synchronisation.</translation>
     </message>
 </context>
 <context>
@@ -3447,120 +3935,125 @@ You can take over the current template again via “Tools → Customize forms…
 <context>
     <name>HomePage</name>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="65" />
+        <location filename="../qml/pages/HomePage.qml" line="76" />
         <source>Personen</source>
         <translation>Persons</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="85" />
-        <location filename="../qml/pages/HomePage.qml" line="173" />
+        <location filename="../qml/pages/HomePage.qml" line="96" />
+        <location filename="../qml/pages/HomePage.qml" line="184" />
         <source>geb. %1</source>
         <translation>born %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="91" />
+        <location filename="../qml/pages/HomePage.qml" line="102" />
         <source>Neue Person</source>
         <translation>New person</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="132" />
+        <location filename="../qml/pages/HomePage.qml" line="143" />
         <source>Abgleich …</source>
         <translation>Synchronising …</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="132" />
+        <location filename="../qml/pages/HomePage.qml" line="143" />
         <source>Abgleichen</source>
         <translation>Synchronise</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="132" />
+        <location filename="../qml/pages/HomePage.qml" line="143" />
         <source>Abgeglichen</source>
         <translation>Synchronised</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="136" />
+        <location filename="../qml/pages/HomePage.qml" line="147" />
         <source>Einstellungen</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="137" />
+        <location filename="../qml/pages/HomePage.qml" line="148" />
         <source>Sperren</source>
         <translation>Lock</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="138" />
+        <location filename="../qml/pages/HomePage.qml" line="149" />
         <source>Ohne Abgleich sperren</source>
         <translation>Lock without syncing</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="139" />
+        <location filename="../qml/pages/HomePage.qml" line="150" />
         <source>Beenden</source>
         <translation>Quit</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="149" />
+        <location filename="../qml/pages/HomePage.qml" line="160" />
         <source>Noch keine Person angelegt</source>
         <translation>No person created yet</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="150" />
+        <location filename="../qml/pages/HomePage.qml" line="161" />
         <source>Legen Sie ein Stammblatt an, um Messwerte zu erfassen.</source>
         <translation>Create a master record to enter readings.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="151" />
+        <location filename="../qml/pages/HomePage.qml" line="162" />
         <source>Neue Person anlegen</source>
         <translation>Create new person</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="174" />
+        <location filename="../qml/pages/HomePage.qml" line="185" />
         <source>%1 Jahre</source>
         <translation>%1 years</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="178" />
+        <location filename="../qml/pages/HomePage.qml" line="189" />
         <source>Messung erfassen</source>
         <translation>New reading</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="190" />
+        <location filename="../qml/pages/HomePage.qml" line="201" />
         <source>Allergien:</source>
         <translation>Allergies:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="200" />
+        <location filename="../qml/pages/HomePage.qml" line="211" />
         <source>Notfallmedikation:</source>
         <translation>Emergency medication:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Übersicht</source>
         <translation>Overview</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Messwerte</source>
         <translation>Readings</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Verlaufskurven</source>
         <translation>Trend charts</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Stammblatt</source>
         <translation>Master record</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Medikamente</source>
         <translation>Medication</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="220" />
+        <location filename="../qml/pages/HomePage.qml" line="231" />
         <source>Termine</source>
         <translation>Appointments</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/HomePage.qml" line="231" />
+        <source>Krankenakte</source>
+        <translation>Medical record</translation>
     </message>
 </context>
 <context>
@@ -5455,6 +5948,99 @@ You can take over the current template again via “Tools → Customize forms…
         <location filename="../../forms/patientform.ui" line="509" />
         <source>Aufnahmewerte &amp;erfassen…</source>
         <translation>&amp;Record admission values…</translation>
+    </message>
+</context>
+<context>
+    <name>PdfTools</name>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="59" />
+        <source>PDF ist kennwortgeschützt</source>
+        <translation>PDF is password-protected</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="60" />
+        <source>Sicherheitsverfahren nicht unterstützt</source>
+        <translation>Security scheme not supported</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="61" />
+        <source>keine gültige PDF-Datei</source>
+        <translation>not a valid PDF file</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="63" />
+        <source>PDF konnte nicht gelesen werden</source>
+        <translation>PDF could not be read</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="78" />
+        <source>keine PDF-Datei</source>
+        <translation>not a PDF file</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="226" />
+        <source>Arztbrief</source>
+        <translation>Doctor's letter</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="226" />
+        <source>Befund</source>
+        <translation>Findings</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="226" />
+        <source>Laborwerte</source>
+        <translation>Lab results</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="226" />
+        <source>Entlassbrief</source>
+        <translation>Discharge letter</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="227" />
+        <source>Bildgebung</source>
+        <translation>Imaging</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="227" />
+        <source>OP-Bericht</source>
+        <translation>Surgery report</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="227" />
+        <source>Überweisung</source>
+        <translation>Referral</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="227" />
+        <source>Rezept</source>
+        <translation>Prescription</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="228" />
+        <source>Impfnachweis</source>
+        <translation>Vaccination record</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="228" />
+        <source>Bescheinigung</source>
+        <translation>Certificate</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="228" />
+        <source>Sonstiges</source>
+        <translation>Other</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="298" />
+        <source>Drucker konnte nicht geöffnet werden.</source>
+        <translation>The printer could not be opened.</translation>
+    </message>
+    <message>
+        <location filename="../../src/pdftools.cpp" line="326" />
+        <source>Diese Programmversion wurde ohne Qt PDF übersetzt.</source>
+        <translation>This version was built without Qt PDF.</translation>
     </message>
 </context>
 <context>
@@ -7376,7 +7962,7 @@ For security reasons you are logged in with user rights only. An administrator s
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="60" />
-        <location filename="../qml/pages/SettingsPage.qml" line="110" />
+        <location filename="../qml/pages/SettingsPage.qml" line="113" />
         <source>Gespeichert.</source>
         <translation>Saved.</translation>
     </message>
@@ -7396,122 +7982,122 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>Last synchronised: %1 – %2</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="66" />
+        <location filename="../qml/pages/SettingsPage.qml" line="69" />
         <source>Abgleich über das USB-Kabel</source>
         <translation>Synchronising over the USB cable</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="68" />
+        <location filename="../qml/pages/SettingsPage.qml" line="71" />
         <source>Ohne Website: Tablet per USB-Kabel an den Computer anschließen und die Datenbank direkt abgleichen.</source>
         <translation>Without a website: connect the tablet to the computer with a USB cable and synchronise the database directly.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="69" />
+        <location filename="../qml/pages/SettingsPage.qml" line="72" />
         <source>USB-Abgleich mit dem Computer</source>
         <translation>USB sync with the computer</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="71" />
+        <location filename="../qml/pages/SettingsPage.qml" line="74" />
         <source>Erinnerungen</source>
         <translation>Reminders</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="72" />
+        <location filename="../qml/pages/SettingsPage.qml" line="75" />
         <source>An den Quartalswechsel erinnern (KV-Karte in den Praxen einlesen lassen)</source>
         <translation>Remind me of the change of quarter (have the health insurance card read at the practices)</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="75" />
+        <location filename="../qml/pages/SettingsPage.qml" line="78" />
         <source>Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.</source>
         <translation>Notifications are allowed: appointments and the BG day profile remind you even when VitaParms is in the background.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="76" />
+        <location filename="../qml/pages/SettingsPage.qml" line="79" />
         <source>Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.</source>
         <translation>Notifications are not allowed – reminders only appear while VitaParms is open.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="77" />
+        <location filename="../qml/pages/SettingsPage.qml" line="80" />
         <source>Benachrichtigungen erlauben</source>
         <translation>Allow notifications</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="79" />
+        <location filename="../qml/pages/SettingsPage.qml" line="82" />
         <source>Darstellung</source>
         <translation>Appearance</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="84" />
+        <location filename="../qml/pages/SettingsPage.qml" line="87" />
         <source>wie das System</source>
         <translation>like the system</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="84" />
+        <location filename="../qml/pages/SettingsPage.qml" line="87" />
         <source>hell</source>
         <translation>light</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="84" />
+        <location filename="../qml/pages/SettingsPage.qml" line="87" />
         <source>dunkel</source>
         <translation>dark</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="88" />
+        <location filename="../qml/pages/SettingsPage.qml" line="91" />
         <source>Blutzucker</source>
         <translation>Blood glucose</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="97" />
+        <location filename="../qml/pages/SettingsPage.qml" line="100" />
         <source>Sicherheit</source>
         <translation>Security</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="98" />
+        <location filename="../qml/pages/SettingsPage.qml" line="101" />
         <source>Automatisch sperren nach</source>
         <translation>Lock automatically after</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="102" />
+        <location filename="../qml/pages/SettingsPage.qml" line="105" />
         <source>nie</source>
         <translation>never</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="102" />
+        <location filename="../qml/pages/SettingsPage.qml" line="105" />
         <source>5 Minuten</source>
         <translation>5 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="102" />
+        <location filename="../qml/pages/SettingsPage.qml" line="105" />
         <source>10 Minuten</source>
         <translation>10 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="102" />
+        <location filename="../qml/pages/SettingsPage.qml" line="105" />
         <source>30 Minuten</source>
         <translation>30 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="108" />
+        <location filename="../qml/pages/SettingsPage.qml" line="111" />
         <source>Messzeitpunkte für Tagesprofile</source>
         <translation>Measurement times for daily profiles</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="109" />
+        <location filename="../qml/pages/SettingsPage.qml" line="112" />
         <source>Ein Eintrag pro Zeile</source>
         <translation>One entry per line</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="110" />
+        <location filename="../qml/pages/SettingsPage.qml" line="113" />
         <source>Messzeitpunkte speichern</source>
         <translation>Save measurement times</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="112" />
+        <location filename="../qml/pages/SettingsPage.qml" line="115" />
         <source>Über VitaParms</source>
         <translation>About VitaParms</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="114" />
+        <location filename="../qml/pages/SettingsPage.qml" line="117" />
         <source>VitaParms %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt. Open Source (MIT-Lizenz). Angemeldet als %2.</source>
         <translation>VitaParms %1 – personal health diary, not a medical device. Open source (MIT licence). Logged in as %2.</translation>
     </message>
@@ -7740,6 +8326,94 @@ For security reasons you are logged in with user rights only. An administrator s
     </message>
 </context>
 <context>
+    <name>SharePopup</name>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="32" />
+        <source>Bitte zuerst Dokumente auswählen – oder „ZIP-Archiv“ wählen.</source>
+        <translation>Please select documents first – or choose “ZIP archive”.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="33" />
+        <source>Das Passwort sollte mindestens 8 Zeichen lang sein.</source>
+        <translation>The password should be at least 8 characters long.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="39" />
+        <source>Archiv erstellt. Teilen Sie das Passwort auf anderem Weg mit (z. B. telefonisch).</source>
+        <translation>Archive created. Share the password by another channel (e.g. by phone).</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="40" />
+        <source>Zum Teilen bereit.</source>
+        <translation>Ready to share.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="45" />
+        <source>Akte teilen</source>
+        <translation>Share record</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="47" />
+        <source>%1 Dokument(e) ausgewählt.</source>
+        <translation>%1 document(s) selected.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="47" />
+        <source>Keine Dokumente ausgewählt.</source>
+        <translation>No documents selected.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="49" />
+        <source>Als PDF-Datei(en)</source>
+        <translation>As PDF file(s)</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="50" />
+        <source>Als ZIP-Archiv (mit Inhaltsverzeichnis)</source>
+        <translation>As ZIP archive (with table of contents)</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="56" />
+        <source>Stammblatt</source>
+        <translation>Master record</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="57" />
+        <source>Medikamentenplan</source>
+        <translation>Medication plan</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="58" />
+        <source>Verlauf und Kurven (90 Tage)</source>
+        <translation>History and charts (90 days)</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="59" />
+        <source>Passwort (empfohlen)</source>
+        <translation>Password (recommended)</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="60" />
+        <source>mindestens 8 Zeichen</source>
+        <translation>at least 8 characters</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="61" />
+        <source>AES-256-verschlüsselt; zu öffnen z. B. mit 7-Zip. Das Passwort nicht in dieselbe Nachricht schreiben.</source>
+        <translation>AES-256 encrypted; open it e.g. with 7-Zip. Do not put the password in the same message.</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="68" />
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <location filename="../qml/components/SharePopup.qml" line="69" />
+        <source>Teilen …</source>
+        <translation>Share …</translation>
+    </message>
+</context>
+<context>
     <name>Speech</name>
     <message>
         <location filename="../../src/speech.cpp" line="172" />
@@ -7851,19 +8525,19 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>UsbSync::Channel</name>
     <message>
-        <location filename="../../src/usbsync.cpp" line="112" />
+        <location filename="../../src/usbsync.cpp" line="114" />
         <source>Datei fehlt: %1</source>
         <translation>File missing: %1</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="177" />
+        <location filename="../../src/usbsync.cpp" line="179" />
         <source>Unbekannte Gegenstelle.</source>
         <translation>Unknown remote party.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="179" />
-        <location filename="../../src/usbsync.cpp" line="188" />
-        <location filename="../../src/usbsync.cpp" line="197" />
+        <location filename="../../src/usbsync.cpp" line="181" />
+        <location filename="../../src/usbsync.cpp" line="190" />
+        <location filename="../../src/usbsync.cpp" line="199" />
         <source>Ungültige Nachricht.</source>
         <translation>Invalid message.</translation>
     </message>
@@ -7871,83 +8545,93 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>UsbSyncClient</name>
     <message>
-        <location filename="../../src/usbsync.cpp" line="521" />
+        <location filename="../../src/usbsync.cpp" line="561" />
         <source>Keine Verbindung zum Tablet.</source>
         <translation>No connection to the tablet.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="539" />
+        <location filename="../../src/usbsync.cpp" line="579" />
         <source>Das Tablet antwortet nicht.</source>
         <translation>The tablet does not respond.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="553" />
+        <location filename="../../src/usbsync.cpp" line="593" />
         <source>Die Verbindung zum Tablet wurde getrennt.</source>
         <translation>The connection to the tablet was closed.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="569" />
+        <location filename="../../src/usbsync.cpp" line="609" />
         <source>Keine Verbindung: %1</source>
         <translation>No connection: %1</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="585" />
+        <location filename="../../src/usbsync.cpp" line="625" />
         <source>Der Code stimmt nicht. Bitte den Code eingeben, den das Tablet gerade anzeigt.</source>
         <translation>The code is not correct. Please enter the code the tablet is currently showing.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="587" />
+        <location filename="../../src/usbsync.cpp" line="627" />
         <source>Am Tablet wurde seit dem Start von VitaParms noch kein Code angezeigt. Bitte dort Einstellungen → „USB-Abgleich mit dem Computer“ öffnen – oder das Codefeld leer lassen, wenn beide Geräte dieselbe Datenbank verwenden.</source>
         <translation>No code has been shown on the tablet since VitaParms started. Please open Settings → “USB sync with the computer” there – or leave the code field empty if both devices use the same database.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="591" />
+        <location filename="../../src/usbsync.cpp" line="631" />
         <source>Am Tablet ist niemand angemeldet. Bitte VitaParms auf dem Tablet öffnen und anmelden – oder für die erste Einrichtung dort „USB-Abgleich mit dem Computer“ öffnen und den Code eingeben.</source>
         <translation>Nobody is logged in on the tablet. Please open VitaParms on the tablet and log in – or, for the first setup, open “USB sync with the computer” there and enter the code.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="594" />
+        <location filename="../../src/usbsync.cpp" line="634" />
         <source>VitaParms auf Computer und Tablet passen nicht zusammen. Bitte beide auf denselben Stand bringen.</source>
         <translation>VitaParms on the computer and on the tablet do not match. Please update both to the same version.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="596" />
+        <location filename="../../src/usbsync.cpp" line="636" />
         <source>VitaParms auf dem Tablet antwortet nicht. Bitte das Tablet entsperren, VitaParms öffnen und anmelden (die App muss im Vordergrund sein).</source>
         <translation>VitaParms on the tablet does not respond. Please unlock the tablet, open VitaParms and log in (the app must be in the foreground).</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="617" />
+        <location filename="../../src/usbsync.cpp" line="657" />
         <source>Das Tablet verwendet eine andere Datenbank. Für die erste Einrichtung bitte am Tablet „USB-Abgleich mit dem Computer“ öffnen und den angezeigten Code eingeben.</source>
         <translation>The tablet uses a different database. For the first setup, please open “USB sync with the computer” on the tablet and enter the code shown.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="627" />
+        <location filename="../../src/usbsync.cpp" line="667" />
         <source>Die Anmeldung am Tablet ist fehlgeschlagen.</source>
         <translation>Logging in to the tablet failed.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="643" />
-        <location filename="../../src/usbsync.cpp" line="695" />
+        <location filename="../../src/usbsync.cpp" line="683" />
+        <location filename="../../src/usbsync.cpp" line="804" />
         <source>Datenbank des Tablets wird geholt …</source>
         <translation>Fetching the tablet’s database …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="645" />
+        <location filename="../../src/usbsync.cpp" line="689" />
         <source>Wird zusammengeführt …</source>
         <translation>Merging …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="659" />
+        <location filename="../../src/usbsync.cpp" line="707" />
+        <source>Dokumente werden vom Tablet geholt …</source>
+        <translation>Fetching documents from the tablet …</translation>
+    </message>
+    <message>
+        <location filename="../../src/usbsync.cpp" line="713" />
         <source>Stand wird an das Tablet übertragen …</source>
         <translation>Sending the result to the tablet …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="680" />
+        <location filename="../../src/usbsync.cpp" line="731" />
+        <source>Dokumente werden an das Tablet übertragen …</source>
+        <translation>Transferring documents to the tablet …</translation>
+    </message>
+    <message>
+        <location filename="../../src/usbsync.cpp" line="789" />
         <source>Datenbank wird an das Tablet übertragen …</source>
         <translation>Sending the database to the tablet …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="702" />
+        <location filename="../../src/usbsync.cpp" line="811" />
         <source>Die Datei konnte nicht gespeichert werden.</source>
         <translation>The file could not be saved.</translation>
     </message>
@@ -8013,95 +8697,95 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>UsbSyncServer</name>
     <message>
-        <location filename="../../src/usbsync.cpp" line="49" />
+        <location filename="../../src/usbsync.cpp" line="51" />
         <source>%1 neu, %2 geändert, %3 gelöscht</source>
         <translation>%1 new, %2 changed, %3 deleted</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="260" />
+        <location filename="../../src/usbsync.cpp" line="262" />
         <source>Der USB-Abgleich lässt sich nicht starten: %1</source>
         <translation>USB sync cannot be started: %1</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="243" />
-        <location filename="../../src/usbsync.cpp" line="267" />
-        <location filename="../../src/usbsync.cpp" line="320" />
+        <location filename="../../src/usbsync.cpp" line="245" />
+        <location filename="../../src/usbsync.cpp" line="269" />
+        <location filename="../../src/usbsync.cpp" line="322" />
         <source>Wartet auf den Computer …</source>
         <translation>Waiting for the computer …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="243" />
-        <location filename="../../src/usbsync.cpp" line="333" />
-        <location filename="../../src/usbsync.cpp" line="349" />
-        <location filename="../../src/usbsync.cpp" line="456" />
-        <location filename="../../src/usbsync.cpp" line="471" />
-        <location filename="../../src/usbsync.cpp" line="483" />
+        <location filename="../../src/usbsync.cpp" line="245" />
+        <location filename="../../src/usbsync.cpp" line="335" />
+        <location filename="../../src/usbsync.cpp" line="351" />
+        <location filename="../../src/usbsync.cpp" line="463" />
+        <location filename="../../src/usbsync.cpp" line="481" />
+        <location filename="../../src/usbsync.cpp" line="523" />
         <source>Verbunden mit dem Computer %1.</source>
         <translation>Connected to the computer %1.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="395" />
+        <location filename="../../src/usbsync.cpp" line="397" />
         <source>Mehrmals ein falscher Code – es gilt jetzt ein neuer Code.</source>
         <translation>Wrong code several times – a new code is now valid.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="419" />
+        <location filename="../../src/usbsync.cpp" line="421" />
         <source>Nicht angemeldet.</source>
         <translation>Not logged in.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="426" />
+        <location filename="../../src/usbsync.cpp" line="428" />
         <source>Datenbank vom Computer wird übernommen …</source>
         <translation>Taking over the database from the computer …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="430" />
+        <location filename="../../src/usbsync.cpp" line="432" />
         <source>Nicht möglich.</source>
         <translation>Not possible.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="433" />
+        <location filename="../../src/usbsync.cpp" line="435" />
         <source>Die Datei konnte nicht gespeichert werden.</source>
         <translation>The file could not be saved.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="438" />
+        <location filename="../../src/usbsync.cpp" line="440" />
         <source>Die Datenbank des Computers wurde übernommen. Bitte mit einem Konto des Computers anmelden.</source>
         <translation>The computer’s database has been taken over. Please log in with an account of the computer.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="444" />
+        <location filename="../../src/usbsync.cpp" line="446" />
         <source>Bitte zuerst auf dem Tablet anmelden.</source>
         <translation>Please log in on the tablet first.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="449" />
-        <location filename="../../src/usbsync.cpp" line="477" />
+        <location filename="../../src/usbsync.cpp" line="451" />
+        <location filename="../../src/usbsync.cpp" line="517" />
         <source>Datenbank wird an den Computer übertragen …</source>
         <translation>Sending the database to the computer …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="460" />
+        <location filename="../../src/usbsync.cpp" line="467" />
         <source>Stand des Computers wird eingearbeitet …</source>
         <translation>Merging the computer’s data …</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="472" />
+        <location filename="../../src/usbsync.cpp" line="482" />
         <source>Mit dem Computer abgeglichen: %1.</source>
         <translation>Synchronised with the computer: %1.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="473" />
+        <location filename="../../src/usbsync.cpp" line="483" />
         <source> Anmeldekonten übernommen.</source>
         <translation> User accounts adopted.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="484" />
+        <location filename="../../src/usbsync.cpp" line="524" />
         <source>Die Datenbank dieses Geräts wurde an den Computer übertragen.</source>
         <translation>This device’s database has been sent to the computer.</translation>
     </message>
     <message>
-        <location filename="../../src/usbsync.cpp" line="487" />
+        <location filename="../../src/usbsync.cpp" line="527" />
         <source>Unbekannter Befehl.</source>
         <translation>Unknown command.</translation>
     </message>

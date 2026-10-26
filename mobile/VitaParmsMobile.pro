@@ -17,6 +17,11 @@ qtHaveModule(multimedia) {
     QT      += multimedia
     DEFINES += VP_HAVE_MULTIMEDIA
 }
+# Qt PDF (optional): Vorschau und Volltext der Dokumente in der Krankenakte
+qtHaveModule(pdf) {
+    QT      += pdf
+    DEFINES += VP_HAVE_QTPDF
+}
 qtHaveModule(texttospeech) {
     QT      += texttospeech
     DEFINES += VP_HAVE_TTS
@@ -39,6 +44,7 @@ SOURCES += \
     src/main.cpp \
     src/appcontroller.cpp \
     src/appcontroller_appts.cpp \
+    src/appcontroller_docs.cpp \
     src/tabletreminders.cpp \
     src/chartitem.cpp
 HEADERS += \
@@ -99,6 +105,13 @@ android {
     !isEmpty(VP_OPENSSL_PRI) {
         include($$VP_OPENSSL_PRI)
         message("OpenSSL für Android: $$VP_OPENSSL_PRI")
+        # Prüfen, ob die Bibliotheken für dieses ABI wirklich da sind (sonst später „TLS fehlt“)
+        for (lib, ANDROID_EXTRA_LIBS) {
+            contains(lib, .*(ssl|crypto).*) {
+                exists($$lib): message("  OpenSSL-Bibliothek: $$lib")
+                else: warning("  OpenSSL-Bibliothek FEHLT: $$lib - bitte OpenSSL in Qt Creator neu herunterladen")
+            }
+        }
     } else {
         message("OpenSSL für Android nicht gefunden - der Abgleich über die Website (HTTPS) geht dann nicht. Siehe mobile/README.md")
         message("Gesucht in: $$unique(VP_OPENSSL_DIRS)")

@@ -55,7 +55,6 @@ SOURCES += \
     src/documentdialog.cpp \
     src/documentspage.cpp \
     src/mailer.cpp \
-    src/pdftools.cpp \
     src/formcustomizedialog.cpp \
     src/mainwindow.cpp \
     src/medicationdialog.cpp \
@@ -88,7 +87,6 @@ HEADERS += \
     src/documentdialog.h \
     src/documentspage.h \
     src/mailer.h \
-    src/pdftools.h \
     src/formcustomizedialog.h \
     src/mainwindow.h \
     src/medicationdialog.h \

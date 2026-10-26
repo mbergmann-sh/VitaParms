@@ -5,7 +5,8 @@
 // verschlüsselte Schlüsseldatei der Anmeldekonten. Zusammengeführt wird auf den Geräten;
 // der Server zählt lediglich eine Revision hoch und lehnt veraltete Uploads ab.
 //
-//   GET  sync.php?state=1      → {rev, size, keysHash, updated}
+//   GET  sync.php?state=1      → {rev, size, keysHash, updated, files}
+//        files = 1: Dokumentinhalte gehen getrennt über files.php (ab VitaParms 0.19)
 //   GET  sync.php?get=db       → Datenbank (application/octet-stream)
 //   GET  sync.php?get=keys     → Schlüsseldatei
 //   POST sync.php  base=<rev>, Dateien "db" und "keys"
@@ -69,7 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (isset($_GET['state'])) {
         reply(200, ['ok' => true, 'claimed' => true] + syncState() + ['maxUpload' => ini_get('upload_max_filesize'),
-                                                   'maxPost' => ini_get('post_max_size')]);
+                                                   'maxPost' => ini_get('post_max_size'),
+                                                   'files' => is_file(__DIR__ . '/files.php') ? 1 : 0]);
     }
     $what = (string) ($_GET['get'] ?? '');
     if ($what === 'db') {

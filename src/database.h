@@ -32,7 +32,8 @@ public:
     static bool isEncryptedFile(const QString &path);
 
     // Sicherung als konsistente, ebenso verschlüsselte Kopie (SQLite-Backup-API)
-    bool backupTo(const QString &target, QString *error = nullptr);
+    // withoutFiles: Kopie ohne Dokumentinhalte (für den Abgleich; die Inhalte gehen getrennt)
+    bool backupTo(const QString &target, QString *error = nullptr, bool withoutFiles = false);
 
     // Viele Einzelschreibvorgänge (z. B. Demo-Daten) in einer Transaktion bündeln.
     // Nur um Aufrufe legen, die selbst keine Transaktion öffnen (saveVital, addPreparation).
@@ -76,6 +77,11 @@ public:
     bool deleteDocument(qint64 id, QString *error = nullptr);
     std::optional<MedicalDocument> findDocumentByHash(qint64 patientId, const QByteArray &sha256);
     QStringList documentCategories(qint64 patientId = 0);
+    // Dokumentinhalte für den getrennten Abgleich
+    struct DocFileRef { qint64 id = 0; QString uid; QByteArray sha256; bool present = false; };
+    QList<DocFileRef> documentFileRefs();
+    bool hasDocumentData(qint64 id);
+    bool storeDocumentData(qint64 id, const QByteArray &data, QString *error = nullptr);   // ohne Abgleich-Markierung
 
     // Terminplaner
     QList<Appointment> appointments(const QDateTime &from, const QDateTime &to,
@@ -136,6 +142,7 @@ public:
     static QString syncNow();                      // SQL-Ausdruck: aktuelle Zeit UTC (ms)
     qint64 syncChangeCounter();                    // steigt bei jeder Änderung
     void notifyExternalChange();
+    void notifyDocumentsChanged();      // Inhalte nachgeladen (Abgleich)
     void notifyStockChanged(qint64 patientId) { emit stockChanged(patientId); }                   // nach dem Zusammenführen: Ansichten neu laden
     SqlDb handleDb() { return db(); }
 

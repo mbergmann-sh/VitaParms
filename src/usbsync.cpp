@@ -1,6 +1,7 @@
 // VitaParms – Abgleich mit einem Tablet oder Smartphone über das USB-Kabel (siehe usbsync.h)
 // SPDX-License-Identifier: MIT
 #include "usbsync.h"
+#include "docfiles.h"
 
 #include "database.h"
 #include "dbsync.h"
@@ -13,6 +14,7 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QSet>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -450,9 +452,14 @@ void UsbSyncServer::handle(const QJsonObject &h, const QMap<QString, QString> &f
         QTemporaryDir tmp;
         const QString copy = tmp.filePath(QStringLiteral("db.sqlite"));
         QString err;
-        if (!db.backupTo(copy, &err)) { fail(err); return; }
-        reply({ { QStringLiteral("ok"), true }, { QStringLiteral("keysMtime"), QString::number(UsbSync::keysMtimeMs()) } },
-              { { QStringLiteral("db"), copy }, { QStringLiteral("keys"), KeyStore::pathFor(db.path()) } });
+        const bool docFiles = h.value(QStringLiteral("docFiles")).toBool();
+        if (!db.backupTo(copy, &err, docFiles)) { fail(err); return; }
+        QJsonObject r{ { QStringLiteral("ok"), true }, { QStringLiteral("keysMtime"), QString::number(UsbSync::keysMtimeMs()) } };
+        if (docFiles) {
+            r.insert(QStringLiteral("docFiles"), true);
+            r.insert(QStringLiteral("have"), QJsonArray::fromStringList(DocFiles::present(Session::dbKey()).keys()));
+        }
+        reply(r, { { QStringLiteral("db"), copy }, { QStringLiteral("keys"), KeyStore::pathFor(db.path()) } });
         emit status(tr("Verbunden mit dem Computer %1.").arg(m_peer));
         return;
     }
@@ -464,13 +471,46 @@ void UsbSyncServer::handle(const QJsonObject &h, const QMap<QString, QString> &f
         if (st.total() > 0) db.notifyExternalChange();
         const bool keys = UsbSync::adoptKeysIfNewer(files.value(QStringLiteral("keys")),
                                                      h.value(QStringLiteral("keysMtime")).toString().toLongLong());
-        reply({ { QStringLiteral("ok"), true }, { QStringLiteral("inserted"), st.inserted },
-                { QStringLiteral("updated"), st.updated }, { QStringLiteral("deleted"), st.deleted },
-                { QStringLiteral("keys"), keys } });
+        QJsonObject r{ { QStringLiteral("ok"), true }, { QStringLiteral("inserted"), st.inserted },
+                       { QStringLiteral("updated"), st.updated }, { QStringLiteral("deleted"), st.deleted },
+                       { QStringLiteral("keys"), keys } };
+        if (h.value(QStringLiteral("docFiles")).toBool())
+            r.insert(QStringLiteral("missing"), QJsonArray::fromStringList(DocFiles::missing(Session::dbKey()).keys()));
+        reply(r);
         emit merged(st.inserted, st.updated, st.deleted);
         emit status(tr("Verbunden mit dem Computer %1.").arg(m_peer));
         emit finished(true, tr("Mit dem Computer abgeglichen: %1.").arg(statsText(st.inserted, st.updated, st.deleted))
                                 + (keys ? tr(" Anmeldekonten übernommen.") : QString()));
+        return;
+    }
+    if (cmd == QLatin1String("getFiles")) {          // Dokumentinhalte an den Computer
+        QTemporaryDir tmp;
+        QMap<QString, QString> out;
+        for (const QJsonValue &v : h.value(QStringLiteral("ids")).toArray()) {
+            const QString id = v.toString();
+            if (!DocFiles::isValidId(id)) continue;
+            const QByteArray sealed = DocFiles::sealedData(id, Session::dbKey());
+            if (sealed.isEmpty()) continue;
+            QFile f(tmp.filePath(id));
+            if (!f.open(QIODevice::WriteOnly) || f.write(sealed) != sealed.size()) { fail(f.errorString()); return; }
+            out.insert(id, f.fileName());
+        }
+        reply({ { QStringLiteral("ok"), true } }, out);
+        return;
+    }
+    if (cmd == QLatin1String("putFiles")) {          // Dokumentinhalte vom Computer
+        int stored = 0;
+        for (auto it = files.cbegin(); it != files.cend(); ++it) {
+            QFile f(it.value());
+            QString err;
+            if (!f.open(QIODevice::ReadOnly) || !DocFiles::storeSealed(it.key(), f.readAll(), Session::dbKey(), &err)) {
+                fail(err.isEmpty() ? f.errorString() : err);
+                return;
+            }
+            ++stored;
+        }
+        if (stored) db.notifyDocumentsChanged();
+        reply({ { QStringLiteral("ok"), true }, { QStringLiteral("stored"), stored } });
         return;
     }
     if (cmd == QLatin1String("getBundle")) {
@@ -641,7 +681,11 @@ bool UsbSyncClient::merge(Result *result, QString *error)
     QMap<QString, QString> f;
     // 1. Stand des Tablets holen und hier einarbeiten
     emit progress(tr("Datenbank des Tablets wird geholt …"));
-    if (!request({ { QStringLiteral("cmd"), QStringLiteral("pull") } }, {}, &r, &f, 60000, error)) return false;
+    if (!request({ { QStringLiteral("cmd"), QStringLiteral("pull") }, { QStringLiteral("docFiles"), true } }, {}, &r, &f, 60000, error))
+        return false;
+    const bool docFiles = r.value(QStringLiteral("docFiles")).toBool();     // ältere App: Datenbank vollständig
+    QSet<QString> deviceHas;
+    for (const QJsonValue &v : r.value(QStringLiteral("have")).toArray()) deviceHas.insert(v.toString());
     emit progress(tr("Wird zusammengeführt …"));
     DbMerge::Stats st;
     QString err;
@@ -654,24 +698,89 @@ bool UsbSyncClient::merge(Result *result, QString *error)
     res.localUpdated = st.updated;
     res.localDeleted = st.deleted;
     res.keysFromDevice = UsbSync::adoptKeysIfNewer(f.value(QStringLiteral("keys")), r.value(QStringLiteral("keysMtime")).toString().toLongLong());
+    if (docFiles) {          // Inhalte, die hier fehlen und das Tablet hat
+        QStringList want;
+        const QHash<QString, qint64> missing = DocFiles::missing(Session::dbKey());
+        for (auto it = missing.cbegin(); it != missing.cend(); ++it)
+            if (deviceHas.contains(it.key())) want << it.key();
+        if (!want.isEmpty()) {
+            emit progress(tr("Dokumente werden vom Tablet geholt …"));
+            if (!fetchFiles(want, &res.filesFromDevice, error)) return false;
+        }
+    }
 
     // 2. zusammengeführten Stand an das Tablet schicken
     emit progress(tr("Stand wird an das Tablet übertragen …"));
     QTemporaryDir tmp;
     const QString copy = tmp.filePath(QStringLiteral("db.sqlite"));
-    if (!db.backupTo(copy, &err)) {
+    if (!db.backupTo(copy, &err, docFiles)) {
         if (error) *error = err;
         return false;
     }
     const QString keysPath = KeyStore::pathFor(db.path());
-    if (!request({ { QStringLiteral("cmd"), QStringLiteral("push") }, { QStringLiteral("keysMtime"), QString::number(UsbSync::keysMtimeMs()) } },
+    if (!request({ { QStringLiteral("cmd"), QStringLiteral("push") }, { QStringLiteral("keysMtime"), QString::number(UsbSync::keysMtimeMs()) },
+                   { QStringLiteral("docFiles"), docFiles } },
                  { { QStringLiteral("db"), copy }, { QStringLiteral("keys"), keysPath } }, &r, nullptr, 120000, error))
         return false;
+    if (docFiles) {          // Inhalte, die dem Tablet fehlen
+        QStringList give;
+        const QHash<QString, qint64> mine = DocFiles::present(Session::dbKey());
+        for (const QJsonValue &v : r.value(QStringLiteral("missing")).toArray())
+            if (mine.contains(v.toString())) give << v.toString();
+        if (!give.isEmpty()) {
+            emit progress(tr("Dokumente werden an das Tablet übertragen …"));
+            if (!sendFiles(give, &res.filesToDevice, error)) return false;
+        }
+    }
     res.remoteInserted = r.value(QStringLiteral("inserted")).toInt();
     res.remoteUpdated = r.value(QStringLiteral("updated")).toInt();
     res.remoteDeleted = r.value(QStringLiteral("deleted")).toInt();
     res.keysToDevice = r.value(QStringLiteral("keys")).toBool();
     if (result) *result = res;
+    return true;
+}
+
+bool UsbSyncClient::fetchFiles(const QStringList &ids, int *count, QString *error)
+{
+    for (int i = 0; i < ids.size(); i += 10) {
+        QJsonObject r;
+        QMap<QString, QString> f;
+        if (!request({ { QStringLiteral("cmd"), QStringLiteral("getFiles") },
+                       { QStringLiteral("ids"), QJsonArray::fromStringList(ids.mid(i, 10)) } }, {}, &r, &f, 120000, error))
+            return false;
+        for (auto it = f.cbegin(); it != f.cend(); ++it) {
+            QFile in(it.value());
+            QString err;
+            if (!in.open(QIODevice::ReadOnly) || !DocFiles::storeSealed(it.key(), in.readAll(), Session::dbKey(), &err)) {
+                if (error) *error = err.isEmpty() ? in.errorString() : err;
+                return false;
+            }
+            ++*count;
+        }
+    }
+    if (*count) Database::instance().notifyDocumentsChanged();
+    return true;
+}
+
+bool UsbSyncClient::sendFiles(const QStringList &ids, int *count, QString *error)
+{
+    for (int i = 0; i < ids.size(); i += 10) {
+        QTemporaryDir tmp;
+        QMap<QString, QString> out;
+        for (const QString &id : ids.mid(i, 10)) {
+            const QByteArray sealed = DocFiles::sealedData(id, Session::dbKey());
+            if (sealed.isEmpty()) continue;
+            QFile f(tmp.filePath(id));
+            if (!f.open(QIODevice::WriteOnly) || f.write(sealed) != sealed.size()) {
+                if (error) *error = f.errorString();
+                return false;
+            }
+            out.insert(id, f.fileName());
+        }
+        QJsonObject r;
+        if (!request({ { QStringLiteral("cmd"), QStringLiteral("putFiles") } }, out, &r, nullptr, 120000, error)) return false;
+        *count += r.value(QStringLiteral("stored")).toInt();
+    }
     return true;
 }
 

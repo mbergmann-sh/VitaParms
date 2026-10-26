@@ -63,6 +63,9 @@ Page {
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted
                     text: page.cfg.last ? qsTr("Zuletzt abgeglichen: %1 – %2").arg(page.cfg.last).arg(page.cfg.lastResult) : (page.cfg.lastResult || "") }
 
+            Label { objectName: "tlsInfo"; Layout.fillWidth: true; wrapMode: Text.WordWrap; font.pixelSize: Theme.fsS
+                    color: page.cfg.tlsOk === false ? Theme.alert : Theme.muted; text: page.cfg.tls || "" }
+
             SectionTitle { text: qsTr("Abgleich über das USB-Kabel") }
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
                     text: qsTr("Ohne Website: Tablet per USB-Kabel an den Computer anschließen und die Datenbank direkt abgleichen.") }

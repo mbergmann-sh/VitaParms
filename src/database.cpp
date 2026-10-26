@@ -581,6 +581,13 @@ void Database::notifyExternalChange()
     emit appointmentsChanged();
 }
 
+void Database::notifyDocumentsChanged()
+{
+    SqlQuery q(db());
+    if (q.exec(QStringLiteral("SELECT DISTINCT patient_id FROM documents")))
+        while (q.next()) emit documentsChanged(q.value(0).toLongLong());
+}
+
 bool Database::beginBulk()
 {
     return db().transaction();
@@ -591,7 +598,7 @@ bool Database::commitBulk()
     return db().commit();
 }
 
-bool Database::backupTo(const QString &target, QString *error)
+bool Database::backupTo(const QString &target, QString *error, bool withoutFiles)
 {
     if (!m_db) return false;
     if (QFile::exists(target) && !QFile::remove(target)) {
@@ -614,7 +621,12 @@ bool Database::backupTo(const QString &target, QString *error)
         rc = sqlite3_backup_step(b, -1);
         sqlite3_backup_finish(b);
     }
-    const bool ok = (rc == SQLITE_DONE) && sqlite3_errcode(t) == SQLITE_OK;
+    bool ok = (rc == SQLITE_DONE) && sqlite3_errcode(t) == SQLITE_OK;
+    if (ok && withoutFiles) {
+        char *msg = nullptr;
+        ok = sqlite3_exec(t, "DELETE FROM document_files; VACUUM;", nullptr, nullptr, &msg) == SQLITE_OK;
+        if (msg) sqlite3_free(msg);
+    }
     if (!ok && error) *error = QString::fromUtf8(sqlite3_errmsg(t));
     sqlite3_close(t);
     if (!ok) QFile::remove(target);
@@ -934,6 +946,8 @@ static MedicalDocument docFrom(const SqlQuery &q, bool withText)
     d.addedAt   = QDateTime::fromString(q.value(QStringLiteral("added_at")).toString(),
                                         QStringLiteral("yyyy-MM-dd HH:mm:ss"));
     d.extra     = jsonObj(q.value(QStringLiteral("extra")));
+    if (const QVariant hd = q.value(QStringLiteral("has_data")); hd.isValid() && !hd.isNull())
+        d.hasData = hd.toBool();
     return d;
 }
 
@@ -941,8 +955,8 @@ QList<MedicalDocument> Database::documents(qint64 patientId)
 {
     QList<MedicalDocument> l;
     SqlQuery q(db());
-    q.prepare(QStringLiteral("SELECT * FROM documents WHERE patient_id = ? "
-                             "ORDER BY doc_date DESC, id DESC"));
+    q.prepare(QStringLiteral("SELECT d.*, EXISTS (SELECT 1 FROM document_files f WHERE f.document_id = d.id) AS has_data"
+                             " FROM documents d WHERE d.patient_id = ? ORDER BY d.doc_date DESC, d.id DESC"));
     q.addBindValue(patientId);
     if (q.exec())
         while (q.next())
@@ -953,7 +967,8 @@ QList<MedicalDocument> Database::documents(qint64 patientId)
 std::optional<MedicalDocument> Database::document(qint64 id)
 {
     SqlQuery q(db());
-    q.prepare(QStringLiteral("SELECT * FROM documents WHERE id = ?"));
+    q.prepare(QStringLiteral("SELECT d.*, EXISTS (SELECT 1 FROM document_files f WHERE f.document_id = d.id) AS has_data"
+                             " FROM documents d WHERE d.id = ?"));
     q.addBindValue(id);
     if (q.exec() && q.next())
         return docFrom(q, true);
@@ -1046,6 +1061,35 @@ std::optional<MedicalDocument> Database::findDocumentByHash(qint64 patientId, co
     if (q.exec() && q.next())
         return docFrom(q, false);
     return std::nullopt;
+}
+
+QList<Database::DocFileRef> Database::documentFileRefs()
+{
+    QList<DocFileRef> l;
+    SqlQuery q(db());
+    if (q.exec(QStringLiteral("SELECT d.id, d.uid, d.sha256, (f.document_id IS NOT NULL) FROM documents d"
+                              " LEFT JOIN document_files f ON f.document_id = d.id")))
+        while (q.next())
+            l << DocFileRef{ q.value(0).toLongLong(), q.value(1).toString(), q.value(2).toByteArray(), q.value(3).toBool() };
+    return l;
+}
+
+bool Database::hasDocumentData(qint64 id)
+{
+    SqlQuery q(db());
+    q.prepare(QStringLiteral("SELECT 1 FROM document_files WHERE document_id = ?"));
+    q.addBindValue(id);
+    return q.exec() && q.next();
+}
+
+bool Database::storeDocumentData(qint64 id, const QByteArray &data, QString *error)
+{
+    SqlQuery q(db());
+    q.prepare(QStringLiteral("INSERT OR REPLACE INTO document_files (document_id, data) VALUES (?, ?)"));
+    q.addBindValue(id);
+    q.addBindValue(data);
+    if (!q.exec()) return fail(q, error);
+    return true;
 }
 
 QStringList Database::documentCategories(qint64 patientId)

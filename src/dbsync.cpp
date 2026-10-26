@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "dbsync.h"
 #include "database.h"
+#include "docfiles.h"
 #include "keystore.h"
 #include "session.h"
 #include "sqlquery.h"
@@ -13,12 +14,14 @@
 #include <QFileInfo>
 #include <QHttpMultiPart>
 #include <QJsonArray>
+#include <QSet>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLocale>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSaveFile>
+#include <QSslSocket>
 #include <QTemporaryDir>
 #include <QTimer>
 #include <QUrlQuery>
@@ -294,9 +297,10 @@ struct Http {
     QJsonObject json() const { return QJsonDocument::fromJson(body).object(); }
 };
 
-QNetworkRequest request(const QString &baseUrl, const QString &key, const QUrlQuery &query = {})
+QNetworkRequest request(const QString &baseUrl, const QString &key, const QUrlQuery &query = {},
+                        const QString &endpoint = QStringLiteral("sync.php"))
 {
-    QUrl u(WebSync::normalizedUrl(baseUrl) + QStringLiteral("api/sync.php"));
+    QUrl u(WebSync::normalizedUrl(baseUrl) + QStringLiteral("api/") + endpoint);
     u.setQuery(query);
     QNetworkRequest r(u);
     r.setRawHeader("X-VitaParms-Key", key.toUtf8());
@@ -353,6 +357,52 @@ bool download(QNetworkAccessManager &nam, const QString &url, const QString &key
     }
     return true;
 }
+
+// ---- Dokumentinhalte (api/files.php)
+const QString kFilesApi = QStringLiteral("files.php");
+
+bool listServerFiles(QNetworkAccessManager &nam, const DbSync::Config &c, QSet<QString> *ids, QString *error)
+{
+    const Http h = finish(nam.get(request(c.url, c.uploadKey, QUrlQuery{ { QStringLiteral("list"), QStringLiteral("1") } }, kFilesApi)), nullptr);
+    if (h.status != 200 || !h.json().value(QStringLiteral("ok")).toBool()) {
+        if (error) *error = message(h);
+        return false;
+    }
+    ids->clear();
+    for (const QJsonValue &v : h.json().value(QStringLiteral("files")).toArray())
+        ids->insert(v.toString());
+    return true;
+}
+
+bool uploadServerFile(QNetworkAccessManager &nam, const DbSync::Config &c, const QString &id, const QByteArray &sealed, QString *error)
+{
+    QNetworkRequest r = request(c.url, c.uploadKey, QUrlQuery{ { QStringLiteral("put"), id } }, kFilesApi);
+    r.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/octet-stream"));
+    const Http h = finish(nam.post(r, sealed), nullptr);
+    if (h.status != 200 || !h.json().value(QStringLiteral("ok")).toBool()) {
+        if (error) *error = message(h);
+        return false;
+    }
+    return true;
+}
+
+bool downloadServerFile(QNetworkAccessManager &nam, const DbSync::Config &c, const QString &id, QByteArray *sealed, QString *error)
+{
+    const Http h = finish(nam.get(request(c.url, c.uploadKey, QUrlQuery{ { QStringLiteral("get"), id } }, kFilesApi)), nullptr);
+    if (h.status != 200 || !h.error.isEmpty() || !h.body.startsWith("VPF1")) {
+        if (error) *error = message(h);
+        return false;
+    }
+    *sealed = h.body;
+    return true;
+}
+
+void pruneServerFiles(QNetworkAccessManager &nam, const DbSync::Config &c, const QStringList &keep)
+{
+    QNetworkRequest r = request(c.url, c.uploadKey, QUrlQuery{ { QStringLiteral("prune"), QStringLiteral("1") } }, kFilesApi);
+    r.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    finish(nam.post(r, QJsonDocument(QJsonObject{ { QStringLiteral("keep"), QJsonArray::fromStringList(keep) } }).toJson(QJsonDocument::Compact)), nullptr);
+}
 } // namespace
 
 // ====================================================================== Abgleich
@@ -405,6 +455,10 @@ bool DbSync::isReady(const Config &c, QString *why)
     if (c.url.trimmed().isEmpty() || !u.isValid()) return no(tr("Die Adresse der Website fehlt oder ist ungültig."));
     const bool local = u.host() == QLatin1String("localhost") || u.host() == QLatin1String("127.0.0.1");
     if (u.scheme() != QLatin1String("https") && !local) return no(tr("Die Website muss über https:// erreichbar sein."));
+    if (u.scheme() == QLatin1String("https")) {
+        QString tls;
+        if (!tlsAvailable(&tls)) return no(tls);
+    }
     if (c.uploadKey.size() < 16) return no(tr("Der Upload-Schlüssel fehlt."));
     if (!Database::instance().isEncrypted()) return no(tr("Nur verschlüsselte Datenbanken können abgeglichen werden."));
     return true;
@@ -489,6 +543,10 @@ bool DbSync::runSync(QString *message)
     QNetworkAccessManager nam;
     QTemporaryDir tmp;
     DbMerge::Stats total;
+    bool filesApi = false;                 // Server verwahrt Dokumentinhalte getrennt (api/files.php)
+    QSet<QString> serverFiles;
+    int filesUp = 0, filesDown = 0;
+    bool done = false;
 
     for (int attempt = 0; attempt < 4; ++attempt) {
         const Http st = finish(nam.get(request(c.url, c.uploadKey, QUrlQuery{ { QStringLiteral("state"), QStringLiteral("1") } })), nullptr);
@@ -497,6 +555,7 @@ bool DbSync::runSync(QString *message)
             return false;
         }
         const qint64 serverRev = st.json().value(QStringLiteral("rev")).toVariant().toLongLong();
+        if (attempt == 0) filesApi = st.json().value(QStringLiteral("files")).toInt() >= 1;
         const QString serverKeys = st.json().value(QStringLiteral("keysHash")).toString();
         const qint64 lastRev = db.setting(s(kRev), QStringLiteral("0")).toLongLong();
         const QString lastKeys = db.setting(s(kKeysHash));
@@ -546,18 +605,32 @@ bool DbSync::runSync(QString *message)
                 *message = (total.total() ? tr("Abgeglichen: %1 neu, %2 geändert, %3 gelöscht.")
                                                 .arg(total.inserted).arg(total.updated).arg(total.deleted)
                                           : tr("Bereits auf dem neuesten Stand.")) + note;
-                return true;
+                done = true;
+                break;
             }
         } else if (serverRev > 0 && !localDirty && !keysLocalChanged) {
             *message = tr("Bereits auf dem neuesten Stand.");
-            return true;
+            done = true;
+            break;
         }
 
-        // Eigenen (zusammengeführten) Stand hochladen
+        // Eigenen (zusammengeführten) Stand hochladen – Dokumentinhalte vorab und einzeln
+        QString err;
+        if (filesApi) {
+            if (!listServerFiles(nam, c, &serverFiles, &err)) { *message = err; return false; }
+            const QHash<QString, qint64> mine = DocFiles::present(Session::dbKey());
+            for (auto it = mine.cbegin(); it != mine.cend(); ++it) {
+                if (serverFiles.contains(it.key())) continue;
+                const QByteArray data = db.documentData(it.value());
+                if (data.isEmpty()) continue;
+                if (!uploadServerFile(nam, c, it.key(), DocFiles::seal(data, Session::dbKey()), &err)) { *message = err; return false; }
+                serverFiles.insert(it.key());
+                ++filesUp;
+            }
+        }
         const qint64 counter = db.syncChangeCounter();
         const QString copy = tmp.filePath(QStringLiteral("upload-%1.vpdb").arg(attempt));
-        QString err;
-        if (!db.backupTo(copy, &err)) { *message = err; return false; }
+        if (!db.backupTo(copy, &err, filesApi)) { *message = err; return false; }
         auto *multi = new QHttpMultiPart(QHttpMultiPart::FormDataType);
         QHttpPart base;
         base.setHeader(QNetworkRequest::ContentDispositionHeader, QStringLiteral("form-data; name=\"base\""));
@@ -585,14 +658,69 @@ bool DbSync::runSync(QString *message)
         *message = (total.total() ? tr("Abgeglichen: %1 neu, %2 geändert, %3 gelöscht; eigener Stand hochgeladen.")
                                         .arg(total.inserted).arg(total.updated).arg(total.deleted)
                                   : tr("Eigener Stand hochgeladen.")) + note;
+        done = true;
+        break;
+    }
+    if (!done) {
+        *message = tr("Der Abgleich ist mehrfach mit anderen Geräten zusammengestoßen. Bitte gleich noch einmal versuchen.");
+        return false;
+    }
+    if (!filesApi) return true;
+
+    // Fehlende Dokumentinhalte holen, nicht mehr gebrauchte auf dem Server löschen
+    QString err;
+    const QHash<QString, qint64> missing = DocFiles::missing(Session::dbKey());
+    if (!missing.isEmpty()) {
+        if (!listServerFiles(nam, c, &serverFiles, &err)) { *message += QLatin1Char(' ') + err; return false; }
+        for (auto it = missing.cbegin(); it != missing.cend(); ++it) {
+            if (!serverFiles.contains(it.key())) continue;
+            QByteArray sealed;
+            if (!downloadServerFile(nam, c, it.key(), &sealed, &err)
+                || !DocFiles::storeSealed(it.key(), sealed, Session::dbKey(), &err)) {
+                *message += QLatin1Char(' ') + err;
+                return false;
+            }
+            ++filesDown;
+        }
+        if (filesDown) db.notifyDocumentsChanged();
+    }
+    QStringList keep;
+    for (const Database::DocFileRef &r : db.documentFileRefs())
+        if (!r.uid.isEmpty()) keep << DocFiles::fileId(Session::dbKey(), r.uid);
+    pruneServerFiles(nam, c, keep);
+    if (filesUp || filesDown)
+        *message += QLatin1Char(' ') + tr("Dokumente: %1 hochgeladen, %2 geholt.").arg(filesUp).arg(filesDown);
+    const int still = DocFiles::missing(Session::dbKey()).size();
+    if (still)
+        *message += QLatin1Char(' ') + tr("%1 Dokument(e) noch ohne Inhalt – sie kommen mit dem nächsten Abgleich des Geräts, auf dem sie erfasst wurden.").arg(still);
+    return true;
+}
+
+bool DbSync::tlsAvailable(QString *text)
+{
+    if (QSslSocket::supportsSsl()) {
+        if (text) *text = tr("TLS bereit: %1 (%2)").arg(QSslSocket::sslLibraryVersionString(), QSslSocket::activeBackend());
         return true;
     }
-    *message = tr("Der Abgleich ist mehrfach mit anderen Geräten zusammengestoßen. Bitte gleich noch einmal versuchen.");
+    if (text) {
+#ifdef Q_OS_ANDROID
+        *text = tr("Diese App kann keine verschlüsselten Verbindungen (HTTPS/TLS) aufbauen: Die OpenSSL-Bibliotheken "
+                   "(libssl_3.so, libcrypto_3.so) fehlen im Installationspaket. Abhilfe siehe mobile/README.md, "
+                   "Abschnitt „HTTPS“. Der Abgleich über das USB-Kabel funktioniert trotzdem.");
+#else
+        *text = tr("Verschlüsselte Verbindungen (HTTPS/TLS) sind nicht möglich: Es fehlt eine TLS-Bibliothek (%1).")
+                    .arg(QSslSocket::sslLibraryBuildVersionString());
+#endif
+    }
     return false;
 }
 
 qint64 DbSync::serverRevision(const QString &url, const QString &uploadKey, QString *message)
 {
+    if (QUrl(WebSync::normalizedUrl(url)).scheme() == QLatin1String("https")) {
+        QString tls;
+        if (!tlsAvailable(&tls)) { if (message) *message = tls; return -1; }
+    }
     QNetworkAccessManager nam;
     const Http st = finish(nam.get(request(url, uploadKey, QUrlQuery{ { QStringLiteral("state"), QStringLiteral("1") } })), nullptr);
     if (st.status != 200 || !st.json().value(QStringLiteral("ok")).toBool()) {

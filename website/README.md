@@ -34,7 +34,7 @@ Medikamentenplan, Termine und Berichte zum Herunterladen. Die Krankenakte wird n
 2. Den **Inhalt** dieses Ordners per (S)FTP dorthin hochladen:
    ```
    .htaccess  index.html  robots.txt  README.md
-   api/upload.php  api/sync.php  api/lib.php  api/.htaccess
+   api/upload.php  api/sync.php  api/files.php  api/lib.php  api/.htaccess
    assets/…   (app.js, app.css, Schriften, Symbole)
    data/.htaccess  data/index.html
    sync/.htaccess  sync/index.html
@@ -56,6 +56,12 @@ verschlüsselte Schlüsseldatei der Anmeldekonten in `sync/` (per `.htaccess` ge
 nur über die Schnittstelle mit Upload-Schlüssel). Zusammengeführt wird auf den Geräten; der
 Server zählt nur eine Revision hoch und lehnt veraltete Uploads ab (HTTP 409). Die
 Website-Ansicht selbst ist davon unabhängig.
+
+Ab VitaParms 0.19 gehen die **Inhalte der Krankenakte** (PDF) getrennt über `api/files.php`:
+einzeln, nur die fehlenden, auf dem Gerät mit AES-256 verschlüsselt, abgelegt in `sync/files/`
+unter einer Kennung, die nichts über das Dokument verrät. Nicht mehr gebrauchte Inhalte werden
+nach einem Tag gelöscht. Ohne `api/files.php` überträgt VitaParms die Datenbank wie bisher
+vollständig (alle Geräte sollten dieselbe Version verwenden).
 
 ## Wartung
 
@@ -81,9 +87,11 @@ assets/app.css      Gestaltung, Druck (DIN A4), Smartphone
 assets/fonts/       Atkinson Hyperlegible (SIL Open Font License 1.1, OFL.txt)
 api/upload.php      Annahme eines neuen Pakets (POST) und Zustand (GET ?status=1)
 api/sync.php        Datenbank-Abgleich: Zustand, Herunterladen, Hochladen mit Revisionsprüfung
+api/files.php       Inhalte der Krankenakte beim Abgleich (einzeln, verschlüsselt)
 api/lib.php         gemeinsame Hilfsfunktionen (nicht direkt abrufbar)
 data/               Ablage der verschlüsselten Pakete; current.json zeigt auf das aktuelle
-sync/               verschlüsselte Datenbank für den Abgleich (nie direkt abrufbar)
+sync/               verschlüsselte Datenbank und Dokumentinhalte (files/) für den Abgleich
+                    (nie direkt abrufbar)
 ```
 
 ---

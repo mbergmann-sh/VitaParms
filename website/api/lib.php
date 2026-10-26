@@ -1,5 +1,5 @@
 <?php
-// VitaParms – gemeinsame Hilfsfunktionen der Schnittstellen (upload.php, sync.php)
+// VitaParms – gemeinsame Hilfsfunktionen der Schnittstellen (upload.php, sync.php, files.php)
 // SPDX-License-Identifier: MIT
 
 declare(strict_types=1);

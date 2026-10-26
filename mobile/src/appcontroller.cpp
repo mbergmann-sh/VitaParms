@@ -108,6 +108,7 @@ AppController::AppController(QObject *parent) : QObject(parent)
     connect(&db, &Database::patientsChanged, this, &AppController::bump);
     connect(&db, &Database::vitalsChanged, this, &AppController::bump);
     connect(&db, &Database::appointmentsChanged, this, &AppController::bump);
+    connect(&db, &Database::documentsChanged, this, &AppController::bump);
     DbSync &ds = DbSync::instance();
     connect(&ds, &DbSync::started, this, [this] { emit syncBusyChanged(); });
     connect(&ds, &DbSync::finished, this, [this](bool ok, const QString &msg) {
@@ -299,6 +300,8 @@ void AppController::requestNotifications()
 
 void AppController::lock()
 {
+    m_pageCache.clear();          // Seitenbilder der Krankenakte nicht im Speicher lassen
+    draftClear();
     // Vor dem Sperren noch ausstehende Änderungen senden
     const DbSync::Config c = DbSync::config();
     if (loggedIn() && c.autoSync && DbSync::isReady(c) && DbSync::instance().status().pending) {
@@ -1443,6 +1446,9 @@ QVariantMap AppController::syncConfig()
     m.insert(QStringLiteral("last"), st.last.isValid() ? QLocale().toString(st.last, QLocale::ShortFormat) : QString());
     m.insert(QStringLiteral("lastResult"), st.lastResult);
     m.insert(QStringLiteral("pending"), st.pending);
+    QString tls;
+    m.insert(QStringLiteral("tlsOk"), DbSync::tlsAvailable(&tls));
+    m.insert(QStringLiteral("tls"), tls);
     return m;
 }
 

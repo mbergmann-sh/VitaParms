@@ -7,7 +7,9 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPdfWriter>
+#ifndef VP_NO_PRINTSUPPORT
 #include <QPrinter>
+#endif
 #include <QRegularExpression>
 #include <QTemporaryFile>
 
@@ -101,6 +103,11 @@ Info analyze(const QByteArray &pdf)
 
 QByteArray imageToPdf(const QImage &img, const QString &title)
 {
+    return imagesToPdf({ img }, title);
+}
+
+QByteArray imagesToPdf(const QList<QImage> &images, const QString &title)
+{
     QByteArray out;
     QBuffer buf(&out);
     buf.open(QIODevice::WriteOnly);
@@ -108,16 +115,28 @@ QByteArray imageToPdf(const QImage &img, const QString &title)
     w.setTitle(title);
     w.setCreator(QStringLiteral("VitaParms"));
     w.setResolution(200);
-    const bool landscape = img.width() > img.height();
-    w.setPageLayout(QPageLayout(QPageSize(QPageSize::A4),
-                                landscape ? QPageLayout::Landscape : QPageLayout::Portrait,
-                                QMarginsF(8, 8, 8, 8), QPageLayout::Millimeter));
-    QPainter p(&w);
-    const QRect area(QPoint(0, 0), w.pageLayout().paintRectPixels(w.resolution()).size());
-    const QSize s = img.size().scaled(area.size(), Qt::KeepAspectRatio);
-    // Große Fotos verkleinern (max. 200 dpi auf A4), damit das Archiv klein bleibt
-    QImage scaled = img.width() > s.width() ? img.scaled(s, Qt::KeepAspectRatio, Qt::SmoothTransformation) : img;
-    p.drawImage(QRect(QPoint((area.width() - s.width()) / 2, 0), s), scaled);
+    QPainter p;
+    bool first = true;
+    for (const QImage &img : images) {
+        if (img.isNull()) continue;
+        const bool landscape = img.width() > img.height();
+        const QPageLayout layout(QPageSize(QPageSize::A4), landscape ? QPageLayout::Landscape : QPageLayout::Portrait,
+                                 QMarginsF(8, 8, 8, 8), QPageLayout::Millimeter);
+        if (first) {
+            w.setPageLayout(layout);
+            if (!p.begin(&w)) return {};
+            first = false;
+        } else {
+            w.setPageLayout(layout);
+            w.newPage();
+        }
+        const QRect area(QPoint(0, 0), w.pageLayout().paintRectPixels(w.resolution()).size());
+        const QSize s = img.size().scaled(area.size(), Qt::KeepAspectRatio);
+        // Große Fotos verkleinern (max. 200 dpi auf A4), damit die Akte klein bleibt
+        const QImage scaled = img.width() > s.width() ? img.scaled(s, Qt::KeepAspectRatio, Qt::SmoothTransformation) : img;
+        p.drawImage(QRect(QPoint((area.width() - s.width()) / 2, 0), s), scaled.convertToFormat(QImage::Format_RGB32));
+    }
+    if (first) return {};
     p.end();
     return out;
 }
@@ -273,7 +292,7 @@ QImage renderPage(const QByteArray &pdf, int page, int widthPx)
 
 bool printDocuments(QPrinter *printer, const QList<QByteArray> &pdfs, QString *error)
 {
-#ifdef VP_HAVE_QTPDF
+#if defined(VP_HAVE_QTPDF) && !defined(VP_NO_PRINTSUPPORT)
     QPainter p;
     if (!p.begin(printer)) {
         if (error) *error = tr("Drucker konnte nicht geöffnet werden.");

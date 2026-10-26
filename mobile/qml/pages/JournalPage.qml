@@ -19,7 +19,11 @@ Item {
     }
     onPersonIdChanged: reload()
     onDaysChanged: reload()
-    Connections { target: app; function onDataChanged() { page.reload() } }
+    // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
+    property bool active: true
+    property bool stale: false
+    onActiveChanged: if (active && stale) { stale = false; page.reload() }
+    Connections { target: app; function onDataChanged() { if (page.active) page.reload(); else page.stale = true } }
     Component.onCompleted: reload()
 
     ColumnLayout {

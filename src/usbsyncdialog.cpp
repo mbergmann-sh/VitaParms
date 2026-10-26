@@ -488,6 +488,8 @@ void UsbSyncDialog::doMerge()
                        .arg(r.remoteInserted).arg(r.remoteUpdated).arg(r.remoteDeleted);
     if (r.keysFromDevice) text += QLatin1Char('\n') + tr("Die Anmeldekonten des Tablets waren neuer und wurden übernommen.");
     if (r.keysToDevice) text += QLatin1Char('\n') + tr("Die Anmeldekonten dieses Computers wurden auf das Tablet übertragen.");
+    if (r.filesFromDevice || r.filesToDevice)
+        text += QLatin1Char('\n') + tr("Dokumente: %1 vom Tablet geholt, %2 an das Tablet übertragen.").arg(r.filesFromDevice).arg(r.filesToDevice);
     setResult(text, false);
     updateState();
 }
