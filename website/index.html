@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>VitaParms</title>
+<link rel="icon" href="assets/icon-64.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<noscript><p class="noscript">VitaParms benötigt JavaScript. / VitaParms requires JavaScript.</p></noscript>
+
+<!-- Anmeldung -->
+<main id="login" class="login" hidden>
+  <form id="loginForm" class="login-box" autocomplete="off">
+    <img src="assets/icon-180.png" alt="" width="72" height="72">
+    <h1>VitaParms</h1>
+    <p id="loginIntro" class="login-intro"></p>
+    <label for="password" id="pwLabel"></label>
+    <div class="pw-row">
+      <input id="password" type="password" autocomplete="current-password" required spellcheck="false">
+      <button type="button" id="pwShow" class="ghost"></button>
+    </div>
+    <button type="submit" id="loginBtn" class="primary"></button>
+    <p id="loginMsg" class="login-msg" role="alert"></p>
+  </form>
+  <p id="loginFoot" class="login-foot"></p>
+</main>
+
+<!-- Anwendung -->
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <a class="brand" href="#" id="brandLink"><img src="assets/icon-64.png" alt="" width="28" height="28"><span>VitaParms</span></a>
+    <label class="person-select-wrap" for="personSelect"><span class="sr" id="personSelectLabel"></span>
+      <select id="personSelect"></select></label>
+    <span class="stamp" id="stamp"></span>
+    <button type="button" id="logout" class="ghost"></button>
+  </header>
+  <div class="layout">
+    <nav class="rail" id="rail" aria-label="Personen"></nav>
+    <main class="content" id="content" tabindex="-1">
+      <section class="person-head" id="personHead"></section>
+      <nav class="tabs" id="tabs" role="tablist"></nav>
+      <section id="view" class="view"></section>
+    </main>
+  </div>
+  <footer class="footer" id="footer"></footer>
+</div>
+<div id="tooltip" class="tooltip" role="status" hidden></div>
+</body>
+</html>

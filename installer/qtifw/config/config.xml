@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERZEUGT von qmake aus config.xml.in – Änderungen bitte dort vornehmen -->
+<Installer>
+    <Name>VitaParms</Name>
+    <Version>0.18.0</Version>
+    <Title>VitaParms 0.18.0</Title>
+    <Publisher>Michael Bergmann</Publisher>
+    <StartMenuDir>VitaParms</StartMenuDir>
+    <TargetDir>C:/VitaParms</TargetDir>
+    <AdminTargetDir>C:/VitaParms</AdminTargetDir>
+    <AllowSpaceInPath>true</AllowSpaceInPath>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <RemoveTargetDir>true</RemoveTargetDir>
+    <MaintenanceToolName>VitaParms-Wartung</MaintenanceToolName>
+    <InstallerApplicationIcon>vitaparms</InstallerApplicationIcon>
+    <InstallerWindowIcon>vitaparms.png</InstallerWindowIcon>
+    <Logo>logo.png</Logo>
+    <Banner>banner.png</Banner>
+    <Watermark>watermark.png</Watermark>
+    <WizardStyle>Modern</WizardStyle>
+    <WizardDefaultWidth>720</WizardDefaultWidth>
+    <WizardDefaultHeight>520</WizardDefaultHeight>
+    <RunProgram>@TargetDir@/VitaParms.exe</RunProgram>
+    <RunProgramDescription>VitaParms starten / Start VitaParms</RunProgramDescription>
+    <ControlScript>controlscript.qs</ControlScript>
+</Installer>
+

@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!-- VitaParms Tablet – Android-Manifest (Grundlage: Qt-6.12-Vorlage; die Platzhalter mit %%INSERT…%%
+     füllt androiddeployqt beim Bauen aus). Ergänzt: Paketname, Symbol, keine Google-Sicherung,
+     Benachrichtigungen für Termin-Erinnerungen (Empfänger für Wecker und Neustart). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.mbergmann.vitaparms"
+    android:installLocation="auto"
+    android:versionCode="-- %%INSERT_VERSION_CODE%% --"
+    android:versionName="-- %%INSERT_VERSION_NAME%% --">
+    <!-- %%INSERT_PERMISSIONS -->
+    <!-- %%INSERT_FEATURES -->
+    <!-- Termin-Erinnerungen: Benachrichtigungen (Android 13+), pünktliche Wecker, nach Neustart neu stellen -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+    <application
+        android:name="org.qtproject.qt.android.bindings.QtApplication"
+        android:hardwareAccelerated="true"
+        android:label="VitaParms"
+        android:icon="@drawable/icon"
+        android:allowBackup="false"
+        android:enableOnBackInvokedCallback="true">
+        <activity
+            android:name="org.qtproject.qt.android.bindings.QtActivity"
+            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
+            android:label="VitaParms"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="-- %%INSERT_APP_LIB_NAME%% --" />
+
+            <meta-data
+                android:name="android.app.arguments"
+                android:value="-- %%INSERT_APP_ARGUMENTS%% --" />
+        </activity>
+
+        <!-- Termin-Erinnerung zur gestellten Zeit anzeigen (auch wenn die App nicht läuft) -->
+        <receiver
+            android:name="de.mbergmann.vitaparms.ReminderReceiver"
+            android:exported="false" />
+        <!-- nach einem Neustart die gestellten Erinnerungen wiederherstellen -->
+        <receiver
+            android:name="de.mbergmann.vitaparms.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.qtprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/qtprovider_paths"/>
+        </provider>
+    </application>
+</manifest>

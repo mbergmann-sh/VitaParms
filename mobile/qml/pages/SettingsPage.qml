@@ -1,0 +1,117 @@
+// Einstellungen: Abgleich, Darstellung, Messzeitpunkte, Sperre
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import "../components"
+import ".."
+
+Page {
+    id: page
+    signal closed()
+    property var cfg: app.syncConfig()
+    background: Rectangle { color: Theme.paper }
+    Connections { target: app; function onSyncStatusChanged() { page.cfg = app.syncConfig() } }
+
+    header: ToolBar {
+        implicitHeight: 64
+        background: Rectangle { color: Theme.surface; Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.rule } }
+        RowLayout {
+            anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
+            VButton { text: qsTr("Zurück"); kind: "flat"; onClicked: page.closed() }
+            Label { text: qsTr("Einstellungen"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+            Item { width: 100 }
+        }
+    }
+
+    Flickable {
+        anchors.fill: parent
+        contentHeight: col.implicitHeight + 300
+        clip: true
+        ColumnLayout {
+            id: col
+            x: Theme.gapL; y: Theme.gap
+            width: Math.min(900, page.width - 2 * Theme.gapL)
+            spacing: Theme.gap
+
+            SectionTitle { text: qsTr("Sprache und Hilfe") }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                VChip { objectName: "langChipDe"; text: "Deutsch"; checkable: false; checked: app.language === "de"; onClicked: app.setLanguage("de") }
+                VChip { objectName: "langChipEn"; text: "English"; checkable: false; checked: app.language === "en"; onClicked: app.setLanguage("en") }
+                VButton { objectName: "gettingStartedButton"; text: qsTr("Erste Schritte"); kind: "flat"
+                          onClicked: if (!app.openGettingStarted()) win.toast(app.lastError, true) }
+            }
+
+            SectionTitle { text: qsTr("Abgleich mit VitaParms am Computer") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: qsTr("Die verschlüsselte Datenbank wird über Ihre eigene Website ausgetauscht. Änderungen beider Seiten werden zusammengeführt; bei gleichzeitiger Änderung derselben Angabe gilt die jüngere.") }
+            CheckBox { id: syncOn; text: qsTr("Abgleich verwenden"); checked: page.cfg.enabled === true; font.pixelSize: Theme.fsM }
+            CheckBox { id: syncAuto; text: qsTr("Automatisch – nach Änderungen, beim Öffnen und alle 10 Minuten"); checked: page.cfg.autoSync === true
+                       enabled: syncOn.checked; font.pixelSize: Theme.fsM }
+            VField { id: url; label: qsTr("Adresse der Website"); text: page.cfg.url || ""; Layout.fillWidth: true; enabled: syncOn.checked
+                     inputMethodHints: Qt.ImhUrlCharactersOnly | Qt.ImhNoAutoUppercase }
+            VField { id: key; label: qsTr("Upload-Schlüssel"); text: page.cfg.uploadKey || ""; Layout.fillWidth: true; enabled: syncOn.checked
+                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText | Qt.ImhSensitiveData }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                VButton { text: qsTr("Übernehmen"); kind: "primary"
+                          onClicked: { if (app.saveSyncConfig({ enabled: syncOn.checked, autoSync: syncAuto.checked, url: url.text, uploadKey: key.text })) win.toast(qsTr("Gespeichert.")); else win.toast(app.lastError, true) } }
+                VButton { text: app.syncBusy ? qsTr("Wird abgeglichen …") : qsTr("Jetzt abgleichen"); enabled: syncOn.checked && !app.syncBusy; onClicked: app.syncNow() }
+            }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted
+                    text: page.cfg.last ? qsTr("Zuletzt abgeglichen: %1 – %2").arg(page.cfg.last).arg(page.cfg.lastResult) : (page.cfg.lastResult || "") }
+
+            SectionTitle { text: qsTr("Abgleich über das USB-Kabel") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: qsTr("Ohne Website: Tablet per USB-Kabel an den Computer anschließen und die Datenbank direkt abgleichen.") }
+            VButton { objectName: "usbSyncButton"; text: qsTr("USB-Abgleich mit dem Computer"); onClicked: win.openUsbSync() }
+
+            SectionTitle { text: qsTr("Erinnerungen") }
+            CheckBox { objectName: "quarterCheck"; text: qsTr("An den Quartalswechsel erinnern (KV-Karte in den Praxen einlesen lassen)")
+                       checked: app.quarterReminderEnabled(); onToggled: app.setQuarterReminderEnabled(checked); font.pixelSize: Theme.fsM }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: app.notificationsAllowed() ? qsTr("Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.")
+                                                     : qsTr("Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.") }
+            VButton { visible: !app.notificationsAllowed(); text: qsTr("Benachrichtigungen erlauben"); onClicked: app.requestNotifications() }
+
+            SectionTitle { text: qsTr("Darstellung") }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                Repeater {
+                    model: [{ t: qsTr("wie das System"), v: "system" }, { t: qsTr("hell"), v: "light" }, { t: qsTr("dunkel"), v: "dark" }]
+                    VChip { text: modelData.t; checked: app.theme === modelData.v; onClicked: app.theme = modelData.v }
+                }
+            }
+            Label { text: qsTr("Blutzucker"); color: Theme.ink2 }
+            Flow {
+                spacing: Theme.gapS
+                Repeater {
+                    model: ["mg/dl", "mmol/l"]
+                    VChip { text: modelData; checked: app.glucoseUnit() === modelData; onClicked: { app.setGlucoseUnit(modelData); checked = true } }
+                }
+            }
+
+            SectionTitle { text: qsTr("Sicherheit") }
+            Label { text: qsTr("Automatisch sperren nach"); color: Theme.ink2 }
+            Flow {
+                spacing: Theme.gapS
+                Repeater {
+                    model: [{ t: qsTr("nie"), v: 0 }, { t: qsTr("5 Minuten"), v: 5 }, { t: qsTr("10 Minuten"), v: 10 }, { t: qsTr("30 Minuten"), v: 30 }]
+                    VChip { text: modelData.t; checked: lockMin.value === modelData.v; onClicked: { app.setAutoLockMinutes(modelData.v); lockMin.value = modelData.v } }
+                }
+                QtObject { id: lockMin; property int value: app.autoLockMinutes() }
+            }
+
+            SectionTitle { text: qsTr("Messzeitpunkte für Tagesprofile") }
+            VArea { id: ctx; label: qsTr("Ein Eintrag pro Zeile"); text: app.contexts().join("\n"); Layout.fillWidth: true; minHeight: 160 }
+            VButton { text: qsTr("Messzeitpunkte speichern"); onClicked: { app.setContexts(ctx.text.split("\n").map(s => s.trim()).filter(s => s)); win.toast(qsTr("Gespeichert.")) } }
+
+            SectionTitle { text: qsTr("Über VitaParms") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: qsTr("VitaParms %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt. Open Source (MIT-Lizenz). Angemeldet als %2.").arg(app.version).arg(app.userName) }
+        }
+    }
+}

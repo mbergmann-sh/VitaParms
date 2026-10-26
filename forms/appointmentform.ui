@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  VitaParms – Termin
+  Anpassbar mit Qt Designer. Pflichtfelder: titleEdit, startEdit.
+  Auswahllisten (Person, Zuständig, Priorität, Erinnerung, Wiederholung) füllt das Programm.
+  Ohne die Felder der Gruppe "Wiederholung" lassen sich keine Serien anlegen.
+  Eigene Felder: dynamische Eigenschaft "vpField" setzen.
+-->
+<ui version="4.0">
+ <class>AppointmentForm</class>
+ <widget class="QWidget" name="AppointmentForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>560</width><height>560</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Termin</string>
+  </property>
+  <property name="formVersion" stdset="0">
+   <number>2</number>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QGroupBox" name="whatGroup">
+     <property name="title"><string>Termin</string></property>
+     <layout class="QFormLayout" name="whatForm">
+      <item row="0" column="0">
+       <widget class="QLabel" name="titleLabel">
+        <property name="text"><string>&amp;Titel *</string></property>
+        <property name="buddy"><cstring>titleEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="titleEdit">
+        <property name="placeholderText"><string>z. B. Hausarzt, Blutabnahme, Physiotherapie</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="startLabel">
+        <property name="text"><string>&amp;Beginn</string></property>
+        <property name="buddy"><cstring>startEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="startRow">
+        <item>
+         <widget class="QDateTimeEdit" name="startEdit">
+          <property name="displayFormat"><string>dd.MM.yyyy HH:mm</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="allDayCheck">
+          <property name="text"><string>&amp;ganztägig</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="startSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="endLabel">
+        <property name="text"><string>&amp;Ende</string></property>
+        <property name="buddy"><cstring>endEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDateTimeEdit" name="endEdit">
+        <property name="displayFormat"><string>dd.MM.yyyy HH:mm</string></property>
+        <property name="calendarPopup"><bool>true</bool></property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="locationLabel">
+        <property name="text"><string>&amp;Ort</string></property>
+        <property name="buddy"><cstring>locationEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="locationEdit"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="patientLabel">
+        <property name="text"><string>&amp;Person</string></property>
+        <property name="buddy"><cstring>patientCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="patientCombo"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="ownerLabel">
+        <property name="text"><string>&amp;Zuständig</string></property>
+        <property name="buddy"><cstring>ownerCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="ownerCombo">
+        <property name="toolTip"><string>Anmeldekonto, das den Termin sieht und erinnert wird</string></property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="priorityLabel">
+        <property name="text"><string>P&amp;riorität</string></property>
+        <property name="buddy"><cstring>priorityCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="priorityCombo"/>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="notesLabel">
+        <property name="text"><string>&amp;Notiz</string></property>
+        <property name="buddy"><cstring>notesEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QPlainTextEdit" name="notesEdit">
+        <property name="maximumSize"><size><width>16777215</width><height>70</height></size></property>
+        <property name="placeholderText"><string>z. B. Überweisung und Versichertenkarte mitnehmen, nüchtern erscheinen</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="repeatGroup">
+     <property name="title"><string>Wiederholung</string></property>
+     <layout class="QFormLayout" name="repeatForm">
+      <item row="0" column="0">
+       <widget class="QLabel" name="repeatLabel">
+        <property name="text"><string>&amp;Wiederholen</string></property>
+        <property name="buddy"><cstring>repeatCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="repeatRow">
+        <item>
+         <widget class="QComboBox" name="repeatCombo"/>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="intervalSpin">
+          <property name="toolTip"><string>Abstand zwischen den Terminen</string></property>
+          <property name="minimum"><number>1</number></property>
+          <property name="maximum"><number>99</number></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="repeatSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="repeatOnLabel">
+        <property name="text"><string>am</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="repeatOnRow">
+        <item><widget class="QCheckBox" name="wd1Check"/></item>
+        <item><widget class="QCheckBox" name="wd2Check"/></item>
+        <item><widget class="QCheckBox" name="wd3Check"/></item>
+        <item><widget class="QCheckBox" name="wd4Check"/></item>
+        <item><widget class="QCheckBox" name="wd5Check"/></item>
+        <item><widget class="QCheckBox" name="wd6Check"/></item>
+        <item><widget class="QCheckBox" name="wd7Check"/></item>
+        <item>
+         <widget class="QComboBox" name="monthModeCombo"/>
+        </item>
+        <item>
+         <spacer name="repeatOnSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="repeatEndLabel">
+        <property name="text"><string>E&amp;nde der Serie</string></property>
+        <property name="buddy"><cstring>repeatEndCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="repeatEndRow">
+        <item>
+         <widget class="QComboBox" name="repeatEndCombo"/>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="repeatUntilEdit">
+          <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="repeatCountSpin">
+          <property name="minimum"><number>2</number></property>
+          <property name="maximum"><number>999</number></property>
+          <property name="value"><number>10</number></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="repeatEndSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="seriesInfoLabel">
+        <property name="wordWrap"><bool>true</bool></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="reminderGroup">
+     <property name="title"><string>Erinnerung</string></property>
+     <layout class="QFormLayout" name="reminderForm">
+      <item row="0" column="0">
+       <widget class="QLabel" name="remindLabel">
+        <property name="text"><string>&amp;Vorwarnung</string></property>
+        <property name="buddy"><cstring>remindCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="remindCombo"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="channelLabel">
+        <property name="text"><string>Art</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="channelRow">
+        <item>
+         <widget class="QCheckBox" name="remindVisualCheck">
+          <property name="text"><string>&amp;optisch</string></property>
+          <property name="checked"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="remindSoundCheck">
+          <property name="text"><string>&amp;akustisch</string></property>
+          <property name="checked"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="remindEmailCheck">
+          <property name="text"><string>per &amp;E-Mail</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="channelSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="emailLabel">
+        <property name="text"><string>E-&amp;Mail an</string></property>
+        <property name="buddy"><cstring>emailToEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="emailToEdit">
+        <property name="placeholderText"><string>name@example.de</string></property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="reminderHintLabel">
+        <property name="wordWrap"><bool>true</bool></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="doneCheck">
+     <property name="text"><string>E&amp;rledigt</string></property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>titleEdit</tabstop>
+  <tabstop>startEdit</tabstop>
+  <tabstop>allDayCheck</tabstop>
+  <tabstop>endEdit</tabstop>
+  <tabstop>locationEdit</tabstop>
+  <tabstop>patientCombo</tabstop>
+  <tabstop>ownerCombo</tabstop>
+  <tabstop>priorityCombo</tabstop>
+  <tabstop>notesEdit</tabstop>
+  <tabstop>repeatCombo</tabstop>
+  <tabstop>intervalSpin</tabstop>
+  <tabstop>repeatEndCombo</tabstop>
+  <tabstop>repeatUntilEdit</tabstop>
+  <tabstop>repeatCountSpin</tabstop>
+  <tabstop>remindCombo</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

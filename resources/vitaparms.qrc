@@ -1,0 +1,19 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/forms">
+        <file alias="patientform.ui">../forms/patientform.ui</file>
+        <file alias="vitalform.ui">../forms/vitalform.ui</file>
+        <file alias="medicationform.ui">../forms/medicationform.ui</file>
+        <file alias="documentform.ui">../forms/documentform.ui</file>
+        <file alias="appointmentform.ui">../forms/appointmentform.ui</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file alias="reminder.wav">sounds/reminder.wav</file>
+        <file alias="done.wav">sounds/done.wav</file>
+        <file alias="count_start.wav">sounds/count_start.wav</file>
+        <file alias="count_stop.wav">sounds/count_stop.wav</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="vitaparms.png">icons/vitaparms.png</file>
+    </qresource>
+</RCC>

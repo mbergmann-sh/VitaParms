@@ -1,0 +1,18 @@
+# Nur die verschlüsselten Pakete und das Manifest sind abrufbar – nichts sonst
+Options -Indexes
+<IfModule mod_authz_core.c>
+    Require all denied
+    <FilesMatch "^(current\.json|(data|r[0-9]+)\.vpw)$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+    <FilesMatch "^(current\.json|(data|r[0-9]+)\.vpw)$">
+        Allow from all
+    </FilesMatch>
+</IfModule>
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-store"
+</IfModule>

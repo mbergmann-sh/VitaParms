@@ -1,0 +1,11 @@
+.qm/
+.qmake.stash
+build*/
+*.pro.user*
+Makefile*
+*.o
+moc_*
+qrc_*
+*.sqlite
+*.keys
+__pycache__/

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  VitaParms – Angaben zu einem Dokument der Krankenakte
+  Anpassbar mit Qt Designer. Pflichtfeld: titleEdit.
+  Eigene Felder: dynamische Eigenschaft "vpField" setzen.
+-->
+<ui version="4.0">
+ <class>DocumentForm</class>
+ <widget class="QWidget" name="DocumentForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>760</width><height>460</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dokument</string>
+  </property>
+  <property name="formVersion" stdset="0">
+   <number>1</number>
+  </property>
+  <layout class="QHBoxLayout" name="rootLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <layout class="QVBoxLayout" name="leftColumn">
+     <item>
+      <widget class="QGroupBox" name="metaGroup">
+       <property name="title"><string>Angaben zum Dokument</string></property>
+       <layout class="QFormLayout" name="metaForm">
+        <item row="0" column="0">
+         <widget class="QLabel" name="dateLabel">
+          <property name="text"><string>&amp;Datum</string></property>
+          <property name="buddy"><cstring>dateEdit</cstring></property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDateEdit" name="dateEdit">
+          <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+          <property name="toolTip"><string>Datum des Dokuments (z. B. Briefdatum, Untersuchungstag) – nicht das Importdatum</string></property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="categoryLabel">
+          <property name="text"><string>&amp;Art</string></property>
+          <property name="buddy"><cstring>categoryCombo</cstring></property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="categoryCombo">
+          <property name="editable"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="titleLabel">
+          <property name="text"><string>&amp;Titel *</string></property>
+          <property name="buddy"><cstring>titleEdit</cstring></property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="titleEdit">
+          <property name="placeholderText"><string>z. B. Blutbild, Echokardiographie, Entlassbrief Kardiologie</string></property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="issuerLabel">
+          <property name="text"><string>&amp;Von</string></property>
+          <property name="buddy"><cstring>issuerEdit</cstring></property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="issuerEdit">
+          <property name="placeholderText"><string>Praxis, Klinik, Labor</string></property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="notesLabel">
+          <property name="text"><string>&amp;Notiz</string></property>
+          <property name="buddy"><cstring>notesEdit</cstring></property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPlainTextEdit" name="notesEdit">
+          <property name="placeholderText"><string>Eigene Anmerkungen, Stichworte für die Suche …</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="fileInfoLabel">
+       <property name="wordWrap"><bool>true</bool></property>
+       <property name="textInteractionFlags"><set>Qt::TextSelectableByMouse</set></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="textInfoLabel">
+       <property name="wordWrap"><bool>true</bool></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="previewLabel">
+     <property name="minimumSize"><size><width>260</width><height>360</height></size></property>
+     <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
+     <property name="alignment"><set>Qt::AlignCenter</set></property>
+     <property name="toolTip"><string>Erste Seite</string></property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>categoryCombo</tabstop>
+  <tabstop>titleEdit</tabstop>
+  <tabstop>issuerEdit</tabstop>
+  <tabstop>notesEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

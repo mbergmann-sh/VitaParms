@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  VitaParms – Medikament (Eintrag im Medikamentenplan)
+  Anpassbar mit Qt Designer. Pflichtfeld: nameEdit.
+  Eigene Felder: dynamische Eigenschaft "vpField" setzen.
+-->
+<ui version="4.0">
+ <class>MedicationForm</class>
+ <widget class="QWidget" name="MedicationForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>820</width><height>640</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Medikament</string>
+  </property>
+  <property name="formVersion" stdset="0">
+   <number>4</number>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QGroupBox" name="drugGroup">
+     <property name="title"><string>Präparat</string></property>
+     <layout class="QGridLayout" name="drugGrid" columnstretch="0,3,0,2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text"><string>&amp;Handelsname *</string></property>
+        <property name="buddy"><cstring>nameEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="nameEdit"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="substanceLabel">
+        <property name="text"><string>&amp;Wirkstoff</string></property>
+        <property name="buddy"><cstring>substanceEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="substanceEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="strengthLabel">
+        <property name="text"><string>&amp;Stärke</string></property>
+        <property name="buddy"><cstring>strengthEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="strengthEdit">
+        <property name="placeholderText"><string>z. B. 5 mg</string></property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="formLabel">
+        <property name="text"><string>&amp;Darreichungsform</string></property>
+        <property name="buddy"><cstring>formCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="formCombo">
+        <property name="editable"><bool>true</bool></property>
+        <item><property name="text"><string>Tablette</string></property></item>
+        <item><property name="text"><string>Filmtablette</string></property></item>
+        <item><property name="text"><string>Kapsel</string></property></item>
+        <item><property name="text"><string>Tropfen</string></property></item>
+        <item><property name="text"><string>Saft</string></property></item>
+        <item><property name="text"><string>Pflaster</string></property></item>
+        <item><property name="text"><string>Spray</string></property></item>
+        <item><property name="text"><string>Inhalation</string></property></item>
+        <item><property name="text"><string>Injektion</string></property></item>
+        <item><property name="text"><string>Salbe / Creme</string></property></item>
+        <item><property name="text"><string>Zäpfchen</string></property></item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="pznLabel">
+        <property name="text"><string>&amp;PZN</string></property>
+        <property name="buddy"><cstring>pznEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="pznRow">
+        <item>
+         <widget class="QLineEdit" name="pznEdit">
+          <property name="maxLength"><number>9</number></property>
+          <property name="maximumSize"><size><width>120</width><height>16777215</height></size></property>
+          <property name="placeholderText"><string>8 Ziffern</string></property>
+          <property name="toolTip"><string>Pharmazentralnummer – steht auf der Packung (PZN-…). Damit lässt sich der Beipackzettel eindeutig finden.</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="leafletButton">
+          <property name="text"><string>&amp;Beipackzettel…</string></property>
+          <property name="autoDefault"><bool>false</bool></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="pznSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="reasonLabel">
+        <property name="text"><string>&amp;Grund / Indikation</string></property>
+        <property name="buddy"><cstring>reasonEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="reasonEdit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="doseGroup">
+     <property name="title"><string>Dosierung</string></property>
+     <layout class="QGridLayout" name="doseGrid">
+      <item row="0" column="0">
+       <widget class="QLabel" name="morningLabel">
+        <property name="text"><string>morgens</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="noonLabel">
+        <property name="text"><string>mittags</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="eveningLabel">
+        <property name="text"><string>abends</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="nightLabel">
+        <property name="text"><string>zur Nacht</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="unitLabel">
+        <property name="text"><string>Einheit</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="morningEdit">
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="placeholderText"><string>0</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="noonEdit">
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="placeholderText"><string>0</string></property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="eveningEdit">
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="placeholderText"><string>0</string></property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="nightEdit">
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="placeholderText"><string>0</string></property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QComboBox" name="unitCombo">
+        <property name="editable"><bool>true</bool></property>
+        <item><property name="text"><string>Stück</string></property></item>
+        <item><property name="text"><string>Tropfen</string></property></item>
+        <item><property name="text"><string>ml</string></property></item>
+        <item><property name="text"><string>Hub</string></property></item>
+        <item><property name="text"><string>IE</string></property></item>
+        <item><property name="text"><string>Beutel</string></property></item>
+        <item><property name="text"><string>Pflaster</string></property></item>
+        <item><property name="text"><string>mg</string></property></item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="rhythmGroup">
+     <property name="title"><string>Art, Zeitraum und Einnahme</string></property>
+     <layout class="QFormLayout" name="rhythmForm">
+      <item row="0" column="0">
+       <widget class="QLabel" name="categoryLabel">
+        <property name="text"><string>&amp;Art</string></property>
+        <property name="buddy"><cstring>categoryCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="categoryRow">
+        <item>
+         <widget class="QComboBox" name="categoryCombo"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="categoryHintLabel">
+          <property name="wordWrap"><bool>true</bool></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="periodLabel">
+        <property name="text"><string>Zeitraum</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="periodRow">
+        <item>
+         <widget class="QLabel" name="startLabel">
+          <property name="text"><string>vo&amp;n</string></property>
+          <property name="buddy"><cstring>startDateEdit</cstring></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="startDateEdit">
+          <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+          <property name="specialValueText"><string>—</string></property>
+          <property name="minimumDate"><date><year>1900</year><month>1</month><day>1</day></date></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="endDateCheck">
+          <property name="text"><string>b&amp;is</string></property>
+          <property name="toolTip"><string>Ohne Haken: dauerhaft, ohne Enddatum</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="endDateEdit">
+          <property name="enabled"><bool>false</bool></property>
+          <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="periodInfoLabel"/>
+        </item>
+        <item>
+         <spacer name="periodSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="rhythmLabel">
+        <property name="text"><string>&amp;Rhythmus</string></property>
+        <property name="buddy"><cstring>rhythmCombo</cstring></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="rhythmRow">
+        <item>
+         <widget class="QComboBox" name="rhythmCombo"/>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="rhythmIntervalSpin">
+          <property name="minimum"><number>1</number></property>
+          <property name="maximum"><number>99</number></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="rhythmStartLabel">
+          <property name="text"><string>a&amp;b</string></property>
+          <property name="buddy"><cstring>rhythmStartEdit</cstring></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="rhythmStartEdit">
+          <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+          <property name="calendarPopup"><bool>true</bool></property>
+          <property name="toolTip"><string>Erster Einnahmetag – ab diesem Tag wird der Rhythmus gezählt</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="rhythmSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="rhythmDaysLabel">
+        <property name="text"><string>an</string></property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <layout class="QHBoxLayout" name="rhythmDaysRow">
+        <item><widget class="QCheckBox" name="wd1Check"/></item>
+        <item><widget class="QCheckBox" name="wd2Check"/></item>
+        <item><widget class="QCheckBox" name="wd3Check"/></item>
+        <item><widget class="QCheckBox" name="wd4Check"/></item>
+        <item><widget class="QCheckBox" name="wd5Check"/></item>
+        <item><widget class="QCheckBox" name="wd6Check"/></item>
+        <item><widget class="QCheckBox" name="wd7Check"/></item>
+        <item>
+         <spacer name="rhythmDaysSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="rhythmNoteLabel">
+        <property name="text"><string>B&amp;emerkung</string></property>
+        <property name="buddy"><cstring>rhythmNoteEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="rhythmNoteEdit">
+        <property name="placeholderText"><string>z. B. 21 Tage Einnahme, dann 7 Tage Pause · nur bei Fieber über 38,5 °C · nüchtern</string></property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="remindCheck">
+        <property name="text"><string>An Einnah&amp;me erinnern (in die Terminliste übernehmen)</string></property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="remindDaysLabel">
+        <property name="text"><string>Erinnern an</string></property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <layout class="QHBoxLayout" name="remindDaysRow">
+        <item><widget class="QCheckBox" name="rd1Check"/></item>
+        <item><widget class="QCheckBox" name="rd2Check"/></item>
+        <item><widget class="QCheckBox" name="rd3Check"/></item>
+        <item><widget class="QCheckBox" name="rd4Check"/></item>
+        <item><widget class="QCheckBox" name="rd5Check"/></item>
+        <item><widget class="QCheckBox" name="rd6Check"/></item>
+        <item><widget class="QCheckBox" name="rd7Check"/></item>
+        <item>
+         <widget class="QLabel" name="remindDaysInfoLabel"/>
+        </item>
+        <item>
+         <spacer name="remindDaysSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="remindTimesLabel">
+        <property name="text"><string>um</string></property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <layout class="QHBoxLayout" name="remindTimesRow">
+        <item>
+         <widget class="QCheckBox" name="rt0Check">
+          <property name="text"><string>morgens</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="rt0Edit">
+          <property name="displayFormat"><string notr="true">HH:mm</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="rt1Check">
+          <property name="text"><string>mittags</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="rt1Edit">
+          <property name="displayFormat"><string notr="true">HH:mm</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="rt2Check">
+          <property name="text"><string>abends</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="rt2Edit">
+          <property name="displayFormat"><string notr="true">HH:mm</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="rt3Check">
+          <property name="text"><string>zur Nacht</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="rt3Edit">
+          <property name="displayFormat"><string notr="true">HH:mm</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="remindTimesSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QLabel" name="rhythmInfoLabel">
+        <property name="wordWrap"><bool>true</bool></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="classGroup">
+     <property name="title"><string>Kennzeichnung</string></property>
+     <layout class="QVBoxLayout" name="classLayout">
+      <item>
+       <layout class="QHBoxLayout" name="classRow">
+        <item>
+         <widget class="QCheckBox" name="btmCheck">
+          <property name="text"><string>Betäubungsmittel (B&amp;tM)</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="painCheck">
+          <property name="text"><string>S&amp;chmerzmittel</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="anticoagCheck">
+          <property name="text"><string>Blut&amp;verdünner</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="bpCheck">
+          <property name="text"><string>Blutdruc&amp;ksenker</string></property>
+          <property name="toolTip"><string>Blutdrucksenkendes Medikament (z. B. ACE-Hemmer, Sartan, Betablocker, Calciumantagonist, Diuretikum)</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cortisoneCheck">
+          <property name="text"><string>K&amp;ortisonhaltig</string></property>
+          <property name="toolTip"><string>Enthält ein Glukokortikoid (Kortison) – als Tablette, Spray, Salbe o. Ä.</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="classSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="classInfoLabel">
+        <property name="wordWrap"><bool>true</bool></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="detailsGroup">
+     <property name="title"><string>Hinweise und Absetzen</string></property>
+     <layout class="QGridLayout" name="detailsGrid" columnstretch="0,1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="notesLabel">
+        <property name="text"><string>&amp;Hinweise</string></property>
+        <property name="buddy"><cstring>notesEdit</cstring></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="notesEdit">
+        <property name="placeholderText"><string>z. B. vor dem Essen, nicht zerkleinern</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="archivedCheck">
+        <property name="text"><string>&amp;Abgesetzt</string></property>
+        <property name="toolTip"><string>Wird nicht mehr eingenommen – das Medikament wandert ins Archiv, die Historie bleibt erhalten</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="stopReasonEdit">
+        <property name="enabled"><bool>false</bool></property>
+        <property name="placeholderText"><string>Grund des Absetzens, z. B. Nebenwirkung, Therapie beendet, ersetzt durch …</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="bottomSpacer">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>archivedCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>stopReasonEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>endDateCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>endDateEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+ </connections>
+</ui>

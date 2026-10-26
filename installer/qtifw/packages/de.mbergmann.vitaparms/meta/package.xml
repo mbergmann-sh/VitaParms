@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERZEUGT von qmake aus package.xml.in – Änderungen bitte dort vornehmen -->
+<Package>
+    <DisplayName>VitaParms</DisplayName>
+    <DisplayName xml:lang="de">VitaParms</DisplayName>
+    <Description>Vital signs diary with journal, charts, medication plan, medical record and appointments</Description>
+    <Description xml:lang="de">Vitalwerte-Tagebuch mit Journal, Verlaufskurven, Medikamentenplan, Krankenakte und Terminen</Description>
+    <Version>0.18.0</Version>
+    <ReleaseDate>2026-10-24</ReleaseDate>
+    <Default>true</Default>
+    <ForcedInstallation>true</ForcedInstallation>
+    <SortingPriority>100</SortingPriority>
+    <Licenses>
+        <License name="Lizenz und Haftungshinweis / Licence and disclaimer" file="license.txt"/>
+    </Licenses>
+    <Script>installscript.qs</Script>
+</Package>
+

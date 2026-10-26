@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  VitaParms – Stammblatt
+  Dieses Formular kann mit Qt Designer angepasst werden.
+  Regeln:
+   * objectNames der Standardfelder nicht ändern (sonst werden sie ignoriert).
+   * Pflichtfeld: lastNameEdit
+   * Eigene Felder: dynamische Eigenschaft "vpField" (String) setzen –
+     der Wert wird dann automatisch gespeichert.
+-->
+<ui version="4.0">
+ <class>PatientForm</class>
+ <widget class="QWidget" name="PatientForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>720</width><height>520</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Stammblatt</string>
+  </property>
+  <property name="formVersion" stdset="0">
+   <number>4</number>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex"><number>0</number></property>
+
+     <!-- ======================= Person ======================= -->
+     <widget class="QWidget" name="personTab">
+      <attribute name="title"><string>Person</string></attribute>
+      <layout class="QHBoxLayout" name="personLayout">
+       <item>
+        <widget class="QGroupBox" name="personalGroup">
+         <property name="title"><string>Persönliche Daten</string></property>
+         <layout class="QFormLayout" name="personalForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lastNameLabel">
+            <property name="text"><string>&amp;Name *</string></property>
+            <property name="buddy"><cstring>lastNameEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lastNameEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="firstNameLabel">
+            <property name="text"><string>&amp;Vorname</string></property>
+            <property name="buddy"><cstring>firstNameEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="firstNameEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="birthDateLabel">
+            <property name="text"><string>&amp;Geburtsdatum</string></property>
+            <property name="buddy"><cstring>birthDateEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateEdit" name="birthDateEdit">
+            <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+            <property name="calendarPopup"><bool>true</bool></property>
+            <property name="specialValueText"><string>—</string></property>
+            <property name="minimumDate"><date><year>1900</year><month>1</month><day>1</day></date></property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="sexLabel">
+            <property name="text"><string>Ge&amp;schlecht</string></property>
+            <property name="buddy"><cstring>sexCombo</cstring></property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="sexCombo"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="streetLabel">
+            <property name="text"><string>Straße, Nr.</string></property>
+            <property name="buddy"><cstring>streetEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="streetEdit"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="cityLabel">
+            <property name="text"><string>PLZ, Ort</string></property>
+            <property name="buddy"><cstring>zipEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <layout class="QHBoxLayout" name="cityLayout">
+            <item>
+             <widget class="QLineEdit" name="zipEdit">
+              <property name="maximumSize"><size><width>80</width><height>16777215</height></size></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="cityEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="phoneLabel">
+            <property name="text"><string>Telefon</string></property>
+            <property name="buddy"><cstring>phoneEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="phoneEdit"/>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mobileLabel">
+            <property name="text"><string>Mobiltelefon</string></property>
+            <property name="buddy"><cstring>mobileEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="mobileEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="extraGroup">
+         <property name="title"><string>Weitere Angaben: Kontakte</string></property>
+         <layout class="QVBoxLayout" name="contactLayout">
+          <item>
+           <widget class="QLineEdit" name="contactSearchEdit">
+            <property name="placeholderText"><string>Kontakte durchsuchen (Name, Fachrichtung, Ort, Telefon …)</string></property>
+            <property name="clearButtonEnabled"><bool>true</bool></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="contactTable">
+            <property name="minimumSize"><size><width>300</width><height>160</height></size></property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="contactButtons">
+            <item>
+             <widget class="QPushButton" name="addContactButton">
+              <property name="text"><string>&amp;Hinzufügen…</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="editContactButton">
+              <property name="text"><string>Bearbe&amp;iten…</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="deleteContactButton">
+              <property name="text"><string>Entfe&amp;rnen</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="contactSpacer">
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="contactHintLabel">
+            <property name="text"><string>&lt;small&gt;Krankenkasse (mit Versichertennummer), Hausarzt, Fachärzte, Kliniken, Pflegedienst, Apotheke, Notfallkontakt – jeweils mit Anschrift, Telefon, Mobil, E-Mail und Website. Doppelklick öffnet einen Kontakt.&lt;/small&gt;</string></property>
+            <property name="wordWrap"><bool>true</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
+     <!-- ===================== Diagnosen ===================== -->
+     <widget class="QWidget" name="diagnosesTab">
+      <attribute name="title"><string>Diagnosen</string></attribute>
+      <layout class="QVBoxLayout" name="diagnosesLayout">
+       <item>
+        <widget class="QLabel" name="diagnosesLabel">
+         <property name="text"><string>&amp;Diagnosen (eine pro Zeile, gern mit ICD-10-Code):</string></property>
+         <property name="buddy"><cstring>diagnosesEdit</cstring></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="diagnosesEdit"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="allergiesLabel">
+         <property name="text"><string>&amp;Allergien / Unverträglichkeiten:</string></property>
+         <property name="buddy"><cstring>allergiesEdit</cstring></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="allergiesEdit">
+         <property name="maximumSize"><size><width>16777215</width><height>70</height></size></property>
+         <property name="vpField" stdset="0"><string notr="true">Allergien</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="notesLabel">
+         <property name="text"><string>&amp;Bemerkungen:</string></property>
+         <property name="buddy"><cstring>notesEdit</cstring></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="notesEdit">
+         <property name="maximumSize"><size><width>16777215</width><height>90</height></size></property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
+     <!-- ============ Pflegegrad und Schwerbehindertenausweis ============ -->
+     <widget class="QWidget" name="careTab">
+      <attribute name="title"><string>Pflege, Ausweis und Vorsorge</string></attribute>
+      <layout class="QVBoxLayout" name="careLayout">
+       <item>
+        <widget class="QGroupBox" name="careGroup">
+         <property name="title"><string>Pflegegrad</string></property>
+         <layout class="QFormLayout" name="careForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="careLevelLabel">
+            <property name="text"><string>&amp;Pflegegrad</string></property>
+            <property name="buddy"><cstring>careLevelCombo</cstring></property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="careLevelCombo">
+            <item><property name="text"><string>kein Pflegegrad</string></property></item>
+            <item><property name="text"><string>Pflegegrad 1 – geringe Beeinträchtigung</string></property></item>
+            <item><property name="text"><string>Pflegegrad 2 – erhebliche Beeinträchtigung</string></property></item>
+            <item><property name="text"><string>Pflegegrad 3 – schwere Beeinträchtigung</string></property></item>
+            <item><property name="text"><string>Pflegegrad 4 – schwerste Beeinträchtigung</string></property></item>
+            <item><property name="text"><string>Pflegegrad 5 – schwerste Beeinträchtigung mit besonderen Anforderungen</string></property></item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="careReviewLabel">
+            <property name="text"><string>&amp;Nächste Überprüfung</string></property>
+            <property name="buddy"><cstring>careReviewEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDateEdit" name="careReviewEdit">
+            <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+            <property name="calendarPopup"><bool>true</bool></property>
+            <property name="specialValueText"><string>—</string></property>
+            <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="careHintLabel">
+            <property name="text"><string>&lt;small&gt;Termin der nächsten Begutachtung durch den Medizinischen Dienst (falls im Bescheid genannt).&lt;/small&gt;</string></property>
+            <property name="wordWrap"><bool>true</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="disabilityGroup">
+         <property name="title"><string>Schwerbehindertenausweis</string></property>
+         <layout class="QFormLayout" name="disabilityForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="disabilityDegreeLabel">
+            <property name="text"><string>&amp;Grad der Behinderung</string></property>
+            <property name="buddy"><cstring>disabilityDegreeSpin</cstring></property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="disabilityDegreeSpin">
+            <property name="specialValueText"><string>kein Ausweis</string></property>
+            <property name="prefix"><string>GdB </string></property>
+            <property name="minimum"><number>0</number></property>
+            <property name="maximum"><number>100</number></property>
+            <property name="singleStep"><number>10</number></property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="disabilityMarksLabel">
+            <property name="text"><string>Merkzeichen</string></property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QWidget" name="disabilityMarksBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="disabilityValidLabel">
+            <property name="text"><string>Gültig &amp;bis</string></property>
+            <property name="buddy"><cstring>disabilityValidEdit</cstring></property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="disabilityValidLayout">
+            <item>
+             <widget class="QDateEdit" name="disabilityValidEdit">
+              <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+              <property name="calendarPopup"><bool>true</bool></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="disabilityUnlimitedCheck">
+              <property name="text"><string>&amp;unbefristet</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="disabilityValidSpacer">
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="careSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+
+     <!-- ================== Medikamentenplan ================== -->
+     <widget class="QWidget" name="medicationTab">
+      <attribute name="title"><string>Medikamentenplan</string></attribute>
+      <layout class="QVBoxLayout" name="medicationLayout">
+       <item>
+        <widget class="QTableWidget" name="medicationTable">
+         <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+         <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+         <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
+         <property name="alternatingRowColors"><bool>true</bool></property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="medicationButtons">
+         <item>
+          <widget class="QPushButton" name="addMedicationButton">
+           <property name="text"><string>&amp;Hinzufügen…</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="editMedicationButton">
+           <property name="text"><string>&amp;Bearbeiten…</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="archiveMedicationButton">
+           <property name="text"><string>&amp;Absetzen…</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deleteMedicationButton">
+           <property name="text"><string>&amp;Löschen</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="leafletMedicationButton">
+           <property name="text"><string>&amp;Beipackzettel…</string></property>
+           <property name="toolTip"><string>Beipackzettel des Medikaments im Internet abrufen und anzeigen</string></property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="medicationSpacer">
+           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="showArchivedCheck">
+           <property name="text"><string>Historie an&amp;zeigen</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="searchMedicationButton">
+           <property name="text"><string>&amp;Suchen…</string></property>
+           <property name="toolTip"><string>BtM, Schmerzmittel oder Blutverdünner im Medikamentenplan suchen – mit Dosierung und Einnahmemenge</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="printMedicationButton">
+           <property name="text"><string>&amp;Drucken…</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+
+     <!-- ================= Körper & Aufnahme ================= -->
+     <widget class="QWidget" name="bodyTab">
+      <attribute name="title"><string>Körper &amp;&amp; Aufnahme</string></attribute>
+      <layout class="QVBoxLayout" name="bodyLayout">
+       <item>
+        <widget class="QGroupBox" name="bioSexGroup">
+         <property name="title"><string>Biologisches Geschlecht</string></property>
+         <layout class="QFormLayout" name="bioSexForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="bioSexLabel">
+            <property name="text"><string>Für &amp;Normwerte</string></property>
+            <property name="buddy"><cstring>bioSexCombo</cstring></property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="bioSexCombo">
+            <property name="toolTip"><string>Normwerttabellen (z. B. Peak-Flow-Sollwerte) richten sich nach dem biologischen Geschlecht. Es folgt dem Feld „Geschlecht“ – ändern Sie es nur, wenn das nicht passt oder dort „divers“ steht.</string></property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="bioSexInfoLabel">
+            <property name="wordWrap"><bool>true</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="amputationGroup">
+         <property name="title"><string>Gliedmaßen (für die BMI-Korrektur)</string></property>
+         <layout class="QGridLayout" name="amputationGrid">
+          <item row="0" column="1">
+           <widget class="QLabel" name="leftHeader">
+            <property name="text"><string>&lt;b&gt;links&lt;/b&gt;</string></property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="rightHeader">
+            <property name="text"><string>&lt;b&gt;rechts&lt;/b&gt;</string></property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="armLabel">
+            <property name="text"><string>Arm:</string></property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="armLeftCombo"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QComboBox" name="armRightCombo"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="legLabel">
+            <property name="text"><string>Bein:</string></property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="legLeftCombo"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QComboBox" name="legRightCombo"/>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="amputationInfoLabel">
+            <property name="wordWrap"><bool>true</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="peakFlowGroup">
+         <property name="title"><string>Peak Flow (Asthma, COPD)</string></property>
+         <layout class="QFormLayout" name="peakFlowForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="peakFlowBestLabel">
+            <property name="text"><string>Persönlicher &amp;Bestwert</string></property>
+            <property name="buddy"><cstring>peakFlowBestSpin</cstring></property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="peakFlowBestSpin">
+            <property name="toolTip"><string>Höchster Peak-Flow-Wert in einer beschwerdefreien Zeit, mit dem Arzt festgelegt. Ist er eingetragen, beziehen sich die Warnhinweise auf ihn statt auf den Sollwert.</string></property>
+            <property name="specialValueText"><string>—</string></property>
+            <property name="suffix"><string> l/min</string></property>
+            <property name="minimum"><number>0</number></property>
+            <property name="maximum"><number>900</number></property>
+            <property name="singleStep"><number>10</number></property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="peakFlowInfoLabel">
+            <property name="wordWrap"><bool>true</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="admissionGroup">
+         <property name="title"><string>Vitalwerte bei Aufnahme</string></property>
+         <layout class="QVBoxLayout" name="admissionLayout">
+          <item>
+           <widget class="QLabel" name="admissionLabel">
+            <property name="wordWrap"><bool>true</bool></property>
+            <property name="textInteractionFlags"><set>Qt::TextSelectableByMouse</set></property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="admissionButtonRow">
+            <item>
+             <widget class="QPushButton" name="admissionButton">
+              <property name="text"><string>Aufnahmewerte &amp;erfassen…</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="admissionSpacer">
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="bodySpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lastNameEdit</tabstop>
+  <tabstop>firstNameEdit</tabstop>
+  <tabstop>birthDateEdit</tabstop>
+  <tabstop>sexCombo</tabstop>
+  <tabstop>streetEdit</tabstop>
+  <tabstop>zipEdit</tabstop>
+  <tabstop>cityEdit</tabstop>
+  <tabstop>phoneEdit</tabstop>
+  <tabstop>mobileEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
