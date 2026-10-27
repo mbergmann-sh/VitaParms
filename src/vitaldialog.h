@@ -49,6 +49,9 @@ private:
     void setupPeakFlow();              // Hinweis zum Sollwert/Bestwert unter „Peak Flow“
     void warnPeakFlow(const VitalRecord &r);
     void warnStool(const VitalRecord &r);
+    void setupCareValues();            // INR, Ein-/Ausfuhr, Ödeme: Auswahllisten und Hinweiszeilen
+    void updateCareInfo();             // Hinweise unter INR, Ein-/Ausfuhr und Ödemen
+    void warnCareValues(const VitalRecord &r);   // nach dem Speichern: INR, Ödeme, Gewicht, Trinkmenge
     void setupStool();                 // Stuhlgang: Häkchen + Bristol-Auswahl (auch in älteren Formularen)
     void setupBreathCounter();         // 1-Minuten-Zähluhr neben "Atemfrequenz"
     void startBreathCount();
@@ -72,6 +75,8 @@ private:
     QComboBox   *m_stoolColor = nullptr;
     QComboBox   *m_stoolAdmixture = nullptr;
     QLineEdit   *m_stoolSymptoms = nullptr;
+    QLabel      *m_inrInfo = nullptr;
+    QList<VitalRecord> m_recent;       // Messungen der letzten Tage (Bilanz heute, Gewichtsverlauf, Ödeme)
     QSpinBox    *m_respSpin = nullptr;
     QPushButton *m_countButton = nullptr;
     QTimer      *m_countTimer = nullptr;

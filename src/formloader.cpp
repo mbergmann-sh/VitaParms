@@ -4,6 +4,11 @@
 
 #include <QAbstractButton>
 #include <QCheckBox>
+#include <algorithm>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QScrollBar>
+#include <QScrollArea>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDateEdit>
@@ -213,6 +218,48 @@ QWidget *load(const QString &name, QWidget *parent, QString *origin)
         qFatal("Eingebettetes Formular %s fehlt: %s", qPrintable(name), qPrintable(err));
     if (origin) *origin = builtinPath(name);
     return w;
+}
+
+QScrollArea *scrollable(QWidget *form, QWidget *parent)
+{
+    auto *sa = new QScrollArea(parent);
+    sa->setObjectName(QStringLiteral("formScroll"));
+    sa->setFrameShape(QFrame::NoFrame);
+    sa->setWidgetResizable(true);
+    sa->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    sa->setWidget(form);
+    // Breite des Formulars übernehmen, damit nicht unnötig waagerecht gescrollt wird
+    sa->setMinimumWidth(std::min(form->minimumSizeHint().width() + sa->verticalScrollBar()->sizeHint().width() + 4, 1200));
+    return sa;
+}
+
+void fitToScreen(QWidget *w)
+{
+    QScreen *scr = w->screen() ? w->screen() : QGuiApplication::primaryScreen();
+    if (w->parentWidget() && w->parentWidget()->screen()) scr = w->parentWidget()->screen();
+    if (!scr) return;
+    const QRect avail = scr->availableGeometry();
+    const int maxW = avail.width() - 40, maxH = avail.height() - 60;   // Rahmen und Titelleiste
+    QSize sz = w->size();
+    // zu klein (z. B. gespeicherte Größe einer älteren Version): so groß wie das Formular, höchstens Bildschirm
+    if (auto *sa = w->findChild<QScrollArea *>(QStringLiteral("formScroll")); sa && sa->widget()) {
+        // Rand um den Scrollbereich (Knöpfe, Abstände) aus den Größenvorschlägen, nicht aus der
+        // aktuellen Größe – die steht vor dem ersten Anzeigen noch nicht fest
+        const int extraH = std::max(0, w->sizeHint().height() - sa->sizeHint().height());
+        const int extraW = std::max(0, w->sizeHint().width() - sa->sizeHint().width());
+        const int wantH = std::min(sa->widget()->sizeHint().height() + extraH + 4, maxH);
+        const int wantW = std::min(sa->widget()->minimumSizeHint().width() + extraW + sa->verticalScrollBar()->sizeHint().width() + 4, maxW);
+        if (sz.height() < wantH) sz.setHeight(wantH);
+        if (sz.width() < wantW) sz.setWidth(wantW);
+    }
+    sz = QSize(std::min(sz.width(), maxW), std::min(sz.height(), maxH));
+    if (sz != w->size()) w->resize(sz);
+    QRect g = w->frameGeometry();
+    if (!avail.contains(g) && w->isVisible()) {
+        g.moveLeft(std::clamp(g.left(), avail.left(), std::max(avail.left(), avail.right() - g.width())));
+        g.moveTop(std::clamp(g.top(), avail.top(), std::max(avail.top(), avail.bottom() - g.height())));
+        w->move(g.topLeft());
+    }
 }
 
 bool copyToUser(const QString &name, QString *error)

@@ -11,7 +11,7 @@
 #include <optional>
 
 enum class VitalKey {
-    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool
+    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool, Inr, FluidIn, FluidOut, Edema
 };
 
 enum class MarkerShape { Circle, Square, Triangle, Diamond, Cross, TriangleDown };
@@ -22,7 +22,8 @@ QList<VitalKey> all();
 QString      key(VitalKey k);          // stabiler Schlüssel, z. B. "pulse"
 QString      label(VitalKey k);        // z. B. "Puls"
 QString      shortLabel(VitalKey k);   // z. B. "RR sys."
-QString      unit(VitalKey k);         // berücksichtigt Blutzucker-Einheit
+QString      unit(VitalKey k);         // berücksichtigt Blutzucker-Einheit; INR: leer
+QString      header(VitalKey k, const QString &sep = QStringLiteral(" "));   // "Puls [/min]", "INR"
 int          decimals(VitalKey k);
 QColor       color(VitalKey k);        // farbfehlsichtigkeits-taugliche Palette
 MarkerShape  marker(VitalKey k);

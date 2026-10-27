@@ -15,7 +15,7 @@
 
 namespace Protocols {
 
-enum class Kind { Stool, Glucose };
+enum class Kind { Stool, Glucose, Fluid };
 
 struct Table {
     enum RowFlag { Normal = 0, Muted = 1, Alert = 2, Summary = 3 };
@@ -45,7 +45,9 @@ struct Options {
 QString title(Kind k);
 Table stoolProtocol(const QList<VitalRecord> &records, const Options &o);
 Table glucoseProfiles(const QList<VitalRecord> &records, const Options &o);
-Table build(Kind k, const QList<VitalRecord> &records, const Options &o);
+// Ein- und Ausfuhr: Einträge chronologisch, je Tag eine Summenzeile mit Bilanz; Trinkmengen aus dem Stammblatt
+Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Patient &p = {});
+Table build(Kind k, const QList<VitalRecord> &records, const Options &o, const Patient &p = {});
 
 QString periodText(const Options &o);
 QString toHtml(const Table &t, const QString &periodText);

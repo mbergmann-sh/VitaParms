@@ -7,6 +7,8 @@
 #include "usbsync.h"
 #include "peakflow.h"
 #include "stool.h"
+#include "fluid.h"
+#include <QLocale>
 #include "database.h"
 #include <QUrl>
 
@@ -501,6 +503,81 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
             stackPop();
         }
         app.deleteVital(vid);
+    }
+    {   // INR, Ein- und Ausfuhr, Ödeme
+        const QVariantMap fc = app.fluidChoices();
+        check(fc.value(QStringLiteral("edemaGrades")).toList().size() == 5 && fc.value(QStringLiteral("inKinds")).toList().size() >= 4, "Bilanz: Auswahl");
+        QVariantMap d = app.personDetail(pid);
+        const QVariantMap old = d;
+        d.insert(QStringLiteral("inrLow"), QLocale().toString(2.5, 'f', 1)); d.insert(QStringLiteral("inrHigh"), QLocale().toString(3.5, 'f', 1));
+        d.insert(QStringLiteral("fluidMin"), QStringLiteral("1200")); d.insert(QStringLiteral("fluidMax"), QString());
+        d.insert(QStringLiteral("weightWatch"), QLocale().toString(2.0, 'f', 1));
+        check(app.savePerson(d) == pid, "Bilanz: Stammblatt speichern");
+        const QVariantMap back = app.personDetail(pid);
+        check(back.value(QStringLiteral("inrHigh")).toString() == QLocale().toString(3.5, 'f', 1)
+              && back.value(QStringLiteral("fluidMin")).toString() == QStringLiteral("1200") && back.value(QStringLiteral("fluidMax")).toString().isEmpty(), "Bilanz: Zielwerte zurück");
+        check(app.inrCheck(pid, QStringLiteral("3,9")).value(QStringLiteral("zone")).toString() == QStringLiteral("high")
+              || app.inrCheck(pid, QStringLiteral("3.9")).value(QStringLiteral("zone")).toString() == QStringLiteral("high"), "INR: über dem Zielbereich");
+        QVariantMap v = app.newVital(pid);
+        v.insert(QStringLiteral("values"), QVariantMap{ { QStringLiteral("inr"), 3.9 }, { QStringLiteral("fluidIn"), 250 }, { QStringLiteral("edema"), 2 } });
+        v.insert(QStringLiteral("fluidInKind"), Fluid::inKinds().value(0));
+        v.insert(QStringLiteral("edemaSite"), Fluid::edemaSites().value(1));
+        v.insert(QStringLiteral("edemaSide"), Fluid::edemaSides().value(1));
+        const qint64 vid = app.saveVital(pid, v);
+        const QVariantMap rb = app.vital(vid);
+        check(vid > 0 && rb.value(QStringLiteral("values")).toMap().value(QStringLiteral("edema")).toInt() == 2
+              && rb.value(QStringLiteral("edemaSide")).toString() == Fluid::edemaSides().value(1)
+              && rb.value(QStringLiteral("fluidInKind")).toString() == Fluid::inKinds().value(0), "Bilanz: speichern/laden");
+        const QStringList cw = app.careWarnings(pid, vid);
+        qInfo("Hinweise nach dem Speichern: %s", qPrintable(cw.join(QStringLiteral(" | "))));
+        check(cw.size() >= 2, "Bilanz: Hinweise INR + Ödeme");
+        check(!app.careNotices(pid).isEmpty(), "Bilanz: Hinweis in der Übersicht");
+        check(!app.fluidDay(pid, rb).value(QStringLiteral("text")).toString().isEmpty(), "Bilanz: heute");
+        bool inrRow = false;
+        for (const QVariant &e : app.journal(pid, QString(), 2))
+            if (e.toMap().value(QStringLiteral("id")).toLongLong() == vid)
+                for (const QVariant &x : e.toMap().value(QStringLiteral("values")).toList())
+                    inrRow |= x.toMap().value(QStringLiteral("label")).toString() == QStringLiteral("INR") && !x.toMap().value(QStringLiteral("alert")).toString().isEmpty();
+        check(inrRow, "INR im Verlauf markiert");
+        for (const char *k : { "fluid", "fluidXlsx" }) {
+            const QString f = app.exportReport(QString::fromLatin1(k), pid, QVariantMap{ { QStringLiteral("days"), 14 } });
+            check(!f.isEmpty() && QFileInfo(f).size() > 1000, qPrintable(QStringLiteral("Protokoll %1").arg(QLatin1String(k))));
+        }
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+        wait(500);
+        shot(QStringLiteral("m01b_uebersicht_hinweise"));
+        {   // Formular: INR, Ein-/Ausfuhr, Ödeme
+            call(h, "measure", 0);
+            wait(300);
+            QQuickItem *sec = win->findChild<QQuickItem *>(QStringLiteral("fluidSection"));
+            QQuickItem *pg = nullptr;
+            for (QQuickItem *it = sec; it; it = it->parentItem()) if (it->property("edemaGrade").isValid()) { pg = it; break; }
+            if (sec && pg) {
+                std::function<QQuickItem *(QQuickItem *)> card = [&](QQuickItem *it) -> QQuickItem * {
+                    if (!it) return nullptr;
+                    if (it->property("key").toString() == QStringLiteral("inr") && it->property("text").isValid()) return it;
+                    for (QQuickItem *c : it->childItems()) if (QQuickItem *x = card(c)) return x;
+                    return nullptr;
+                };
+                if (QQuickItem *c = card(win->contentItem())) QQmlProperty::write(c, QStringLiteral("text"), QLocale().toString(3.9, 'f', 1));
+                if (QObject *f = win->findChild<QObject *>(QStringLiteral("fluidIn"))) QQmlProperty::write(f, QStringLiteral("text"), QStringLiteral("250"));
+                if (QObject *f = win->findChild<QObject *>(QStringLiteral("fluidOut"))) QQmlProperty::write(f, QStringLiteral("text"), QStringLiteral("300"));
+                pg->setProperty("edemaGrade", 2);
+                if (QObject *f = win->findChild<QObject *>(QStringLiteral("edemaSite"))) QQmlProperty::write(f, QStringLiteral("text"), Fluid::edemaSites().value(1));
+                pg->setProperty("edemaSide", Fluid::edemaSides().value(1));
+                QMetaObject::invokeMethod(pg, "updateCare");
+                wait(250);
+                check(!pg->property("edemaHint").toString().isEmpty() && pg->property("inrState").toMap().value(QStringLiteral("zone")).toString() == QStringLiteral("high"),
+                      "Bilanz: Hinweise im Formular");
+                for (QQuickItem *p = sec->parentItem(); p; p = p->parentItem())
+                    if (p->inherits("QQuickFlickable")) { QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, sec->mapToItem(p->childItems().value(0), QPointF()).y() - 140)); break; }
+                wait(200);
+                shot(QStringLiteral("m10d_bilanz_oedeme"));
+            } else check(false, "Bilanz: Formularfelder");
+            stackPop();
+        }
+        app.deleteVital(vid);
+        app.savePerson(old);
     }
     call(h, "editPerson", false);
         wait(300);

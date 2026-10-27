@@ -178,5 +178,5 @@ private:
     QByteArray m_key;
     bool       m_wasOpen = false;
     QString    m_path;
-    static constexpr int kSchemaVersion = 9;   // 9: vitals.stool
+    static constexpr int kSchemaVersion = 10;  // 9: vitals.stool; 10: inr, fluid_in/out, edema
 };

@@ -18,6 +18,8 @@
 #include "medschedule.h"
 #include "peakflow.h"
 #include "protocols.h"
+#include "inr.h"
+#include "fluid.h"
 #include "stool.h"
 #include "reportprinter.h"
 #include "session.h"
@@ -620,6 +622,15 @@ QVariantMap AppController::personDetail(qint64 id)
         m.insert(QStringLiteral("bioSex"), s.isNull() ? QString() : QString(s));
         m.insert(QStringLiteral("bioSexDiffers"), PeakFlow::bioSexDiffers(p));
     }
+    {   // INR-Zielbereich, Trinkmengen, Gewichtskontrolle (Text in der Anzeigesprache, leer = nicht gesetzt)
+        const Inr::Range r = Inr::range(p);
+        const QLocale loc;
+        m.insert(QStringLiteral("inrLow"), r.personal ? loc.toString(r.low, 'f', 1) : QString());
+        m.insert(QStringLiteral("inrHigh"), r.personal ? loc.toString(r.high, 'f', 1) : QString());
+        m.insert(QStringLiteral("fluidMin"), Fluid::minIntake(p) ? QString::number(Fluid::minIntake(p)) : QString());
+        m.insert(QStringLiteral("fluidMax"), Fluid::maxIntake(p) ? QString::number(Fluid::maxIntake(p)) : QString());
+        m.insert(QStringLiteral("weightWatch"), Fluid::weightWatch(p) > 0 ? loc.toString(Fluid::weightWatch(p), 'f', 1) : QString());
+    }
     return m;
 }
 
@@ -716,6 +727,11 @@ qint64 AppController::savePerson(const QVariantMap &m)
         else p.extra.insert(k, val);
     }
     if (m.contains(QStringLiteral("peakFlowBest"))) PeakFlow::setPersonalBest(p, m.value(QStringLiteral("peakFlowBest")).toInt());
+    if (m.contains(QStringLiteral("inrLow")))
+        Inr::setRange(p, optNum(m.value(QStringLiteral("inrLow"))).value_or(0), optNum(m.value(QStringLiteral("inrHigh"))).value_or(0));
+    if (m.contains(QStringLiteral("fluidMin")))
+        Fluid::setLimits(p, optInt(m.value(QStringLiteral("fluidMin"))).value_or(0), optInt(m.value(QStringLiteral("fluidMax"))).value_or(0),
+                         optNum(m.value(QStringLiteral("weightWatch"))).value_or(0));
     if (m.contains(QStringLiteral("bioSex"))) {      // nach p.sex: gespeichert wird nur eine Abweichung
         const QString bs = m.value(QStringLiteral("bioSex")).toString();
         PeakFlow::setBiologicalSex(p, bs.isEmpty() ? QChar() : bs.at(0));
@@ -807,6 +823,7 @@ QVariantList AppController::vitalFields() const
         { VitalKey::Temperature, 30, 44, 0.1 }, { VitalKey::SpO2, 50, 100, 1 },
         { VitalKey::Glucose, mmol ? 0.5 : 10.0, mmol ? 40.0 : 700.0, mmol ? 0.1 : 1.0 },
         { VitalKey::Weight, 1, 400, 0.1 }, { VitalKey::Height, 30, 250, 1 }, { VitalKey::PeakFlow, 30, 1000, 10 },
+        { VitalKey::Inr, 0.5, 12, 0.1 },
     };
     for (const F &f : fields)
         l << QVariantMap{ { QStringLiteral("key"), VitalDefs::key(f.k) }, { QStringLiteral("label"), VitalDefs::label(f.k) },
@@ -863,11 +880,24 @@ QVariantList AppController::journal(qint64 pid, const QString &query, int days)
                                    { QStringLiteral("unit"), QStringLiteral("mmHg") },
                                    { QStringLiteral("color"), VitalDefs::color(VitalKey::Systolic).name() } };
         for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::Glucose, VitalKey::Weight,
-                            VitalKey::Height, VitalKey::Bmi, VitalKey::PeakFlow }) {
+                            VitalKey::Height, VitalKey::Bmi, VitalKey::PeakFlow, VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut,
+                            VitalKey::Edema }) {
             const QString t = VitalDefs::formatted(r, k);
             if (t.isEmpty()) continue;
             QVariantMap v{ { QStringLiteral("label"), VitalDefs::shortLabel(k) }, { QStringLiteral("text"), t },
                            { QStringLiteral("unit"), VitalDefs::unit(k) }, { QStringLiteral("color"), VitalDefs::color(k).name() } };
+            if (k == VitalKey::FluidIn && !r.fluidInKind.isEmpty()) v.insert(QStringLiteral("unit"), QStringLiteral("ml · ") + r.fluidInKind);
+            if (k == VitalKey::FluidOut && !r.fluidOutKind.isEmpty()) v.insert(QStringLiteral("unit"), QStringLiteral("ml · ") + r.fluidOutKind);
+            if (k == VitalKey::Edema) {
+                v.insert(QStringLiteral("text"), Fluid::edemaText(r));
+                v.insert(QStringLiteral("unit"), QString());
+                if (!Fluid::edemaAdvice(r).isEmpty()) v.insert(QStringLiteral("alert"), Inr::zoneColor(Inr::Zone::High, Themes::isDark()).name());
+            }
+            if (k == VitalKey::Inr && r.inr && pat) {
+                const Inr::Assessment a = Inr::assess(*pat, *r.inr);
+                if (a.zone != Inr::Zone::InRange && a.zone != Inr::Zone::None)
+                    v.insert(QStringLiteral("alert"), Inr::zoneColor(a.zone, Themes::isDark()).name());
+            }
             if (k == VitalKey::PeakFlow && r.peakFlow && pat) {
                 const PeakFlow::Assessment a = PeakFlow::assess(*pat, *r.peakFlow, r.measuredAt.date(), heightAt.value(r.id));
                 if (a.zone == PeakFlow::Zone::Yellow || a.zone == PeakFlow::Zone::Red) {
@@ -925,6 +955,8 @@ static QVariantMap vitalToMap(const VitalRecord &r)
         values.insert(it.key(), it.value().toVariant());
     const StoolDetail &sd = r.stoolDetail;
     return QVariantMap{
+        { QStringLiteral("fluidInKind"), r.fluidInKind }, { QStringLiteral("fluidOutKind"), r.fluidOutKind },
+        { QStringLiteral("edemaSite"), r.edemaSite }, { QStringLiteral("edemaSide"), r.edemaSide },
         { QStringLiteral("stool"), r.stool ? QVariant(*r.stool) : QVariant() },
         { QStringLiteral("stoolDetail"), QVariantMap{ { QStringLiteral("amount"), sd.amount }, { QStringLiteral("color"), sd.color },
                                                       { QStringLiteral("admixture"), sd.admixture }, { QStringLiteral("symptoms"), sd.symptoms } } },
@@ -973,6 +1005,18 @@ static VitalRecord mapToVital(qint64 pid, const QVariantMap &m, const VitalRecor
     r.glucose = g ? std::optional<double>(VitalDefs::glucoseFromDisplay(*g)) : std::nullopt;
     r.weight = optNum(val(VitalKey::Weight));
     r.height = optNum(val(VitalKey::Height));
+    if (const auto i = optNum(val(VitalKey::Inr))) r.inr = *i > 0 ? std::optional<double>(std::round(*i * 10) / 10) : std::nullopt;
+    else r.inr = std::nullopt;
+    r.fluidIn = optInt(val(VitalKey::FluidIn));
+    r.fluidOut = optInt(val(VitalKey::FluidOut));
+    if (r.fluidIn && *r.fluidIn <= 0) r.fluidIn.reset();
+    if (r.fluidOut && *r.fluidOut <= 0) r.fluidOut.reset();
+    r.fluidInKind = r.fluidIn ? m.value(QStringLiteral("fluidInKind")).toString().trimmed() : QString();
+    r.fluidOutKind = r.fluidOut ? m.value(QStringLiteral("fluidOutKind")).toString().trimmed() : QString();
+    r.edema = optInt(val(VitalKey::Edema));
+    if (r.edema && (*r.edema < 0 || *r.edema > Fluid::kEdemaMax)) r.edema.reset();
+    r.edemaSite = r.edema && *r.edema > 0 ? m.value(QStringLiteral("edemaSite")).toString().trimmed() : QString();
+    r.edemaSide = r.edema && *r.edema > 0 ? m.value(QStringLiteral("edemaSide")).toString().trimmed() : QString();
     if (m.contains(QStringLiteral("stool"))) {      // Stuhlgang: null = nicht erfasst, 0 = ohne Angabe, 1–7 Bristol
         r.stool = optInt(m.value(QStringLiteral("stool")));
         if (r.stool && (*r.stool < 0 || *r.stool > Stool::kTypes)) r.stool = 0;
@@ -1101,6 +1145,64 @@ QVariantList AppController::latest(qint64 pid)
                           { QStringLiteral("when"), when(*last) }, { QStringLiteral("colors"), swatches },
                           { QStringLiteral("series"), series } };
     }
+    const auto pat = Database::instance().patient(pid);
+    {   // INR: letzter Wert, farbig außerhalb des Zielbereichs
+        const VitalRecord *last = nullptr;
+        for (auto it = recs.crbegin(); it != recs.crend(); ++it) if (it->inr) { last = &*it; break; }
+        if (last && pat) {
+            const Inr::Assessment a = Inr::assess(*pat, *last->inr);
+            QVariantList pts;
+            for (const VitalRecord &r : recs)
+                if (r.inr && r.measuredAt >= from)
+                    pts << QVariantMap{ { QStringLiteral("x"), double(from.date().daysTo(r.measuredAt.date())) / 30.0 }, { QStringLiteral("y"), *r.inr } };
+            const QString col = VitalDefs::color(VitalKey::Inr).name();
+            l << QVariantMap{ { QStringLiteral("key"), QStringLiteral("inr") }, { QStringLiteral("label"), VitalDefs::label(VitalKey::Inr) },
+                              { QStringLiteral("value"), loc.toString(*last->inr, 'f', 1) }, { QStringLiteral("unit"), Inr::zoneName(a.zone) },
+                              { QStringLiteral("when"), when(*last) }, { QStringLiteral("colors"), QVariantList{ col } },
+                              { QStringLiteral("alert"), a.zone != Inr::Zone::InRange },
+                              { QStringLiteral("series"), QVariantList{ QVariantMap{ { QStringLiteral("color"), col }, { QStringLiteral("points"), pts } } } } };
+        }
+    }
+    {   // Ein- und Ausfuhr heute; Spur = Einfuhr je Tag
+        const auto days = Fluid::perDay(recs, from.date(), QDate::currentDate());
+        if (!days.isEmpty()) {
+            const Fluid::Day d = days.value(QDate::currentDate());
+            QVariantList pin, pout;
+            for (auto it = days.cbegin(); it != days.cend(); ++it) {
+                const double x = double(from.date().daysTo(it.key())) / 30.0;
+                pin << QVariantMap{ { QStringLiteral("x"), x }, { QStringLiteral("y"), double(it.value().in) } };
+                pout << QVariantMap{ { QStringLiteral("x"), x }, { QStringLiteral("y"), double(it.value().out) } };
+            }
+            const QString ci = VitalDefs::color(VitalKey::FluidIn).name(), co = VitalDefs::color(VitalKey::FluidOut).name();
+            l << QVariantMap{ { QStringLiteral("key"), QStringLiteral("fluid") }, { QStringLiteral("label"), tr("Ein-/Ausfuhr heute") },
+                              { QStringLiteral("value"), QStringLiteral("%1 / %2").arg(loc.toString(d.in), loc.toString(d.out)) },
+                              { QStringLiteral("unit"), tr("ml") },
+                              { QStringLiteral("when"), tr("Bilanz %1").arg(Fluid::signedMl(d.balance())) },
+                              { QStringLiteral("colors"), QVariantList{ ci, co } },
+                              { QStringLiteral("alert"), pat && Fluid::maxIntake(*pat) && d.in > Fluid::maxIntake(*pat) },
+                              { QStringLiteral("series"), QVariantList{ QVariantMap{ { QStringLiteral("color"), ci }, { QStringLiteral("points"), pin } },
+                                                                        QVariantMap{ { QStringLiteral("color"), co }, { QStringLiteral("points"), pout } } } } };
+        }
+    }
+    {   // Ödeme: letzte Angabe
+        const VitalRecord *last = nullptr;
+        for (auto it = recs.crbegin(); it != recs.crend(); ++it) if (it->edema) { last = &*it; break; }
+        if (last && last->measuredAt >= from.addDays(-60)) {
+            QVariantList pts;
+            for (const VitalRecord &r : recs)
+                if (r.edema && r.measuredAt >= from)
+                    pts << QVariantMap{ { QStringLiteral("x"), double(from.date().daysTo(r.measuredAt.date())) / 30.0 }, { QStringLiteral("y"), double(*r.edema) } };
+            const QString col = VitalDefs::color(VitalKey::Edema).name();
+            QStringList where;
+            if (!last->edemaSite.isEmpty()) where << last->edemaSite;
+            if (!last->edemaSide.isEmpty()) where << last->edemaSide;
+            l << QVariantMap{ { QStringLiteral("key"), QStringLiteral("edema") }, { QStringLiteral("label"), VitalDefs::label(VitalKey::Edema) },
+                              { QStringLiteral("value"), Fluid::edemaShort(*last->edema) }, { QStringLiteral("unit"), where.join(QStringLiteral(", ")) },
+                              { QStringLiteral("when"), when(*last) }, { QStringLiteral("colors"), QVariantList{ col } },
+                              { QStringLiteral("alert"), !Fluid::edemaAdvice(*last).isEmpty() },
+                              { QStringLiteral("series"), QVariantList{ QVariantMap{ { QStringLiteral("color"), col }, { QStringLiteral("points"), pts } } } } };
+        }
+    }
     // Stuhlgang: Tage seit dem letzten Eintrag; Spur = Anzahl je Tag (letzte 30 Tage)
     const Stool::Status st = Stool::status(recs);
     if (st.last.isValid() && st.tracked) {
@@ -1128,6 +1230,113 @@ QVariantMap AppController::stoolStatus(qint64 pid)
     const Stool::Status st = Stool::status(Database::instance().vitals(pid, QDateTime(QDate::currentDate().addDays(-40), QTime(0, 0)), {}));
     return { { QStringLiteral("warn"), st.warn }, { QStringLiteral("days"), st.daysWithout },
              { QStringLiteral("text"), Stool::warningText(st) }, { QStringLiteral("status"), Stool::statusText(st) } };
+}
+
+QVariantList AppController::careNotices(qint64 pid)
+{
+    QVariantList l;
+    if (!loggedIn() || !pid) return l;
+    const auto p = Database::instance().patient(pid);
+    if (!p) return l;
+    const QList<VitalRecord> recent = Database::instance().vitals(pid, QDateTime(QDate::currentDate().addDays(-40), QTime(0, 0)), {});
+    auto add = [&](const QString &t, bool critical) {
+        l << QVariantMap{ { QStringLiteral("text"), t }, { QStringLiteral("critical"), critical } };
+    };
+    const VitalRecord *lastInr = nullptr;
+    for (const VitalRecord &r : recent)
+        if (r.inr && (!lastInr || r.measuredAt > lastInr->measuredAt)) lastInr = &r;
+    if (lastInr && lastInr->measuredAt.date().daysTo(QDate::currentDate()) <= 14) {
+        const Inr::Assessment a = Inr::assess(*p, *lastInr->inr);
+        if (a.zone == Inr::Zone::Low || a.zone == Inr::Zone::High || a.zone == Inr::Zone::VeryHigh)
+            add(a.text + QLatin1Char(' ') + a.advice, a.zone == Inr::Zone::VeryHigh);
+    }
+    for (const Fluid::Notice &n : { Fluid::intakeNotice(*p, recent), Fluid::weightNotice(*p, recent) })
+        if (n.warn) add(n.text, false);
+    const Stool::Status st = Stool::status(recent);
+    if (st.warn) add(Stool::warningText(st), false);
+    return l;
+}
+
+QVariantMap AppController::inrCheck(qint64 pid, const QString &valueText)
+{
+    Patient p;
+    if (const auto x = Database::instance().patient(pid)) p = *x;
+    const auto v = optNum(valueText);
+    if (!v || *v <= 0) return { { QStringLiteral("text"), Inr::rangeText(Inr::range(p)) }, { QStringLiteral("zone"), QString() } };
+    const Inr::Assessment a = Inr::assess(p, *v);
+    return { { QStringLiteral("text"), a.text }, { QStringLiteral("advice"), a.advice }, { QStringLiteral("zone"), Inr::zoneKey(a.zone) },
+             { QStringLiteral("zoneName"), Inr::zoneName(a.zone) }, { QStringLiteral("color"), Inr::zoneColor(a.zone, Themes::isDark()).name() } };
+}
+
+QVariantMap AppController::fluidChoices() const
+{
+    QVariantList grades;
+    for (int g = 0; g <= Fluid::kEdemaMax; ++g)
+        grades << QVariantMap{ { QStringLiteral("value"), g }, { QStringLiteral("name"), g ? Fluid::edemaShort(g) : Fluid::edemaShort(0) },
+                               { QStringLiteral("title"), Fluid::edemaName(g) }, { QStringLiteral("description"), Fluid::edemaDescription(g) } };
+    return { { QStringLiteral("inKinds"), Fluid::inKinds() }, { QStringLiteral("outKinds"), Fluid::outKinds() },
+             { QStringLiteral("amounts"), Fluid::quickAmounts() }, { QStringLiteral("edemaGrades"), grades },
+             { QStringLiteral("edemaSites"), Fluid::edemaSites() }, { QStringLiteral("edemaSides"), Fluid::edemaSides() } };
+}
+
+// Bilanz des Tages einschließlich der gerade bearbeiteten Messung (id, measuredAt, values …)
+QVariantMap AppController::fluidDay(qint64 pid, const QVariantMap &current)
+{
+    QVariantMap m;
+    if (!loggedIn() || !pid) return m;
+    const auto p = Database::instance().patient(pid);
+    VitalRecord base;
+    const qint64 id = current.value(QStringLiteral("id")).toLongLong();
+    if (id) if (const auto x = Database::instance().vital(id)) base = *x;
+    const VitalRecord cur = mapToVital(pid, current, base);
+    const QDate day = cur.measuredAt.isValid() ? cur.measuredAt.date() : QDate::currentDate();
+    QList<VitalRecord> recs;
+    for (const VitalRecord &r : Database::instance().vitals(pid, QDateTime(day, QTime(0, 0)), QDateTime(day.addDays(1), QTime(0, 0))))
+        if (r.id != id) recs << r;
+    recs << cur;
+    const Fluid::Day d = Fluid::perDay(recs, day, day).value(day);
+    const QLocale loc;
+    QString t = (day == QDate::currentDate() ? tr("Heute") : loc.toString(day, QStringLiteral("dd.MM.")))
+              + tr(": Einfuhr %1 ml, Ausfuhr %2 ml, Bilanz %3").arg(loc.toString(d.in), loc.toString(d.out), Fluid::signedMl(d.balance()));
+    if (p) if (const QString lim = Fluid::limitsText(*p); !lim.isEmpty()) t += QStringLiteral(" · ") + lim;
+    m.insert(QStringLiteral("text"), t);
+    m.insert(QStringLiteral("over"), p && Fluid::maxIntake(*p) && d.in > Fluid::maxIntake(*p));
+    return m;
+}
+
+QString AppController::edemaAdvice(const QVariantMap &current) const
+{
+    VitalRecord r = mapToVital(0, current, {});
+    return r.edema && *r.edema >= 0 ? (Fluid::edemaDescription(*r.edema) + (Fluid::edemaAdvice(r).isEmpty() ? QString()
+                                                                         : QStringLiteral("\n") + Fluid::edemaAdvice(r)))
+                                    : QString();
+}
+
+// Nach dem Speichern: Hinweise wie am Computer (INR, Ödeme, Gewichtszunahme, Trinkmenge)
+QStringList AppController::careWarnings(qint64 pid, qint64 vitalId)
+{
+    QStringList l;
+    const auto p = Database::instance().patient(pid);
+    const auto r = Database::instance().vital(vitalId);
+    if (!p || !r) return l;
+    const QList<VitalRecord> recent = Database::instance().vitals(pid, QDateTime(r->measuredAt.date().addDays(-10), QTime(0, 0)),
+                                                                 QDateTime(r->measuredAt.date().addDays(1), QTime(0, 0)));
+    if (r->inr) {
+        const Inr::Assessment a = Inr::assess(*p, *r->inr);
+        if (a.zone == Inr::Zone::Low || a.zone == Inr::Zone::High || a.zone == Inr::Zone::VeryHigh) l << a.text + QStringLiteral("\n") + a.advice;
+    }
+    if (r->edema && *r->edema > 0) {
+        std::optional<int> prev;
+        QDateTime at;
+        for (const VitalRecord &x : recent)
+            if (x.edema && x.id != r->id && x.measuredAt < r->measuredAt && (!at.isValid() || x.measuredAt > at)) { prev = x.edema; at = x.measuredAt; }
+        if (const QString adv = Fluid::edemaAdvice(*r, prev); !adv.isEmpty()) l << tr("Ödeme: %1").arg(Fluid::edemaText(*r)) + QStringLiteral("\n") + adv;
+    }
+    if (r->weight)
+        if (const Fluid::Notice n = Fluid::weightNotice(*p, recent, r->measuredAt.date()); n.warn) l << n.text;
+    if (r->fluidIn && Fluid::maxIntake(*p) && r->measuredAt.date() == QDate::currentDate())
+        if (const Fluid::Notice n = Fluid::intakeNotice(*p, recent, r->measuredAt.date()); n.warn) l << n.text;
+    return l;
 }
 
 QVariantMap AppController::stoolChoices() const
@@ -1485,9 +1694,11 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
             QString err;
             ok = ReportPrinter::journalToXlsx(path, *p, model, period, &err);
         }
-    } else if (kind.startsWith(QLatin1String("stool")) || kind.startsWith(QLatin1String("glucose"))) {
-        // Stuhlprotokoll / BZ-Tagesprofile aus den erfassten Werten
+    } else if (kind.startsWith(QLatin1String("stool")) || kind.startsWith(QLatin1String("glucose")) || kind.startsWith(QLatin1String("fluid"))) {
+        // Stuhlprotokoll / BZ-Tagesprofile / Ein- und Ausfuhr aus den erfassten Werten
         const bool stool = kind.startsWith(QLatin1String("stool"));
+        const Protocols::Kind pk = stool ? Protocols::Kind::Stool : kind.startsWith(QLatin1String("glucose")) ? Protocols::Kind::Glucose
+                                                                                                                : Protocols::Kind::Fluid;
         const bool xlsx = kind.endsWith(QLatin1String("Xlsx"));
         const int days = options.value(QStringLiteral("days")).toInt();
         Protocols::Options o;
@@ -1495,9 +1706,9 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         if (days > 0) o.from = o.to.addDays(1 - days);
         if (options.contains(QStringLiteral("minValues"))) o.minValues = options.value(QStringLiteral("minValues")).toInt();
         const QDateTime from = o.from.isValid() ? QDateTime(o.from.addDays(-31), QTime(0, 0)) : QDateTime();
-        const Protocols::Table t = Protocols::build(stool ? Protocols::Kind::Stool : Protocols::Kind::Glucose,
-                                                    db.vitals(pid, from, {}), o);
-        const QString name = stool ? QStringLiteral("Stuhlprotokoll") : QStringLiteral("BZ-Tagesprofile");
+        const Protocols::Table t = Protocols::build(pk, db.vitals(pid, from, {}), o, *p);
+        const QString name = pk == Protocols::Kind::Stool ? QStringLiteral("Stuhlprotokoll")
+                           : pk == Protocols::Kind::Glucose ? QStringLiteral("BZ-Tagesprofile") : QStringLiteral("Bilanz");
         path = QStringLiteral("%1/%2_%3_%4.%5").arg(dir, name, base, stamp, xlsx ? QStringLiteral("xlsx") : QStringLiteral("pdf"));
         QString err;
         ok = xlsx ? Protocols::toXlsx(t, *p, Protocols::periodText(o), path, &err)

@@ -31,6 +31,7 @@ private slots:
     void editAdmission();
     void updateAmputationInfo();
     void setupPeakFlow();
+    void setupTargets();          // INR-Zielbereich, Trinkmenge, Gewichtskontrolle
     void updatePeakFlowInfo();
     void updateBioSex(bool fromSexField);
     void setupCareWidgets();

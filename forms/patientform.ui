@@ -18,7 +18,7 @@
    <string>Stammblatt</string>
   </property>
   <property name="formVersion" stdset="0">
-   <number>4</number>
+   <number>5</number>
   </property>
   <layout class="QVBoxLayout" name="rootLayout">
    <property name="leftMargin"><number>0</number></property>
@@ -491,6 +491,107 @@
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="targetsRow">
+         <item>
+          <widget class="QGroupBox" name="inrGroup">
+           <property name="title"><string>Gerinnung (INR)</string></property>
+           <layout class="QFormLayout" name="inrForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="inrRangeLabel">
+              <property name="text"><string>&amp;Zielbereich</string></property>
+              <property name="buddy"><cstring>inrLowSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="inrRangeRow">
+              <item>
+               <widget class="QDoubleSpinBox" name="inrLowSpin">
+                <property name="toolTip"><string>Ärztlich festgelegter INR-Zielbereich (z. B. 2,0–3,0, bei künstlichen Herzklappen oft 2,5–3,5). Leer: Standard 2,0–3,0.</string></property>
+                <property name="specialValueText"><string>—</string></property>
+                <property name="decimals"><number>1</number></property>
+                <property name="maximum"><double>6.000000000000000</double></property>
+                <property name="singleStep"><double>0.100000000000000</double></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="inrDashLabel">
+                <property name="text"><string notr="true">–</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="inrHighSpin">
+                <property name="specialValueText"><string>—</string></property>
+                <property name="decimals"><number>1</number></property>
+                <property name="maximum"><double>8.000000000000000</double></property>
+                <property name="singleStep"><double>0.100000000000000</double></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QLabel" name="inrInfoLabel">
+              <property name="wordWrap"><bool>true</bool></property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="fluidGroup">
+           <property name="title"><string>Trinkmenge und Gewicht</string></property>
+           <layout class="QFormLayout" name="fluidForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="fluidMinLabel">
+              <property name="text"><string>Trinkmenge &amp;mindestens</string></property>
+              <property name="buddy"><cstring>fluidMinSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="fluidMinSpin">
+              <property name="toolTip"><string>Hinweis, wenn an einem Tag weniger getrunken wurde (Einfuhr)</string></property>
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> ml/Tag</string></property>
+              <property name="maximum"><number>5000</number></property>
+              <property name="singleStep"><number>100</number></property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="fluidMaxLabel">
+              <property name="text"><string>Trinkmenge &amp;höchstens</string></property>
+              <property name="buddy"><cstring>fluidMaxSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="fluidMaxSpin">
+              <property name="toolTip"><string>Ärztlich verordnete Trinkmengenbegrenzung (z. B. bei Herzschwäche oder Dialyse)</string></property>
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> ml/Tag</string></property>
+              <property name="maximum"><number>5000</number></property>
+              <property name="singleStep"><number>100</number></property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="weightWatchLabel">
+              <property name="text"><string>Ge&amp;wichtszunahme melden ab</string></property>
+              <property name="buddy"><cstring>weightWatchSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="weightWatchSpin">
+              <property name="toolTip"><string>Bei Herzschwäche üblich: Hinweis, wenn das Gewicht in 3 Tagen um mehr als 2 kg steigt (Wassereinlagerung)</string></property>
+              <property name="specialValueText"><string>aus</string></property>
+              <property name="suffix"><string> kg in 3 Tagen</string></property>
+              <property name="decimals"><number>1</number></property>
+              <property name="maximum"><double>5.000000000000000</double></property>
+              <property name="singleStep"><double>0.500000000000000</double></property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QGroupBox" name="admissionGroup">

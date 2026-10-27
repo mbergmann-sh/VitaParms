@@ -22,6 +22,8 @@
 
 class QWidget;
 
+#include <QScrollArea>
+
 namespace FormLoader {
 
 struct FormInfo {
@@ -46,6 +48,12 @@ int     formVersion(QWidget *root);
 
 // Prüft eine .ui-Datei und liefert eine Liste von Meldungen (leer = alles ok)
 QStringList check(const QString &name, const QString &filePath);
+
+// Formular in einen scrollbaren Bereich setzen: Die Knöpfe unter dem Formular bleiben immer
+// erreichbar, auch wenn das Formular höher als der Bildschirm wird.
+QScrollArea *scrollable(QWidget *form, QWidget *parent);
+// Fenstergröße und -lage auf den verfügbaren Bildschirmbereich begrenzen
+void fitToScreen(QWidget *window);
 
 } // namespace FormLoader
 

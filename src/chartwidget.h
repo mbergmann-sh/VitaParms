@@ -25,6 +25,10 @@ struct ChartSpec {
     QStringList hiddenKeys;      // einzeln ausgeblendete Kurven (VitalDefs::key)
     bool        separatePages = false;   // Druck/PDF: jeder Bereich auf einer eigenen Seite
     QList<VitalRecord> records;  // beliebige Reihenfolge
+    // aus dem Stammblatt (0 = nicht gesetzt): INR-Zielbereich als Band, Trinkmengen als Linien
+    double      inrLow = 0, inrHigh = 0;
+    int         fluidMin = 0, fluidMax = 0;
+    void setPatient(const Patient &p);   // übernimmt die Angaben oben
 
     QString periodText() const;
     QString scaleName() const;
@@ -47,6 +51,8 @@ struct SeriesStats {
     int      longestGap = 0;   // längste Zeitspanne ohne Stuhlgang (Tage)
     bool hasRange() const { return key == VitalKey::Stool ? typed > 0 : count > 0; }
     QString stoolNote() const;  // "an 5 von 7 Tagen, längste Pause 2 Tage"
+    QString note;               // Zusatz zur Bezeichnung (Stuhlgang, INR im Zielbereich, Ein-/Ausfuhr je Tag)
+    QString label() const;      // Bezeichnung mit Zusatz für Kennwert-Tabellen
 };
 
 class ChartRenderer

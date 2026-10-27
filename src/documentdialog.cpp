@@ -23,7 +23,7 @@ DocumentDialog::DocumentDialog(const MedicalDocument &doc, const QByteArray &pdf
                                         : tr("Dokument bearbeiten"));
     auto *lay = new QVBoxLayout(this);
     m_form = FormLoader::load(QStringLiteral("documentform"), this);
-    lay->addWidget(m_form);
+    lay->addWidget(FormLoader::scrollable(m_form, this), 1);
 
     auto *buttons = new QDialogButtonBox(this);
     if (mode == Mode::Import) {

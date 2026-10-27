@@ -4,6 +4,8 @@
 #include "medstock.h"
 #include "protocoldialog.h"
 #include "stool.h"
+#include "inr.h"
+#include "fluid.h"
 #include "stockdialog.h"
 #include "careinfo.h"
 #include "dbsync.h"
@@ -563,6 +565,9 @@ void MainWindow::buildMenus()
     m_actUserPrint << out->addAction(tr("BZ-&Tagesprofile…"), this, [this] { showProtocol(Protocols::Kind::Glucose); });
     m_actUserPrint.last()->setObjectName(QStringLiteral("actGlucoseProtocol"));
     m_actUserPrint.last()->setStatusTip(tr("Blutzuckerwerte je Tag nach Profilzeitpunkten, aus den erfassten Messungen zusammengestellt"));
+    m_actUserPrint << out->addAction(tr("Ein- und Ausfuhr (&Bilanz)…"), this, [this] { showProtocol(Protocols::Kind::Fluid); });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actFluidProtocol"));
+    m_actUserPrint.last()->setStatusTip(tr("Einfuhr und Ausfuhr je Eintrag, Tagessummen und Bilanz"));
 
     // ---- Extras
     QMenu *extras = menuBar()->addMenu(tr("E&xtras"));
@@ -754,7 +759,25 @@ void MainWindow::updateHeader()
     }
     // Stuhlgang: seit mindestens drei Tagen nichts eingetragen (nur wenn Stuhlgang erfasst wird)
     {
-        const Stool::Status st = Stool::status(Database::instance().vitals(p->id));
+        const QList<VitalRecord> recent = Database::instance().vitals(p->id, QDateTime(QDate::currentDate().addDays(-40), QTime(0, 0)), {});
+        QStringList care;
+        // INR: letzter Wert (höchstens 14 Tage alt) außerhalb des Zielbereichs
+        const VitalRecord *lastInr = nullptr;
+        for (const VitalRecord &r : recent)
+            if (r.inr && (!lastInr || r.measuredAt > lastInr->measuredAt)) lastInr = &r;
+        if (lastInr && lastInr->measuredAt.date().daysTo(QDate::currentDate()) <= 14) {
+            const Inr::Assessment a = Inr::assess(*p, *lastInr->inr);
+            if (a.zone == Inr::Zone::Low || a.zone == Inr::Zone::High || a.zone == Inr::Zone::VeryHigh)
+                care << QStringLiteral("<span style=\"color:%1;\"><b>%2</b> %3</span>")
+                            .arg(a.zone == Inr::Zone::VeryHigh ? QStringLiteral("#D52B1E") : QStringLiteral("#B35C00"), tr("INR:"),
+                                 tr("%1 am %2 – %3").arg(QLocale().toString(*lastInr->inr, 'f', 1),
+                                                        QLocale().toString(lastInr->measuredAt.date(), QStringLiteral("dd.MM.")),
+                                                        Inr::zoneName(a.zone)).toHtmlEscaped());
+        }
+        for (const Fluid::Notice &n : { Fluid::intakeNotice(*p, recent), Fluid::weightNotice(*p, recent) })
+            if (n.warn) care << QStringLiteral("<span style=\"color:#B35C00;\">%1</span>").arg(n.text.toHtmlEscaped());
+        if (!care.isEmpty()) t += QStringLiteral("<br><small>%1</small>").arg(care.join(QStringLiteral("<br>")));
+        const Stool::Status st = Stool::status(recent);
         if (st.warn) {
             t += QStringLiteral("<br><small><span style=\"color:#B35C00;\"><b>%1</b> %2</span></small>")
                      .arg(tr("Stuhlgang:"), tr("seit %1 Tagen keiner eingetragen (zuletzt %2)")
@@ -1047,6 +1070,7 @@ void MainWindow::reloadChart()
     if (m_patientId)
         // 31 Tage Vorlauf: Zeitspannen ohne Stuhlgang, die vor dem Zeitraum beginnen (gezeichnet wird nur der Zeitraum)
         spec.records = Database::instance().vitals(m_patientId, spec.from.addDays(-31), spec.to, true);
+    if (const auto p = currentPatient()) spec.setPatient(*p);
     m_chart->setSpec(spec);
 }
 

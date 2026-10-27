@@ -18,7 +18,7 @@
    <string>Vitalwerte</string>
   </property>
   <property name="formVersion" stdset="0">
-   <number>3</number>
+   <number>4</number>
   </property>
   <layout class="QVBoxLayout" name="rootLayout">
    <property name="leftMargin"><number>0</number></property>
@@ -101,313 +101,461 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="valuesGroup">
-     <property name="title"><string>Vitalwerte</string></property>
-     <layout class="QFormLayout" name="valuesForm">
-      <item row="0" column="0">
-       <widget class="QLabel" name="bpLabel">
-        <property name="text"><string>&amp;Blutdruck (sys / dia)</string></property>
-        <property name="buddy"><cstring>systolicSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <layout class="QHBoxLayout" name="bpRow">
-        <item>
-         <widget class="QSpinBox" name="systolicSpin">
-          <property name="specialValueText"><string>—</string></property>
-          <property name="suffix"><string> mmHg</string></property>
-          <property name="minimum"><number>49</number></property>
-          <property name="maximum"><number>300</number></property>
-          <property name="value"><number>49</number></property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="bpSlashLabel">
-          <property name="text"><string>/</string></property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="diastolicSpin">
-          <property name="specialValueText"><string>—</string></property>
-          <property name="suffix"><string> mmHg</string></property>
-          <property name="minimum"><number>19</number></property>
-          <property name="maximum"><number>200</number></property>
-          <property name="value"><number>19</number></property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="bpSpacer">
-          <property name="orientation"><enum>Qt::Horizontal</enum></property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="pulseLabel">
-        <property name="text"><string>&amp;Puls</string></property>
-        <property name="buddy"><cstring>pulseSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="pulseSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> /min</string></property>
-        <property name="minimum"><number>19</number></property>
-        <property name="maximum"><number>250</number></property>
-        <property name="value"><number>19</number></property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="temperatureLabel">
-        <property name="text"><string>&amp;Körpertemperatur</string></property>
-        <property name="buddy"><cstring>temperatureSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="temperatureSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> °C</string></property>
-        <property name="decimals"><number>1</number></property>
-        <property name="minimum"><double>33.899999999999999</double></property>
-        <property name="maximum"><double>43.000000000000000</double></property>
-        <property name="singleStep"><double>0.100000000000000</double></property>
-        <property name="value"><double>33.899999999999999</double></property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="spo2Label">
-        <property name="text"><string>&amp;Sauerstoffsättigung (SpO₂)</string></property>
-        <property name="buddy"><cstring>spo2Spin</cstring></property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="spo2Spin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> %</string></property>
-        <property name="minimum"><number>49</number></property>
-        <property name="maximum"><number>100</number></property>
-        <property name="value"><number>49</number></property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="peakFlowLabel">
-        <property name="text"><string>Pea&amp;k Flow</string></property>
-        <property name="buddy"><cstring>peakFlowSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QSpinBox" name="peakFlowSpin">
-        <property name="toolTip"><string>Exspiratorischer Spitzenfluss (PEF) in Litern pro Minute – bester von drei Versuchen</string></property>
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> l/min</string></property>
-        <property name="minimum"><number>29</number></property>
-        <property name="maximum"><number>900</number></property>
-        <property name="singleStep"><number>10</number></property>
-        <property name="value"><number>29</number></property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="glucoseLabel">
-        <property name="text"><string>Blut&amp;zucker</string></property>
-        <property name="buddy"><cstring>glucoseSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <layout class="QHBoxLayout" name="glucoseRow">
-        <item>
-         <widget class="QDoubleSpinBox" name="glucoseSpin">
-          <property name="minimumSize"><size><width>140</width><height>0</height></size></property>
-          <property name="specialValueText"><string>—</string></property>
-          <property name="toolTip"><string>Einheit (mg/dl oder mmol/l) unter Extras → Einstellungen</string></property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="glucoseUnitLabel">
-          <property name="text"><string>mg/dl</string></property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="glucoseSpacer">
-          <property name="orientation"><enum>Qt::Horizontal</enum></property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="weightLabel">
-        <property name="text"><string>&amp;Gewicht</string></property>
-        <property name="buddy"><cstring>weightSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QDoubleSpinBox" name="weightSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> kg</string></property>
-        <property name="decimals"><number>1</number></property>
-        <property name="minimum"><double>0.000000000000000</double></property>
-        <property name="maximum"><double>400.000000000000000</double></property>
-        <property name="singleStep"><double>0.100000000000000</double></property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="heightLabel">
-        <property name="text"><string>Körper&amp;größe</string></property>
-        <property name="buddy"><cstring>heightSpin</cstring></property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QDoubleSpinBox" name="heightSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> cm</string></property>
-        <property name="decimals"><number>0</number></property>
-        <property name="minimum"><double>0.000000000000000</double></property>
-        <property name="maximum"><double>250.000000000000000</double></property>
-        <property name="toolTip"><string>Leer lassen: für den BMI wird die zuletzt erfasste Größe verwendet.</string></property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="bmiLabel">
-        <property name="text"><string>BMI (berechnet)</string></property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <layout class="QVBoxLayout" name="bmiColumn">
-        <item>
-         <widget class="QLabel" name="bmiValueLabel">
-          <property name="text"><string>—</string></property>
-          <property name="styleSheet"><string notr="true">font-weight: bold;</string></property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="bmiInfoLabel">
-          <property name="minimumSize"><size><width>0</width><height>52</height></size></property>
-          <property name="alignment"><set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set></property>
-          <property name="styleSheet"><string notr="true">font-size: 8.5pt;</string></property>
-          <property name="wordWrap"><bool>true</bool></property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="stoolLabel">
-        <property name="text"><string>St&amp;uhlgang</string></property>
-        <property name="buddy"><cstring>stoolCheck</cstring></property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <layout class="QHBoxLayout" name="stoolRow">
-        <item>
-         <widget class="QCheckBox" name="stoolCheck">
-          <property name="text"><string>ja</string></property>
-          <property name="toolTip"><string>Ankreuzen, wenn Stuhlgang war – danach die Art wählen</string></property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="stoolCombo">
-          <property name="enabled"><bool>false</bool></property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy>
-          </property>
-          <property name="toolTip"><string>Art des Stuhlgangs nach der Bristol-Stuhlformen-Skala</string></property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="10" column="0" colspan="2">
-       <widget class="QWidget" name="stoolDetails">
-        <layout class="QGridLayout" name="stoolDetailsGrid" columnstretch="0,1,0,3">
-         <property name="leftMargin"><number>16</number></property>
-         <property name="topMargin"><number>0</number></property>
-         <property name="rightMargin"><number>0</number></property>
-         <property name="bottomMargin"><number>0</number></property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="stoolAmountLabel">
-           <property name="text"><string>Menge</string></property>
-           <property name="buddy"><cstring>stoolAmountCombo</cstring></property>
+    <layout class="QHBoxLayout" name="columnsRow">
+     <item>
+      <layout class="QVBoxLayout" name="leftColumn">
+         <item>
+          <widget class="QGroupBox" name="valuesGroup">
+           <property name="title"><string>Vitalwerte</string></property>
+           <layout class="QFormLayout" name="valuesForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="bpLabel">
+              <property name="text"><string>&amp;Blutdruck (sys / dia)</string></property>
+              <property name="buddy"><cstring>systolicSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="bpRow">
+              <item>
+               <widget class="QSpinBox" name="systolicSpin">
+                <property name="specialValueText"><string>—</string></property>
+                <property name="suffix"><string> mmHg</string></property>
+                <property name="minimum"><number>49</number></property>
+                <property name="maximum"><number>300</number></property>
+                <property name="value"><number>49</number></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="bpSlashLabel">
+                <property name="text"><string>/</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="diastolicSpin">
+                <property name="specialValueText"><string>—</string></property>
+                <property name="suffix"><string> mmHg</string></property>
+                <property name="minimum"><number>19</number></property>
+                <property name="maximum"><number>200</number></property>
+                <property name="value"><number>19</number></property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="bpSpacer">
+                <property name="orientation"><enum>Qt::Horizontal</enum></property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="pulseLabel">
+              <property name="text"><string>&amp;Puls</string></property>
+              <property name="buddy"><cstring>pulseSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="pulseSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> /min</string></property>
+              <property name="minimum"><number>19</number></property>
+              <property name="maximum"><number>250</number></property>
+              <property name="value"><number>19</number></property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="temperatureLabel">
+              <property name="text"><string>&amp;Körpertemperatur</string></property>
+              <property name="buddy"><cstring>temperatureSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="temperatureSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> °C</string></property>
+              <property name="decimals"><number>1</number></property>
+              <property name="minimum"><double>33.899999999999999</double></property>
+              <property name="maximum"><double>43.000000000000000</double></property>
+              <property name="singleStep"><double>0.100000000000000</double></property>
+              <property name="value"><double>33.899999999999999</double></property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="spo2Label">
+              <property name="text"><string>&amp;Sauerstoffsättigung (SpO₂)</string></property>
+              <property name="buddy"><cstring>spo2Spin</cstring></property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="spo2Spin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> %</string></property>
+              <property name="minimum"><number>49</number></property>
+              <property name="maximum"><number>100</number></property>
+              <property name="value"><number>49</number></property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="peakFlowLabel">
+              <property name="text"><string>Pea&amp;k Flow</string></property>
+              <property name="buddy"><cstring>peakFlowSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QSpinBox" name="peakFlowSpin">
+              <property name="toolTip"><string>Exspiratorischer Spitzenfluss (PEF) in Litern pro Minute – bester von drei Versuchen</string></property>
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> l/min</string></property>
+              <property name="minimum"><number>29</number></property>
+              <property name="maximum"><number>900</number></property>
+              <property name="singleStep"><number>10</number></property>
+              <property name="value"><number>29</number></property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="glucoseLabel">
+              <property name="text"><string>Blut&amp;zucker</string></property>
+              <property name="buddy"><cstring>glucoseSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <layout class="QHBoxLayout" name="glucoseRow">
+              <item>
+               <widget class="QDoubleSpinBox" name="glucoseSpin">
+                <property name="minimumSize"><size><width>140</width><height>0</height></size></property>
+                <property name="specialValueText"><string>—</string></property>
+                <property name="toolTip"><string>Einheit (mg/dl oder mmol/l) unter Extras → Einstellungen</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="glucoseUnitLabel">
+                <property name="text"><string>mg/dl</string></property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="glucoseSpacer">
+                <property name="orientation"><enum>Qt::Horizontal</enum></property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="inrLabel">
+              <property name="text"><string>&amp;INR (Gerinnung)</string></property>
+              <property name="buddy"><cstring>inrSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QDoubleSpinBox" name="inrSpin">
+              <property name="toolTip"><string>Gerinnungswert INR (z. B. bei Marcumar/Phenprocoumon) – Selbstmessung oder Laborwert</string></property>
+              <property name="specialValueText"><string>—</string></property>
+              <property name="decimals"><number>1</number></property>
+              <property name="minimum"><double>0.000000000000000</double></property>
+              <property name="maximum"><double>12.000000000000000</double></property>
+              <property name="singleStep"><double>0.100000000000000</double></property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="weightLabel">
+              <property name="text"><string>&amp;Gewicht</string></property>
+              <property name="buddy"><cstring>weightSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QDoubleSpinBox" name="weightSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> kg</string></property>
+              <property name="decimals"><number>1</number></property>
+              <property name="minimum"><double>0.000000000000000</double></property>
+              <property name="maximum"><double>400.000000000000000</double></property>
+              <property name="singleStep"><double>0.100000000000000</double></property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="heightLabel">
+              <property name="text"><string>Körper&amp;größe</string></property>
+              <property name="buddy"><cstring>heightSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QDoubleSpinBox" name="heightSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> cm</string></property>
+              <property name="decimals"><number>0</number></property>
+              <property name="minimum"><double>0.000000000000000</double></property>
+              <property name="maximum"><double>250.000000000000000</double></property>
+              <property name="toolTip"><string>Leer lassen: für den BMI wird die zuletzt erfasste Größe verwendet.</string></property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="bmiLabel">
+              <property name="text"><string>BMI (berechnet)</string></property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <layout class="QVBoxLayout" name="bmiColumn">
+              <item>
+               <widget class="QLabel" name="bmiValueLabel">
+                <property name="text"><string>—</string></property>
+                <property name="styleSheet"><string notr="true">font-weight: bold;</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="bmiInfoLabel">
+                <property name="minimumSize"><size><width>0</width><height>52</height></size></property>
+                <property name="alignment"><set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set></property>
+                <property name="styleSheet"><string notr="true">font-size: 8.5pt;</string></property>
+                <property name="wordWrap"><bool>true</bool></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="stoolAmountCombo">
-           <property name="editable"><bool>true</bool></property>
+       <item>
+        <spacer name="leftStretch"><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="rightColumn">
+
+       <item>
+          <widget class="QGroupBox" name="fluidGroup">
+           <property name="title"><string>Ein- und Ausfuhr</string></property>
+           <layout class="QFormLayout" name="fluidForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="fluidInLabel">
+              <property name="text"><string>&amp;Einfuhr</string></property>
+              <property name="buddy"><cstring>fluidInSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="fluidInRow">
+              <item>
+               <widget class="QSpinBox" name="fluidInSpin">
+                <property name="toolTip"><string>Getrunkene oder zugeführte Menge in ml</string></property>
+                <property name="specialValueText"><string>—</string></property>
+                <property name="suffix"><string> ml</string></property>
+                <property name="maximum"><number>5000</number></property>
+                <property name="singleStep"><number>50</number></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="fluidInKindCombo">
+                <property name="editable"><bool>true</bool></property>
+                <property name="sizePolicy"><sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="fluidOutLabel">
+              <property name="text"><string>&amp;Ausfuhr</string></property>
+              <property name="buddy"><cstring>fluidOutSpin</cstring></property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="fluidOutRow">
+              <item>
+               <widget class="QSpinBox" name="fluidOutSpin">
+                <property name="toolTip"><string>Ausgeschiedene Menge in ml (z. B. Urin im Messbecher)</string></property>
+                <property name="specialValueText"><string>—</string></property>
+                <property name="suffix"><string> ml</string></property>
+                <property name="maximum"><number>5000</number></property>
+                <property name="singleStep"><number>50</number></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="fluidOutKindCombo">
+                <property name="editable"><bool>true</bool></property>
+                <property name="sizePolicy"><sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0" colspan="2">
+             <widget class="QLabel" name="fluidInfoLabel">
+              <property name="wordWrap"><bool>true</bool></property>
+              <property name="styleSheet"><string notr="true">font-size: 8.5pt;</string></property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+       </item>
+       <item>
+          <widget class="QGroupBox" name="stoolGroup">
+           <property name="title"><string>Stuhlgang</string></property>
+           <layout class="QFormLayout" name="stoolForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="stoolLabel">
+              <property name="text"><string>St&amp;uhlgang</string></property>
+              <property name="buddy"><cstring>stoolCheck</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="stoolRow">
+              <item>
+               <widget class="QCheckBox" name="stoolCheck">
+                <property name="text"><string>ja</string></property>
+                <property name="toolTip"><string>Ankreuzen, wenn Stuhlgang war – danach die Art wählen</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="stoolCombo">
+                <property name="enabled"><bool>false</bool></property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy>
+                </property>
+                <property name="toolTip"><string>Art des Stuhlgangs nach der Bristol-Stuhlformen-Skala</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QWidget" name="stoolDetails">
+              <layout class="QGridLayout" name="stoolDetailsGrid" columnstretch="0,1,0,3">
+               <property name="leftMargin"><number>16</number></property>
+               <property name="topMargin"><number>0</number></property>
+               <property name="rightMargin"><number>0</number></property>
+               <property name="bottomMargin"><number>0</number></property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="stoolAmountLabel">
+                 <property name="text"><string>Menge</string></property>
+                 <property name="buddy"><cstring>stoolAmountCombo</cstring></property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="stoolAmountCombo">
+                 <property name="editable"><bool>true</bool></property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="stoolColorLabel">
+                 <property name="text"><string>Farbe</string></property>
+                 <property name="buddy"><cstring>stoolColorCombo</cstring></property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QComboBox" name="stoolColorCombo">
+                 <property name="editable"><bool>true</bool></property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>2</horstretch><verstretch>0</verstretch></sizepolicy>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="stoolAdmixtureLabel">
+                 <property name="text"><string>Beimengungen / Geruch</string></property>
+                 <property name="buddy"><cstring>stoolAdmixtureCombo</cstring></property>
+                </widget>
+               </item>
+               <item row="1" column="1" colspan="3">
+                <widget class="QComboBox" name="stoolAdmixtureCombo">
+                 <property name="editable"><bool>true</bool></property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="stoolSymptomsLabel">
+                 <property name="text"><string>Begleitsymptome</string></property>
+                 <property name="toolTip"><string>Begleitsymptome / Besonderheiten</string></property>
+                 <property name="buddy"><cstring>stoolSymptomsEdit</cstring></property>
+                </widget>
+               </item>
+               <item row="2" column="1" colspan="3">
+                <widget class="QLineEdit" name="stoolSymptomsEdit">
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+       </item>
+       <item>
+          <widget class="QGroupBox" name="edemaGroup">
+           <property name="title"><string>Ödeme</string></property>
+           <layout class="QFormLayout" name="edemaForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="edemaLabel">
+              <property name="text"><string>&amp;Ödeme</string></property>
+              <property name="buddy"><cstring>edemaCombo</cstring></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="edemaCombo">
+              <property name="toolTip"><string>Einige Sekunden mit dem Finger drücken (z. B. am Schienbein) und die Delle beurteilen</string></property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="edemaSiteLabel">
+              <property name="text"><string>Ort</string></property>
+              <property name="buddy"><cstring>edemaSiteCombo</cstring></property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="edemaSiteRow">
+              <item>
+               <widget class="QComboBox" name="edemaSiteCombo">
+                <property name="editable"><bool>true</bool></property>
+                <property name="sizePolicy"><sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>2</horstretch><verstretch>0</verstretch></sizepolicy></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="edemaSideCombo"/>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0" colspan="2">
+             <widget class="QLabel" name="edemaInfoLabel">
+              <property name="wordWrap"><bool>true</bool></property>
+              <property name="styleSheet"><string notr="true">font-size: 8.5pt;</string></property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+       </item>
+         <item>
+          <widget class="QGroupBox" name="additionalGroup">
+           <property name="title"><string>Zusätzliche Werte</string></property>
+           <layout class="QFormLayout" name="additionalForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="respRateLabel">
+              <property name="text"><string>Atemfrequenz</string></property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="respRateSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="suffix"><string> /min</string></property>
+              <property name="minimum"><number>3</number></property>
+              <property name="maximum"><number>80</number></property>
+              <property name="value"><number>3</number></property>
+              <property name="vpField" stdset="0"><string notr="true">Atemfrequenz</string></property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="painLabel">
+              <property name="text"><string>Schmerz (NRS 0–10)</string></property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="painSpin">
+              <property name="specialValueText"><string>—</string></property>
+              <property name="minimum"><number>-1</number></property>
+              <property name="maximum"><number>10</number></property>
+              <property name="value"><number>-1</number></property>
+              <property name="vpField" stdset="0"><string notr="true">Schmerz (NRS)</string></property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="stoolColorLabel">
-           <property name="text"><string>Farbe</string></property>
-           <property name="buddy"><cstring>stoolColorCombo</cstring></property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QComboBox" name="stoolColorCombo">
-           <property name="editable"><bool>true</bool></property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>2</horstretch><verstretch>0</verstretch></sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="stoolAdmixtureLabel">
-           <property name="text"><string>Beimengungen / Geruch</string></property>
-           <property name="buddy"><cstring>stoolAdmixtureCombo</cstring></property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="3">
-          <widget class="QComboBox" name="stoolAdmixtureCombo">
-           <property name="editable"><bool>true</bool></property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="stoolSymptomsLabel">
-           <property name="text"><string>Begleitsymptome</string></property>
-           <property name="toolTip"><string>Begleitsymptome / Besonderheiten</string></property>
-           <property name="buddy"><cstring>stoolSymptomsEdit</cstring></property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="3">
-          <widget class="QLineEdit" name="stoolSymptomsEdit">
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="additionalGroup">
-     <property name="title"><string>Zusätzliche Werte</string></property>
-     <layout class="QFormLayout" name="additionalForm">
-      <item row="0" column="0">
-       <widget class="QLabel" name="respRateLabel">
-        <property name="text"><string>Atemfrequenz</string></property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="respRateSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="suffix"><string> /min</string></property>
-        <property name="minimum"><number>3</number></property>
-        <property name="maximum"><number>80</number></property>
-        <property name="value"><number>3</number></property>
-        <property name="vpField" stdset="0"><string notr="true">Atemfrequenz</string></property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="painLabel">
-        <property name="text"><string>Schmerz (NRS 0–10)</string></property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="painSpin">
-        <property name="specialValueText"><string>—</string></property>
-        <property name="minimum"><number>-1</number></property>
-        <property name="maximum"><number>10</number></property>
-        <property name="value"><number>-1</number></property>
-        <property name="vpField" stdset="0"><string notr="true">Schmerz (NRS)</string></property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+       <item>
+        <spacer name="rightStretch"><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="observationsLabel">
@@ -433,14 +581,22 @@
   <tabstop>spo2Spin</tabstop>
   <tabstop>peakFlowSpin</tabstop>
   <tabstop>glucoseSpin</tabstop>
+  <tabstop>inrSpin</tabstop>
   <tabstop>weightSpin</tabstop>
   <tabstop>heightSpin</tabstop>
+  <tabstop>fluidInSpin</tabstop>
+  <tabstop>fluidInKindCombo</tabstop>
+  <tabstop>fluidOutSpin</tabstop>
+  <tabstop>fluidOutKindCombo</tabstop>
   <tabstop>stoolCheck</tabstop>
   <tabstop>stoolCombo</tabstop>
   <tabstop>stoolAmountCombo</tabstop>
   <tabstop>stoolColorCombo</tabstop>
   <tabstop>stoolAdmixtureCombo</tabstop>
   <tabstop>stoolSymptomsEdit</tabstop>
+  <tabstop>edemaCombo</tabstop>
+  <tabstop>edemaSiteCombo</tabstop>
+  <tabstop>edemaSideCombo</tabstop>
   <tabstop>respRateSpin</tabstop>
   <tabstop>painSpin</tabstop>
   <tabstop>observationsEdit</tabstop>

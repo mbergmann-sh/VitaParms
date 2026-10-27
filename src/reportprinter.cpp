@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "reportprinter.h"
 #include "peakflow.h"
+#include "inr.h"
+#include "fluid.h"
 #include "contacts.h"
 #include "careinfo.h"
 #include "database.h"
@@ -368,8 +370,7 @@ void renderChartPage(QPainter &pa, QPagedPaintDevice *dev, const Patient &p, con
         const int d = VitalDefs::decimals(s.key);
         const bool r = s.hasRange();
         const int md = s.key == VitalKey::Stool ? 1 : d;
-        drawRow({ s.key == VitalKey::Stool ? VitalDefs::label(s.key) + QStringLiteral(" (") + s.stoolNote() + QLatin1Char(')')
-                                           : VitalDefs::label(s.key),
+        drawRow({ s.label(),
                   QString::number(s.count),
                   r ? loc.toString(s.min, 'f', d) : QStringLiteral("–"),
                   r ? loc.toString(s.max, 'f', d) : QStringLiteral("–"),
@@ -379,8 +380,10 @@ void renderChartPage(QPainter &pa, QPagedPaintDevice *dev, const Patient &p, con
     }
 }
 
-void renderCharts(QPagedPaintDevice *dev, const Patient &p, const ChartSpec &spec)
+void renderCharts(QPagedPaintDevice *dev, const Patient &p, const ChartSpec &spec0)
 {
+    ChartSpec spec = spec0;              // Zielbereiche aus dem Stammblatt
+    if (spec.inrHigh <= 0) spec.setPatient(p);
     QPainter pa(dev);
     const QStringList ids = spec.visiblePanelIds();
     if (!spec.separatePages || ids.size() < 2) {
@@ -461,10 +464,11 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
     QStringList heads = { tr("Datum/Uhrzeit"), tr("Messzeitpunkt"), tr("Aufnahme") };
     QList<VitalKey> keys = { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse, VitalKey::Temperature,
                              VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose, VitalKey::Weight, VitalKey::Height, VitalKey::Bmi };
-    if (std::any_of(records.cbegin(), records.cend(), [](const VitalRecord &r) { return r.stool.has_value(); }))
-        keys << VitalKey::Stool;
+    for (VitalKey k : { VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut, VitalKey::Edema, VitalKey::Stool })
+        if (std::any_of(records.cbegin(), records.cend(), [k](const VitalRecord &r) { return VitalDefs::value(r, k).has_value(); }))
+            keys << k;
     for (VitalKey k : keys)
-        heads << VitalDefs::shortLabel(k) + QStringLiteral(" [") + VitalDefs::unit(k) + QLatin1Char(']');
+        heads << VitalDefs::header(k);
     heads << FormIO::fieldLabels(extraKeys);
     heads << tr("Beobachtungen");
     for (int c = 0; c < heads.size(); ++c)
@@ -482,8 +486,9 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
         x.setCell(sh, row, c++, r.context);
         x.setCell(sh, row, c++, r.isAdmission ? QVariant(tr("ja")) : QVariant());
         for (VitalKey k : keys) {
-            if (k == VitalKey::Stool) {       // Text: "Typ 4" bzw. "ja"
-                x.setCell(sh, row, c++, r.stool ? QVariant(VitalDefs::formatted(r, k)) : QVariant());
+            if (k == VitalKey::Stool || k == VitalKey::Edema) {       // Text: "Typ 4"/"ja", "Grad 2"/"keine"
+                const QString t = VitalDefs::formatted(r, k);
+                x.setCell(sh, row, c++, t.isEmpty() ? QVariant() : QVariant(t));
                 continue;
             }
             const auto v = VitalDefs::value(r, k);
@@ -580,8 +585,10 @@ bool chartsToPdf(const QString &path, const Patient &p, const ChartSpec &spec)
     return true;
 }
 
-bool chartsToXlsx(const QString &path, const Patient &p, const ChartSpec &spec, QString *error)
+bool chartsToXlsx(const QString &path, const Patient &p, const ChartSpec &spec0, QString *error)
 {
+    ChartSpec spec = spec0;
+    if (spec.inrHigh <= 0) spec.setPatient(p);
     XlsxWriter x;
     x.setTitle(tr("VitaParms – Verlaufsgrafik %1").arg(p.displayName()));
     const QLocale loc;
@@ -601,8 +608,7 @@ bool chartsToXlsx(const QString &path, const Patient &p, const ChartSpec &spec, 
     int row = 5;
     for (const SeriesStats &s : ChartRenderer::statistics(spec)) {
         const auto st = VitalDefs::decimals(s.key) == 0 ? XlsxWriter::Integer : XlsxWriter::Decimal1;
-        x.setCell(k, row, 0, s.key == VitalKey::Stool ? VitalDefs::label(s.key) + QStringLiteral(" (") + s.stoolNote() + QLatin1Char(')')
-                                                       : VitalDefs::label(s.key));
+        x.setCell(k, row, 0, s.label());
         x.setCell(k, row, 1, VitalDefs::unit(s.key));
         x.setCell(k, row, 2, s.count);
         if (s.hasRange()) {
@@ -785,6 +791,15 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                 if (norm.value) pf << tr("Sollwert %1 l/min (%2)").arg(norm.value).arg(norm.basis);
                 row(tr("Peak Flow"), pf.join(QStringLiteral("; ")));
             }
+            if (const Inr::Range r = Inr::range(p); r.personal)
+                row(tr("INR-Zielbereich"), QStringLiteral("%1–%2").arg(QLocale().toString(r.low, 'f', 1), QLocale().toString(r.high, 'f', 1)));
+            {
+                QStringList fl;
+                if (const QString t = Fluid::limitsText(p); !t.isEmpty()) fl << t;
+                if (const double w = Fluid::weightWatch(p); w > 0)
+                    fl << tr("Gewichtszunahme melden ab %1 kg in %2 Tagen").arg(QLocale().toString(w, 'f', 1)).arg(Fluid::kWeightDays);
+                row(tr("Trinkmenge/Gewicht"), fl.join(QStringLiteral("; ")));
+            }
             row(tr("Pflegegrad"), CareInfo::careLevelText(p));
             row(tr("Schwerbehindertenausweis"), CareInfo::disabilityText(p));
             for (int k = 0; k < CareInfo::AdvanceCount; ++k)
@@ -829,7 +844,7 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                                     VitalKey::Weight, VitalKey::Height, VitalKey::Bmi }) {
                     const QString s = VitalDefs::formatted(*admission, k);
                     if (s.isEmpty()) continue;
-                    h += th(VitalDefs::shortLabel(k) + QStringLiteral(" [") + VitalDefs::unit(k) + QLatin1Char(']'));
+                    h += th(VitalDefs::header(k));
                     vals << s;
                 }
                 h += QStringLiteral("</tr><tr>");

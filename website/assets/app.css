@@ -269,3 +269,6 @@ th.n small { display: block; font-weight: 400; color: var(--muted); }
 .legend-item .sw.wash { outline: 1px solid var(--rule-strong); }
 .plot .stool-gap { fill: var(--stool-gap); }
 .plot .gap-label { fill: var(--ink-2); font-size: 11px; }
+.plot .inr-band { fill: rgba(27, 127, 75, 0.12); }
+.plot .limit-min { stroke: #1B7F4B; stroke-width: 1.2; stroke-dasharray: 5 4; }
+.plot .limit-max { stroke: #B35C00; stroke-width: 1.2; stroke-dasharray: 5 4; }

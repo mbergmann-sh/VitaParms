@@ -77,7 +77,7 @@ AppointmentDialog::AppointmentDialog(const Appointment &a, QWidget *parent)
     setWindowTitle(a.id ? tr("Termin bearbeiten") : tr("Neuer Termin"));
     auto *lay = new QVBoxLayout(this);
     m_form = FormLoader::load(QStringLiteral("appointmentform"), this);
-    lay->addWidget(m_form);
+    lay->addWidget(FormLoader::scrollable(m_form, this), 1);
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
     buttons->button(QDialogButtonBox::Save)->setText(tr("&Speichern"));
     buttons->button(QDialogButtonBox::Cancel)->setText(tr("Abbrechen"));
@@ -155,6 +155,7 @@ AppointmentDialog::AppointmentDialog(const Appointment &a, QWidget *parent)
     updateEnabled();
     if (auto *t = m_form->findChild<QWidget *>(QStringLiteral("titleEdit"))) t->setFocus();
     resize(620, 820);
+    FormLoader::fitToScreen(this);
 }
 
 void AppointmentDialog::updateEnabled()

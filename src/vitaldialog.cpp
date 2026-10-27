@@ -6,6 +6,8 @@
 #include "formloader.h"
 #include "peakflow.h"
 #include "stool.h"
+#include "inr.h"
+#include "fluid.h"
 #include "vitaldefs.h"
 
 #include <QAbstractSpinBox>
@@ -33,6 +35,23 @@
 
 static QLayout *layoutContaining(QLayout *l, QWidget *w);
 
+// Höhe eines Rich-Text-Hinweises zur tatsächlichen Breite (QLabel schätzt sie im Formular zu groß,
+// oder das Formular schneidet mehrzeilige Hinweise ab)
+static void fitRichLabel(QLabel *l)
+{
+    if (!l) return;
+    const int w = l->contentsRect().width();
+    if (w > 100) {
+        QTextDocument doc;
+        doc.setDefaultFont(l->font());
+        doc.setDocumentMargin(0);
+        doc.setHtml(l->text());
+        doc.setTextWidth(w);
+        l->setFixedHeight(int(std::ceil(doc.size().height())) + 4);
+    }
+    l->updateGeometry();
+}
+
 VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode mode,
                          QWidget *parent)
     : QDialog(parent), m_patient(patient), m_record(record), m_mode(mode)
@@ -42,7 +61,7 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
 
     auto *lay = new QVBoxLayout(this);
     m_form = FormLoader::load(QStringLiteral("vitalform"), this);
-    lay->addWidget(m_form);
+    lay->addWidget(FormLoader::scrollable(m_form, this), 1);      // Knöpfe bleiben immer sichtbar
 
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
     if (mode == Mode::Journal && record.id == 0) {
@@ -81,6 +100,7 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
     setupBreathCounter();
     setupPeakFlow();
     setupStool();
+    setupCareValues();
 
     if (auto *b = m_form->findChild<QPushButton *>(QStringLiteral("nowButton"))) {
         connect(b, &QPushButton::clicked, this, [this] {
@@ -115,10 +135,12 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
         m_record.isAdmission = true;
     loadRecord(m_record);
 
-    const QByteArray geo = AppSettings::windowState(QStringLiteral("vitaldialog"));
+    // zweispaltiges Formular (ab 0.21): eigener Schlüssel, damit die alte schmale Größe nicht greift
+    const QByteArray geo = AppSettings::windowState(QStringLiteral("vitaldialog2"));
     if (!geo.isEmpty()) restoreGeometry(geo);
-    else resize(560, 780);
-    setMinimumWidth(500);
+    else resize(1000, 800);
+    FormLoader::fitToScreen(this);
+    setMinimumWidth(m_form->findChild<QWidget *>(QStringLiteral("rightColumn")) || m_form->findChild<QWidget *>(QStringLiteral("fluidGroup")) ? 780 : 500);
 }
 
 void VitalDialog::configureGlucose()
@@ -172,8 +194,21 @@ void VitalDialog::loadRecord(const VitalRecord &r)
         if (m_stoolAdmixture) m_stoolAdmixture->setCurrentText(r.stoolDetail.admixture);
         if (m_stoolSymptoms) m_stoolSymptoms->setText(r.stoolDetail.symptoms);
     }
+    FormIO::write(m_form, QStringLiteral("inrSpin"), r.inr ? QVariant(*r.inr) : QVariant());
+    FormIO::write(m_form, QStringLiteral("fluidInSpin"), iv(r.fluidIn));
+    FormIO::write(m_form, QStringLiteral("fluidOutSpin"), iv(r.fluidOut));
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("fluidInKindCombo")))
+        c->setCurrentText(r.fluidIn ? (r.fluidInKind.isEmpty() ? QString() : r.fluidInKind) : Fluid::inKinds().value(0));
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("fluidOutKindCombo")))
+        c->setCurrentText(r.fluidOut ? r.fluidOutKind : Fluid::outKinds().value(0));
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaCombo")))
+        c->setCurrentIndex(std::max(0, c->findData(r.edema ? *r.edema : -1)));
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaSiteCombo"))) c->setCurrentText(r.edemaSite);
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaSideCombo")))
+        c->setCurrentIndex(std::max(0, c->findText(r.edemaSide)));
     FormIO::applyExtra(m_form, r.extra);
     updateBmi();
+    updateCareInfo();
     updatePeakFlow();
 
     // Fokus auf das erste Wertefeld
@@ -216,6 +251,22 @@ bool VitalDialog::collect(VitalRecord &r, bool interactive)
     r.weight       = readDouble(m_form, QStringLiteral("weightSpin"), r.weight);
     r.height       = readDouble(m_form, QStringLiteral("heightSpin"), r.height);
     r.observations = FormIO::readString(m_form, QStringLiteral("observationsEdit"), r.observations);
+    if (const auto v = FormIO::read(m_form, QStringLiteral("inrSpin")))
+        r.inr = (v->isValid() && !v->isNull()) ? std::optional<double>(std::round(v->toDouble() * 10) / 10) : std::nullopt;
+    r.fluidIn      = readInt(m_form, QStringLiteral("fluidInSpin"), r.fluidIn);
+    r.fluidOut     = readInt(m_form, QStringLiteral("fluidOutSpin"), r.fluidOut);
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("fluidInKindCombo")))
+        r.fluidInKind = r.fluidIn ? c->currentText().trimmed() : QString();
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("fluidOutKindCombo")))
+        r.fluidOutKind = r.fluidOut ? c->currentText().trimmed() : QString();
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaCombo"))) {
+        const int g = c->currentData().toInt();
+        r.edema = g >= 0 ? std::optional<int>(g) : std::nullopt;
+        auto *site = m_form->findChild<QComboBox *>(QStringLiteral("edemaSiteCombo"));
+        auto *side = m_form->findChild<QComboBox *>(QStringLiteral("edemaSideCombo"));
+        r.edemaSite = g > 0 && site ? site->currentText().trimmed() : QString();
+        r.edemaSide = g > 0 && side ? side->currentText().trimmed() : QString();
+    }
     if (m_stoolCheck) {
         r.stool = m_stoolCheck->isChecked() ? std::optional<int>(m_stoolCombo->currentData().toInt()) : std::nullopt;
         if (!r.stool) {
@@ -320,6 +371,8 @@ bool VitalDialog::store()
     m_record = r;
     warnPeakFlow(r);
     warnStool(r);
+    warnCareValues(r);
+    if (m_mode == Mode::Journal) m_recent << r;
     return true;
 }
 
@@ -327,12 +380,16 @@ void VitalDialog::resizeEvent(QResizeEvent *e)
 {
     QDialog::resizeEvent(e);
     if (m_peakFlowInfo) QTimer::singleShot(0, this, &VitalDialog::updatePeakFlow);
+    if (m_inrInfo) QTimer::singleShot(0, this, [this] { fitRichLabel(m_inrInfo); });
 }
 
 void VitalDialog::showEvent(QShowEvent *e)
 {
     QDialog::showEvent(e);
+    // nie höher als der Bildschirm: die Knöpfe unten bleiben erreichbar, das Formular scrollt
+    QTimer::singleShot(0, this, [this] { FormLoader::fitToScreen(this); });
     if (m_peakFlowInfo) QTimer::singleShot(0, this, &VitalDialog::updatePeakFlow);
+    if (m_inrInfo) QTimer::singleShot(0, this, [this] { fitRichLabel(m_inrInfo); });
 }
 
 // Peak Flow: Hinweiszeile unter dem Feld (eingefügt, damit auch angepasste Formulare sie bekommen)
@@ -382,19 +439,7 @@ void VitalDialog::updatePeakFlow()
     }
     m_peakFlowInfo->setText(QStringLiteral("<small>%1</small>").arg(html));
     m_peakFlowInfo->setVisible(!html.isEmpty());
-    {   // Höhe zur tatsächlichen Breite (sonst schneidet das Formular mehrzeilige Hinweise ab)
-        const int w = m_peakFlowInfo->contentsRect().width();
-        if (w > 100) {
-            QTextDocument doc;
-            doc.setDefaultFont(m_peakFlowInfo->font());
-            doc.setDocumentMargin(0);
-            doc.setHtml(m_peakFlowInfo->text());
-            doc.setTextWidth(w);
-            // feste Höhe: QLabel schätzt die Höhe von Rich Text im Formular zu groß
-            m_peakFlowInfo->setFixedHeight(int(std::ceil(doc.size().height())) + 4);
-        }
-    }
-    m_peakFlowInfo->updateGeometry();
+    fitRichLabel(m_peakFlowInfo);
 }
 
 // Stuhlgang: Häkchen „ja“ schaltet die Auswahl nach der Bristol-Skala frei. Fehlen die Felder
@@ -458,6 +503,13 @@ void VitalDialog::setupStool()
     if (m_stoolDetails) {
         m_stoolDetails->setVisible(false);
         connect(m_stoolCheck, &QCheckBox::toggled, m_stoolDetails, &QWidget::setVisible);
+        // eingeblendete Angaben in den sichtbaren Bereich rollen
+        connect(m_stoolCheck, &QCheckBox::toggled, this, [this](bool on) {
+            if (!on) return;
+            QTimer::singleShot(0, this, [this] {
+                if (auto *sa = findChild<QScrollArea *>(QStringLiteral("formScroll"))) sa->ensureWidgetVisible(m_stoolDetails, 10, 20);
+            });
+        });
     }
 
     // Hinweis bei neuer Messung: seit mindestens drei Tagen kein Stuhlgang eingetragen
@@ -486,6 +538,138 @@ void VitalDialog::setupStool()
         if (r >= 0) { form->insertRow(r + 1, QString(), m_stoolInfo); return; }
     }
     if (QLayout *l = layoutContaining(m_form->layout(), m_stoolCombo)) l->addWidget(m_stoolInfo);
+}
+
+// INR, Ein- und Ausfuhr, Ödeme: Auswahllisten, Hinweiszeilen (auch in älteren Formularen ohne diese
+// Felder unschädlich – dann bleibt alles, wie es ist)
+void VitalDialog::setupCareValues()
+{
+    if (m_patient.id && m_mode == Mode::Journal)
+        m_recent = Database::instance().vitals(m_patient.id, QDateTime(QDate::currentDate().addDays(-10), QTime(0, 0)), {});
+    auto fill = [](QComboBox *c, const QStringList &items) {
+        if (!c) return;
+        c->clear();
+        c->addItems(items);
+        c->setInsertPolicy(QComboBox::NoInsert);
+    };
+    fill(m_form->findChild<QComboBox *>(QStringLiteral("fluidInKindCombo")), Fluid::inKinds());
+    fill(m_form->findChild<QComboBox *>(QStringLiteral("fluidOutKindCombo")), Fluid::outKinds());
+    fill(m_form->findChild<QComboBox *>(QStringLiteral("edemaSiteCombo")), QStringList{ QString() } + Fluid::edemaSites());
+    fill(m_form->findChild<QComboBox *>(QStringLiteral("edemaSideCombo")), QStringList{ QString() } + Fluid::edemaSides());
+    if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaCombo"))) {
+        c->clear();
+        c->addItem(QStringLiteral("—"), -1);
+        for (int g = 0; g <= Fluid::kEdemaMax; ++g) {
+            c->addItem(Fluid::edemaName(g), g);
+            c->setItemData(c->count() - 1, Fluid::edemaDescription(g), Qt::ToolTipRole);
+        }
+        connect(c, &QComboBox::currentIndexChanged, this, &VitalDialog::updateCareInfo);
+    }
+    for (const char *n : { "edemaSiteCombo", "edemaSideCombo" })
+        if (auto *c = m_form->findChild<QComboBox *>(QLatin1String(n)))
+            connect(c, &QComboBox::currentTextChanged, this, &VitalDialog::updateCareInfo);
+    for (const char *n : { "fluidInSpin", "fluidOutSpin" })
+        if (auto *sp = m_form->findChild<QSpinBox *>(QLatin1String(n)))
+            connect(sp, &QSpinBox::valueChanged, this, &VitalDialog::updateCareInfo);
+    // INR: Hinweis unter dem Feld (wie beim Peak Flow eingefügt)
+    if (auto *spin = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrSpin"))) {
+        m_inrInfo = new QLabel(m_form);
+        m_inrInfo->setObjectName(QStringLiteral("inrInfoLabel"));
+        m_inrInfo->setWordWrap(true);
+        m_inrInfo->setTextFormat(Qt::RichText);
+        if (auto *form = qobject_cast<QFormLayout *>(spin->parentWidget() ? spin->parentWidget()->layout() : nullptr)) {
+            int row = -1;
+            QFormLayout::ItemRole role;
+            form->getWidgetPosition(spin, &row, &role);
+            if (row >= 0) form->insertRow(row + 1, QString(), m_inrInfo);
+        }
+        connect(spin, &QDoubleSpinBox::valueChanged, this, &VitalDialog::updateCareInfo);
+    }
+}
+
+void VitalDialog::updateCareInfo()
+{
+    const bool dark = palette().base().color().lightness() < 128;
+    VitalRecord tmp = m_record;
+    collect(tmp, false);
+    if (m_inrInfo) {
+        QString h;
+        if (tmp.inr) {
+            const Inr::Assessment a = Inr::assess(m_patient, *tmp.inr);
+            h = QStringLiteral("<span style=\"color:%1\">%2</span>").arg(Inr::zoneColor(a.zone, dark).name(), a.text.toHtmlEscaped());
+        } else {
+            h = Inr::rangeText(Inr::range(m_patient)).toHtmlEscaped();
+        }
+        m_inrInfo->setText(QStringLiteral("<small>%1</small>").arg(h));
+        fitRichLabel(m_inrInfo);
+    }
+    if (auto *l = m_form->findChild<QLabel *>(QStringLiteral("fluidInfoLabel"))) {
+        // Bilanz heute einschließlich dieser Messung
+        const QDate day = tmp.measuredAt.date();
+        QList<VitalRecord> recs;
+        for (const VitalRecord &r : std::as_const(m_recent)) if (r.id != tmp.id) recs << r;
+        recs << tmp;
+        const Fluid::Day d = Fluid::perDay(recs, day, day).value(day);
+        QString t = day == QDate::currentDate() ? tr("Heute") : QLocale().toString(day, QStringLiteral("dd.MM."));
+        t += tr(": Einfuhr %1 ml, Ausfuhr %2 ml, Bilanz %3").arg(QLocale().toString(d.in), QLocale().toString(d.out), Fluid::signedMl(d.balance()));
+        const QString lim = Fluid::limitsText(m_patient);
+        if (!lim.isEmpty()) t += QStringLiteral("\n") + lim;
+        const int hi = Fluid::maxIntake(m_patient);
+        l->setStyleSheet(hi && d.in > hi ? QStringLiteral("font-size: 8.5pt; color: %1;").arg(Inr::zoneColor(Inr::Zone::High, dark).name())
+                                         : QStringLiteral("font-size: 8.5pt;"));
+        l->setText(t);
+    }
+    if (auto *l = m_form->findChild<QLabel *>(QStringLiteral("edemaInfoLabel"))) {
+        const int g = tmp.edema.value_or(-1);
+        for (const char *n : { "edemaSiteCombo", "edemaSideCombo", "edemaSiteLabel" })
+            if (auto *w = m_form->findChild<QWidget *>(QLatin1String(n))) w->setEnabled(g > 0);
+        QString t = g >= 0 ? Fluid::edemaDescription(g) : QString();
+        const QString adv = Fluid::edemaAdvice(tmp);
+        l->setStyleSheet(adv.isEmpty() ? QStringLiteral("font-size: 8.5pt;")
+                                       : QStringLiteral("font-size: 8.5pt; color: %1;").arg(Inr::zoneColor(Inr::Zone::High, dark).name()));
+        l->setText(adv.isEmpty() ? t : t + QStringLiteral("\n") + adv);
+        l->setVisible(!l->text().isEmpty());
+    }
+}
+
+// Nach dem Speichern: INR außerhalb des Zielbereichs, auffällige Ödeme, Gewichtszunahme, Trinkmenge
+void VitalDialog::warnCareValues(const VitalRecord &r)
+{
+    if (!isVisible()) return;
+    QStringList items;
+    bool critical = false;
+    if (r.inr) {
+        const Inr::Assessment a = Inr::assess(m_patient, *r.inr);
+        if (a.zone == Inr::Zone::Low || a.zone == Inr::Zone::High || a.zone == Inr::Zone::VeryHigh) {
+            items << QStringLiteral("<b>%1</b><br>%2").arg(a.text.toHtmlEscaped(), a.advice.toHtmlEscaped());
+            critical |= a.zone == Inr::Zone::VeryHigh;
+        }
+    }
+    if (r.edema && *r.edema > 0) {
+        std::optional<int> prev;
+        QDateTime prevAt;
+        for (const VitalRecord &x : std::as_const(m_recent))
+            if (x.edema && x.id != r.id && x.measuredAt < r.measuredAt && (!prevAt.isValid() || x.measuredAt > prevAt)) { prev = x.edema; prevAt = x.measuredAt; }
+        if (const QString adv = Fluid::edemaAdvice(r, prev); !adv.isEmpty())
+            items << QStringLiteral("<b>%1</b><br>%2").arg(tr("Ödeme: %1").arg(Fluid::edemaText(r)).toHtmlEscaped(),
+                                                          adv.toHtmlEscaped().replace(QLatin1Char('\n'), QStringLiteral("<br>")));
+    }
+    QList<VitalRecord> recs;
+    for (const VitalRecord &x : std::as_const(m_recent)) if (x.id != r.id) recs << x;
+    recs << r;
+    if (r.weight)
+        if (const Fluid::Notice n = Fluid::weightNotice(m_patient, recs, r.measuredAt.date()); n.warn)
+            items << QStringLiteral("<b>%1</b><br>%2").arg(tr("Gewichtszunahme").toHtmlEscaped(), n.text.toHtmlEscaped());
+    if (r.fluidIn && Fluid::maxIntake(m_patient) && r.measuredAt.date() == QDate::currentDate())
+        if (const Fluid::Notice n = Fluid::intakeNotice(m_patient, recs, r.measuredAt.date()); n.warn)
+            items << QStringLiteral("<b>%1</b><br>%2").arg(tr("Trinkmenge").toHtmlEscaped(), n.text.toHtmlEscaped());
+    if (items.isEmpty()) return;
+    QMessageBox box(critical ? QMessageBox::Critical : QMessageBox::Warning, tr("Bitte beachten"),
+                    items.join(QStringLiteral("<br><br>")) + QStringLiteral("<br><br><small>%1</small>")
+                        .arg(tr("VitaParms ist kein Medizinprodukt – maßgeblich sind die Anweisungen Ihrer Ärztin oder Ihres Arztes.").toHtmlEscaped()),
+                    QMessageBox::Ok, this);
+    box.setObjectName(QStringLiteral("careWarning"));
+    box.exec();
 }
 
 // schwarzer oder blutiger Stuhl: nach dem Speichern auf ärztliche Abklärung hinweisen
@@ -519,7 +703,7 @@ void VitalDialog::accept()
 {
     if (!store())
         return;
-    AppSettings::setWindowState(QStringLiteral("vitaldialog"), saveGeometry());
+    AppSettings::setWindowState(QStringLiteral("vitaldialog2"), saveGeometry());
     QDialog::accept();
 }
 

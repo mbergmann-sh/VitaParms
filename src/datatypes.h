@@ -97,13 +97,21 @@ struct VitalRecord {
     std::optional<double> bmi;          // kg/m², bei Speicherung berechnet
     std::optional<int>    stool;        // Stuhlgang: 0 = ja (ohne Angabe), 1–7 = Bristol-Typ; leer = nicht erfasst
     StoolDetail           stoolDetail;  // Menge, Farbe, Beimengungen, Begleitsymptome
+    std::optional<double> inr;          // Gerinnung (INR), ohne Einheit
+    std::optional<int>    fluidIn;      // Einfuhr (Trinkmenge u. a.) in ml
+    std::optional<int>    fluidOut;     // Ausfuhr (Urin u. a.) in ml
+    QString               fluidInKind;  // Art der Einfuhr, z. B. "Getränke"
+    QString               fluidOutKind; // Art der Ausfuhr, z. B. "Urin"
+    std::optional<int>    edema;        // Ödeme: Grad 0–4 (0 = keine)
+    QString               edemaSite;    // Ort, z. B. "Knöchel/Füße"
+    QString               edemaSide;    // "beidseits", "links", "rechts"
 
     QString     observations;
     QJsonObject extra;
 
     bool hasAnyValue() const {
         return pulse || systolic || diastolic || temperature || spo2 || peakFlow
-            || glucose || weight || height || stool || !observations.trimmed().isEmpty()
+            || glucose || weight || height || stool || inr || fluidIn || fluidOut || edema || !observations.trimmed().isEmpty()
             || !extra.isEmpty();
     }
 };

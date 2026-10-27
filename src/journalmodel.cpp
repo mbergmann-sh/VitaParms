@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "journalmodel.h"
 #include "stool.h"
+#include "inr.h"
+#include "fluid.h"
 #include "formloader.h"
 
 #include <QBrush>
@@ -26,9 +28,14 @@ void JournalModel::rebuildColumns()
     for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
                         VitalKey::Weight, VitalKey::Height, VitalKey::Bmi })
         m_cols.append({ ColKind::Vital, k, {},
-                        VitalDefs::shortLabel(k) + QStringLiteral("\n[") + VitalDefs::unit(k) + QLatin1Char(']') });
-    // Stuhlgang nur, wenn er erfasst wird
-    if (std::any_of(m_records.cbegin(), m_records.cend(), [](const VitalRecord &r) { return r.stool.has_value(); }))
+                        VitalDefs::header(k, QStringLiteral("\n")) });
+    // INR, Ein-/Ausfuhr, Ödeme und Stuhlgang nur, wenn sie erfasst werden
+    auto any = [this](VitalKey k) {
+        return std::any_of(m_records.cbegin(), m_records.cend(), [k](const VitalRecord &r) { return VitalDefs::value(r, k).has_value(); });
+    };
+    for (VitalKey k : { VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut, VitalKey::Edema })
+        if (any(k)) m_cols.append({ ColKind::Vital, k, {}, VitalDefs::header(k, QStringLiteral("\n")) });
+    if (any(VitalKey::Stool))
         m_cols.append({ ColKind::Vital, VitalKey::Stool, {}, VitalDefs::shortLabel(VitalKey::Stool) + QStringLiteral("\n[Bristol]") });
     for (const QString &e : m_extraKeys)
         m_cols.append({ ColKind::Extra, VitalKey::Pulse, e, FormIO::fieldLabel(e) });
@@ -144,6 +151,19 @@ QVariant JournalModel::data(const QModelIndex &index, int role) const
                 if (!v.isEmpty()) tip += QStringLiteral("\n") + label + QStringLiteral(": ") + v;
             return tip;
         }
+        if (c.kind == ColKind::Vital && c.key == VitalKey::Inr && r->inr) {
+            const Inr::Assessment a = Inr::assess(m_patient, *r->inr);
+            return a.text + (a.advice.isEmpty() ? QString() : QStringLiteral("\n") + a.advice);
+        }
+        if (c.kind == ColKind::Vital && c.key == VitalKey::FluidIn && r->fluidIn && !r->fluidInKind.isEmpty())
+            return r->fluidInKind;
+        if (c.kind == ColKind::Vital && c.key == VitalKey::FluidOut && r->fluidOut && !r->fluidOutKind.isEmpty())
+            return r->fluidOutKind;
+        if (c.kind == ColKind::Vital && c.key == VitalKey::Edema && r->edema) {
+            QString t = Fluid::edemaText(*r) + QStringLiteral("\n") + Fluid::edemaDescription(*r->edema);
+            const QString adv = Fluid::edemaAdvice(*r);
+            return adv.isEmpty() ? t : t + QStringLiteral("\n") + adv;
+        }
         if (c.kind == ColKind::Vital && c.key == VitalKey::PeakFlow && r->peakFlow) {
             const PeakFlow::Assessment a = peakFlowAt(index.row());
             if (a.zone != PeakFlow::Zone::None)
@@ -152,19 +172,28 @@ QVariant JournalModel::data(const QModelIndex &index, int role) const
         }
         return {};
     case Qt::ForegroundRole:
+        if (c.kind == ColKind::Vital && c.key == VitalKey::Inr && r->inr) {
+            const Inr::Zone z = Inr::assess(m_patient, *r->inr).zone;
+            if (z != Inr::Zone::InRange && z != Inr::Zone::None)
+                return QBrush(Inr::zoneColor(z, QGuiApplication::palette().base().color().lightness() < 128));
+        }
+        if (c.kind == ColKind::Vital && c.key == VitalKey::Edema && r->edema && *r->edema >= 3)
+            return QBrush(Inr::zoneColor(Inr::Zone::High, QGuiApplication::palette().base().color().lightness() < 128));
         if (c.kind == ColKind::Vital && c.key == VitalKey::PeakFlow && r->peakFlow) {
             const PeakFlow::Zone z = peakFlowAt(index.row()).zone;
             if (z == PeakFlow::Zone::Yellow || z == PeakFlow::Zone::Red) return QBrush(PeakFlow::zoneColor(z, QGuiApplication::palette().base().color().lightness() < 128));
         }
         return {};
     case Qt::TextAlignmentRole:
-        if ((c.kind == ColKind::Vital && c.key != VitalKey::Stool) || c.kind == ColKind::BloodPressure)
+        if ((c.kind == ColKind::Vital && c.key != VitalKey::Stool && c.key != VitalKey::Edema) || c.kind == ColKind::BloodPressure)
             return int(Qt::AlignRight | Qt::AlignVCenter);
         return int(Qt::AlignLeft | Qt::AlignVCenter);
     case Qt::FontRole:
         if (r->isAdmission
             || (c.kind == ColKind::Vital && c.key == VitalKey::PeakFlow && r->peakFlow
-                && peakFlowAt(index.row()).zone == PeakFlow::Zone::Red)) { QFont f; f.setBold(true); return f; }
+                && peakFlowAt(index.row()).zone == PeakFlow::Zone::Red)
+            || (c.kind == ColKind::Vital && c.key == VitalKey::Inr && r->inr
+                && Inr::assess(m_patient, *r->inr).zone == Inr::Zone::VeryHigh)) { QFont f; f.setBold(true); return f; }
         return {};
     case Qt::UserRole:
         return r->id;

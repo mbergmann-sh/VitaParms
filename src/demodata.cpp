@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "demodata.h"
+#include "fluid.h"
 #include "contacts.h"
 #include "appsettings.h"
 #include "database.h"
@@ -181,6 +182,7 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
                      "Asthma bronchiale (J45.9)\nAdipositas Grad I (E66.0)");
     p.notes = tr("Demo-Person: Alle Angaben sind frei erfunden.");
     p.extra.insert(QStringLiteral("Allergien"), tr("Penicillin (Hautausschlag)"));
+    Fluid::setLimits(p, 1500, 0, 0);       // Trinkmenge: mindestens 1,5 l am Tag
     {   // Kontakte: Krankenkasse, Hausärztin, Fachärzte, Klinik, Apotheke, Notfallkontakt
         auto mk = [](int kind, const QString &name, const QString &spec, const QString &person, const QString &street,
                      const QString &city, const QString &phone, const QString &email = {}, const QString &web = {}) {
@@ -417,7 +419,28 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
             e.peakFlow = int(std::lround(pfe / 10) * 10);
             if (sick && day - infection < 7) e.temperature = std::round((fever(day) + 0.3) * 10) / 10;
             if (day > infection && day - infection <= 5) e.stool = 6;   // Antibiotikum
+            if (day >= 74 && day <= 110) {           // Knöchelödeme unter Amlodipin (abends)
+                e.edema = day >= 82 && day <= 96 ? 2 : 1;
+                e.edemaSite = Fluid::edemaSites().value(0);
+                e.edemaSide = Fluid::edemaSides().value(0);
+            }
             if (!save(e)) { db.commitBulk(); return false; }
+        }
+        // Trinkprotokoll der letzten zwei Wochen (eigener Zufall – die übrigen Werte bleiben gleich)
+        if (kDays - 1 - day < 14) {
+            static const int amounts[] = { 250, 200, 300, 150, 250, 330, 200, 250 };
+            const struct { QTime t; int kind; } drinkTimes[] = { { QTime(7, 45), 0 }, { QTime(10, 15), 0 }, { QTime(12, 30), 1 },
+                                                           { QTime(15, 0), 0 }, { QTime(18, 15), 0 }, { QTime(20, 30), 0 } };
+            int i = 0;
+            for (const auto &sl : drinkTimes) {
+                if (((unsigned(day) * 2654435761u) ^ (unsigned(i) * 97u)) % 7u == 3u) { ++i; continue; }   // mal vergessen
+                VitalRecord f;
+                f.measuredAt = QDateTime(date, sl.t);
+                f.fluidIn = amounts[(day + i) % 8];
+                f.fluidInKind = Fluid::inKinds().value(sl.kind);
+                if (!save(f)) { db.commitBulk(); return false; }
+                ++i;
+            }
         }
         if (day % 20 == 0) report(12 + 70 * day / kDays);
     }

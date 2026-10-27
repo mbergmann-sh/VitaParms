@@ -46,9 +46,32 @@ Page {
         if (dia.text.trim() !== "") values.diastolic = parseInt(dia.text)
         if (resp.text.trim() !== "") values["Atemfrequenz"] = parseInt(resp.text)
         if (pain.value >= 0) values["Schmerz (NRS)"] = pain.value
+        if (fluidIn.text.trim() !== "") values.fluidIn = parseInt(fluidIn.text)
+        if (fluidOut.text.trim() !== "") values.fluidOut = parseInt(fluidOut.text)
+        if (page.edemaGrade >= 0) values.edema = page.edemaGrade
         return { id: page.vitalId, measuredAt: measuredAt(), context: page.context, values: values, observations: obs.text,
-                 stool: stoolCheck.checked ? stoolCombo.currentIndex : null, stoolDetail: stoolDetail() }
+                 stool: stoolCheck.checked ? stoolCombo.currentIndex : null, stoolDetail: stoolDetail(),
+                 fluidInKind: page.fluidInKind, fluidOutKind: page.fluidOutKind,
+                 edemaSite: page.edemaGrade > 0 ? edemaSite.text : "", edemaSide: page.edemaGrade > 0 ? page.edemaSide : "" }
     }
+    // INR, Ein- und Ausfuhr, Ödeme
+    readonly property var fluidInfo: app.fluidChoices()
+    property string fluidInKind: fluidInfo.inKinds[0]
+    property string fluidOutKind: fluidInfo.outKinds[0]
+    property int edemaGrade: -1
+    property string edemaSide: ""
+    property var inrState: ({})
+    property var fluidState: ({})
+    property string edemaHint: ""
+    function updateCare() {
+        const c = cards.byKey("inr")
+        inrState = app.inrCheck(personId, c ? c.text : "")
+        fluidState = app.fluidDay(personId, collect())
+        edemaHint = app.edemaAdvice({ values: page.edemaGrade >= 0 ? { edema: page.edemaGrade } : {},
+                                      edemaSite: edemaSite.text, edemaSide: page.edemaSide })
+    }
+    onEdemaGradeChanged: updateCare()
+    onEdemaSideChanged: updateCare()
     // Stuhlgang: Bristol-Typ (0 = ohne Angabe) und Angaben fürs Stuhlprotokoll
     readonly property var stoolInfo: app.stoolChoices()
     property alias stoolCombo: stoolComboBox.combo
@@ -84,6 +107,7 @@ Page {
     function doSave() {
         const id = app.saveVital(personId, collect())
         if (!id) { win.toast(app.lastError, true); return }
+        savedId = id
         if (profileApptId) { app.setAppointmentDone(profileApptId, true); profileApptId = 0 }
         if (pfAlert) {        // gelber oder roter Bereich: deutlich hinweisen, dann weiter
             pfWarn.title = qsTr("Peak Flow – %1").arg(pfCheck.zoneName)
@@ -95,8 +119,15 @@ Page {
         checkStool()
     }
     // schwarzer oder blutiger Stuhl: auf ärztliche Abklärung hinweisen
+    property var savedId: 0
     function checkStool() {
         if (stoolCheck.checked && app.stoolNeedsAttention(stoolDetail())) { stoolWarn.open(); return }
+        checkCare()
+    }
+    // INR außerhalb des Zielbereichs, auffällige Ödeme, Gewichtszunahme, Trinkmenge
+    function checkCare() {
+        const w = savedId ? app.careWarnings(personId, savedId) : []
+        if (w.length) { careWarn.message = w.join("\n\n"); careWarn.open(); return }
         afterSave()
     }
     function afterSave() {
@@ -112,6 +143,8 @@ Page {
         sys.text = ""; dia.text = ""; resp.text = ""; pain.value = -1; obs.text = ""
         stoolCheck.checked = false; stoolCombo.currentIndex = 0
         stoolAmount.text = ""; stoolColor.text = ""; stoolAdmix.text = ""; stoolSymptoms.text = ""
+        fluidIn.text = ""; fluidOut.text = ""; page.edemaGrade = -1; edemaSite.text = ""; page.edemaSide = ""
+        updateCare()
         setNow()
         updatePeakFlow()
         sys.field.forceActiveFocus()
@@ -121,6 +154,11 @@ Page {
         sys.text = fmtNum(v.systolic); dia.text = fmtNum(v.diastolic)
         resp.text = fmtNum(v["Atemfrequenz"])
         pain.value = v["Schmerz (NRS)"] !== undefined ? v["Schmerz (NRS)"] : -1
+        fluidIn.text = fmtNum(v.fluidIn); fluidOut.text = fmtNum(v.fluidOut)
+        if (rec.fluidInKind) page.fluidInKind = rec.fluidInKind
+        if (rec.fluidOutKind) page.fluidOutKind = rec.fluidOutKind
+        page.edemaGrade = v.edema !== undefined ? v.edema : -1
+        edemaSite.text = rec.edemaSite || ""; page.edemaSide = rec.edemaSide || ""
         if (rec.stool !== undefined && rec.stool !== null) {
             stoolCheck.checked = true
             stoolCombo.currentIndex = rec.stool
@@ -133,6 +171,7 @@ Page {
         if (presetObservation !== "" && !vitalId) obs.text = presetObservation
         updateBmi()
         updatePeakFlow()
+        updateCare()
         if (!vitalId) {
             const g = presetContext !== "" ? cards.byKey("glucose") : null      // BZ-Tagesprofil: gleich zum Blutzucker
             if (g) g.field.forceActiveFocus(); else sys.field.forceActiveFocus()
@@ -239,6 +278,7 @@ Page {
                         onEdited: {
                             if (key === "weight" || key === "height") page.updateBmi()
                             if (key === "peakflow" || key === "height") page.updatePeakFlow()
+                            if (key === "inr") page.updateCare()
                         }
                     }
                 }
@@ -278,6 +318,15 @@ Page {
                 font.pixelSize: Theme.fsM; font.bold: page.pfAlert
             }
 
+            Label {
+                objectName: "inrHint"
+                visible: (cards.byKey("inr") !== null) && !!page.inrState.text
+                Layout.fillWidth: true; wrapMode: Text.WordWrap
+                text: (page.inrState.text || "") + (page.inrState.advice ? "\n" + page.inrState.advice : "")
+                color: page.inrState.color || Theme.ink2
+                font.pixelSize: Theme.fsM; font.bold: page.inrState.zone === "veryHigh"
+            }
+
             // Schmerz 0–10
             ColumnLayout {
                 Layout.fillWidth: true
@@ -305,6 +354,117 @@ Page {
                     }
                     Label { text: pain.value < 0 ? qsTr("nicht erfasst") : pain.value === 0 ? qsTr("kein Schmerz") : pain.value >= 8 ? qsTr("stärkster Schmerz") : ""
                             color: Theme.muted; height: 56; verticalAlignment: Text.AlignVCenter; leftPadding: 8 }
+                }
+            }
+
+            // Ein- und Ausfuhr
+            Frame {
+                objectName: "fluidSection"
+                Layout.fillWidth: true
+                padding: 14
+                contentWidth: 300
+                background: Rectangle { radius: Theme.radius; color: Theme.surface; border.color: Theme.rule }
+                ColumnLayout {
+                    width: parent.width
+                    spacing: 10
+                    Label { text: qsTr("Ein- und Ausfuhr"); font.pixelSize: Theme.fsL; color: Theme.ink }
+                    GridLayout {
+                        Layout.fillWidth: true
+                        columns: page.width > 900 ? 2 : 1
+                        columnSpacing: Theme.gapL; rowSpacing: Theme.gap
+                        ColumnLayout {
+                            Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                            spacing: 6
+                            VField { id: fluidIn; objectName: "fluidIn"; Layout.fillWidth: true; label: qsTr("Einfuhr (ml)")
+                                     inputMethodHints: Qt.ImhDigitsOnly; field.onTextEdited: page.updateCare() }
+                            Flow {
+                                Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
+                                spacing: 6
+                                Repeater {
+                                    model: page.fluidInfo.amounts
+                                    VChip { text: modelData + " ml"; checkable: false; font.pixelSize: Theme.fsS
+                                            onClicked: { fluidIn.text = String((parseInt(fluidIn.text) || 0) + parseInt(modelData)); page.updateCare() } }
+                                }
+                            }
+                            Flow {
+                                Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
+                                spacing: 6
+                                Repeater {
+                                    model: page.fluidInfo.inKinds
+                                    VChip { text: modelData; checkable: false; checked: page.fluidInKind === modelData; font.pixelSize: Theme.fsS
+                                            onClicked: page.fluidInKind = modelData }
+                                }
+                            }
+                        }
+                        ColumnLayout {
+                            Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                            spacing: 6
+                            VField { id: fluidOut; objectName: "fluidOut"; Layout.fillWidth: true; label: qsTr("Ausfuhr (ml)")
+                                     inputMethodHints: Qt.ImhDigitsOnly; field.onTextEdited: page.updateCare() }
+                            Flow {
+                                Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
+                                spacing: 6
+                                Repeater {
+                                    model: page.fluidInfo.outKinds
+                                    VChip { text: modelData; checkable: false; checked: page.fluidOutKind === modelData; font.pixelSize: Theme.fsS
+                                            onClicked: page.fluidOutKind = modelData }
+                                }
+                            }
+                        }
+                    }
+                    Label {
+                        objectName: "fluidHint"
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap
+                        text: page.fluidState.text || ""
+                        color: page.fluidState.over ? Theme.warn : Theme.ink2
+                        font.pixelSize: Theme.fsS
+                    }
+                }
+            }
+
+            // Ödeme
+            Frame {
+                objectName: "edemaSection"
+                Layout.fillWidth: true
+                padding: 14
+                contentWidth: 300
+                background: Rectangle { radius: Theme.radius; color: Theme.surface; border.color: page.edemaGrade > 0 ? Theme.brand : Theme.rule }
+                ColumnLayout {
+                    width: parent.width
+                    spacing: 10
+                    Label { text: qsTr("Ödeme (Dellentiefe nach Fingerdruck)"); font.pixelSize: Theme.fsL; color: Theme.ink }
+                    Flow {
+                        Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
+                        spacing: 6
+                        VChip { text: qsTr("nicht erfasst"); checkable: false; checked: page.edemaGrade < 0; onClicked: page.edemaGrade = -1 }
+                        Repeater {
+                            model: page.fluidInfo.edemaGrades
+                            VChip { objectName: "edemaGrade" + modelData.value
+                                    text: modelData.name; checkable: false; checked: page.edemaGrade === modelData.value
+                                    onClicked: page.edemaGrade = modelData.value }
+                        }
+                    }
+                    SuggestField { id: edemaSite; objectName: "edemaSite"; visible: page.edemaGrade > 0; Layout.fillWidth: true
+                                   label: qsTr("Ort"); suggestions: page.fluidInfo.edemaSites }
+                    Connections { target: edemaSite.field.field; function onTextChanged() { page.updateCare() } }
+                    Flow {
+                        visible: page.edemaGrade > 0
+                        Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
+                        spacing: 6
+                        Repeater {
+                            model: page.fluidInfo.edemaSides
+                            VChip { text: modelData; checkable: false; checked: page.edemaSide === modelData
+                                    onClicked: page.edemaSide = page.edemaSide === modelData ? "" : modelData }
+                        }
+                    }
+                    Label {
+                        objectName: "edemaHint"
+                        visible: page.edemaHint !== ""
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap
+                        text: page.edemaHint
+                        color: page.edemaHint.indexOf("\n") >= 0 ? Theme.warn : Theme.ink2
+                        font.pixelSize: Theme.fsS
+                    }
                 }
             }
 

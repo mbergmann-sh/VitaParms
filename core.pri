@@ -41,7 +41,7 @@ SOURCES += \
     $$PWD/src/apptcore.cpp \
     $$PWD/src/quarterreminder.cpp \
     $$PWD/src/glucoseprofile.cpp $$PWD/src/peakflow.cpp \
-    $$PWD/src/stool.cpp $$PWD/src/protocols.cpp $$PWD/src/docfiles.cpp $$PWD/src/akteexportcore.cpp $$PWD/src/pdftools.cpp \
+    $$PWD/src/stool.cpp $$PWD/src/protocols.cpp $$PWD/src/inr.cpp $$PWD/src/fluid.cpp $$PWD/src/docfiles.cpp $$PWD/src/akteexportcore.cpp $$PWD/src/pdftools.cpp \
     $$PWD/src/themes.cpp
 
 HEADERS += \
@@ -75,6 +75,6 @@ HEADERS += \
     $$PWD/src/apptcore.h \
     $$PWD/src/quarterreminder.h \
     $$PWD/src/glucoseprofile.h $$PWD/src/peakflow.h \
-    $$PWD/src/stool.h $$PWD/src/protocols.h $$PWD/src/docfiles.h $$PWD/src/akteexportcore.h $$PWD/src/pdftools.h \
+    $$PWD/src/stool.h $$PWD/src/protocols.h $$PWD/src/inr.h $$PWD/src/fluid.h $$PWD/src/docfiles.h $$PWD/src/akteexportcore.h $$PWD/src/pdftools.h \
     $$PWD/src/themes.h \
     $$PWD/src/datatypes.h

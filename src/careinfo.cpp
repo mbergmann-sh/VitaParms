@@ -165,7 +165,9 @@ bool isInternalExtraKey(const QString &key)
 {
     static const QStringList keys = { QStringLiteral("advance"), QStringLiteral("pvDocId"), QStringLiteral("vvDocId"),
                                       QStringLiteral("bvDocId"), QStringLiteral("prepDays"), QStringLiteral("prepWeekday"),
-                                      Contacts::contactsKey(), QStringLiteral("peakFlowBest"), QStringLiteral("bioSex") };
+                                      Contacts::contactsKey(), QStringLiteral("peakFlowBest"), QStringLiteral("bioSex"),
+                                      QStringLiteral("inrLow"), QStringLiteral("inrHigh"), QStringLiteral("fluidMin"),
+                                      QStringLiteral("fluidMax"), QStringLiteral("weightWatch") };
     // die alten Kontakt-Zusatzfelder werden aus der Kontaktliste mitgeschrieben und dort angezeigt
     return keys.contains(key) || Contacts::isLegacyKey(key);
 }

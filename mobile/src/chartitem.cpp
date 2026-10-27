@@ -68,6 +68,8 @@ void ChartItem::reload()
     ChartSpec::rangeFor(m_spec.scale, m_ref, m_spec.from, m_spec.to);
     Database &db = Database::instance();
     m_all = (m_pid && db.isOpen()) ? db.vitals(m_pid) : QList<VitalRecord>();
+    if (m_pid && db.isOpen())
+        if (const auto p = db.patient(m_pid)) m_spec.setPatient(*p);
     m_spec.records.clear();
     for (const VitalRecord &r : std::as_const(m_all))
         if (r.measuredAt >= m_spec.from.addDays(-31) && r.measuredAt < m_spec.to) m_spec.records << r;   // Vorlauf: Tage ohne Stuhlgang

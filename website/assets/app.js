@@ -456,7 +456,7 @@
     if (!p.rs.length) { view.append(h('p', { class: 'empty', text: L.noReadings })); }
     else {
       const strip = h('div', { class: 'strip' });
-      const order = ['systolic', 'pulse', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow'];
+      const order = ['systolic', 'pulse', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow', 'inr', 'edema'];
       for (const key of order) {
         const def = state.vitals[key];
         if (!def) continue;
@@ -716,6 +716,12 @@
     if (!st || r.v.stool === undefined) return '';
     return st.names[r.v.stool] + (r.sd ? ` (${r.sd.filter(Boolean).join(', ')})` : '');
   }
+  function edemaText(r) {
+    if (r.v.edema === undefined) return '';
+    const parts = [state.data.stool.edemaNames[r.v.edema]];
+    if (r.bi && r.v.edema > 0) parts.push(...[r.bi[2], r.bi[3]].filter(Boolean));
+    return parts.join(', ');
+  }
   function stoolGroupColor(type) {
     const st = state.data.stool, g = st.groups[st.groupOf[type] || 0];
     return isDark() ? g.dark : g.color;
@@ -817,8 +823,99 @@
     return box;
   }
 
+  // Ein- und Ausfuhr: je Tag zwei Balken und die Bilanz (Raute); Trinkmengen als Linien
+  function fluidChart(pd, p, from, to) {
+    const F = state.data.stool.fluid, c = state.chart;
+    const din = state.vitals.fluidIn, dout = state.vitals.fluidOut;
+    const offIn = c.hidden.has('fluidIn'), offOut = c.hidden.has('fluidOut');
+    const box = h('div', { class: 'panel' });
+    const head = h('div', { class: 'panel-head' }, h('h3', { text: pd.title }));
+    const item = (key, d, off) => {
+      const sw = h('span', { class: 'sw' });
+      sw.style.background = off ? 'transparent' : d.color;
+      head.append(h('button', { type: 'button', class: 'legend-item', 'aria-pressed': off ? 'false' : 'true', title: L.toggleHint,
+        onclick: () => { off ? c.hidden.delete(key) : c.hidden.add(key); renderView(); } }, sw, `${d.short} [${d.unit}]`));
+    };
+    item('fluidIn', din, offIn);
+    item('fluidOut', dout, offOut);
+    box.append(head);
+    const width = Math.max(320, ($('#view').clientWidth || 800) - 32), height = 220;
+    const left = 56, right = 10, top = 10, bottom = 26, pw = width - left - right, ph = height - top - bottom;
+    const svg = s('svg', { class: 'plot', viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `${pd.title}, ${periodText(new Date(from), new Date(to))}` });
+    const xOf = (ms) => left + ((ms - from) / (to - from)) * pw;
+    const days = new Map();
+    for (const r of p.rs) {
+      if (r.ms < from || r.ms >= to || (r.v.fluidIn === undefined && r.v.fluidOut === undefined)) continue;
+      const k = dayKey(r.ms);
+      if (!days.has(k)) days.set(k, { in: 0, out: 0, nIn: 0, nOut: 0 });
+      const d = days.get(k);
+      if (r.v.fluidIn !== undefined) { d.in += r.v.fluidIn; d.nIn++; }
+      if (r.v.fluidOut !== undefined) { d.out += r.v.fluidOut; d.nOut++; }
+    }
+    svg.append(s('rect', { class: 'frame', x: left, y: top, width: pw, height: ph }));
+    const tt = timeTicks(from, to, pw);
+    const axisX = s('g', { class: 'axis' });
+    for (const t of tt.ticks) { const l = s('text', { x: xOf(t), y: top + ph + 17, 'text-anchor': 'middle' }); l.textContent = tt.fmt.format(t); axisX.append(l); }
+    svg.append(axisX);
+    box.append(svg);
+    if (!days.size || (offIn && offOut)) {
+      const m = s('text', { class: 'msg', x: left + pw / 2, y: top + ph / 2, 'text-anchor': 'middle' });
+      m.textContent = offIn && offOut ? L.allHidden : F.none;
+      svg.append(m);
+      return box;
+    }
+    let lo = 0, hi = Math.max(500, p.fluidMin || 0, p.fluidMax || 0);
+    for (const d of days.values()) {
+      if (!offIn) hi = Math.max(hi, d.in);
+      if (!offOut) hi = Math.max(hi, d.out);
+      if (!offIn && !offOut) lo = Math.min(lo, d.in - d.out);
+    }
+    const yt = niceTicks(lo, hi * 1.05, Math.max(3, Math.min(6, Math.floor(ph / 34))));
+    const yOf = (v) => top + ph - ((v - yt.lo) / (yt.hi - yt.lo)) * ph;
+    const axisY = s('g', { class: 'axis' });
+    for (const v of yt.ticks) {
+      svg.insertBefore(s('line', { class: 'gridline', x1: left, x2: left + pw, y1: yOf(v), y2: yOf(v) }), axisX);
+      const l = s('text', { x: left - 6, y: yOf(v) + 4, 'text-anchor': 'end' }); l.textContent = fmtNum(v, 0); axisY.append(l);
+    }
+    svg.append(axisY);
+    for (const [ml, cls, txt] of [[p.fluidMin, 'limit-min', F.min], [p.fluidMax, 'limit-max', F.max]]) {
+      if (!ml || offIn) continue;
+      svg.append(s('line', { class: cls, x1: left, x2: left + pw, y1: yOf(ml), y2: yOf(ml) }));
+      const l = s('text', { class: 'gap-label', x: left + 6, y: yOf(ml) - 4 }); l.textContent = txt.replace('%1', fmtNum(ml, 0)); svg.append(l);
+    }
+    const dayW = xOf(from + DAY) - xOf(from), gapW = dayW > 8 ? Math.min(dayW * 0.2, 6) : 0;
+    const n = (offIn ? 0 : 1) + (offOut ? 0 : 1), barW = Math.max(1, (dayW - gapW) / Math.max(1, n));
+    const hits = [];
+    for (const [k, d] of days) {
+      const t0 = parseT(k);
+      let x = xOf(t0) + gapW / 2;
+      const xc = x + (dayW - gapW) / 2;
+      if (!offIn) { if (d.nIn) svg.append(s('rect', { x, y: yOf(d.in), width: barW, height: yOf(0) - yOf(d.in), fill: din.color })); x += barW; }
+      if (!offOut && d.nOut) svg.append(s('rect', { x, y: yOf(d.out), width: barW, height: yOf(0) - yOf(d.out), fill: dout.color }));
+      if (!offIn && !offOut && d.nIn && d.nOut) svg.append(marker('diamond', xc, yOf(d.in - d.out), Math.min(4, dayW * 0.35), 'currentColor', surfaceColor()));
+      const rows = [];
+      if (d.nIn) rows.push({ color: din.color, text: `${din.label}: ${fmtNum(d.in, 0)} ml` });
+      if (d.nOut) rows.push({ color: dout.color, text: `${dout.label}: ${fmtNum(d.out, 0)} ml` });
+      if (d.nIn && d.nOut) rows.push({ color: 'transparent', text: `${F.balance}: ${d.in - d.out > 0 ? '+' : ''}${fmtNum(d.in - d.out, 0)} ml` });
+      hits.push({ x: xc, title: fmtDate.format(t0), rows });
+    }
+    const move = (ev) => {
+      const rect = svg.getBoundingClientRect();
+      const px = ((ev.clientX - rect.left) / rect.width) * width;
+      let best = null, bd = Infinity;
+      for (const hp of hits) { const d = Math.abs(hp.x - px); if (d < bd) { bd = d; best = hp; } }
+      if (!best || bd > Math.max(30, dayW)) { hideTip(); return; }
+      showTip(ev.clientX, ev.clientY, best.title, best.rows);
+    };
+    svg.addEventListener('pointermove', move);
+    svg.addEventListener('pointerdown', move);
+    svg.addEventListener('pointerleave', hideTip);
+    return box;
+  }
+
   function panelChart(pd, p, from, to) {
     if (pd.id === 'stool') return stoolChart(pd, p, from, to);
+    if (pd.id === 'fluid') return fluidChart(pd, p, from, to);
     const c = state.chart;
     const agg = to - from > 62 * DAY;
     const box = h('div', { class: 'panel' });
@@ -830,7 +927,7 @@
       sw.append(s('line', { x1: 1, y1: 6, x2: 25, y2: 6, stroke: off ? 'currentColor' : d.color, 'stroke-width': 2, 'stroke-dasharray': off ? '2 3' : null }));
       if (!off) sw.append(marker(d.marker, 13, 6, 4, d.color, surfaceColor()));
       head.append(h('button', { type: 'button', class: 'legend-item', 'aria-pressed': off ? 'false' : 'true', title: L.toggleHint,
-        onclick: () => { off ? c.hidden.delete(k) : c.hidden.add(k); renderView(); } }, sw, `${d.short} [${d.unit}]`));
+        onclick: () => { off ? c.hidden.delete(k) : c.hidden.add(k); renderView(); } }, sw, d.unit ? `${d.short} [${d.unit}]` : d.short));
     }
     if (agg) head.append(h('span', { class: 'panel-note', text: L.dailyNote }));
     box.append(head);
@@ -870,9 +967,18 @@
       svg.append(m);
       return box;
     }
-    const pad = (hi - lo) * 0.08;
+    const band = pd.id === 'inr' && p.inr ? p.inr : null;     // INR-Zielbereich
+    if (band) { lo = Math.min(lo, band[0]); hi = Math.max(hi, band[1]); }
+    if (pd.id === 'edema') { lo = 0; hi = 4; }
+    const pad = pd.id === 'edema' ? 0 : (hi - lo) * 0.08;
     const yt = niceTicks(lo - pad, hi + pad, Math.max(3, Math.min(6, Math.floor(ph / 34))));
     const yOf = (v) => top + ph - ((v - yt.lo) / (yt.hi - yt.lo)) * ph;
+    if (band) {
+      svg.insertBefore(s('rect', { class: 'inr-band', x: left, y: yOf(band[1]), width: pw, height: yOf(band[0]) - yOf(band[1]) }), axisX);
+      const bt = s('text', { class: 'gap-label', x: left + pw - 6, y: yOf(band[1]) + 13, 'text-anchor': 'end' });
+      bt.textContent = state.data.stool.fluid.target.replace('%1', fmtNum(band[0], 1)).replace('%2', fmtNum(band[1], 1));
+      svg.insertBefore(bt, axisX);
+    }
     const dec = yt.step < 0.1 ? 2 : yt.step < 1 ? 1 : 0;
     const axisY = s('g', { class: 'axis' });
     for (const v of yt.ticks) {
@@ -996,7 +1102,7 @@
       tbody.append(h('tr', { class: r.adm ? 'adm' : null },
         h('td', { class: 'when num', text: fmtDateTime.format(r.ms) }),
         h('td', { text: r.adm ? L.admission : r.ctx || '' }),
-        keys.map((k) => h('td', { class: k === 'stool' ? null : 'n', text: k === 'stool' ? stoolText(r) : r.v[k] !== undefined ? fmtNum(r.v[k], state.vitals[k].decimals) : '' })),
+        keys.map((k) => h('td', { class: k === 'stool' ? null : 'n', text: k === 'stool' ? stoolText(r) : k === 'edema' ? edemaText(r) : r.v[k] !== undefined ? fmtNum(r.v[k], state.vitals[k].decimals) : '' })),
         extra.map((x) => h('td', { text: r.x && r.x[x] !== undefined ? String(r.x[x]) : '' })),
         h('td', { class: 'obs', text: r.obs || '' })));
     }
@@ -1016,7 +1122,7 @@
     for (const r of rows.slice().reverse()) {
       const d = new Date(r.ms);
       const stamp = `${isoDate(d)} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-      lines.push([stamp, r.adm ? L.admission : r.ctx || '', ...keys.map((k) => (k === 'stool' ? stoolText(r) : num(r.v[k], state.vitals[k].decimals))),
+      lines.push([stamp, r.adm ? L.admission : r.ctx || '', ...keys.map((k) => (k === 'stool' ? stoolText(r) : k === 'edema' ? edemaText(r) : num(r.v[k], state.vitals[k].decimals))),
         ...extra.map((x) => (r.x ? r.x[x] : '')), r.obs || ''].map(q).join(sep));
     }
     download(`${p.name.replace(/[\\/:*?"<>|]+/g, '_')} – ${L.tabs.journal}.csv`, new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));

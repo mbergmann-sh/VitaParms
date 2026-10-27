@@ -3,6 +3,7 @@
 #include "glucoseprofile.h"
 #include "reportprinter.h"
 #include "stool.h"
+#include "fluid.h"
 #include "vitaldefs.h"
 #include "xlsxwriter.h"
 
@@ -18,7 +19,12 @@ static QString tr(const char *s) { return QCoreApplication::translate("Protocols
 
 QString title(Kind k)
 {
-    return k == Kind::Stool ? tr("Stuhlprotokoll") : tr("BZ-Tagesprofile");
+    switch (k) {
+    case Kind::Stool: return tr("Stuhlprotokoll");
+    case Kind::Glucose: return tr("BZ-Tagesprofile");
+    case Kind::Fluid: return tr("Ein- und Ausfuhr (Bilanz)");
+    }
+    return {};
 }
 
 QString periodText(const Options &o)
@@ -236,9 +242,81 @@ Table glucoseProfiles(const QList<VitalRecord> &records, const Options &o)
     return t;
 }
 
-Table build(Kind k, const QList<VitalRecord> &records, const Options &o)
+Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Patient &p)
 {
-    return k == Kind::Stool ? stoolProtocol(records, o) : glucoseProfiles(records, o);
+    const QLocale loc;
+    Table t;
+    t.title = title(Kind::Fluid);
+    t.heads = { tr("Datum & Uhrzeit"), tr("Einfuhr (ml)"), tr("Art"), tr("Ausfuhr (ml)"), tr("Art"), tr("Bemerkung") };
+    t.widths = { 16, 10, 16, 10, 16, 32 };
+    QList<const VitalRecord *> list;
+    for (const VitalRecord &r : records)
+        if ((r.fluidIn || r.fluidOut) && inRange(o, r.measuredAt.date())) list << &r;
+    std::sort(list.begin(), list.end(), [](const VitalRecord *a, const VitalRecord *b) { return a->measuredAt < b->measuredAt; });
+    const int lo = Fluid::minIntake(p), hi = Fluid::maxIntake(p);
+    int sumIn = 0, sumOut = 0, nDays = 0, under = 0, over = 0;
+    auto flush = [&](const QDate &d, const Fluid::Day &day) {
+        Table::Row row;
+        row.when = QDateTime(d, QTime(23, 59, 59));
+        row.flag = Table::Summary;
+        row.cells = { tr("Summe %1").arg(loc.toString(d, QStringLiteral("dd.MM."))), loc.toString(day.in), QString(),
+                      loc.toString(day.out), QString(), tr("Bilanz %1").arg(Fluid::signedMl(day.balance())) };
+        if (d < QDate::currentDate() && ((lo && day.in < lo) || (hi && day.in > hi))) row.alertCells << 1;
+        if (d < QDate::currentDate() && lo && day.in < lo) ++under;
+        if (hi && day.in > hi) ++over;
+        t.rows << row;
+        sumIn += day.in; sumOut += day.out; ++nDays;
+    };
+    QDate cur;
+    Fluid::Day day;
+    for (const VitalRecord *r : std::as_const(list)) {
+        const QDate d = r->measuredAt.date();
+        if (cur.isValid() && d != cur) { flush(cur, day); day = {}; }
+        cur = d;
+        if (r->fluidIn) { day.in += *r->fluidIn; ++day.nIn; }
+        if (r->fluidOut) { day.out += *r->fluidOut; ++day.nOut; }
+        Table::Row row;
+        row.when = r->measuredAt;
+        row.cells = { loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")),
+                      r->fluidIn ? loc.toString(*r->fluidIn) : QString(), r->fluidIn ? r->fluidInKind : QString(),
+                      r->fluidOut ? loc.toString(*r->fluidOut) : QString(), r->fluidOut ? r->fluidOutKind : QString(),
+                      r->observations.simplified() };
+        t.rows << row;
+        ++t.entries;
+    }
+    if (cur.isValid()) flush(cur, day);
+    if (nDays) {
+        Table::Row mean;
+        mean.flag = Table::Summary;
+        mean.cells = { tr("Ø je Tag (%1 Tage)").arg(nDays), loc.toString(qRound(double(sumIn) / nDays)), QString(),
+                       loc.toString(qRound(double(sumOut) / nDays)), QString(),
+                       tr("Bilanz %1").arg(Fluid::signedMl(qRound(double(sumIn - sumOut) / nDays))) };
+        t.footer << mean;
+    }
+    t.summary = t.entries ? tr("%1 Einträge an %2 Tagen").arg(t.entries).arg(nDays)
+                          : tr("Im Zeitraum ist keine Ein- oder Ausfuhr eingetragen.");
+    if (const QString lim = Fluid::limitsText(p); !lim.isEmpty()) {
+        t.summary += QStringLiteral(" · ") + lim;
+        QStringList w;
+        if (under == 1) w << tr("an 1 Tag weniger getrunken als vorgesehen");
+        else if (under) w << tr("an %1 Tagen weniger getrunken als vorgesehen").arg(under);
+        if (over == 1) w << tr("an 1 Tag mehr als die Begrenzung");
+        else if (over) w << tr("an %1 Tagen mehr als die Begrenzung").arg(over);
+        if (!w.isEmpty()) t.summary += QStringLiteral(" · ") + w.join(QStringLiteral(", "));
+    }
+    t.notes << tr("Bilanz = Einfuhr minus Ausfuhr. Nicht gemessene Ausfuhr (Schwitzen, Atmung, Stuhl) ist nicht enthalten.");
+    if (lo || hi) t.notes << tr("Hervorgehoben: Tagessummen außerhalb der Trinkmengen aus dem Stammblatt (der laufende Tag zählt bei der Mindestmenge nicht).");
+    return t;
+}
+
+Table build(Kind k, const QList<VitalRecord> &records, const Options &o, const Patient &p)
+{
+    switch (k) {
+    case Kind::Stool: return stoolProtocol(records, o);
+    case Kind::Glucose: return glucoseProfiles(records, o);
+    case Kind::Fluid: return fluidBalance(records, o, p);
+    }
+    return {};
 }
 
 // ------------------------------------------------------------------ Ausgabe

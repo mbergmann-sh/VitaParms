@@ -2,6 +2,8 @@
 #include "chartwidget.h"
 #include "themes.h"
 #include "stool.h"
+#include "inr.h"
+#include "fluid.h"
 
 #include <QApplication>
 
@@ -275,6 +277,20 @@ QFont scaledFont(const QFont &base, qreal pt, bool bold = false)
 
 // ------------------------------------------------------------ ChartRenderer
 
+void ChartSpec::setPatient(const Patient &p)
+{
+    const Inr::Range r = Inr::range(p);
+    inrLow = r.low;
+    inrHigh = r.high;
+    fluidMin = Fluid::minIntake(p);
+    fluidMax = Fluid::maxIntake(p);
+}
+
+QString SeriesStats::label() const
+{
+    return note.isEmpty() ? VitalDefs::label(key) : VitalDefs::label(key) + QStringLiteral(" (") + note + QLatin1Char(')');
+}
+
 QString SeriesStats::stoolNote() const
 {
     if (key != VitalKey::Stool) return {};
@@ -318,6 +334,27 @@ QList<SeriesStats> ChartRenderer::statistics(const ChartSpec &spec)
                     const QDate a = std::max(g.first, fromD), b = std::min(g.last, lastD);
                     s.longestGap = std::max(s.longestGap, int(a.daysTo(b)) + 1);
                 }
+                s.note = s.stoolNote();
+                out << s;
+                continue;
+            }
+            if (k == VitalKey::FluidIn || k == VitalKey::FluidOut) {
+                // Kennwerte der Tagessummen
+                const auto days = Fluid::perDay(spec.records, spec.from.date(), spec.to.addMSecs(-1).date());
+                QList<double> sums;
+                for (const Fluid::Day &d : days) {
+                    const int v = k == VitalKey::FluidIn ? d.in : d.out;
+                    if ((k == VitalKey::FluidIn ? d.nIn : d.nOut) > 0) sums << v;
+                }
+                if (!sums.isEmpty()) {
+                    s.min = *std::min_element(sums.begin(), sums.end());
+                    s.max = *std::max_element(sums.begin(), sums.end());
+                    double sum = 0;
+                    for (double v : sums) sum += v;
+                    s.mean = sum / sums.size();
+                }
+                s.note = QObject::tr("Tagessummen an %1 Tagen").arg(sums.size());
+                if (sums.isEmpty()) s.count = 0;
                 out << s;
                 continue;
             }
@@ -330,6 +367,12 @@ QList<SeriesStats> ChartRenderer::statistics(const ChartSpec &spec)
                     sum += p.v;
                 }
                 s.mean = sum / pts.size();
+            }
+            if (k == VitalKey::Inr && !pts.isEmpty() && spec.inrHigh > spec.inrLow) {
+                int in = 0;
+                for (const Pt &p : pts) in += p.v >= spec.inrLow - 1e-9 && p.v <= spec.inrHigh + 1e-9;
+                s.note = QObject::tr("%1 von %2 im Zielbereich %3–%4").arg(in).arg(pts.size())
+                             .arg(QLocale().toString(spec.inrLow, 'f', 1), QLocale().toString(spec.inrHigh, 'f', 1));
             }
             out << s;
         }
@@ -532,6 +575,213 @@ void paintStoolPanel(QPainter &p, const QRectF &rect, const QRectF &pr, const St
     p.restore();
 }
 
+// Zeitachse (senkrechte Linien, Beschriftung, Tagesgrenzen) in einem Sonder-Bereich
+void drawTimeGrid(QPainter &p, const QRectF &rect, const QRectF &plot, const StoolCtx &c)
+{
+    const qreal k = c.k;
+    const QLocale loc;
+    const QFontMetricsF fmAxis(c.axisFont, p.device());
+    p.setPen(QPen(c.gridStrong, 0.6 * k));
+    p.setBrush(Qt::NoBrush);
+    p.drawRect(plot);
+    p.setFont(c.axisFont);
+    for (const QDateTime &t : c.ax->ticks) {
+        const qreal x = c.xOf(t);
+        p.setPen(QPen(c.grid, 0.5 * k));
+        p.drawLine(QPointF(x, plot.top()), QPointF(x, plot.bottom()));
+        const QString lbl = loc.toString(t, c.ax->fmt);
+        const qreal w = fmAxis.horizontalAdvance(lbl);
+        const qreal tx = std::clamp(x - w / 2, plot.left() - c.yLabelW * 0.5, rect.right() - w);
+        p.setPen(c.muted);
+        p.drawText(QPointF(tx, plot.bottom() + 2 * k + fmAxis.ascent()), lbl);
+    }
+    for (const QDateTime &t : c.ax->dayLines) {
+        const qreal x = c.xOf(t);
+        p.setPen(QPen(c.gridStrong, 0.8 * k, Qt::DashLine));
+        p.drawLine(QPointF(x, plot.top()), QPointF(x, plot.bottom()));
+    }
+}
+
+// Ein- und Ausfuhr: je Tag zwei Balken (Einfuhr, Ausfuhr) und die Bilanz als Raute; Mindest- und
+// Höchst-Trinkmenge als gestrichelte Linien. Tagesansicht: aufsummierter Verlauf über den Tag.
+void paintFluidPanel(QPainter &p, const QRectF &rect, const QRectF &pr, const StoolCtx &c, const ChartSpec &spec,
+                     QList<ChartRenderer::Hit> *hits, QList<ChartRenderer::LegendHit> *legend)
+{
+    const qreal k = c.k;
+    const QLocale loc;
+    const QFontMetricsF fmTitle(c.titleFont, p.device()), fmLegend(c.legendFont, p.device()), fmAxis(c.axisFont, p.device());
+    const bool offIn = spec.isHidden(VitalKey::FluidIn), offOut = spec.isHidden(VitalKey::FluidOut);
+    QString title = VitalDefs::label(VitalKey::FluidIn);
+    for (const auto &pd : VitalDefs::panels())
+        if (pd.id == QLatin1String("fluid")) title = pd.title;
+    const QColor colIn = VitalDefs::color(VitalKey::FluidIn), colOut = VitalDefs::color(VitalKey::FluidOut);
+    const QColor colMin = Inr::zoneColor(Inr::Zone::InRange, c.dark), colMax = Inr::zoneColor(Inr::Zone::High, c.dark);
+
+    p.setFont(c.titleFont);
+    p.setPen(c.ink);
+    const qreal titleH = fmTitle.height() + 4 * k;
+    p.drawText(QRectF(pr.left(), pr.top(), pr.width(), titleH), Qt::AlignLeft | Qt::AlignVCenter, title);
+    qreal lx = pr.left() + fmTitle.horizontalAdvance(title) + 14 * k;
+    const qreal cy = pr.top() + titleH / 2;
+    auto legendItem = [&](const QColor &col, const QString &text, bool off, int kind, std::optional<VitalKey> key) {
+        const qreal tw = fmLegend.horizontalAdvance(text);
+        if (lx + 18 * k + tw > pr.right()) return;
+        const qreal x0 = lx;
+        if (kind == 0) {            // Balken
+            p.setPen(Qt::NoPen);
+            p.setBrush(off ? c.muted : col);
+            p.drawRect(QRectF(lx, cy - 4 * k, 9 * k, 8 * k));
+        } else if (kind == 1) {     // Raute
+            p.setPen(QPen(c.paper, 0.6 * k));
+            drawMarker(p, MarkerShape::Diamond, QPointF(lx + 5 * k, cy), 3.2 * k, col);
+        } else {                    // gestrichelte Linie
+            p.setPen(QPen(col, 1.2 * k, Qt::DashLine));
+            p.drawLine(QPointF(lx, cy), QPointF(lx + 14 * k, cy));
+            lx += 5 * k;
+        }
+        QFont lf = c.legendFont;
+        lf.setStrikeOut(off);
+        p.setFont(lf);
+        p.setPen(off ? c.muted : c.ink);
+        p.drawText(QPointF(lx + 13 * k, cy + fmLegend.ascent() / 2 - fmLegend.descent() / 2), text);
+        if (legend && key) legend->append({ QRectF(x0 - 3 * k, pr.top(), 13 * k + tw + 6 * k, titleH), *key });
+        lx += 13 * k + tw + 12 * k;
+    };
+    legendItem(colIn, VitalDefs::header(VitalKey::FluidIn), offIn, 0, VitalKey::FluidIn);
+    legendItem(colOut, VitalDefs::header(VitalKey::FluidOut), offOut, 0, VitalKey::FluidOut);
+    if (spec.from.daysTo(spec.to) > 2) legendItem(c.ink, QObject::tr("Bilanz"), false, 1, std::nullopt);
+    if (spec.fluidMin > 0) legendItem(colMin, QObject::tr("mind. %1 ml").arg(loc.toString(spec.fluidMin)), false, 2, std::nullopt);
+    if (spec.fluidMax > 0) legendItem(colMax, QObject::tr("höchstens %1 ml").arg(loc.toString(spec.fluidMax)), false, 2, std::nullopt);
+    p.setFont(c.legendFont);
+
+    const qreal xLabelH = fmAxis.height() + 4 * k;
+    const qreal topPad = fmAxis.height() * 0.6;
+    const QRectF plot(c.plotLeft, pr.top() + titleH + topPad, c.plotW, pr.height() - titleH - xLabelH - topPad);
+    if (plot.height() < 10 * k) return;
+    drawTimeGrid(p, rect, plot, c);
+
+    const QDate fromD = spec.from.date(), lastD = spec.to.addMSecs(-1).date();
+    const auto days = Fluid::perDay(spec.records, fromD, lastD);
+    if ((offIn && offOut) || days.isEmpty()) {
+        p.setPen(c.muted);
+        p.setFont(c.legendFont);
+        p.drawText(plot, Qt::AlignCenter, offIn && offOut
+            ? QObject::tr("Alle Kurven dieses Bereichs sind ausgeblendet – zum Einblenden auf die Legende klicken")
+            : QObject::tr("Keine Ein- oder Ausfuhr im Zeitraum eingetragen"));
+        return;
+    }
+    const bool shortSpan = spec.from.daysTo(spec.to) <= 2;
+
+    // Wertebereich
+    double lo = 0, hi = std::max({ 500, spec.fluidMin, spec.fluidMax });
+    struct Step { QDateTime t; int cumIn, cumOut; const VitalRecord *r; };
+    QList<Step> steps;
+    if (shortSpan) {
+        QList<const VitalRecord *> recs;
+        for (const VitalRecord &r : spec.records)
+            if ((r.fluidIn || r.fluidOut) && r.measuredAt >= spec.from && r.measuredAt < spec.to) recs << &r;
+        std::sort(recs.begin(), recs.end(), [](const VitalRecord *a, const VitalRecord *b) { return a->measuredAt < b->measuredAt; });
+        int ci = 0, co = 0;
+        QDate day;
+        for (const VitalRecord *r : std::as_const(recs)) {
+            if (r->measuredAt.date() != day) { day = r->measuredAt.date(); ci = co = 0; }   // je Tag neu summieren
+            ci += r->fluidIn.value_or(0);
+            co += r->fluidOut.value_or(0);
+            steps << Step{ r->measuredAt, ci, co, r };
+            hi = std::max(hi, double(std::max(ci, co)));
+        }
+    } else {
+        for (const Fluid::Day &d : days) {
+            if (!offIn) hi = std::max(hi, double(d.in));
+            if (!offOut) hi = std::max(hi, double(d.out));
+            if (!offIn && !offOut) lo = std::min(lo, double(d.balance()));
+        }
+    }
+    double ylo, yhi;
+    const int targetTicks = std::clamp(int(plot.height() / (fmAxis.height() * 1.6)), 3, 6);
+    const QList<double> yt = niceTicks(lo, hi * 1.05, targetTicks, ylo, yhi);
+    auto yOf = [&](double v) { return plot.bottom() - plot.height() * (v - ylo) / (yhi - ylo); };
+    p.setFont(c.axisFont);
+    for (double v : yt) {
+        const qreal y = yOf(v);
+        p.setPen(QPen(v == 0 ? c.gridStrong : c.grid, (v == 0 ? 0.8 : 0.5) * k));
+        p.drawLine(QPointF(plot.left(), y), QPointF(plot.right(), y));
+        p.setPen(c.muted);
+        p.drawText(QRectF(rect.left(), y - fmAxis.height() / 2, c.yLabelW - 4 * k, fmAxis.height()),
+                   Qt::AlignRight | Qt::AlignVCenter, loc.toString(qRound(v)));
+    }
+    p.save();
+    p.setClipRect(plot.adjusted(-4 * k, -4 * k, 4 * k, 4 * k));
+    for (const auto &[ml, col] : { std::pair{ spec.fluidMin, colMin }, std::pair{ spec.fluidMax, colMax } }) {
+        if (ml <= 0 || offIn) continue;
+        p.setPen(QPen(col, 1.1 * k, Qt::DashLine));
+        p.drawLine(QPointF(plot.left(), yOf(ml)), QPointF(plot.right(), yOf(ml)));
+    }
+    if (shortSpan) {
+        // aufsummierte Ein- und Ausfuhr als Treppen
+        for (int which = 0; which < 2; ++which) {
+            if ((which == 0 && offIn) || (which == 1 && offOut)) continue;
+            const QColor col = which == 0 ? colIn : colOut;
+            QPainterPath path;
+            QDate day;
+            double last = 0;
+            for (const Step &st : std::as_const(steps)) {
+                const double v = which == 0 ? st.cumIn : st.cumOut;
+                const QPointF pt(c.xOf(st.t), yOf(v));
+                if (st.t.date() != day) { day = st.t.date(); path.moveTo(c.xOf(QDateTime(day, QTime(0, 0))), yOf(0)); last = 0; }
+                path.lineTo(pt.x(), yOf(last));
+                path.lineTo(pt);
+                last = v;
+            }
+            p.setPen(QPen(col, 2.0 * k, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setBrush(Qt::NoBrush);
+            p.drawPath(path);
+            for (const Step &st : std::as_const(steps)) {
+                const VitalRecord *r = st.r;
+                const std::optional<int> amount = which == 0 ? r->fluidIn : r->fluidOut;
+                if (!amount) continue;
+                const QPointF pt(c.xOf(st.t), yOf(which == 0 ? st.cumIn : st.cumOut));
+                p.setPen(QPen(c.paper, 0.6 * k));
+                drawMarker(p, MarkerShape::Square, pt, 2.8 * k, col);
+                if (hits) {
+                    const QString kind = which == 0 ? r->fluidInKind : r->fluidOutKind;
+                    hits->append({ pt, loc.toString(st.t, QStringLiteral("ddd dd.MM.yyyy HH:mm")) + QLatin1Char('\n')
+                                           + VitalDefs::label(which == 0 ? VitalKey::FluidIn : VitalKey::FluidOut) + QStringLiteral(": ")
+                                           + loc.toString(*amount) + QStringLiteral(" ml") + (kind.isEmpty() ? QString() : QStringLiteral(" (") + kind + QLatin1Char(')'))
+                                           + QLatin1Char('\n') + QObject::tr("bis dahin am Tag: %1 ml").arg(loc.toString(which == 0 ? st.cumIn : st.cumOut)) });
+                }
+            }
+        }
+    } else {
+        const qreal dayW = c.xOf(QDateTime(fromD.addDays(1), QTime(0, 0))) - c.xOf(QDateTime(fromD, QTime(0, 0)));
+        const qreal gapW = dayW > 8 * k ? std::min(dayW * 0.2, 6 * k) : 0;
+        const int nBars = (offIn ? 0 : 1) + (offOut ? 0 : 1);
+        const qreal barW = std::max(0.8 * k, (dayW - gapW) / std::max(1, nBars));
+        for (auto it = days.constBegin(); it != days.constEnd(); ++it) {
+            const Fluid::Day &d = it.value();
+            qreal x = c.xOf(QDateTime(it.key(), QTime(0, 0))) + gapW / 2;
+            const qreal xc = x + (dayW - gapW) / 2;
+            if (!offIn) {
+                if (d.nIn) p.fillRect(QRectF(x, yOf(d.in), barW, yOf(0) - yOf(d.in)), colIn);
+                x += barW;
+            }
+            if (!offOut && d.nOut) p.fillRect(QRectF(x, yOf(d.out), barW, yOf(0) - yOf(d.out)), colOut);
+            if (!offIn && !offOut && d.nIn && d.nOut && dayW > 5 * k) {
+                p.setPen(QPen(c.paper, 0.6 * k));
+                drawMarker(p, MarkerShape::Diamond, QPointF(xc, yOf(d.balance())), std::min(3.2 * k, dayW * 0.35), c.ink);
+            }
+            if (hits) {
+                QString t = loc.toString(it.key(), QStringLiteral("ddd dd.MM.yyyy"));
+                if (d.nIn) t += QLatin1Char('\n') + VitalDefs::label(VitalKey::FluidIn) + QStringLiteral(": ") + loc.toString(d.in) + QStringLiteral(" ml");
+                if (d.nOut) t += QLatin1Char('\n') + VitalDefs::label(VitalKey::FluidOut) + QStringLiteral(": ") + loc.toString(d.out) + QStringLiteral(" ml");
+                if (d.nIn && d.nOut) t += QLatin1Char('\n') + QObject::tr("Bilanz: %1").arg(Fluid::signedMl(d.balance()));
+                hits->append({ QPointF(xc, yOf(std::max(d.in, d.out) / 2.0)), t });
+            }
+        }
+    }
+    p.restore();
+}
+
 } // namespace
 
 void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec,
@@ -609,6 +859,12 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
             paintStoolPanel(p, rect, pr, sc, spec, hits, legend);
             continue;
         }
+        if (panel.id == QLatin1String("fluid")) {
+            const StoolCtx sc{ k, dark, screen, ink, grid, gridStrong, muted, paper, titleFont, legendFont, axisFont,
+                               yLabelW, plotLeft, plotW, &ax, xOf };
+            paintFluidPanel(p, rect, pr, sc, spec, hits, legend);
+            continue;
+        }
 
         // Titel + Legende
         p.setFont(titleFont);
@@ -621,7 +877,7 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
         for (VitalKey key : panel.keys) {
             const bool off = spec.isHidden(key);
             if (off && !screen) continue;
-            const QString txt = VitalDefs::shortLabel(key) + QStringLiteral(" [") + VitalDefs::unit(key) + QLatin1Char(']');
+            const QString txt = VitalDefs::header(key);
             const qreal cy = pr.top() + titleH / 2;
             const QColor col = off ? muted : seriesColor(key);
             p.setPen(QPen(col, 1.6 * k, off ? Qt::DotLine : Qt::SolidLine));
@@ -706,10 +962,15 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
             continue;
         }
 
+        // INR: Zielbereich immer sichtbar; Ödeme: feste Skala Grad 0–4
+        const bool inrBand = panel.id == QLatin1String("inr") && spec.inrHigh > spec.inrLow;
+        if (inrBand) { lo = std::min(lo, spec.inrLow); hi = std::max(hi, spec.inrHigh); }
+        if (panel.id == QLatin1String("edema")) { lo = 0; hi = Fluid::kEdemaMax; }
+
         // y-Achse
         double ylo, yhi;
         const int targetTicks = std::clamp(int(plot.height() / (fmAxis.height() * 1.6)), 3, 7);
-        const double pad = (hi - lo) * 0.08;
+        const double pad = panel.id == QLatin1String("edema") ? 0.0 : (hi - lo) * 0.08;
         const QList<double> yt = niceTicks(lo - pad, hi + pad, targetTicks, ylo, yhi);
         auto yOf = [&](double v) { return plot.bottom() - plot.height() * (v - ylo) / (yhi - ylo); };
         int ydec = 0;
@@ -725,6 +986,21 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
             p.setPen(muted);
             p.drawText(QRectF(rect.left(), y - fmAxis.height() / 2, yLabelW - 4 * k, fmAxis.height()),
                        Qt::AlignRight | Qt::AlignVCenter, lbl);
+        }
+
+        if (inrBand) {
+            const qreal y1 = yOf(spec.inrHigh), y0 = yOf(spec.inrLow);
+            QColor band = Inr::zoneColor(Inr::Zone::InRange, dark);
+            band.setAlpha(dark ? 45 : 30);
+            p.fillRect(QRectF(plot.left(), y1, plot.width(), y0 - y1), band);
+            band.setAlpha(160);
+            p.setPen(QPen(band, 0.8 * k, Qt::DashLine));
+            p.drawLine(QPointF(plot.left(), y1), QPointF(plot.right(), y1));
+            p.drawLine(QPointF(plot.left(), y0), QPointF(plot.right(), y0));
+            p.setFont(axisFont);
+            p.setPen(Inr::zoneColor(Inr::Zone::InRange, dark));
+            p.drawText(QRectF(plot.left() + 4 * k, y1 + 1 * k, plot.width() - 8 * k, fmAxis.height()), Qt::AlignRight | Qt::AlignTop,
+                       QObject::tr("Zielbereich %1–%2").arg(loc.toString(spec.inrLow, 'f', 1), loc.toString(spec.inrHigh, 'f', 1)));
         }
 
         // Kurven

@@ -19,7 +19,8 @@
 ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *parent)
     : QDialog(parent), m_kind(kind), m_patient(p)
 {
-    setObjectName(kind == Protocols::Kind::Stool ? QStringLiteral("stoolProtocolDialog") : QStringLiteral("glucoseProtocolDialog"));
+    setObjectName(kind == Protocols::Kind::Stool ? QStringLiteral("stoolProtocolDialog")
+                  : kind == Protocols::Kind::Glucose ? QStringLiteral("glucoseProtocolDialog") : QStringLiteral("fluidProtocolDialog"));
     setWindowTitle(QStringLiteral("%1 – %2").arg(Protocols::title(kind), p.displayName()));
     auto *lay = new QVBoxLayout(this);
     auto *top = new QHBoxLayout;
@@ -50,7 +51,7 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
         m_emptyDays->setChecked(true);
         connect(m_emptyDays, &QCheckBox::toggled, this, &ProtocolDialog::reload);
         top->addWidget(m_emptyDays);
-    } else {
+    } else if (kind == Protocols::Kind::Glucose) {
         top->addWidget(new QLabel(tr("Tage mit mindestens"), this));
         m_minValues = new QSpinBox(this);
         m_minValues->setObjectName(QStringLiteral("minValuesSpin"));
@@ -95,7 +96,8 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
     connect(xlsx, &QPushButton::clicked, this, [this] {
         const QString path = ReportPrinter::askExportFile(this, tr("%1 nach Excel exportieren").arg(m_table.title),
                                                           m_kind == Protocols::Kind::Stool ? QStringLiteral("Stuhlprotokoll")
-                                                                                          : QStringLiteral("BZ-Tagesprofile"),
+                                                          : m_kind == Protocols::Kind::Glucose ? QStringLiteral("BZ-Tagesprofile")
+                                                                                               : QStringLiteral("Bilanz"),
                                                           m_patient, QStringLiteral("xlsx"), tr("Excel-Arbeitsmappe (*.xlsx)"));
         if (path.isEmpty()) return;
         QString err;
@@ -105,7 +107,7 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
     lay->addWidget(bb);
 
     connect(&Database::instance(), &Database::vitalsChanged, this, [this](qint64 pid) { if (pid == m_patient.id) reload(); });
-    m_period->setCurrentIndex(kind == Protocols::Kind::Stool ? 1 : 2);
+    m_period->setCurrentIndex(kind == Protocols::Kind::Glucose ? 2 : kind == Protocols::Kind::Stool ? 1 : 0);
     m_from->setEnabled(false);
     m_to->setEnabled(false);
     dash->setEnabled(false);
@@ -144,7 +146,7 @@ void ProtocolDialog::reload()
     // 31 Tage Vorlauf: Tage ohne Stuhlgang, die vor dem Zeitraum begonnen haben, zählen weiter
     const QList<VitalRecord> recs = Database::instance().vitals(m_patient.id, QDateTime(o.from.addDays(-31), QTime(0, 0)),
                                                                 QDateTime(o.to.addDays(1), QTime(0, 0)));
-    m_table = Protocols::build(m_kind, recs, o);
+    m_table = Protocols::build(m_kind, recs, o, m_patient);
     m_summary->setText(m_table.summary);
     m_view->setHtml(Protocols::toHtml(m_table, Protocols::periodText(o)));
 }

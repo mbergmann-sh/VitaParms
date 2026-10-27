@@ -11,7 +11,7 @@ Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge, Medikamentenplan w
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
 mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
-Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Abgleich über Website und USB.
+Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Abgleich über Website und USB.
 **Folgt:** Assistent „Medikamente stellen“, Bestand und
 Bestellungen, iOS.
 

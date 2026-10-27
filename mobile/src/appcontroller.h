@@ -105,6 +105,12 @@ public:
     Q_INVOKABLE QString bmiPreview(qint64 pid, const QVariant &weight, const QVariant &height);
     Q_INVOKABLE QVariantList latest(qint64 pid);      // Kacheln der Übersicht
     Q_INVOKABLE QVariantMap stoolStatus(qint64 pid);  // Hinweis nach drei Tagen ohne Stuhlgang
+    Q_INVOKABLE QVariantList careNotices(qint64 pid); // Übersicht: INR, Trinkmenge, Gewicht, Stuhlgang
+    Q_INVOKABLE QVariantMap inrCheck(qint64 pid, const QString &valueText);
+    Q_INVOKABLE QVariantMap fluidChoices() const;     // Arten der Ein-/Ausfuhr, Mengen, Ödem-Grade und -Orte
+    Q_INVOKABLE QVariantMap fluidDay(qint64 pid, const QVariantMap &current);   // Bilanz des Tages
+    Q_INVOKABLE QString edemaAdvice(const QVariantMap &current) const;
+    Q_INVOKABLE QStringList careWarnings(qint64 pid, qint64 vitalId);         // nach dem Speichern
     Q_INVOKABLE QVariantMap stoolChoices() const;     // Bristol-Typen, Menge, Farbe, Beimengungen
     Q_INVOKABLE bool stoolNeedsAttention(const QVariantMap &detail) const;   // schwarz/blutig
 

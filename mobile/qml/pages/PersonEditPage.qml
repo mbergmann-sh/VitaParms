@@ -44,7 +44,9 @@ Page {
             armLeft: armL.currentIndex, armRight: armR.currentIndex, legLeft: legL.currentIndex, legRight: legR.currentIndex,
             extra: extraRep.model.map((e, i) => ({ key: e.key, value: extraRep.itemAt(i).value })),
             contactList: page.contacts, advanceDocs: page.advance,
-            peakFlowBest: page.pfBest(), bioSex: ["", "m", "w"][bioSex.currentIndex] || ""
+            peakFlowBest: page.pfBest(), bioSex: ["", "m", "w"][bioSex.currentIndex] || "",
+            inrLow: inrLow.text, inrHigh: inrHigh.text,
+            fluidMin: fluidMin.text, fluidMax: fluidMax.text, weightWatch: weightWatch.text
         }
         if (!birth.valid || !review.valid || !valid.valid) { win.toast(qsTr("Bitte ein gültiges Datum eingeben (TT.MM.JJJJ)."), true); return }
         const id = app.savePerson(m)
@@ -229,6 +231,29 @@ Page {
                      text: d.peakFlowBest ? String(d.peakFlowBest) : ""; placeholder: qsTr("mit dem Arzt festgelegt")
                      inputMethodHints: Qt.ImhDigitsOnly; Layout.preferredWidth: 360 }
             Label { objectName: "peakFlowInfo"; text: page.pfInfo; color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+            SectionTitle { text: qsTr("Gerinnung (INR)") }
+            RowLayout {
+                spacing: Theme.gap
+                VField { id: inrLow; objectName: "inrLowField"; label: qsTr("Zielbereich von"); text: d.inrLow || ""
+                         placeholder: "2,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: 170 }
+                VField { id: inrHigh; objectName: "inrHighField"; label: qsTr("bis"); text: d.inrHigh || ""
+                         placeholder: "3,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: 170 }
+            }
+            Label { text: qsTr("Ärztlich festgelegt (z. B. 2,0–3,0, bei künstlichen Herzklappen oft 2,5–3,5). Leer: Standard 2,0–3,0.")
+                    color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+            SectionTitle { text: qsTr("Trinkmenge und Gewicht") }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gap
+                VField { id: fluidMin; objectName: "fluidMinField"; label: qsTr("Trinkmenge mindestens (ml/Tag)"); text: d.fluidMin || ""
+                         inputMethodHints: Qt.ImhDigitsOnly; width: 300 }
+                VField { id: fluidMax; objectName: "fluidMaxField"; label: qsTr("Trinkmenge höchstens (ml/Tag)"); text: d.fluidMax || ""
+                         inputMethodHints: Qt.ImhDigitsOnly; width: 300; placeholder: qsTr("nur bei ärztlicher Begrenzung") }
+                VField { id: weightWatch; objectName: "weightWatchField"; label: qsTr("Gewichtszunahme melden ab (kg in 3 Tagen)"); text: d.weightWatch || ""
+                         inputMethodHints: Qt.ImhFormattedNumbersOnly; width: 300; placeholder: qsTr("z. B. 2 bei Herzschwäche") }
+            }
 
             SectionTitle { text: qsTr("Fehlende Gliedmaßen (für den BMI)") }
             GridLayout {

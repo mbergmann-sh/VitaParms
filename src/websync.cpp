@@ -13,6 +13,8 @@
 #include "session.h"
 #include "vitaldefs.h"
 #include "stool.h"
+#include "inr.h"
+#include "fluid.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -276,6 +278,14 @@ static WebSnapshot takeSnapshot(const WebSync::Config &c)
             { QStringLiteral("today"), QCoreApplication::translate("Stool", "letzter Stuhlgang heute") },
             { QStringLiteral("yesterday"), QCoreApplication::translate("Stool", "letzter Stuhlgang gestern") },
             { QStringLiteral("ago"), QCoreApplication::translate("Stool", "letzter Stuhlgang vor %1 Tagen") },
+            { QStringLiteral("edemaNames"), QJsonArray{ Fluid::edemaShort(0), Fluid::edemaShort(1), Fluid::edemaShort(2),
+                                                        Fluid::edemaShort(3), Fluid::edemaShort(4) } },
+            { QStringLiteral("fluid"), QJsonObject{ { QStringLiteral("balance"), QObject::tr("Bilanz") },
+                                                    { QStringLiteral("none"), QObject::tr("Keine Ein- oder Ausfuhr im Zeitraum eingetragen") },
+                                                    { QStringLiteral("min"), QObject::tr("mind. %1 ml") },
+                                                    { QStringLiteral("max"), QObject::tr("höchstens %1 ml") },
+                                                    { QStringLiteral("today"), QObject::tr("Ein-/Ausfuhr heute") },
+                                                    { QStringLiteral("target"), QObject::tr("Zielbereich %1–%2") } } },
             { QStringLiteral("detailLabels"), QJsonArray{ QObject::tr("Menge"), QObject::tr("Farbe"), QObject::tr("Beimengungen / Geruch"),
                                                           QObject::tr("Begleitsymptome / Besonderheiten") } },
         });
@@ -381,6 +391,12 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
         }
         if (p.extra.contains(QStringLiteral("Allergien")))
             pj.insert(QStringLiteral("allergies"), p.extra.value(QStringLiteral("Allergien")).toString());
+        {   // Zielbereiche für die Darstellung (INR-Band, Trinkmengen-Linien)
+            const Inr::Range ir = Inr::range(p);
+            pj.insert(QStringLiteral("inr"), QJsonArray{ ir.low, ir.high });
+            if (Fluid::minIntake(p)) pj.insert(QStringLiteral("fluidMin"), Fluid::minIntake(p));
+            if (Fluid::maxIntake(p)) pj.insert(QStringLiteral("fluidMax"), Fluid::maxIntake(p));
+        }
 
         // Messwerte: gesamter Verlauf, älteste zuerst
         QList<VitalRecord> sorted = sp.recs;
@@ -401,6 +417,8 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
             if (r.stool && !r.stoolDetail.isEmpty())
                 rj.insert(QStringLiteral("sd"), QJsonArray{ r.stoolDetail.amount, r.stoolDetail.color,
                                                             r.stoolDetail.admixture, r.stoolDetail.symptoms });
+            if (!r.fluidInKind.isEmpty() || !r.fluidOutKind.isEmpty() || !r.edemaSite.isEmpty() || !r.edemaSide.isEmpty())
+                rj.insert(QStringLiteral("bi"), QJsonArray{ r.fluidInKind, r.fluidOutKind, r.edemaSite, r.edemaSide });
             if (!r.observations.trimmed().isEmpty()) rj.insert(QStringLiteral("obs"), r.observations.trimmed());
             QJsonObject ex;
             for (auto it = r.extra.begin(); it != r.extra.end(); ++it)

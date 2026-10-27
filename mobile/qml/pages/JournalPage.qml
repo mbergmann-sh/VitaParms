@@ -58,6 +58,9 @@ Item {
                     MenuItem { text: qsTr("Stuhlprotokoll (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("stool") }
                     MenuItem { text: qsTr("Stuhlprotokoll (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("stoolXlsx") }
                     MenuSeparator {}
+                    MenuItem { text: qsTr("Ein- und Ausfuhr (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("fluid") }
+                    MenuItem { text: qsTr("Ein- und Ausfuhr (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("fluidXlsx") }
+                    MenuSeparator {}
                     MenuItem { text: qsTr("BZ-Tagesprofile (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucose") }
                     MenuItem { text: qsTr("BZ-Tagesprofile (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucoseXlsx") }
                 }

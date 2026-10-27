@@ -14,10 +14,10 @@ Flickable {
     property var tiles: []
     property var appts: []
     property var meds: []
-    property var stool: ({})
+    property var notices: []
     function reload() {
         tiles = app.latest(personId)
-        stool = app.stoolStatus(personId)
+        notices = app.careNotices(personId)
         appts = app.upcoming(personId, 14)
         meds = app.medications(personId, false).filter(m => m.category === 0)
     }
@@ -37,21 +37,23 @@ Flickable {
         width: page.width - 2 * Theme.gapL
         spacing: Theme.gap
 
-        // Hinweis: seit mindestens drei Tagen kein Stuhlgang eingetragen
-        Rectangle {
-            objectName: "stoolWarning"
-            visible: page.stool.warn === true
-            Layout.fillWidth: true
-            implicitHeight: stoolMsg.implicitHeight + 24
-            radius: Theme.radius
-            color: Theme.dark ? "#3A2A12" : "#FFF4D6"
-            border.color: Theme.warn
-            Label {
-                id: stoolMsg
-                x: 14; y: 12; width: parent.width - 28
-                wrapMode: Text.WordWrap
-                text: page.stool.text || ""
-                color: Theme.ink; font.pixelSize: Theme.fsM
+        // Hinweise: INR außerhalb des Zielbereichs, Trinkmenge, Gewichtszunahme, Tage ohne Stuhlgang
+        Repeater {
+            model: page.notices
+            delegate: Rectangle {
+                objectName: "careNotice"
+                Layout.fillWidth: true
+                implicitHeight: noticeMsg.implicitHeight + 24
+                radius: Theme.radius
+                color: modelData.critical ? (Theme.dark ? "#3A1A17" : "#FCEDEB") : (Theme.dark ? "#3A2A12" : "#FFF4D6")
+                border.color: modelData.critical ? Theme.alert : Theme.warn
+                Label {
+                    id: noticeMsg
+                    x: 14; y: 12; width: parent.width - 28
+                    wrapMode: Text.WordWrap
+                    text: modelData.text
+                    color: Theme.ink; font.pixelSize: Theme.fsM
+                }
             }
         }
         SectionTitle { text: qsTr("Letzte Messwerte") }
@@ -79,7 +81,7 @@ Flickable {
                         }
                         RowLayout {
                             spacing: 6
-                            Label { text: modelData.value; font.pixelSize: modelData.key === "stool" ? Theme.fsXl : Theme.fsXxl; font.bold: true
+                            Label { text: modelData.value; font.pixelSize: ["stool", "edema", "fluid"].indexOf(modelData.key) >= 0 ? Theme.fsXl : Theme.fsXxl; font.bold: true
                                     color: modelData.alert === true ? Theme.warn : Theme.ink }
                             Label { text: modelData.unit; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignBaseline }
                         }

@@ -16,6 +16,8 @@
 #include "medsearchdialog.h"
 #include "medschedule.h"
 #include "peakflow.h"
+#include "inr.h"
+#include "fluid.h"
 #include "appsettings.h"
 #include "bmi.h"
 #include "careinfo.h"
@@ -37,6 +39,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
+#include <QDoubleSpinBox>
 #include <QLocale>
 #include <QRegularExpression>
 #include <QSettings>
@@ -73,7 +76,7 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
 
     auto *lay = new QVBoxLayout(this);
     m_form = FormLoader::load(QStringLiteral("patientform"), this);
-    lay->addWidget(m_form);
+    lay->addWidget(FormLoader::scrollable(m_form, this), 1);
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
     buttons->button(QDialogButtonBox::Save)->setText(tr("&Speichern"));
     buttons->button(QDialogButtonBox::Cancel)->setText(tr("Abbrechen"));
@@ -122,6 +125,7 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
     FormIO::applyExtra(m_form, p.extra);
     updateAmputationInfo();
     setupPeakFlow();
+    setupTargets();
     // Pflegegrad und Schwerbehindertenausweis
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("careLevelCombo")))
         c->setCurrentIndex(qBound(0, p.careLevel, c->count() - 1));
@@ -195,6 +199,7 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
     const QByteArray geo = AppSettings::windowState(QStringLiteral("patientdialog"));
     if (!geo.isEmpty()) restoreGeometry(geo);
     else resize(760, 560);
+    FormLoader::fitToScreen(this);
 
     if (auto *e = m_form->findChild<QWidget *>(QStringLiteral("lastNameEdit")))
         e->setFocus();
@@ -225,6 +230,15 @@ Patient PatientDialog::collectPatient() const
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("bioSexCombo"))) {
         const QString v = c->currentData().toString();
         PeakFlow::setBiologicalSex(p, v.isEmpty() ? QChar() : v.at(0));
+    }
+    {   // INR-Zielbereich, Trinkmenge, Gewichtskontrolle (fehlen die Felder: unverändert)
+        auto *lo = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrLowSpin"));
+        auto *hi = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrHighSpin"));
+        if (lo && hi) Inr::setRange(p, lo->value(), hi->value());
+        auto *fmin = m_form->findChild<QSpinBox *>(QStringLiteral("fluidMinSpin"));
+        auto *fmax = m_form->findChild<QSpinBox *>(QStringLiteral("fluidMaxSpin"));
+        auto *ww = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("weightWatchSpin"));
+        if (fmin && fmax && ww) Fluid::setLimits(p, fmin->value(), fmax->value(), ww->value());
     }
     if (m_contactTable) Contacts::store(p, m_contacts);   // angepasste ältere Formulare ohne Liste: unverändert
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("careLevelCombo")))
@@ -462,6 +476,37 @@ void PatientDialog::updateCareEnabled()
     const auto *unl = m_form->findChild<QCheckBox *>(QStringLiteral("disabilityUnlimitedCheck"));
     if (auto *w = m_form->findChild<QWidget *>(QStringLiteral("disabilityValidEdit")))
         w->setEnabled(card && !(unl && unl->isChecked()));
+}
+
+// INR-Zielbereich, Trinkmenge und Gewichtskontrolle
+void PatientDialog::setupTargets()
+{
+    auto *lo = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrLowSpin"));
+    auto *hi = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrHighSpin"));
+    if (lo && hi) {
+        const Inr::Range r = Inr::range(m_patient);
+        lo->setValue(r.personal ? r.low : 0);
+        hi->setValue(r.personal ? r.high : 0);
+        auto upd = [this, lo, hi] {
+            auto *info = m_form->findChild<QLabel *>(QStringLiteral("inrInfoLabel"));
+            if (!info) return;
+            QString t;
+            if (lo->value() > 0 && hi->value() > lo->value())
+                t = tr("Werte außerhalb von %1–%2 werden hervorgehoben.").arg(QLocale().toString(lo->value(), 'f', 1),
+                                                                             QLocale().toString(hi->value(), 'f', 1));
+            else if (lo->value() > 0 || hi->value() > 0)
+                t = tr("Bitte beide Grenzen eintragen (unten kleiner als oben).");
+            else
+                t = tr("Nicht eingetragen: Bewertet wird gegen den Standard 2,0–3,0.");
+            info->setText(QStringLiteral("<small>%1</small>").arg(t.toHtmlEscaped()));
+        };
+        connect(lo, &QDoubleSpinBox::valueChanged, this, upd);
+        connect(hi, &QDoubleSpinBox::valueChanged, this, upd);
+        upd();
+    }
+    if (auto *s = m_form->findChild<QSpinBox *>(QStringLiteral("fluidMinSpin"))) s->setValue(Fluid::minIntake(m_patient));
+    if (auto *s = m_form->findChild<QSpinBox *>(QStringLiteral("fluidMaxSpin"))) s->setValue(Fluid::maxIntake(m_patient));
+    if (auto *s = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("weightWatchSpin"))) s->setValue(Fluid::weightWatch(m_patient));
 }
 
 // Biologisches Geschlecht (für Normwerte), Peak Flow: persönlicher Bestwert, Anzeige des Sollwerts
