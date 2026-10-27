@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "journalmodel.h"
+#include "stool.h"
 #include "formloader.h"
 
 #include <QBrush>
@@ -26,6 +27,9 @@ void JournalModel::rebuildColumns()
                         VitalKey::Weight, VitalKey::Height, VitalKey::Bmi })
         m_cols.append({ ColKind::Vital, k, {},
                         VitalDefs::shortLabel(k) + QStringLiteral("\n[") + VitalDefs::unit(k) + QLatin1Char(']') });
+    // Stuhlgang nur, wenn er erfasst wird
+    if (std::any_of(m_records.cbegin(), m_records.cend(), [](const VitalRecord &r) { return r.stool.has_value(); }))
+        m_cols.append({ ColKind::Vital, VitalKey::Stool, {}, VitalDefs::shortLabel(VitalKey::Stool) + QStringLiteral("\n[Bristol]") });
     for (const QString &e : m_extraKeys)
         m_cols.append({ ColKind::Extra, VitalKey::Pulse, e, FormIO::fieldLabel(e) });
     m_cols.append({ ColKind::Observations, VitalKey::Pulse, {}, tr("Beobachtungen") });
@@ -103,6 +107,8 @@ QString JournalModel::cellText(int row, int col) const
             .arg(r->systolic ? QString::number(*r->systolic) : QStringLiteral("–"),
                  r->diastolic ? QString::number(*r->diastolic) : QStringLiteral("–"));
     case ColKind::Vital:
+        if (c.key == VitalKey::Stool && r->stool && Stool::needsAttention(r->stoolDetail))
+            return VitalDefs::formatted(*r, c.key) + QStringLiteral(" ⚠");
         return VitalDefs::formatted(*r, c.key);
     case ColKind::Extra:
         return r->extra.contains(c.extraKey) ? extraText(r->extra.value(c.extraKey)) : QString();
@@ -128,6 +134,16 @@ QVariant JournalModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         if (c.kind == ColKind::Observations && !r->observations.isEmpty())
             return r->observations;
+        if (c.kind == ColKind::Vital && c.key == VitalKey::Stool && r->stool)
+        {
+            QString tip = Stool::choiceText(*r->stool) + QStringLiteral("\n") + Stool::groupName(Stool::group(*r->stool));
+            const StoolDetail &d = r->stoolDetail;
+            for (const auto &[label, v] : { std::pair{ tr("Menge"), d.amount }, std::pair{ tr("Farbe"), d.color },
+                                            std::pair{ tr("Beimengungen / Geruch"), d.admixture },
+                                            std::pair{ tr("Begleitsymptome"), d.symptoms } })
+                if (!v.isEmpty()) tip += QStringLiteral("\n") + label + QStringLiteral(": ") + v;
+            return tip;
+        }
         if (c.kind == ColKind::Vital && c.key == VitalKey::PeakFlow && r->peakFlow) {
             const PeakFlow::Assessment a = peakFlowAt(index.row());
             if (a.zone != PeakFlow::Zone::None)
@@ -142,7 +158,7 @@ QVariant JournalModel::data(const QModelIndex &index, int role) const
         }
         return {};
     case Qt::TextAlignmentRole:
-        if (c.kind == ColKind::Vital || c.kind == ColKind::BloodPressure)
+        if ((c.kind == ColKind::Vital && c.key != VitalKey::Stool) || c.kind == ColKind::BloodPressure)
             return int(Qt::AlignRight | Qt::AlignVCenter);
         return int(Qt::AlignLeft | Qt::AlignVCenter);
     case Qt::FontRole:

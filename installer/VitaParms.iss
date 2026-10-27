@@ -11,7 +11,7 @@
 ; ===========================================================================
 
 #define AppName      "VitaParms"
-#define AppVersion   "0.19.0"
+#define AppVersion   "0.20.0"
 #define AppPublisher "Michael Bergmann"
 #define AppExe       "VitaParms.exe"
 #define AppGuid      "F32E3339-4A59-4F92-A8B9-73E2FB07A8F3"

@@ -69,4 +69,8 @@ bool htmlReportToPdf(const QString &path, const Patient &p, const QString &title
 
 QString disclaimerShort();
 
+// Speicherort für einen Export erfragen (Vorschlag: <base>_<Name>_<Datum>.<ext>)
+QString askExportFile(QWidget *parent, const QString &caption, const QString &base, const Patient &p,
+                      const QString &ext, const QString &filter);
+
 } // namespace ReportPrinter

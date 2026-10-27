@@ -19,7 +19,7 @@ qtHaveModule(texttospeech) {
     DEFINES += VP_HAVE_TTS
     message("VitaParms: mit Sprachausgabe (Qt TextToSpeech)")
 } else {
-    message("VitaParms: OHNE Sprachausgabe – Assistent zeigt nur an")
+    message("VitaParms: OHNE Sprachausgabe - Assistent zeigt nur an")
 }
 # Signaltöne (optional, Qt Multimedia) – sonst Systempiepton
 qtHaveModule(multimedia) {
@@ -32,7 +32,7 @@ qtHaveModule(pdfwidgets) {
     DEFINES += VP_HAVE_QTPDF
     message("VitaParms: mit Qt PDF (Vorschau, Volltextsuche, Druck der Dokumente)")
 } else {
-    message("VitaParms: OHNE Qt PDF – Dokumente werden extern geöffnet, keine Volltextsuche")
+    message("VitaParms: OHNE Qt PDF - Dokumente werden extern geoeffnet, keine Volltextsuche")
 }
 CONFIG   += c++17
 TEMPLATE  = app
@@ -69,6 +69,7 @@ SOURCES += \
     src/medassistant.cpp \
     src/icalexport.cpp \
     src/medlogdialog.cpp \
+    src/protocoldialog.cpp \
     src/stockdialog.cpp \
     src/upcoming.cpp \
     src/leaflet.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     src/medassistant.h \
     src/icalexport.h \
     src/medlogdialog.h \
+    src/protocoldialog.h \
     src/stockdialog.h \
     src/upcoming.h \
     src/leaflet.h \

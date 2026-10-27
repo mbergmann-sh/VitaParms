@@ -6,7 +6,10 @@
 #include <QDialog>
 #include <QElapsedTimer>
 
+class QCheckBox;
+class QComboBox;
 class QLabel;
+class QLineEdit;
 class QPushButton;
 class QSpinBox;
 class QTimer;
@@ -45,6 +48,8 @@ private:
     void configureGlucose();
     void setupPeakFlow();              // Hinweis zum Sollwert/Bestwert unter „Peak Flow“
     void warnPeakFlow(const VitalRecord &r);
+    void warnStool(const VitalRecord &r);
+    void setupStool();                 // Stuhlgang: Häkchen + Bristol-Auswahl (auch in älteren Formularen)
     void setupBreathCounter();         // 1-Minuten-Zähluhr neben "Atemfrequenz"
     void startBreathCount();
     void stopBreathCount(bool finished);
@@ -59,6 +64,14 @@ private:
     bool m_heightPrefilled = false;
     int m_savedCount = 0;
     QLabel      *m_peakFlowInfo = nullptr;
+    QCheckBox   *m_stoolCheck = nullptr;
+    QComboBox   *m_stoolCombo = nullptr;
+    QLabel      *m_stoolInfo = nullptr;
+    QWidget     *m_stoolDetails = nullptr;     // Menge, Farbe, Beimengungen, Begleitsymptome
+    QComboBox   *m_stoolAmount = nullptr;
+    QComboBox   *m_stoolColor = nullptr;
+    QComboBox   *m_stoolAdmixture = nullptr;
+    QLineEdit   *m_stoolSymptoms = nullptr;
     QSpinBox    *m_respSpin = nullptr;
     QPushButton *m_countButton = nullptr;
     QTimer      *m_countTimer = nullptr;

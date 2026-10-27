@@ -4,6 +4,7 @@
 
 #include "vitaldefs.h"
 #include "datatypes.h"
+#include "protocols.h"
 #include <QMainWindow>
 
 class QAction;
@@ -67,6 +68,7 @@ private slots:
     // Ansichten
     void reloadJournal();
     void reloadChart();
+    void showProtocol(Protocols::Kind kind);   // Stuhlprotokoll, BZ-Tagesprofile
     void onPeriodChanged();
     void onScaleChanged();
     void stepChart(int dir);

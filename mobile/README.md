@@ -11,7 +11,7 @@ Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge, Medikamentenplan w
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
 mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
-Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), PDF/Excel-Ausgaben, Abgleich über Website und USB.
+Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Abgleich über Website und USB.
 **Folgt:** Assistent „Medikamente stellen“, Bestand und
 Bestellungen, iOS.
 
@@ -72,29 +72,20 @@ Die Fehlermeldung eines Release-Builds erscheint nicht in Qt Creator, sondern nu
 Tablets: `adb logcat -d -t 1500 > vitaparms-log.txt` (im Ordner `…\Android\Sdk\platform-tools`),
 direkt nachdem die App abgestürzt ist.
 
-**HTTPS (Abgleich über die Website):** Android bringt kein OpenSSL für Qt mit. Einmalig unter
-*Bearbeiten → Einstellungen → SDKs → Android* im Abschnitt *Android OpenSSL settings* auf
-**OpenSSL herunterladen** klicken. Qt Creator legt die Bibliotheken im SDK-Ordner ab, z. B.
-`C:\Android\Sdk\android_openssl` (der Pfad steht im Feld *OpenSSL binaries location*).
-`VitaParmsMobile.pro` sucht `openssl.pri` in `android_openssl` und `openssl` des Android-SDK – das
-SDK wird auch aus dem NDK-Pfad abgeleitet, den Qt Creator immer übergibt – und nimmt die
-Bibliotheken für Debug und Release ins Paket. Beim qmake-Lauf erscheint dann
-„OpenSSL für Android: …/openssl.pri“.
+**HTTPS (Abgleich über die Website):** Android bringt kein OpenSSL für Qt mit. VitaParms liefert
+die Bibliotheken deshalb selbst mit (`3rdparty/android_openssl`, OpenSSL 3.1.8 von KDAB,
+Apache-2.0-Lizenz); `VitaParmsMobile.pro` nimmt sie für Debug und Release ins Paket – ein Download
+in Qt Creator ist nicht nötig. Beim qmake-Lauf erscheinen „OpenSSL fuer Android: …/openssl.pri“
+und die einzelnen Bibliotheken („OpenSSL-Bibliothek: …/ssl_3/arm64-v8a/libssl_3.so“). Den Haken
+*Include prebuilt OpenSSL libraries* in *Android-APK erstellen* **nicht** zusätzlich setzen (sonst
+wären die Bibliotheken doppelt eingebunden). Eine andere OpenSSL-Version: Umgebungsvariable
+`VP_ANDROID_OPENSSL` auf einen Ordner mit `openssl.pri` setzen (*Projekte → Build →
+Build-Umgebung*).
 
-Darunter stehen die eingebundenen Bibliotheken („OpenSSL-Bibliothek: …/ssl_3/arm64-v8a/libssl_3.so“);
-fehlt eine, warnt qmake („OpenSSL-Bibliothek FEHLT“) – dann den Download in Qt Creator wiederholen.
 In der App zeigt *Einstellungen → Abgleich über die Website* unter den Knöpfen, ob TLS bereit ist
-(„TLS bereit: OpenSSL 3.x“) oder was fehlt. Nach einer Änderung an OpenSSL: *Erstellen → Alles
-neu erstellen* und die App neu installieren.
-
-Erscheint stattdessen „OpenSSL für Android nicht gefunden“, listet die nächste Zeile die
-durchsuchten Ordner. Dann (1) prüfen, ob der Download wirklich stattgefunden hat (im Ordner muss
-eine Datei `openssl.pri` liegen), oder (2) die Umgebungsvariable `VP_ANDROID_OPENSSL` auf den
-Ordner mit `openssl.pri` setzen (*Projekte → Build → Build-Umgebung → Hinzufügen*) und
-*Erstellen → qmake ausführen*. Den Haken *Include prebuilt OpenSSL libraries* in
-*Android-APK erstellen* dann **nicht** zusätzlich setzen (sonst wären die Bibliotheken doppelt
-eingebunden). Ohne OpenSSL steht im Protokoll „Couldn't load ssl library“, und der Abgleich über
-die Website schlägt fehl; alles andere – auch der USB-Abgleich – funktioniert.
+(„TLS bereit: OpenSSL 3.1.8 …“) oder was fehlt. Nach einer Änderung an OpenSSL: *Erstellen → Alles
+neu erstellen* und die App neu installieren. Ohne OpenSSL schlägt nur der Abgleich über die Website
+fehl; alles andere – auch der USB-Abgleich – funktioniert.
 
 Die Meldung *„QML import could not be resolved in any of the import paths: VitaParms“* ist
 harmlos: Der Typ `Chart` wird erst beim Programmstart registriert (`qmlRegisterType`), die

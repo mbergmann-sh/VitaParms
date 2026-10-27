@@ -46,7 +46,16 @@ Page {
         if (dia.text.trim() !== "") values.diastolic = parseInt(dia.text)
         if (resp.text.trim() !== "") values["Atemfrequenz"] = parseInt(resp.text)
         if (pain.value >= 0) values["Schmerz (NRS)"] = pain.value
-        return { id: page.vitalId, measuredAt: measuredAt(), context: page.context, values: values, observations: obs.text }
+        return { id: page.vitalId, measuredAt: measuredAt(), context: page.context, values: values, observations: obs.text,
+                 stool: stoolCheck.checked ? stoolCombo.currentIndex : null, stoolDetail: stoolDetail() }
+    }
+    // Stuhlgang: Bristol-Typ (0 = ohne Angabe) und Angaben fürs Stuhlprotokoll
+    readonly property var stoolInfo: app.stoolChoices()
+    property alias stoolCombo: stoolComboBox.combo
+    readonly property var stoolStatus: app.stoolStatus(personId)
+    function stoolDetail() {
+        if (!stoolCheck.checked) return {}
+        return { amount: stoolAmount.text, color: stoolColor.text, admixture: stoolAdmix.text, symptoms: stoolSymptoms.text }
     }
     function updateBmi() {
         const w = cards.byKey("weight"), h = cards.byKey("height")
@@ -83,6 +92,11 @@ Page {
             pfWarn.open()
             return
         }
+        checkStool()
+    }
+    // schwarzer oder blutiger Stuhl: auf ärztliche Abklärung hinweisen
+    function checkStool() {
+        if (stoolCheck.checked && app.stoolNeedsAttention(stoolDetail())) { stoolWarn.open(); return }
         afterSave()
     }
     function afterSave() {
@@ -96,6 +110,8 @@ Page {
     function reset() {
         for (let i = 0; i < cards.count; ++i) cards.itemAt(i).text = ""
         sys.text = ""; dia.text = ""; resp.text = ""; pain.value = -1; obs.text = ""
+        stoolCheck.checked = false; stoolCombo.currentIndex = 0
+        stoolAmount.text = ""; stoolColor.text = ""; stoolAdmix.text = ""; stoolSymptoms.text = ""
         setNow()
         updatePeakFlow()
         sys.field.forceActiveFocus()
@@ -105,6 +121,13 @@ Page {
         sys.text = fmtNum(v.systolic); dia.text = fmtNum(v.diastolic)
         resp.text = fmtNum(v["Atemfrequenz"])
         pain.value = v["Schmerz (NRS)"] !== undefined ? v["Schmerz (NRS)"] : -1
+        if (rec.stool !== undefined && rec.stool !== null) {
+            stoolCheck.checked = true
+            stoolCombo.currentIndex = rec.stool
+            const d = rec.stoolDetail || {}
+            stoolAmount.text = d.amount || ""; stoolColor.text = d.color || ""
+            stoolAdmix.text = d.admixture || ""; stoolSymptoms.text = d.symptoms || ""
+        }
         dateField.isoDate = isoDay(when); timeField.text = hhmm(when)
         if (presetContext !== "") page.context = presetContext
         if (presetObservation !== "" && !vitalId) obs.text = presetObservation
@@ -285,6 +308,65 @@ Page {
                 }
             }
 
+            // Stuhlgang: Häkchen schaltet die Auswahl nach der Bristol-Skala frei
+            Frame {
+                objectName: "stoolSection"
+                Layout.fillWidth: true
+                padding: 14
+                contentWidth: 300                // Breite kommt vom Layout (fillWidth)
+                background: Rectangle { radius: Theme.radius; color: Theme.surface; border.color: stoolCheck.checked ? Theme.brand : Theme.rule }
+                ColumnLayout {
+                    id: stoolCol
+                    width: parent.width
+                    spacing: 10
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Theme.gap
+                        CheckBox {
+                            id: stoolCheck
+                            objectName: "stoolCheck"
+                            text: qsTr("Stuhlgang")
+                            font.pixelSize: Theme.fsL
+                            Layout.preferredWidth: 200
+                        }
+                        VCombo {
+                            id: stoolComboBox
+                            Layout.fillWidth: true
+                            enabled: stoolCheck.checked
+                            model: page.stoolInfo.types.map(t => t.value ? t.name + " – " + t.text : t.text)
+                        }
+                    }
+                    Label {
+                        visible: !stoolCheck.checked && page.stoolStatus.warn === true
+                        objectName: "stoolStatusHint"
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap
+                        text: page.stoolStatus.text || ""
+                        color: Theme.warn; font.pixelSize: Theme.fsS
+                    }
+                    Label {
+                        visible: stoolCheck.checked
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap
+                        readonly property var t: page.stoolInfo.types[stoolCombo.currentIndex] || {}
+                        text: t.group ? qsTr("Bristol %1: %2").arg(t.name).arg(t.group) : page.stoolInfo.scale
+                        color: t.group ? t.color : Theme.muted; font.pixelSize: Theme.fsS
+                    }
+                    GridLayout {
+                        visible: stoolCheck.checked
+                        Layout.fillWidth: true
+                        columns: page.width > 900 ? 2 : 1
+                        columnSpacing: Theme.gapL; rowSpacing: Theme.gap
+                        SuggestField { id: stoolAmount; objectName: "stoolAmount"; Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                                       label: qsTr("Menge"); suggestions: page.stoolInfo.amounts }
+                        SuggestField { id: stoolColor; objectName: "stoolColor"; Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                                       label: qsTr("Farbe"); suggestions: page.stoolInfo.colors }
+                        SuggestField { id: stoolAdmix; objectName: "stoolAdmixture"; Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                                       label: qsTr("Beimengungen / Geruch"); suggestions: page.stoolInfo.admixtures; multi: true }
+                        VField { id: stoolSymptoms; objectName: "stoolSymptoms"; Layout.fillWidth: true; Layout.preferredWidth: 400; Layout.alignment: Qt.AlignTop
+                                 label: qsTr("Begleitsymptome / Besonderheiten"); placeholder: page.stoolInfo.symptomsHint }
+                    }
+                }
+            }
+
             VArea { id: obs; label: qsTr("Beobachtungen"); text: page.rec.observations || ""; placeholder: qsTr("z. B. Befinden, Besonderheiten, Messbedingungen …")
                     Layout.fillWidth: true }
             VButton { visible: !page.vitalId && !win.wide; text: qsTr("Speichern und weitere Messung"); Layout.fillWidth: true; onClicked: page.save(true) }
@@ -297,6 +379,15 @@ Page {
         objectName: "peakFlowWarning"
         acceptText: qsTr("Verstanden"); rejectText: ""
         danger: page.pfCheck.zone === "red"
+        closePolicy: Popup.NoAutoClose
+        onAccepted: page.checkStool()
+    }
+    Confirm {
+        id: stoolWarn
+        objectName: "stoolWarning"
+        title: qsTr("Stuhlgang")
+        message: page.stoolInfo.attention
+        acceptText: qsTr("Verstanden"); rejectText: ""
         closePolicy: Popup.NoAutoClose
         onAccepted: page.afterSave()
     }

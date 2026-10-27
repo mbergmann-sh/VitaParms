@@ -40,6 +40,13 @@ struct SeriesStats {
     VitalKey key;
     int      count = 0;
     double   min = 0, max = 0, mean = 0;
+    // nur Stuhlgang: count = Anzahl Stuhlgänge; min/max/mean über die Bristol-Typen
+    int      typed = 0;        // Eintragungen mit Bristol-Typ
+    int      days = 0;         // Tage mit Stuhlgang
+    int      periodDays = 0;   // Tage im Zeitraum (bis heute)
+    int      longestGap = 0;   // längste Zeitspanne ohne Stuhlgang (Tage)
+    bool hasRange() const { return key == VitalKey::Stool ? typed > 0 : count > 0; }
+    QString stoolNote() const;  // "an 5 von 7 Tagen, längste Pause 2 Tage"
 };
 
 class ChartRenderer

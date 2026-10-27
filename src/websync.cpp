@@ -12,6 +12,7 @@
 #include "reportprinter.h"
 #include "session.h"
 #include "vitaldefs.h"
+#include "stool.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -248,6 +249,37 @@ static WebSnapshot takeSnapshot(const WebSync::Config &c)
                                    { QStringLiteral("keys"), keysArr } });
     }
     root.insert(QStringLiteral("panels"), panels);
+    {   // Stuhlgang: Texte der Bristol-Skala und des Hinweises (übersetzt), Darstellung im Browser
+        QJsonArray names, descr, groupOf;
+        for (int t = 0; t <= Stool::kTypes; ++t) {
+            names.append(Stool::shortText(t));
+            descr.append(Stool::choiceText(t));
+            groupOf.append(int(Stool::group(t)));
+        }
+        QJsonArray groups;
+        const QStringList gl = { QObject::tr("ohne Angabe"), QObject::tr("Typ 1–2 hart"), QObject::tr("Typ 3–4 normal"), QObject::tr("Typ 5–7 weich/flüssig") };
+        for (int g = 0; g < 4; ++g)
+            groups.append(QJsonObject{ { QStringLiteral("label"), gl[g] },
+                                       { QStringLiteral("color"), Stool::groupColor(Stool::Group(g)).name() },
+                                       { QStringLiteral("dark"), Stool::groupColor(Stool::Group(g), true).name() } });
+        root.insert(QStringLiteral("stool"), QJsonObject{
+            { QStringLiteral("names"), names }, { QStringLiteral("descriptions"), descr }, { QStringLiteral("groupOf"), groupOf },
+            { QStringLiteral("groups"), groups }, { QStringLiteral("warnDays"), Stool::kWarnDays },
+            { QStringLiteral("trackedDays"), Stool::kTrackedDays },
+            { QStringLiteral("gapLegend"), QObject::tr("≥ %1 Tage ohne Stuhlgang").arg(Stool::kWarnDays) },
+            { QStringLiteral("gapText"), QObject::tr("%1 Tage ohne") },
+            { QStringLiteral("gapTip"), QObject::tr("%1 Tage ohne Stuhlgang (%2 – %3)") },
+            { QStringLiteral("dayTip"), QObject::tr("%1× Stuhlgang") },
+            { QStringLiteral("none"), QObject::tr("Kein Stuhlgang im Zeitraum eingetragen") },
+            { QStringLiteral("warn"), QCoreApplication::translate("Stool", "Seit %1 Tagen kein Stuhlgang eingetragen (zuletzt am %2). Bitte auf Beschwerden achten, "
+                                                                           "ausreichend trinken und bei anhaltender Verstopfung ärztlichen Rat einholen.") },
+            { QStringLiteral("today"), QCoreApplication::translate("Stool", "letzter Stuhlgang heute") },
+            { QStringLiteral("yesterday"), QCoreApplication::translate("Stool", "letzter Stuhlgang gestern") },
+            { QStringLiteral("ago"), QCoreApplication::translate("Stool", "letzter Stuhlgang vor %1 Tagen") },
+            { QStringLiteral("detailLabels"), QJsonArray{ QObject::tr("Menge"), QObject::tr("Farbe"), QObject::tr("Beimengungen / Geruch"),
+                                                          QObject::tr("Begleitsymptome / Besonderheiten") } },
+        });
+    }
     QJsonArray cats;
     for (int i = 0; i < Medication::CategoryCount; ++i) cats.append(MedSchedule::categoryName(i));
     root.insert(QStringLiteral("medCategories"), cats);
@@ -366,6 +398,9 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
                     v.insert(VitalDefs::key(k), std::round(*x * f) / f);
                 }
             rj.insert(QStringLiteral("v"), v);
+            if (r.stool && !r.stoolDetail.isEmpty())
+                rj.insert(QStringLiteral("sd"), QJsonArray{ r.stoolDetail.amount, r.stoolDetail.color,
+                                                            r.stoolDetail.admixture, r.stoolDetail.symptoms });
             if (!r.observations.trimmed().isEmpty()) rj.insert(QStringLiteral("obs"), r.observations.trimmed());
             QJsonObject ex;
             for (auto it = r.extra.begin(); it != r.extra.end(); ++it)

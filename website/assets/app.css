@@ -22,6 +22,7 @@
   --alert-wash: #FCEDEB;
   --grid: #E3E9EE;
   --focus: #1F78B9;
+  --warn: #9A5200; --warn-wash: #FFF4D6; --stool-gap: rgba(194, 124, 0, 0.19);
   --fs-xs: 0.8rem; --fs-s: 0.9rem; --fs-m: 1rem; --fs-l: 1.27rem; --fs-xl: 1.6rem; --fs-xxl: 2.05rem;
   --radius: 6px;
   --rail: 232px;
@@ -32,6 +33,7 @@
     --paper: #0E171D; --surface: #15222B; --ink: #E4EBF0; --ink-2: #BAC6CF; --muted: #8C9AA5;
     --rule: #2A3944; --rule-strong: #3B4D5A; --brand: #5AA9E6; --brand-ink: #8CC4EE; --brand-wash: #17324A;
     --alert: #F2867B; --alert-wash: #3A1A17; --grid: #22313B; --focus: #8CC4EE;
+    --warn: #F0B35E; --warn-wash: #3A2A12; --stool-gap: rgba(230, 159, 0, 0.27);
     color-scheme: dark;
   }
 }
@@ -256,3 +258,14 @@ th.n small { display: block; font-weight: 400; color: var(--muted); }
   .seg button { flex: 1 1 auto; padding-left: 0.4rem; padding-right: 0.4rem; }
   .tablewrap td:nth-child(2) { min-width: 0; }
 }
+
+/* Stuhlgang: Hinweis nach Tagen ohne, Häufigkeitsbalken */
+.banner.warn { margin: 0 0 1rem; padding: 0.7rem 1rem; border-left: 4px solid var(--warn); background: var(--warn-wash); color: var(--ink); border-radius: var(--radius); }
+.strip .tile.alert .val { color: var(--warn); }
+.strip .tile .val:not(:has(small)) { font-size: var(--fs-l); }
+.legend-item.static { cursor: default; }
+.legend-item.static:hover { background: none; }
+.legend-item .sw { display: inline-block; width: 11px; height: 11px; border-radius: 2px; flex: none; }
+.legend-item .sw.wash { outline: 1px solid var(--rule-strong); }
+.plot .stool-gap { fill: var(--stool-gap); }
+.plot .gap-label { fill: var(--ink-2); font-size: 11px; }

@@ -14,8 +14,10 @@ Flickable {
     property var tiles: []
     property var appts: []
     property var meds: []
+    property var stool: ({})
     function reload() {
         tiles = app.latest(personId)
+        stool = app.stoolStatus(personId)
         appts = app.upcoming(personId, 14)
         meds = app.medications(personId, false).filter(m => m.category === 0)
     }
@@ -35,6 +37,23 @@ Flickable {
         width: page.width - 2 * Theme.gapL
         spacing: Theme.gap
 
+        // Hinweis: seit mindestens drei Tagen kein Stuhlgang eingetragen
+        Rectangle {
+            objectName: "stoolWarning"
+            visible: page.stool.warn === true
+            Layout.fillWidth: true
+            implicitHeight: stoolMsg.implicitHeight + 24
+            radius: Theme.radius
+            color: Theme.dark ? "#3A2A12" : "#FFF4D6"
+            border.color: Theme.warn
+            Label {
+                id: stoolMsg
+                x: 14; y: 12; width: parent.width - 28
+                wrapMode: Text.WordWrap
+                text: page.stool.text || ""
+                color: Theme.ink; font.pixelSize: Theme.fsM
+            }
+        }
         SectionTitle { text: qsTr("Letzte Messwerte") }
         Label { visible: page.tiles.length === 0; text: qsTr("Noch keine Messungen. Tippen Sie auf „Messung erfassen“."); color: Theme.muted }
         GridLayout {
@@ -60,7 +79,8 @@ Flickable {
                         }
                         RowLayout {
                             spacing: 6
-                            Label { text: modelData.value; font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
+                            Label { text: modelData.value; font.pixelSize: modelData.key === "stool" ? Theme.fsXl : Theme.fsXxl; font.bold: true
+                                    color: modelData.alert === true ? Theme.warn : Theme.ink }
                             Label { text: modelData.unit; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignBaseline }
                         }
                         Label { text: modelData.when; color: Theme.muted; font.pixelSize: Theme.fsXs; elide: Text.ElideRight; Layout.fillWidth: true }

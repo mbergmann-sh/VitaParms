@@ -1,7 +1,8 @@
 # VitaParms – Website
 
 Diese Website zeigt die mit VitaParms erfassten Daten **aller Personen** zum Ansehen:
-persönliche Angaben, den gesamten Verlauf der Messwerte (Tabelle und Verlaufskurven),
+persönliche Angaben, den gesamten Verlauf der Messwerte (Tabelle und Verlaufskurven, dazu die
+Stuhlgang-Häufigkeit als Tagesbalken mit Hinweis nach drei Tagen ohne Stuhlgang),
 Medikamentenplan, Termine und Berichte zum Herunterladen. Die Krankenakte wird nicht übertragen.
 
 *English summary below.*

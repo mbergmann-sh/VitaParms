@@ -43,6 +43,7 @@
         <file>qml/pages/DocumentEditPage.qml</file>
         <file>qml/pages/DocumentViewPage.qml</file>
         <file>qml/components/SharePopup.qml</file>
+        <file>qml/components/SuggestField.qml</file>
         <file>qml/qmldir</file>
     </qresource>
 </RCC>

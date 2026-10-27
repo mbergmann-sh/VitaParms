@@ -104,6 +104,9 @@ public:
     Q_INVOKABLE bool deleteVital(qint64 id);
     Q_INVOKABLE QString bmiPreview(qint64 pid, const QVariant &weight, const QVariant &height);
     Q_INVOKABLE QVariantList latest(qint64 pid);      // Kacheln der Übersicht
+    Q_INVOKABLE QVariantMap stoolStatus(qint64 pid);  // Hinweis nach drei Tagen ohne Stuhlgang
+    Q_INVOKABLE QVariantMap stoolChoices() const;     // Bristol-Typen, Menge, Farbe, Beimengungen
+    Q_INVOKABLE bool stoolNeedsAttention(const QVariantMap &detail) const;   // schwarz/blutig
 
     // ---- Medikamente und Termine
     Q_INVOKABLE QVariantList medications(qint64 pid, bool includeArchived);

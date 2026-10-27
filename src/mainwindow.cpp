@@ -2,6 +2,8 @@
 #include "mainwindow.h"
 #include "dbtransfer.h"
 #include "medstock.h"
+#include "protocoldialog.h"
+#include "stool.h"
 #include "stockdialog.h"
 #include "careinfo.h"
 #include "dbsync.h"
@@ -80,8 +82,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(&db, &Database::patientsChanged, this, &MainWindow::reloadPatients);
     connect(&db, &Database::stockChanged, this, [this](qint64) { updateHeader(); });
     connect(&db, &Database::vitalsChanged, this, [this](qint64 pid) {
-        if (pid == m_patientId) { reloadJournal(); reloadChart(); }
+        if (pid == m_patientId) { reloadJournal(); reloadChart(); updateHeader(); }
     });
+    {   // Hinweise mit Tagesbezug (z. B. Tage ohne Stuhlgang) auch nach Mitternacht aktuell halten
+        auto *dayTimer = new QTimer(this);
+        dayTimer->setInterval(15 * 60 * 1000);
+        connect(dayTimer, &QTimer::timeout, this, [this] { if (Database::instance().isOpen()) updateHeader(); });
+        dayTimer->start();
+    }
     connect(&db, &Database::databaseReopened, this, [this] {
         m_patientId = 0;
         reloadPatients();
@@ -182,6 +190,7 @@ void MainWindow::buildUi()
     }
 
     m_header = new QLabel(central);
+    m_header->setObjectName(QStringLiteral("patientHeader"));
     m_header->setTextFormat(Qt::RichText);
     m_header->setWordWrap(true);
     m_header->setContentsMargins(6, 4, 6, 4);
@@ -546,6 +555,14 @@ void MainWindow::buildMenus()
     m_actPharmacy = out->addAction(tr("Medikationsliste für die &Apotheke…"), this, &MainWindow::printPharmacyList);
     m_actPharmacy->setStatusTip(tr("Alle aktuellen Medikamente mit Wirkstoff, PZN, Gewicht, Allergien und Diagnosen – "
                                    "zum Prüfen auf Wechselwirkungen in der Apotheke"));
+    out->addSeparator();
+    // Protokolle aus den erfassten Werten der aktiven Person
+    m_actUserPrint << out->addAction(tr("St&uhlprotokoll…"), this, [this] { showProtocol(Protocols::Kind::Stool); });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actStoolProtocol"));
+    m_actUserPrint.last()->setStatusTip(tr("Stuhlgänge mit Menge, Konsistenz (Bristol 1–7), Farbe, Beimengungen und Begleitsymptomen"));
+    m_actUserPrint << out->addAction(tr("BZ-&Tagesprofile…"), this, [this] { showProtocol(Protocols::Kind::Glucose); });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actGlucoseProtocol"));
+    m_actUserPrint.last()->setStatusTip(tr("Blutzuckerwerte je Tag nach Profilzeitpunkten, aus den erfassten Messungen zusammengestellt"));
 
     // ---- Extras
     QMenu *extras = menuBar()->addMenu(tr("E&xtras"));
@@ -734,6 +751,18 @@ void MainWindow::updateHeader()
         if (!s.isEmpty())
             t += QStringLiteral("<br><small><span style=\"color:#B35C00;\"><b>%1</b> %2</span></small>")
                      .arg(tr("Bestand:"), s.join(QStringLiteral(" · ")).toHtmlEscaped());
+    }
+    // Stuhlgang: seit mindestens drei Tagen nichts eingetragen (nur wenn Stuhlgang erfasst wird)
+    {
+        const Stool::Status st = Stool::status(Database::instance().vitals(p->id));
+        if (st.warn) {
+            t += QStringLiteral("<br><small><span style=\"color:#B35C00;\"><b>%1</b> %2</span></small>")
+                     .arg(tr("Stuhlgang:"), tr("seit %1 Tagen keiner eingetragen (zuletzt %2)")
+                                                .arg(st.daysWithout).arg(QLocale().toString(st.last, QStringLiteral("dd.MM."))).toHtmlEscaped());
+            m_header->setToolTip(Stool::warningText(st));
+        } else {
+            m_header->setToolTip(QString());
+        }
     }
     m_header->setText(t);
     setWindowTitle(QStringLiteral("%1 – %2").arg(appTitle(), p->displayName()));
@@ -988,6 +1017,14 @@ void MainWindow::stepChart(int dir)
     m_refDate->setDate(d);
 }
 
+void MainWindow::showProtocol(Protocols::Kind kind)
+{
+    const auto p = currentPatient();
+    if (!p) return;
+    ProtocolDialog d(kind, *p, this);
+    d.exec();
+}
+
 void MainWindow::reloadChart()
 {
     if (!m_chart) return;
@@ -1008,7 +1045,8 @@ void MainWindow::reloadChart()
     spec.hiddenKeys = AppSettings::chartHiddenKeys();
     spec.separatePages = m_separatePages && m_separatePages->isChecked();
     if (m_patientId)
-        spec.records = Database::instance().vitals(m_patientId, spec.from, spec.to, true);
+        // 31 Tage Vorlauf: Zeitspannen ohne Stuhlgang, die vor dem Zeitraum beginnen (gezeichnet wird nur der Zeitraum)
+        spec.records = Database::instance().vitals(m_patientId, spec.from.addDays(-31), spec.to, true);
     m_chart->setSpec(spec);
 }
 

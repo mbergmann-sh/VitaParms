@@ -82,29 +82,17 @@ android {
     INSTALLS += vpdocs
 
     # OpenSSL für HTTPS (Abgleich über die Website). Android bringt es für Qt nicht mit.
-    # Die Bibliotheken lädt Qt Creator unter Einstellungen → SDKs → Android → „OpenSSL herunterladen“.
-    # Gesucht wird in: Umgebungsvariable VP_ANDROID_OPENSSL (Ordner mit openssl.pri), dann in den
-    # Ordnern „android_openssl“ und „openssl“ des Android-SDK. Das SDK wird auch aus dem NDK-Pfad
-    # abgeleitet (<SDK>/ndk/<Version>), den Qt Creator immer übergibt.
-    VP_SDK_DIRS = $$(ANDROID_SDK_ROOT) $$(ANDROID_HOME)
-    !isEmpty(NDK_ROOT): VP_SDK_DIRS += $$clean_path($$NDK_ROOT/../..)
-    !isEmpty(DEFAULT_ANDROID_NDK_ROOT): VP_SDK_DIRS += $$clean_path($$DEFAULT_ANDROID_NDK_ROOT/../..)
-    VP_NDK_ENV = $$(ANDROID_NDK_ROOT)
-    !isEmpty(VP_NDK_ENV): VP_SDK_DIRS += $$clean_path($$VP_NDK_ENV/../..)
-    VP_LAD = $$(LOCALAPPDATA)
-    !isEmpty(VP_LAD): VP_SDK_DIRS += $$VP_LAD/Android/Sdk
-    VP_HOME = $$(HOME)
-    !isEmpty(VP_HOME): VP_SDK_DIRS += $$VP_HOME/Android/Sdk $$VP_HOME/Library/Android/sdk
-    VP_SDK_DIRS += C:/Android/Sdk C:/Android/sdk
-    VP_OPENSSL_DIRS = $$(VP_ANDROID_OPENSSL)
-    for (s, VP_SDK_DIRS): VP_OPENSSL_DIRS += $$s/android_openssl $$s/openssl
+    # Mitgeliefert in ../3rdparty/android_openssl (OpenSSL 3, KDAB, Apache-2.0) – kein Download in
+    # Qt Creator nötig. Eine andere Version: Umgebungsvariable VP_ANDROID_OPENSSL auf einen Ordner
+    # mit openssl.pri setzen (z. B. den Download aus Qt Creator).
+    VP_OPENSSL_DIRS = $$(VP_ANDROID_OPENSSL) $$PWD/../3rdparty/android_openssl
     VP_OPENSSL_PRI =
     for (d, VP_OPENSSL_DIRS) {
         isEmpty(VP_OPENSSL_PRI):exists($$clean_path($$d)/openssl.pri): VP_OPENSSL_PRI = $$clean_path($$d)/openssl.pri
     }
     !isEmpty(VP_OPENSSL_PRI) {
         include($$VP_OPENSSL_PRI)
-        message("OpenSSL für Android: $$VP_OPENSSL_PRI")
+        message("OpenSSL fuer Android: $$VP_OPENSSL_PRI")
         # Prüfen, ob die Bibliotheken für dieses ABI wirklich da sind (sonst später „TLS fehlt“)
         for (lib, ANDROID_EXTRA_LIBS) {
             contains(lib, .*(ssl|crypto).*) {
@@ -113,7 +101,7 @@ android {
             }
         }
     } else {
-        message("OpenSSL für Android nicht gefunden - der Abgleich über die Website (HTTPS) geht dann nicht. Siehe mobile/README.md")
+        message("OpenSSL fuer Android nicht gefunden - der Abgleich ueber die Website (HTTPS) geht dann nicht. Siehe mobile/README.md")
         message("Gesucht in: $$unique(VP_OPENSSL_DIRS)")
     }
 } else {

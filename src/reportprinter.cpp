@@ -366,10 +366,14 @@ void renderChartPage(QPainter &pa, QPagedPaintDevice *dev, const Patient &p, con
     drawRow(heads, true, QColor());
     for (const SeriesStats &s : stats) {
         const int d = VitalDefs::decimals(s.key);
-        drawRow({ VitalDefs::label(s.key), QString::number(s.count),
-                  s.count ? loc.toString(s.min, 'f', d) : QStringLiteral("–"),
-                  s.count ? loc.toString(s.max, 'f', d) : QStringLiteral("–"),
-                  s.count ? loc.toString(s.mean, 'f', d + (d == 0 ? 0 : 0)) : QStringLiteral("–"),
+        const bool r = s.hasRange();
+        const int md = s.key == VitalKey::Stool ? 1 : d;
+        drawRow({ s.key == VitalKey::Stool ? VitalDefs::label(s.key) + QStringLiteral(" (") + s.stoolNote() + QLatin1Char(')')
+                                           : VitalDefs::label(s.key),
+                  QString::number(s.count),
+                  r ? loc.toString(s.min, 'f', d) : QStringLiteral("–"),
+                  r ? loc.toString(s.max, 'f', d) : QStringLiteral("–"),
+                  r ? loc.toString(s.mean, 'f', md) : QStringLiteral("–"),
                   VitalDefs::unit(s.key) },
                 false, VitalDefs::color(s.key));
     }
@@ -457,6 +461,8 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
     QStringList heads = { tr("Datum/Uhrzeit"), tr("Messzeitpunkt"), tr("Aufnahme") };
     QList<VitalKey> keys = { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse, VitalKey::Temperature,
                              VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose, VitalKey::Weight, VitalKey::Height, VitalKey::Bmi };
+    if (std::any_of(records.cbegin(), records.cend(), [](const VitalRecord &r) { return r.stool.has_value(); }))
+        keys << VitalKey::Stool;
     for (VitalKey k : keys)
         heads << VitalDefs::shortLabel(k) + QStringLiteral(" [") + VitalDefs::unit(k) + QLatin1Char(']');
     heads << FormIO::fieldLabels(extraKeys);
@@ -476,6 +482,10 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
         x.setCell(sh, row, c++, r.context);
         x.setCell(sh, row, c++, r.isAdmission ? QVariant(tr("ja")) : QVariant());
         for (VitalKey k : keys) {
+            if (k == VitalKey::Stool) {       // Text: "Typ 4" bzw. "ja"
+                x.setCell(sh, row, c++, r.stool ? QVariant(VitalDefs::formatted(r, k)) : QVariant());
+                continue;
+            }
             const auto v = VitalDefs::value(r, k);
             const int d = VitalDefs::decimals(k);
             x.setCell(sh, row, c++, v ? QVariant(d == 0 ? double(qRound(*v)) : *v) : QVariant(),
@@ -548,6 +558,12 @@ bool journalExcel(QWidget *parent, const Patient &p, const JournalModel &model, 
     return true;
 }
 
+QString askExportFile(QWidget *parent, const QString &caption, const QString &base, const Patient &p,
+                      const QString &ext, const QString &filter)
+{
+    return askFile(parent, caption, suggestName(base, p, ext), filter);
+}
+
 void charts(QWidget *parent, const Patient &p, const ChartSpec &spec, Target t)
 {
     run(parent, t, tr("Verlaufsgrafik"), QStringLiteral("Grafik"), p, QPageLayout::Portrait,
@@ -585,10 +601,11 @@ bool chartsToXlsx(const QString &path, const Patient &p, const ChartSpec &spec, 
     int row = 5;
     for (const SeriesStats &s : ChartRenderer::statistics(spec)) {
         const auto st = VitalDefs::decimals(s.key) == 0 ? XlsxWriter::Integer : XlsxWriter::Decimal1;
-        x.setCell(k, row, 0, VitalDefs::label(s.key));
+        x.setCell(k, row, 0, s.key == VitalKey::Stool ? VitalDefs::label(s.key) + QStringLiteral(" (") + s.stoolNote() + QLatin1Char(')')
+                                                       : VitalDefs::label(s.key));
         x.setCell(k, row, 1, VitalDefs::unit(s.key));
         x.setCell(k, row, 2, s.count);
-        if (s.count) {
+        if (s.hasRange()) {
             x.setCell(k, row, 3, s.min, st);
             x.setCell(k, row, 4, s.max, st);
             x.setCell(k, row, 5, s.mean, XlsxWriter::Decimal1);

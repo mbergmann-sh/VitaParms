@@ -70,7 +70,7 @@ void ChartItem::reload()
     m_all = (m_pid && db.isOpen()) ? db.vitals(m_pid) : QList<VitalRecord>();
     m_spec.records.clear();
     for (const VitalRecord &r : std::as_const(m_all))
-        if (r.measuredAt >= m_spec.from && r.measuredAt < m_spec.to) m_spec.records << r;
+        if (r.measuredAt >= m_spec.from.addDays(-31) && r.measuredAt < m_spec.to) m_spec.records << r;   // Vorlauf: Tage ohne Stuhlgang
     clearTip();
     update();
     emit specChanged();

@@ -5,9 +5,11 @@
 #include "database.h"
 #include "formloader.h"
 #include "peakflow.h"
+#include "stool.h"
 #include "vitaldefs.h"
 
 #include <QAbstractSpinBox>
+#include <QCheckBox>
 #include <cmath>
 #include <QComboBox>
 #include <QDateTimeEdit>
@@ -16,6 +18,7 @@
 #include <QFormLayout>
 #include <QTextDocument>
 #include <QLabel>
+#include <QLineEdit>
 #include <QLocale>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -27,6 +30,8 @@
 #include <QStyle>
 #include <QTimer>
 #include "sounds.h"
+
+static QLayout *layoutContaining(QLayout *l, QWidget *w);
 
 VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode mode,
                          QWidget *parent)
@@ -75,6 +80,7 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
     configureGlucose();
     setupBreathCounter();
     setupPeakFlow();
+    setupStool();
 
     if (auto *b = m_form->findChild<QPushButton *>(QStringLiteral("nowButton"))) {
         connect(b, &QPushButton::clicked, this, [this] {
@@ -156,6 +162,16 @@ void VitalDialog::loadRecord(const VitalRecord &r)
     m_heightPrefilled = m_mode == Mode::Journal && r.id == 0 && !r.height && m_fallbackHeight;
     FormIO::write(m_form, QStringLiteral("heightSpin"), dv(m_heightPrefilled ? m_fallbackHeight : r.height));
     FormIO::write(m_form, QStringLiteral("observationsEdit"), r.observations);
+    if (m_stoolCheck) {
+        m_stoolCheck->setChecked(r.stool.has_value());
+        m_stoolCombo->setCurrentIndex(std::max(0, m_stoolCombo->findData(r.stool.value_or(0))));
+        m_stoolCombo->setEnabled(r.stool.has_value());
+        if (m_stoolDetails) m_stoolDetails->setVisible(r.stool.has_value());
+        if (m_stoolAmount) m_stoolAmount->setCurrentText(r.stoolDetail.amount);
+        if (m_stoolColor) m_stoolColor->setCurrentText(r.stoolDetail.color);
+        if (m_stoolAdmixture) m_stoolAdmixture->setCurrentText(r.stoolDetail.admixture);
+        if (m_stoolSymptoms) m_stoolSymptoms->setText(r.stoolDetail.symptoms);
+    }
     FormIO::applyExtra(m_form, r.extra);
     updateBmi();
     updatePeakFlow();
@@ -200,6 +216,17 @@ bool VitalDialog::collect(VitalRecord &r, bool interactive)
     r.weight       = readDouble(m_form, QStringLiteral("weightSpin"), r.weight);
     r.height       = readDouble(m_form, QStringLiteral("heightSpin"), r.height);
     r.observations = FormIO::readString(m_form, QStringLiteral("observationsEdit"), r.observations);
+    if (m_stoolCheck) {
+        r.stool = m_stoolCheck->isChecked() ? std::optional<int>(m_stoolCombo->currentData().toInt()) : std::nullopt;
+        if (!r.stool) {
+            r.stoolDetail = {};
+        } else {
+            if (m_stoolAmount) r.stoolDetail.amount = m_stoolAmount->currentText().trimmed();
+            if (m_stoolColor) r.stoolDetail.color = m_stoolColor->currentText().trimmed();
+            if (m_stoolAdmixture) r.stoolDetail.admixture = m_stoolAdmixture->currentText().trimmed();
+            if (m_stoolSymptoms) r.stoolDetail.symptoms = m_stoolSymptoms->text().trimmed();
+        }
+    }
     r.extra        = FormIO::collectExtra(m_form, r.extra);
     // Ältere angepasste Formulare mit eigenem Feld "Peak-Flow": Wert in den festen Messwert übernehmen
     static const QRegularExpression peakKey(QStringLiteral("^\\s*(peak[- ]?flow|pef)\\s*$"), QRegularExpression::CaseInsensitiveOption);
@@ -292,6 +319,7 @@ bool VitalDialog::store()
     }
     m_record = r;
     warnPeakFlow(r);
+    warnStool(r);
     return true;
 }
 
@@ -367,6 +395,106 @@ void VitalDialog::updatePeakFlow()
         }
     }
     m_peakFlowInfo->updateGeometry();
+}
+
+// Stuhlgang: Häkchen „ja“ schaltet die Auswahl nach der Bristol-Skala frei. Fehlen die Felder
+// (angepasstes Formular einer älteren Vorlage), werden sie unter der Körpergröße eingefügt.
+void VitalDialog::setupStool()
+{
+    m_stoolCheck = m_form->findChild<QCheckBox *>(QStringLiteral("stoolCheck"));
+    m_stoolCombo = m_form->findChild<QComboBox *>(QStringLiteral("stoolCombo"));
+    if (!m_stoolCheck || !m_stoolCombo) {
+        QWidget *anchor = m_form->findChild<QWidget *>(QStringLiteral("heightSpin"));
+        if (!anchor) anchor = m_form->findChild<QWidget *>(QStringLiteral("weightSpin"));
+        auto *form = anchor && anchor->parentWidget() ? qobject_cast<QFormLayout *>(anchor->parentWidget()->layout()) : nullptr;
+        int row = -1;
+        QFormLayout::ItemRole role;
+        if (form) form->getWidgetPosition(anchor, &row, &role);
+        if (!form || row < 0) { m_stoolCheck = nullptr; m_stoolCombo = nullptr; return; }
+        auto *box = new QWidget(anchor->parentWidget());
+        auto *h = new QHBoxLayout(box);
+        h->setContentsMargins(0, 0, 0, 0);
+        m_stoolCheck = new QCheckBox(tr("ja"), box);
+        m_stoolCheck->setObjectName(QStringLiteral("stoolCheck"));
+        m_stoolCombo = new QComboBox(box);
+        m_stoolCombo->setObjectName(QStringLiteral("stoolCombo"));
+        h->addWidget(m_stoolCheck);
+        h->addWidget(m_stoolCombo, 1);
+        auto *lbl = new QLabel(tr("St&uhlgang"), anchor->parentWidget());
+        lbl->setBuddy(m_stoolCheck);
+        form->insertRow(row + 1, lbl, box);
+    }
+    m_stoolCombo->clear();
+    for (int t = 0; t <= Stool::kTypes; ++t) {
+        m_stoolCombo->addItem(Stool::choiceText(t), t);
+        if (t > 0) m_stoolCombo->setItemData(t, Stool::groupName(Stool::group(t)), Qt::ToolTipRole);
+    }
+    m_stoolCombo->setToolTip(Stool::scaleNote());
+    m_stoolCombo->setEnabled(false);
+    m_stoolCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    m_stoolCombo->setMinimumContentsLength(18);
+    connect(m_stoolCheck, &QCheckBox::toggled, m_stoolCombo, &QWidget::setEnabled);
+
+    // Angaben fürs Stuhlprotokoll (nur sichtbar, wenn „ja“ angekreuzt ist)
+    m_stoolDetails = m_form->findChild<QWidget *>(QStringLiteral("stoolDetails"));
+    m_stoolAmount = m_form->findChild<QComboBox *>(QStringLiteral("stoolAmountCombo"));
+    m_stoolColor = m_form->findChild<QComboBox *>(QStringLiteral("stoolColorCombo"));
+    m_stoolAdmixture = m_form->findChild<QComboBox *>(QStringLiteral("stoolAdmixtureCombo"));
+    m_stoolSymptoms = m_form->findChild<QLineEdit *>(QStringLiteral("stoolSymptomsEdit"));
+    auto fill = [](QComboBox *c, const QStringList &items) {
+        if (!c) return;
+        c->clear();
+        c->setEditable(true);
+        c->addItem(QString());
+        c->addItems(items);
+        c->setInsertPolicy(QComboBox::NoInsert);
+    };
+    fill(m_stoolAmount, Stool::amountChoices());
+    fill(m_stoolColor, Stool::colorChoices());
+    fill(m_stoolAdmixture, Stool::admixtureChoices());
+    if (m_stoolAdmixture && m_stoolAdmixture->lineEdit())
+        m_stoolAdmixture->lineEdit()->setPlaceholderText(tr("mehreres mit Komma trennen"));
+    if (m_stoolSymptoms) m_stoolSymptoms->setPlaceholderText(Stool::symptomsHint());
+    if (m_stoolDetails) {
+        m_stoolDetails->setVisible(false);
+        connect(m_stoolCheck, &QCheckBox::toggled, m_stoolDetails, &QWidget::setVisible);
+    }
+
+    // Hinweis bei neuer Messung: seit mindestens drei Tagen kein Stuhlgang eingetragen
+    if (m_mode != Mode::Journal || m_record.id != 0 || !m_patient.id) return;
+    const Stool::Status st = Stool::status(Database::instance().vitals(m_patient.id));
+    if (!st.warn) return;
+    m_stoolInfo = new QLabel(m_stoolCombo->parentWidget());
+    m_stoolInfo->setObjectName(QStringLiteral("stoolInfoLabel"));
+    m_stoolInfo->setWordWrap(true);
+    const bool dark = palette().base().color().lightness() < 128;
+    m_stoolInfo->setStyleSheet(QStringLiteral("color: %1; font-size: 8.5pt;")
+                                   .arg(Stool::groupColor(Stool::Group::Hard, dark).darker(dark ? 100 : 115).name()));
+    m_stoolInfo->setText(tr("Seit %1 Tagen kein Stuhlgang eingetragen.").arg(st.daysWithout));
+    m_stoolInfo->setToolTip(Stool::warningText(st));
+    QWidget *row = m_stoolCheck->parentWidget();
+    if (auto *form = qobject_cast<QFormLayout *>(row ? row->layout() : nullptr)) {
+        // Häkchen liegt direkt im Formular (eingebautes Formular: Zeile in einer QHBoxLayout)
+        int r = -1;
+        QFormLayout::ItemRole role;
+        QLayout *hl = layoutContaining(form, m_stoolCheck);
+        for (int i = 0; i < form->rowCount() && r < 0; ++i) {
+            QLayoutItem *it = form->itemAt(i, QFormLayout::FieldRole);
+            if (it && (it->layout() == hl || it->widget() == m_stoolCheck->parentWidget())) r = i;
+        }
+        if (r < 0) form->getWidgetPosition(m_stoolCheck, &r, &role);
+        if (r >= 0) { form->insertRow(r + 1, QString(), m_stoolInfo); return; }
+    }
+    if (QLayout *l = layoutContaining(m_form->layout(), m_stoolCombo)) l->addWidget(m_stoolInfo);
+}
+
+// schwarzer oder blutiger Stuhl: nach dem Speichern auf ärztliche Abklärung hinweisen
+void VitalDialog::warnStool(const VitalRecord &r)
+{
+    if (!r.stool || !isVisible() || !Stool::needsAttention(r.stoolDetail)) return;
+    QMessageBox box(QMessageBox::Warning, tr("Stuhlgang"), Stool::attentionText(), QMessageBox::Ok, this);
+    box.setObjectName(QStringLiteral("stoolWarning"));
+    box.exec();
 }
 
 // gelber oder roter Bereich: nach dem Speichern deutlich darauf hinweisen

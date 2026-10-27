@@ -90,6 +90,14 @@ VitalRecord vitalFrom(const SqlQuery &q)
     r.temperature  = optDouble(q.value(QStringLiteral("temperature")));
     r.spo2         = optInt(q.value(QStringLiteral("spo2")));
     r.peakFlow     = optInt(q.value(QStringLiteral("peak_flow")));
+    r.stool        = optInt(q.value(QStringLiteral("stool")));
+    if (r.stool) {
+        const QJsonObject si = jsonObj(q.value(QStringLiteral("stool_info")));
+        r.stoolDetail.amount    = si.value(QStringLiteral("amount")).toString();
+        r.stoolDetail.color     = si.value(QStringLiteral("color")).toString();
+        r.stoolDetail.admixture = si.value(QStringLiteral("admixture")).toString();
+        r.stoolDetail.symptoms  = si.value(QStringLiteral("symptoms")).toString();
+    }
     r.glucose      = optDouble(q.value(QStringLiteral("glucose")));
     r.weight       = optDouble(q.value(QStringLiteral("weight")));
     r.height       = optDouble(q.value(QStringLiteral("height")));
@@ -396,6 +404,8 @@ bool Database::createSchema(QString *error)
         || !ensureColumn(QStringLiteral("appointments"), QStringLiteral("series_detached"),
                          QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error)
         || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("peak_flow"), QStringLiteral("INTEGER"), error)
+        || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("stool"), QStringLiteral("INTEGER"), error)
+        || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("stool_info"), QStringLiteral("TEXT"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("care_level"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("care_review"), QStringLiteral("TEXT"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("disability_degree"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error)
@@ -879,13 +889,13 @@ bool Database::saveVital(VitalRecord &r, QString *error)
         q.prepare(QStringLiteral(
             "INSERT INTO vitals (patient_id, measured_at, context, is_admission, pulse, systolic,"
             " diastolic, temperature, spo2, glucose, weight, height, bmi, observations, extra, peak_flow,"
-            " modified_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, datetime('now','localtime'))"));
+            " stool, stool_info, modified_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, datetime('now','localtime'))"));
         q.addBindValue(r.patientId);
     } else {
         q.prepare(QStringLiteral(
             "UPDATE vitals SET measured_at=?, context=?, is_admission=?, pulse=?, systolic=?,"
             " diastolic=?, temperature=?, spo2=?, glucose=?, weight=?, height=?, bmi=?,"
-            " observations=?, extra=?, peak_flow=?, modified_at=datetime('now','localtime') WHERE id=?"));
+            " observations=?, extra=?, peak_flow=?, stool=?, stool_info=?, modified_at=datetime('now','localtime') WHERE id=?"));
     }
     q.addBindValue(r.measuredAt.toString(kDtFmt));
     q.addBindValue(r.context);
@@ -902,6 +912,16 @@ bool Database::saveVital(VitalRecord &r, QString *error)
     q.addBindValue(r.observations);
     q.addBindValue(jsonStr(r.extra));
     q.addBindValue(opt(r.peakFlow));
+    q.addBindValue(opt(r.stool));
+    {
+        QJsonObject si;
+        const StoolDetail &d = r.stoolDetail;
+        if (!d.amount.trimmed().isEmpty())    si.insert(QStringLiteral("amount"), d.amount.trimmed());
+        if (!d.color.trimmed().isEmpty())     si.insert(QStringLiteral("color"), d.color.trimmed());
+        if (!d.admixture.trimmed().isEmpty()) si.insert(QStringLiteral("admixture"), d.admixture.trimmed());
+        if (!d.symptoms.trimmed().isEmpty())  si.insert(QStringLiteral("symptoms"), d.symptoms.trimmed());
+        q.addBindValue(r.stool && !si.isEmpty() ? QVariant(jsonStr(si)) : QVariant());
+    }
     if (r.id != 0)
         q.addBindValue(r.id);
     if (!q.exec())

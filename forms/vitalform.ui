@@ -18,7 +18,7 @@
    <string>Vitalwerte</string>
   </property>
   <property name="formVersion" stdset="0">
-   <number>2</number>
+   <number>3</number>
   </property>
   <layout class="QVBoxLayout" name="rootLayout">
    <property name="leftMargin"><number>0</number></property>
@@ -288,6 +288,88 @@
         </item>
        </layout>
       </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="stoolLabel">
+        <property name="text"><string>St&amp;uhlgang</string></property>
+        <property name="buddy"><cstring>stoolCheck</cstring></property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <layout class="QHBoxLayout" name="stoolRow">
+        <item>
+         <widget class="QCheckBox" name="stoolCheck">
+          <property name="text"><string>ja</string></property>
+          <property name="toolTip"><string>Ankreuzen, wenn Stuhlgang war – danach die Art wählen</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="stoolCombo">
+          <property name="enabled"><bool>false</bool></property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy>
+          </property>
+          <property name="toolTip"><string>Art des Stuhlgangs nach der Bristol-Stuhlformen-Skala</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <widget class="QWidget" name="stoolDetails">
+        <layout class="QGridLayout" name="stoolDetailsGrid" columnstretch="0,1,0,3">
+         <property name="leftMargin"><number>16</number></property>
+         <property name="topMargin"><number>0</number></property>
+         <property name="rightMargin"><number>0</number></property>
+         <property name="bottomMargin"><number>0</number></property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="stoolAmountLabel">
+           <property name="text"><string>Menge</string></property>
+           <property name="buddy"><cstring>stoolAmountCombo</cstring></property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="stoolAmountCombo">
+           <property name="editable"><bool>true</bool></property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="stoolColorLabel">
+           <property name="text"><string>Farbe</string></property>
+           <property name="buddy"><cstring>stoolColorCombo</cstring></property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QComboBox" name="stoolColorCombo">
+           <property name="editable"><bool>true</bool></property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>2</horstretch><verstretch>0</verstretch></sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="stoolAdmixtureLabel">
+           <property name="text"><string>Beimengungen / Geruch</string></property>
+           <property name="buddy"><cstring>stoolAdmixtureCombo</cstring></property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="3">
+          <widget class="QComboBox" name="stoolAdmixtureCombo">
+           <property name="editable"><bool>true</bool></property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="stoolSymptomsLabel">
+           <property name="text"><string>Begleitsymptome</string></property>
+           <property name="toolTip"><string>Begleitsymptome / Besonderheiten</string></property>
+           <property name="buddy"><cstring>stoolSymptomsEdit</cstring></property>
+          </widget>
+         </item>
+         <item row="2" column="1" colspan="3">
+          <widget class="QLineEdit" name="stoolSymptomsEdit">
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -353,6 +435,12 @@
   <tabstop>glucoseSpin</tabstop>
   <tabstop>weightSpin</tabstop>
   <tabstop>heightSpin</tabstop>
+  <tabstop>stoolCheck</tabstop>
+  <tabstop>stoolCombo</tabstop>
+  <tabstop>stoolAmountCombo</tabstop>
+  <tabstop>stoolColorCombo</tabstop>
+  <tabstop>stoolAdmixtureCombo</tabstop>
+  <tabstop>stoolSymptomsEdit</tabstop>
   <tabstop>respRateSpin</tabstop>
   <tabstop>painSpin</tabstop>
   <tabstop>observationsEdit</tabstop>

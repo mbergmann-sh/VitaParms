@@ -17,6 +17,8 @@
 #include "keystore.h"
 #include "medschedule.h"
 #include "peakflow.h"
+#include "protocols.h"
+#include "stool.h"
 #include "reportprinter.h"
 #include "session.h"
 #include "sounds.h"
@@ -875,6 +877,19 @@ QVariantList AppController::journal(qint64 pid, const QString &query, int days)
             }
             values << v;
         }
+        if (r.stool) {
+            QStringList t{ Stool::shortText(*r.stool) };
+            for (const QString &x : { r.stoolDetail.amount, r.stoolDetail.color, r.stoolDetail.admixture })
+                if (!x.isEmpty()) t << x;
+            QVariantMap v{ { QStringLiteral("label"), VitalDefs::shortLabel(VitalKey::Stool) }, { QStringLiteral("text"), t.join(QStringLiteral(", ")) },
+                           { QStringLiteral("unit"), QString() },
+                           { QStringLiteral("color"), Stool::groupColor(Stool::group(*r.stool), Themes::isDark()).name() } };
+            if (Stool::needsAttention(r.stoolDetail)) v.insert(QStringLiteral("alert"), QStringLiteral("#D55E00"));
+            values << v;
+            if (!r.stoolDetail.symptoms.isEmpty())
+                values << QVariantMap{ { QStringLiteral("label"), tr("Begleitsymptome") }, { QStringLiteral("text"), r.stoolDetail.symptoms },
+                                       { QStringLiteral("unit"), QString() }, { QStringLiteral("color"), QStringLiteral("#6B7782") } };
+        }
         for (auto it = r.extra.begin(); it != r.extra.end(); ++it) {
             const QString t = JournalModel::extraText(it.value());
             if (t.isEmpty()) continue;
@@ -899,17 +914,20 @@ static QVariantMap vitalToMap(const VitalRecord &r)
     QVariantMap values;
     auto put = [&](VitalKey k) {
         if (const auto v = VitalDefs::value(r, k)) {
-            double d = *v;
-            if (k == VitalKey::Glucose) d = VitalDefs::glucoseToDisplay(d);
+            const double d = *v;                  // value() liefert bereits die Anzeigeeinheit (BZ ggf. mmol/l)
             const double f = std::pow(10.0, VitalDefs::decimals(k));
             values.insert(VitalDefs::key(k), std::round(d * f) / f);
         }
     };
     for (VitalKey k : VitalDefs::all())
-        if (k != VitalKey::Bmi) put(k);
+        if (k != VitalKey::Bmi && k != VitalKey::Stool) put(k);
     for (auto it = r.extra.begin(); it != r.extra.end(); ++it)
         values.insert(it.key(), it.value().toVariant());
+    const StoolDetail &sd = r.stoolDetail;
     return QVariantMap{
+        { QStringLiteral("stool"), r.stool ? QVariant(*r.stool) : QVariant() },
+        { QStringLiteral("stoolDetail"), QVariantMap{ { QStringLiteral("amount"), sd.amount }, { QStringLiteral("color"), sd.color },
+                                                      { QStringLiteral("admixture"), sd.admixture }, { QStringLiteral("symptoms"), sd.symptoms } } },
         { QStringLiteral("id"), r.id },
         { QStringLiteral("measuredAt"), r.measuredAt.toString(Qt::ISODate) },
         { QStringLiteral("context"), r.context },
@@ -955,6 +973,18 @@ static VitalRecord mapToVital(qint64 pid, const QVariantMap &m, const VitalRecor
     r.glucose = g ? std::optional<double>(VitalDefs::glucoseFromDisplay(*g)) : std::nullopt;
     r.weight = optNum(val(VitalKey::Weight));
     r.height = optNum(val(VitalKey::Height));
+    if (m.contains(QStringLiteral("stool"))) {      // Stuhlgang: null = nicht erfasst, 0 = ohne Angabe, 1–7 Bristol
+        r.stool = optInt(m.value(QStringLiteral("stool")));
+        if (r.stool && (*r.stool < 0 || *r.stool > Stool::kTypes)) r.stool = 0;
+        const QVariantMap d = m.value(QStringLiteral("stoolDetail")).toMap();
+        r.stoolDetail = {};
+        if (r.stool) {
+            r.stoolDetail.amount = d.value(QStringLiteral("amount")).toString().trimmed();
+            r.stoolDetail.color = d.value(QStringLiteral("color")).toString().trimmed();
+            r.stoolDetail.admixture = d.value(QStringLiteral("admixture")).toString().trimmed();
+            r.stoolDetail.symptoms = d.value(QStringLiteral("symptoms")).toString().trimmed();
+        }
+    }
     for (const ExtraField &e : kExtraFields) {
         const QString k = QString::fromUtf8(e.key);
         const auto x = optInt(v.value(k));
@@ -1071,7 +1101,55 @@ QVariantList AppController::latest(qint64 pid)
                           { QStringLiteral("when"), when(*last) }, { QStringLiteral("colors"), swatches },
                           { QStringLiteral("series"), series } };
     }
+    // Stuhlgang: Tage seit dem letzten Eintrag; Spur = Anzahl je Tag (letzte 30 Tage)
+    const Stool::Status st = Stool::status(recs);
+    if (st.last.isValid() && st.tracked) {
+        const auto per = Stool::perDay(recs, from.date(), QDate::currentDate());
+        QVariantList pts;
+        for (QDate d = from.date(); d <= QDate::currentDate(); d = d.addDays(1))
+            pts << QVariantMap{ { QStringLiteral("x"), double(from.date().daysTo(d)) / 30.0 },
+                                { QStringLiteral("y"), double(per.value(d).count) } };
+        const QString col = VitalDefs::color(VitalKey::Stool).name();
+        l << QVariantMap{ { QStringLiteral("key"), VitalDefs::key(VitalKey::Stool) }, { QStringLiteral("label"), VitalDefs::label(VitalKey::Stool) },
+                          { QStringLiteral("value"), st.daysWithout == 0 ? tr("heute") : st.daysWithout == 1 ? tr("gestern")
+                                                                              : tr("vor %1 Tagen").arg(st.daysWithout) },
+                          { QStringLiteral("unit"), QString() },
+                          { QStringLiteral("when"), tr("an %1 der letzten 30 Tage").arg(per.size()) },
+                          { QStringLiteral("colors"), QVariantList{ col } },
+                          { QStringLiteral("alert"), st.warn },
+                          { QStringLiteral("series"), QVariantList{ QVariantMap{ { QStringLiteral("color"), col }, { QStringLiteral("points"), pts } } } } };
+    }
     return l;
+}
+
+QVariantMap AppController::stoolStatus(qint64 pid)
+{
+    if (!loggedIn() || !pid) return {};
+    const Stool::Status st = Stool::status(Database::instance().vitals(pid, QDateTime(QDate::currentDate().addDays(-40), QTime(0, 0)), {}));
+    return { { QStringLiteral("warn"), st.warn }, { QStringLiteral("days"), st.daysWithout },
+             { QStringLiteral("text"), Stool::warningText(st) }, { QStringLiteral("status"), Stool::statusText(st) } };
+}
+
+QVariantMap AppController::stoolChoices() const
+{
+    QVariantList types;
+    for (int t = 0; t <= Stool::kTypes; ++t)
+        types << QVariantMap{ { QStringLiteral("value"), t }, { QStringLiteral("name"), Stool::typeName(t) },
+                              { QStringLiteral("text"), t ? Stool::description(t) : Stool::choiceText(0) },
+                              { QStringLiteral("group"), t ? Stool::groupName(Stool::group(t)) : QString() },
+                              { QStringLiteral("color"), Stool::groupColor(Stool::group(t), Themes::isDark()).name() } };
+    return { { QStringLiteral("types"), types }, { QStringLiteral("amounts"), Stool::amountChoices() },
+             { QStringLiteral("colors"), Stool::colorChoices() }, { QStringLiteral("admixtures"), Stool::admixtureChoices() },
+             { QStringLiteral("symptomsHint"), Stool::symptomsHint() }, { QStringLiteral("scale"), Stool::scaleNote() },
+             { QStringLiteral("attention"), Stool::attentionText() } };
+}
+
+bool AppController::stoolNeedsAttention(const QVariantMap &detail) const
+{
+    StoolDetail d;
+    d.color = detail.value(QStringLiteral("color")).toString();
+    d.admixture = detail.value(QStringLiteral("admixture")).toString();
+    return Stool::needsAttention(d);
 }
 
 // ---------------------------------------------------------------- Medikamente
@@ -1407,6 +1485,23 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
             QString err;
             ok = ReportPrinter::journalToXlsx(path, *p, model, period, &err);
         }
+    } else if (kind.startsWith(QLatin1String("stool")) || kind.startsWith(QLatin1String("glucose"))) {
+        // Stuhlprotokoll / BZ-Tagesprofile aus den erfassten Werten
+        const bool stool = kind.startsWith(QLatin1String("stool"));
+        const bool xlsx = kind.endsWith(QLatin1String("Xlsx"));
+        const int days = options.value(QStringLiteral("days")).toInt();
+        Protocols::Options o;
+        o.to = QDate::currentDate();
+        if (days > 0) o.from = o.to.addDays(1 - days);
+        if (options.contains(QStringLiteral("minValues"))) o.minValues = options.value(QStringLiteral("minValues")).toInt();
+        const QDateTime from = o.from.isValid() ? QDateTime(o.from.addDays(-31), QTime(0, 0)) : QDateTime();
+        const Protocols::Table t = Protocols::build(stool ? Protocols::Kind::Stool : Protocols::Kind::Glucose,
+                                                    db.vitals(pid, from, {}), o);
+        const QString name = stool ? QStringLiteral("Stuhlprotokoll") : QStringLiteral("BZ-Tagesprofile");
+        path = QStringLiteral("%1/%2_%3_%4.%5").arg(dir, name, base, stamp, xlsx ? QStringLiteral("xlsx") : QStringLiteral("pdf"));
+        QString err;
+        ok = xlsx ? Protocols::toXlsx(t, *p, Protocols::periodText(o), path, &err)
+                  : Protocols::toPdf(t, *p, Protocols::periodText(o), path);
     } else if (kind == QLatin1String("chart")) {
         ChartSpec spec;
         spec.scale = ChartSpec::Scale(qBound(0, options.value(QStringLiteral("scale")).toInt(), 3));
@@ -1415,7 +1510,7 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
                             spec.from, spec.to);
         spec.panelIds = options.value(QStringLiteral("panels")).toStringList();
         spec.hiddenKeys = options.value(QStringLiteral("hidden")).toStringList();
-        spec.records = db.vitals(pid, spec.from, spec.to);
+        spec.records = db.vitals(pid, spec.from.addDays(-31), spec.to);
         path = QStringLiteral("%1/Verlaufskurven_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::chartsToPdf(path, *p, spec);
     }

@@ -364,6 +364,18 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
         if (sick && day - infection < 6)
             m.extra.insert(QStringLiteral("Atemfrequenz"), int(std::lround(21 - (day - infection) + n.gauss(1))));
         m.observations = notes.value(day);
+        // Stuhlgang (eigener Zufall, damit die übrigen Demo-Werte unverändert bleiben): meist täglich
+        // Typ 3–4, einzelne harte Tage, unter dem Antibiotikum weich; vor zwei Wochen drei Tage ohne
+        const int fromEnd = kDays - 1 - day;
+        auto rnd = [day](unsigned salt) { return double(((unsigned(day) * 2654435761u) ^ (salt * 40503u)) % 1000u) / 1000.0; };
+        const bool gap = fromEnd >= 15 && fromEnd <= 17;
+        const bool antibiotic = day > infection && day - infection <= 8;
+        if (!gap && (fromEnd == 14 || rnd(1) < 0.86)) {
+            const double t = rnd(2);
+            m.stool = antibiotic ? (t < 0.5 ? 6 : t < 0.8 ? 5 : 7)
+                    : fromEnd == 14 ? 1
+                    : t < 0.08 ? 2 : t < 0.12 ? 0 : t < 0.55 ? 4 : t < 0.9 ? 3 : 5;
+        }
         if (!save(m)) { db.commitBulk(); return false; }
 
         // Tagesprofil Blutzucker (mittwochs und jeden zweiten Samstag)
@@ -404,6 +416,7 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
             if (sick) pfe -= 80 * std::max(0.0, 1 - (day - infection) / 14.0);
             e.peakFlow = int(std::lround(pfe / 10) * 10);
             if (sick && day - infection < 7) e.temperature = std::round((fever(day) + 0.3) * 10) / 10;
+            if (day > infection && day - infection <= 5) e.stool = 6;   // Antibiotikum
             if (!save(e)) { db.commitBulk(); return false; }
         }
         if (day % 20 == 0) report(12 + 70 * day / kDays);

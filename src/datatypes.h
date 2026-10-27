@@ -66,6 +66,18 @@ struct Patient {
     }
 };
 
+// Stuhlgang – Angaben fürs Stuhlprotokoll (nur zusammen mit VitalRecord::stool)
+struct StoolDetail {
+    QString amount;      // Menge: wenig / mittel / viel
+    QString color;       // Farbe
+    QString admixture;   // Beimengungen / Geruch
+    QString symptoms;    // Begleitsymptome / Besonderheiten
+    bool isEmpty() const { return amount.isEmpty() && color.isEmpty() && admixture.isEmpty() && symptoms.isEmpty(); }
+    bool operator==(const StoolDetail &o) const {
+        return amount == o.amount && color == o.color && admixture == o.admixture && symptoms == o.symptoms;
+    }
+};
+
 struct VitalRecord {
     qint64    id = 0;
     qint64    patientId = 0;
@@ -83,13 +95,15 @@ struct VitalRecord {
     std::optional<double> weight;       // kg
     std::optional<double> height;       // cm
     std::optional<double> bmi;          // kg/m², bei Speicherung berechnet
+    std::optional<int>    stool;        // Stuhlgang: 0 = ja (ohne Angabe), 1–7 = Bristol-Typ; leer = nicht erfasst
+    StoolDetail           stoolDetail;  // Menge, Farbe, Beimengungen, Begleitsymptome
 
     QString     observations;
     QJsonObject extra;
 
     bool hasAnyValue() const {
         return pulse || systolic || diastolic || temperature || spo2 || peakFlow
-            || glucose || weight || height || !observations.trimmed().isEmpty()
+            || glucose || weight || height || stool || !observations.trimmed().isEmpty()
             || !extra.isEmpty();
     }
 };

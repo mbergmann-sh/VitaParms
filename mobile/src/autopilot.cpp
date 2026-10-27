@@ -6,6 +6,7 @@
 #include "dbtransfer.h"
 #include "usbsync.h"
 #include "peakflow.h"
+#include "stool.h"
 #include "database.h"
 #include <QUrl>
 
@@ -451,7 +452,57 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
             check(app.stopGlucoseProfile(pid, today) == 1, "BZ-Profil: aufräumen");
         }
         // Stammblatt: Kontakt hinzufügen
-        call(h, "editPerson", false);
+        {   // Stuhlgang: Häkchen + Bristol-Auswahl, Angaben fürs Stuhlprotokoll, Protokolle als PDF/Excel
+        const QVariantMap ch = app.stoolChoices();
+        check(ch.value(QStringLiteral("types")).toList().size() == 8 && ch.value(QStringLiteral("colors")).toList().size() >= 6, "Stuhl: Auswahl");
+        QVariantMap v = app.newVital(pid);
+        v.insert(QStringLiteral("values"), QVariantMap{});
+        v.insert(QStringLiteral("stool"), 5);
+        v.insert(QStringLiteral("stoolDetail"), QVariantMap{ { QStringLiteral("amount"), QStringLiteral("viel") },
+                                                             { QStringLiteral("color"), QStringLiteral("hellbraun") },
+                                                             { QStringLiteral("symptoms"), QStringLiteral("Blähungen") } });
+        check(app.checkVital(v).isEmpty(), "Stuhl: allein ein gültiger Eintrag");
+        const qint64 vid = app.saveVital(pid, v);
+        const QVariantMap back = app.vital(vid);
+        check(vid > 0 && back.value(QStringLiteral("stool")).toInt() == 5
+              && back.value(QStringLiteral("stoolDetail")).toMap().value(QStringLiteral("color")).toString() == QStringLiteral("hellbraun"), "Stuhl: speichern/laden");
+        bool listed = false;
+        for (const QVariant &e : app.journal(pid, QString(), 2))
+            if (e.toMap().value(QStringLiteral("id")).toLongLong() == vid)
+                for (const QVariant &x : e.toMap().value(QStringLiteral("values")).toList())
+                    listed |= x.toMap().value(QStringLiteral("text")).toString().contains(QStringLiteral("5"));
+        check(listed, "Stuhl: im Verlauf");
+        check(app.stoolNeedsAttention(QVariantMap{ { QStringLiteral("color"), Stool::colorChoices().value(6) } })
+              && !app.stoolNeedsAttention(QVariantMap{ { QStringLiteral("color"), Stool::colorChoices().value(0) } }), "Stuhl: schwarz → Hinweis");
+        check(app.stoolStatus(pid).value(QStringLiteral("days")).toInt() == 0 && !app.stoolStatus(pid).value(QStringLiteral("warn")).toBool(), "Stuhl: Status heute");
+        for (const char *k : { "stool", "stoolXlsx", "glucose", "glucoseXlsx" }) {
+            const QString f = app.exportReport(QString::fromLatin1(k), pid, QVariantMap{ { QStringLiteral("days"), 30 } });
+            check(!f.isEmpty() && QFileInfo(f).size() > 1000, qPrintable(QStringLiteral("Protokoll %1").arg(QLatin1String(k))));
+            if (qstrcmp(k, "stool") == 0 && qEnvironmentVariableIsSet("VP_AUTOPILOT_OUT"))
+                QFile::copy(f, qEnvironmentVariable("VP_AUTOPILOT_OUT") + QStringLiteral("/stuhlprotokoll_tablet.pdf"));
+        }
+        {   // Formular
+            call(h, "measure", 0);
+            wait(300);
+            QObject *chk = win->findChild<QObject *>(QStringLiteral("stoolCheck"));
+            QQuickItem *sec = win->findChild<QQuickItem *>(QStringLiteral("stoolSection"));
+            if (chk && sec) {
+                QQmlProperty::write(chk, QStringLiteral("checked"), true);
+                for (QQuickItem *it = sec; it; it = it->parentItem())
+                    if (it->property("stoolCombo").isValid()) { if (auto *cb = it->property("stoolCombo").value<QObject *>()) cb->setProperty("currentIndex", 4); break; }
+                if (QObject *a = win->findChild<QObject *>(QStringLiteral("stoolAmount"))) QQmlProperty::write(a, QStringLiteral("text"), Stool::amountChoices().value(1));
+                if (QObject *c = win->findChild<QObject *>(QStringLiteral("stoolColor"))) QQmlProperty::write(c, QStringLiteral("text"), Stool::colorChoices().value(0));
+                wait(200);
+                for (QQuickItem *p = sec->parentItem(); p; p = p->parentItem())
+                    if (p->inherits("QQuickFlickable")) { QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, sec->mapToItem(p->childItems().value(0), QPointF()).y() - 120)); break; }
+                wait(200);
+                shot(QStringLiteral("m10c_stuhlgang"));
+            } else check(false, "Stuhl: Formularfelder");
+            stackPop();
+        }
+        app.deleteVital(vid);
+    }
+    call(h, "editPerson", false);
         wait(300);
         if (QObject *b = win->findChild<QObject *>(QStringLiteral("addContactButton"))) {
             if (auto *it = qobject_cast<QQuickItem *>(b)) {

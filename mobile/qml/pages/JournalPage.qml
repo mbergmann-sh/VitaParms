@@ -43,6 +43,25 @@ Item {
             VButton { objectName: "glucoseProfileButton"; text: qsTr("BZ-Tagesprofil"); onClicked: page.glucoseProfile() }
             VButton { text: qsTr("PDF"); onClicked: { const f = app.exportReport("journal", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VButton { text: qsTr("Excel"); onClicked: { const f = app.exportReport("journalXlsx", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
+            // Protokolle aus den erfassten Werten (Zeitraum wie oben gewählt; „Alle“ = gesamter Zeitraum)
+            VButton {
+                id: protoBtn
+                objectName: "protocolsButton"
+                text: qsTr("Protokolle …")
+                onClicked: protoMenu.popup(protoBtn, 0, protoBtn.height)
+                Menu {
+                    id: protoMenu
+                    function run(kind) {
+                        const f = app.exportReport(kind, page.personId, { days: page.days })
+                        if (f) app.openFile(f); else win.toast(app.lastError, true)
+                    }
+                    MenuItem { text: qsTr("Stuhlprotokoll (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("stool") }
+                    MenuItem { text: qsTr("Stuhlprotokoll (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("stoolXlsx") }
+                    MenuSeparator {}
+                    MenuItem { text: qsTr("BZ-Tagesprofile (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucose") }
+                    MenuItem { text: qsTr("BZ-Tagesprofile (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucoseXlsx") }
+                }
+            }
         }
         Timer { id: searchTimer; interval: 300; onTriggered: page.reload() }
 

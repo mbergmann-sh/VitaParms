@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "chartwidget.h"
 #include "themes.h"
+#include "stool.h"
 
 #include <QApplication>
 
@@ -12,6 +13,7 @@
 #include <QToolTip>
 #include <algorithm>
 #include <cmath>
+#include <functional>
 
 // ------------------------------------------------------------------ ChartSpec
 
@@ -273,6 +275,15 @@ QFont scaledFont(const QFont &base, qreal pt, bool bold = false)
 
 // ------------------------------------------------------------ ChartRenderer
 
+QString SeriesStats::stoolNote() const
+{
+    if (key != VitalKey::Stool) return {};
+    QString t = QObject::tr("an %1 von %2 Tagen").arg(days).arg(periodDays);
+    if (longestGap > 0) t += QStringLiteral(", ") + (longestGap == 1 ? QObject::tr("längste Zeitspanne ohne: 1 Tag")
+                                                                : QObject::tr("längste Zeitspanne ohne: %1 Tage").arg(longestGap));
+    return t;
+}
+
 QList<SeriesStats> ChartRenderer::statistics(const ChartSpec &spec)
 {
     QList<SeriesStats> out;
@@ -285,6 +296,31 @@ QList<SeriesStats> ChartRenderer::statistics(const ChartSpec &spec)
             SeriesStats s;
             s.key = k;
             s.count = pts.size();
+            if (k == VitalKey::Stool) {
+                const QDate fromD = spec.from.date();
+                const QDate lastD = std::min(spec.to.addMSecs(-1).date(), QDate::currentDate());
+                const auto all = Stool::perDay(spec.records);
+                s.periodDays = std::max(0, int(fromD.daysTo(lastD)) + 1);
+                double sum = 0;
+                s.min = 99;
+                for (const Pt &p : pts) {
+                    const int t = int(p.v);
+                    if (t < 1) continue;
+                    ++s.typed;
+                    s.min = std::min(s.min, p.v);
+                    s.max = std::max(s.max, p.v);
+                    sum += p.v;
+                }
+                if (s.typed) s.mean = sum / s.typed; else s.min = 0;
+                for (auto it = all.constBegin(); it != all.constEnd(); ++it)
+                    if (it.key() >= fromD && it.key() <= lastD) ++s.days;
+                for (const Stool::Gap &g : Stool::gaps(all, fromD, lastD, 1)) {
+                    const QDate a = std::max(g.first, fromD), b = std::min(g.last, lastD);
+                    s.longestGap = std::max(s.longestGap, int(a.daysTo(b)) + 1);
+                }
+                out << s;
+                continue;
+            }
             if (!pts.isEmpty()) {
                 s.min = s.max = pts.first().v;
                 double sum = 0;
@@ -300,6 +336,203 @@ QList<SeriesStats> ChartRenderer::statistics(const ChartSpec &spec)
     }
     return out;
 }
+
+
+namespace {
+
+// Stuhlgang: Balken je Tag (Anzahl), Abschnitte nach Bristol-Gruppe gefärbt; Zeitspannen
+// von mindestens drei Tagen ohne Stuhlgang hinterlegt. Kurze Zeiträume (Tagesansicht):
+// jede Eintragung als Marke zur Uhrzeit.
+struct StoolCtx {
+    qreal k; bool dark; bool screen;
+    QColor ink, grid, gridStrong, muted, paper;
+    QFont titleFont, legendFont, axisFont;
+    qreal yLabelW, plotLeft, plotW;
+    const TimeAxis *ax;
+    std::function<qreal(const QDateTime &)> xOf;
+};
+
+void paintStoolPanel(QPainter &p, const QRectF &rect, const QRectF &pr, const StoolCtx &c, const ChartSpec &spec,
+                     QList<ChartRenderer::Hit> *hits, QList<ChartRenderer::LegendHit> *legend)
+{
+    const qreal k = c.k;
+    const QLocale loc;
+    const QFontMetricsF fmTitle(c.titleFont, p.device()), fmLegend(c.legendFont, p.device()), fmAxis(c.axisFont, p.device());
+    const bool off = spec.isHidden(VitalKey::Stool);
+    QString title = VitalDefs::label(VitalKey::Stool);
+    for (const auto &pd : VitalDefs::panels())
+        if (pd.id == QLatin1String("stool")) title = pd.title;
+    // Titel + Legende (Bristol-Gruppen, Hinterlegung)
+    p.setFont(c.titleFont);
+    p.setPen(c.ink);
+    const qreal titleH = fmTitle.height() + 4 * k;
+    p.drawText(QRectF(pr.left(), pr.top(), pr.width(), titleH), Qt::AlignLeft | Qt::AlignVCenter, title);
+    qreal lx = pr.left() + fmTitle.horizontalAdvance(title) + 14 * k;
+    const qreal legendStart = lx;
+    const qreal cy = pr.top() + titleH / 2;
+    p.setFont(c.legendFont);
+    struct Item { QColor col; QString text; bool wash; };
+    QColor washCol = Stool::groupColor(Stool::Group::Hard, c.dark);
+    washCol.setAlpha(c.dark ? 70 : 48);
+    const QList<Item> items = {
+        { Stool::groupColor(Stool::Group::Hard, c.dark),   QObject::tr("Typ 1–2 hart"), false },
+        { Stool::groupColor(Stool::Group::Normal, c.dark), QObject::tr("Typ 3–4 normal"), false },
+        { Stool::groupColor(Stool::Group::Soft, c.dark),   QObject::tr("Typ 5–7 weich/flüssig"), false },
+        { Stool::groupColor(Stool::Group::Unspecified, c.dark), QObject::tr("ohne Angabe"), false },
+        { washCol, QObject::tr("≥ %1 Tage ohne Stuhlgang").arg(Stool::kWarnDays), true },
+    };
+    for (const Item &it : items) {
+        const qreal tw = fmLegend.horizontalAdvance(it.text);
+        if (lx + 14 * k + tw > pr.right()) break;
+        p.setPen(it.wash ? QPen(c.muted, 0.5 * k) : Qt::NoPen);
+        p.setBrush(off ? c.muted : it.col);
+        p.drawRect(QRectF(lx, cy - 4 * k, 9 * k, 8 * k));
+        QFont lf = c.legendFont;
+        lf.setStrikeOut(off);
+        p.setFont(lf);
+        p.setPen(off ? c.muted : c.ink);
+        p.drawText(QPointF(lx + 13 * k, cy + fmLegend.ascent() / 2 - fmLegend.descent() / 2), it.text);
+        lx += 13 * k + tw + 12 * k;
+    }
+    p.setFont(c.legendFont);
+    if (legend) legend->append({ QRectF(legendStart - 3 * k, pr.top(), lx - legendStart, titleH), VitalKey::Stool });
+
+    const qreal xLabelH = fmAxis.height() + 4 * k;
+    const qreal topPad = fmAxis.height() * 0.6;
+    const QRectF plot(c.plotLeft, pr.top() + titleH + topPad, c.plotW, pr.height() - titleH - xLabelH - topPad);
+    if (plot.height() < 10 * k) return;
+
+    p.setPen(QPen(c.gridStrong, 0.6 * k));
+    p.setBrush(Qt::NoBrush);
+    p.drawRect(plot);
+    p.setFont(c.axisFont);
+    for (const QDateTime &t : c.ax->ticks) {
+        const qreal x = c.xOf(t);
+        p.setPen(QPen(c.grid, 0.5 * k));
+        p.drawLine(QPointF(x, plot.top()), QPointF(x, plot.bottom()));
+        const QString lbl = loc.toString(t, c.ax->fmt);
+        const qreal w = fmAxis.horizontalAdvance(lbl);
+        const qreal tx = std::clamp(x - w / 2, plot.left() - c.yLabelW * 0.5, rect.right() - w);
+        p.setPen(c.muted);
+        p.drawText(QPointF(tx, plot.bottom() + 2 * k + fmAxis.ascent()), lbl);
+    }
+    for (const QDateTime &t : c.ax->dayLines) {
+        const qreal x = c.xOf(t);
+        p.setPen(QPen(c.gridStrong, 0.8 * k, Qt::DashLine));
+        p.drawLine(QPointF(x, plot.top()), QPointF(x, plot.bottom()));
+    }
+
+    const QDate fromD = spec.from.date(), lastD = spec.to.addMSecs(-1).date();
+    const QMap<QDate, Stool::Day> all = Stool::perDay(spec.records);
+    QMap<QDate, Stool::Day> days;
+    for (auto it = all.constBegin(); it != all.constEnd(); ++it)
+        if (it.key() >= fromD && it.key() <= lastD) days.insert(it.key(), it.value());
+
+    if (off || (days.isEmpty() && Stool::gaps(all, fromD, lastD).isEmpty())) {
+        p.setPen(c.muted);
+        p.setFont(c.legendFont);
+        p.drawText(plot, Qt::AlignCenter, off
+            ? QObject::tr("Alle Kurven dieses Bereichs sind ausgeblendet – zum Einblenden auf die Legende klicken")
+            : QObject::tr("Kein Stuhlgang im Zeitraum eingetragen"));
+        return;
+    }
+
+    p.save();
+    p.setClipRect(plot);
+    // Hinterlegung: Zeitspannen ohne Stuhlgang
+    for (const Stool::Gap &g : Stool::gaps(all, fromD, lastD)) {
+        const qreal x0 = std::max(plot.left(), c.xOf(QDateTime(g.first, QTime(0, 0))));
+        const qreal x1 = std::min(plot.right(), c.xOf(QDateTime(g.last.addDays(1), QTime(0, 0))));
+        if (x1 <= x0) continue;
+        const QRectF band(x0, plot.top(), x1 - x0, plot.height());
+        p.fillRect(band, washCol);
+        const QString txt = QObject::tr("%1 Tage ohne").arg(g.days());
+        p.setFont(c.axisFont);
+        if (fmAxis.horizontalAdvance(txt) + 6 * k < band.width()) {
+            p.setPen(c.ink);
+            p.drawText(band.adjusted(3 * k, 2 * k, -3 * k, 0), Qt::AlignHCenter | Qt::AlignTop, txt);
+        }
+        if (hits)
+            hits->append({ band.center(), QObject::tr("%1 Tage ohne Stuhlgang (%2 – %3)")
+                                              .arg(g.days())
+                                              .arg(loc.toString(g.first, QStringLiteral("dd.MM.yyyy")),
+                                                   loc.toString(g.last, QStringLiteral("dd.MM.yyyy"))) });
+    }
+
+    const bool shortSpan = spec.from.daysTo(spec.to) <= 2;
+    if (shortSpan) {
+        // Einzelne Eintragungen: Marke zur Uhrzeit, Höhe = Bristol-Typ (ohne Angabe: Mitte)
+        const qreal y0 = plot.bottom() - 6 * k;
+        const qreal yh = plot.height() - 18 * k;
+        auto yOf = [&](int t) { return y0 - yh * (t >= 1 ? (t - 1) / 6.0 : 0.5); };
+        p.setFont(c.axisFont);
+        for (int t = 1; t <= 7; t += 3) {
+            p.setPen(QPen(c.grid, 0.5 * k));
+            p.drawLine(QPointF(plot.left(), yOf(t)), QPointF(plot.right(), yOf(t)));
+        }
+        p.restore();
+        p.setFont(c.axisFont);
+        for (int t = 1; t <= 7; t += 3) {
+            p.setPen(c.muted);
+            p.drawText(QRectF(rect.left(), yOf(t) - fmAxis.height() / 2, c.yLabelW - 4 * k, fmAxis.height()),
+                       Qt::AlignRight | Qt::AlignVCenter, QObject::tr("Typ %1").arg(t));
+        }
+        for (const VitalRecord &r : spec.records) {
+            if (!r.stool || r.measuredAt < spec.from || r.measuredAt >= spec.to) continue;
+            const QPointF pt(c.xOf(r.measuredAt), yOf(*r.stool));
+            p.setPen(QPen(c.paper, 0.8 * k));
+            p.setBrush(Stool::groupColor(Stool::group(*r.stool), c.dark));
+            p.drawRect(QRectF(pt.x() - 4.5 * k, pt.y() - 4.5 * k, 9 * k, 9 * k));
+            if (hits)
+                hits->append({ pt, loc.toString(r.measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")) + QLatin1Char('\n')
+                                       + QObject::tr("Stuhlgang: %1").arg(Stool::choiceText(*r.stool)) });
+        }
+        return;
+    }
+
+    // Balken je Tag
+    int maxN = 3;
+    for (const Stool::Day &d : days) maxN = std::max(maxN, d.count);
+    const qreal unitH = (plot.height() - 4 * k) / maxN;
+    p.restore();
+    p.setFont(c.axisFont);
+    const int stepN = maxN <= 6 ? 1 : 2;
+    for (int n = 0; n <= maxN; n += stepN) {
+        const qreal y = plot.bottom() - n * unitH;
+        p.setPen(QPen(c.grid, 0.5 * k));
+        if (n > 0) p.drawLine(QPointF(plot.left(), y), QPointF(plot.right(), y));
+        p.setPen(c.muted);
+        p.drawText(QRectF(rect.left(), y - fmAxis.height() / 2, c.yLabelW - 4 * k, fmAxis.height()),
+                   Qt::AlignRight | Qt::AlignVCenter, QString::number(n) + QStringLiteral("×"));
+    }
+    p.save();
+    p.setClipRect(plot);
+    const qreal dayW = c.xOf(QDateTime(fromD.addDays(1), QTime(0, 0))) - c.xOf(QDateTime(fromD, QTime(0, 0)));
+    const qreal gapW = dayW > 8 * k ? std::min(dayW * 0.22, 6 * k) : 0;
+    const qreal sep = dayW > 4 * k ? 1.0 * k : 0;
+    for (auto it = days.constBegin(); it != days.constEnd(); ++it) {
+        const qreal x0 = c.xOf(QDateTime(it.key(), QTime(0, 0))) + gapW / 2;
+        const qreal w = std::max(1.0 * k, dayW - gapW);
+        QList<int> types = it.value().types;
+        std::sort(types.begin(), types.end());
+        qreal y = plot.bottom();
+        for (int i = 0; i < types.size(); ++i) {
+            const QRectF seg(x0, y - unitH + (i ? sep : 0), w, unitH - (i ? sep : 0));
+            p.fillRect(seg, Stool::groupColor(Stool::group(types[i]), c.dark));
+            y -= unitH;
+        }
+        if (hits) {
+            QStringList t;
+            for (int ty : std::as_const(types)) t << Stool::shortText(ty);
+            hits->append({ QPointF(x0 + w / 2, plot.bottom() - types.size() * unitH / 2),
+                           loc.toString(it.key(), QStringLiteral("ddd dd.MM.yyyy")) + QLatin1Char('\n')
+                               + QObject::tr("%1× Stuhlgang").arg(types.size()) + QStringLiteral(": ") + t.join(QStringLiteral(", ")) });
+        }
+    }
+    p.restore();
+}
+
+} // namespace
 
 void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec,
                           QList<Hit> *hits, bool screen, QList<LegendHit> *legend)
@@ -370,6 +603,12 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
     for (int pi = 0; pi < panels.size(); ++pi) {
         const auto &panel = panels[pi];
         const QRectF pr(rect.left(), rect.top() + pi * (panelH + gap), rect.width(), panelH);
+        if (panel.id == QLatin1String("stool")) {
+            const StoolCtx sc{ k, dark, screen, ink, grid, gridStrong, muted, paper, titleFont, legendFont, axisFont,
+                               yLabelW, plotLeft, plotW, &ax, xOf };
+            paintStoolPanel(p, rect, pr, sc, spec, hits, legend);
+            continue;
+        }
 
         // Titel + Legende
         p.setFont(titleFont);

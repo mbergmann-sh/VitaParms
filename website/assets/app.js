@@ -481,6 +481,20 @@
         tile.classList.add('tile');
         strip.append(tile);
       }
+      const ss = stoolStatus(p);
+      if (ss && ss.tracked) {
+        const tile = h('div', { class: 'tile' + (ss.warn ? ' alert' : '') },
+          h('div', { class: 'lbl' }, legendSwatch([state.vitals.stool]), state.vitals.stool.label),
+          h('div', { class: 'val', text: ss.text }),
+          h('div', { class: 'when', text: fmtDate.format(ss.last) }));
+        tile.tabIndex = 0;
+        tile.setAttribute('role', 'link');
+        const open = () => { state.chart.panels = new Set(['stool']); go({ tab: 'chart' }); };
+        tile.addEventListener('click', open);
+        tile.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });
+        strip.append(tile);
+      }
+      if (ss && ss.warn) view.insertBefore(h('div', { class: 'banner warn', role: 'status', text: ss.warn }), view.firstChild);
       view.append(strip, h('p', { class: 'hint', text: L.last30 }));
     }
     const cols = h('div', { class: 'overview-cols' });
@@ -694,7 +708,117 @@
 
   function surfaceColor() { return getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#fff'; }
 
+  // ---------------------------------------------------------------- Stuhlgang
+  const isDark = () => !document.body.classList.contains('printing') && matchMedia('(prefers-color-scheme: dark)').matches;
+  const dayKey = (ms) => isoDate(new Date(ms));
+  function stoolText(r) {
+    const st = state.data.stool;
+    if (!st || r.v.stool === undefined) return '';
+    return st.names[r.v.stool] + (r.sd ? ` (${r.sd.filter(Boolean).join(', ')})` : '');
+  }
+  function stoolGroupColor(type) {
+    const st = state.data.stool, g = st.groups[st.groupOf[type] || 0];
+    return isDark() ? g.dark : g.color;
+  }
+  // Tage mit Stuhlgang (Map isoDate → Typen) und Zeitspannen ohne Stuhlgang (≥ minDays, höchstens trackedDays)
+  function stoolDays(p) {
+    const m = new Map();
+    for (const r of p.rs) if (r.v.stool !== undefined) { const k = dayKey(r.ms); if (!m.has(k)) m.set(k, []); m.get(k).push(r.v.stool); }
+    return m;
+  }
+  function stoolGaps(days, minDays) {
+    const st = state.data.stool, keys = [...days.keys()].sort(), gaps = [];
+    const add = (a, b) => { const n = Math.round((b - a) / DAY) + 1; if (n >= minDays && n <= st.trackedDays) gaps.push({ a, b, n }); };
+    for (let i = 1; i < keys.length; i++) {
+      const prev = new Date(parseT(keys[i - 1])).getTime(), cur = new Date(parseT(keys[i])).getTime();
+      if (Math.round((cur - prev) / DAY) > 1) add(addDays(new Date(prev), 1).getTime(), addDays(new Date(cur), -1).getTime());
+    }
+    if (keys.length) {
+      const last = new Date(parseT(keys[keys.length - 1])), today = startOfDay(new Date());
+      if (last < today) add(addDays(last, 1).getTime(), today.getTime());
+    }
+    return gaps;
+  }
+  function stoolStatus(p) {
+    const st = state.data.stool;
+    if (!st) return null;
+    const keys = [...stoolDays(p).keys()].sort();
+    if (!keys.length) return null;
+    const last = new Date(parseT(keys[keys.length - 1]));
+    const days = Math.round((startOfDay(new Date()) - last) / DAY);
+    const text = days <= 0 ? st.today : days === 1 ? st.yesterday : st.ago.replace('%1', days);
+    return { last, days, text, tracked: days <= st.trackedDays,
+             warn: days >= st.warnDays && days <= st.trackedDays ? st.warn.replace('%1', days).replace('%2', fmtDate.format(last)) : '' };
+  }
+  function stoolChart(pd, p, from, to) {
+    const st = state.data.stool;
+    const box = h('div', { class: 'panel' });
+    const head = h('div', { class: 'panel-head' }, h('h3', { text: pd.title }));
+    const legendItem = (color, text, wash) => {
+      const sw = h('span', { class: 'sw' + (wash ? ' wash' : '') });
+      sw.style.background = color;
+      return h('span', { class: 'legend-item static' }, sw, text);
+    };
+    for (const gi of [1, 2, 3, 0]) head.append(legendItem(isDark() ? st.groups[gi].dark : st.groups[gi].color, st.groups[gi].label));
+    head.append(legendItem('var(--stool-gap)', st.gapLegend, true));
+    box.append(head);
+    const width = Math.max(320, ($('#view').clientWidth || 800) - 32), height = 200;
+    const left = 48, right = 10, top = 10, bottom = 26, pw = width - left - right, ph = height - top - bottom;
+    const svg = s('svg', { class: 'plot', viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `${pd.title}, ${periodText(new Date(from), new Date(to))}` });
+    const xOf = (ms) => left + ((ms - from) / (to - from)) * pw;
+    const days = stoolDays(p);
+    const inRange = [...days.entries()].filter(([k]) => { const t = parseT(k); return t >= from && t < to; });
+    const gaps = stoolGaps(days, st.warnDays).filter((g) => g.b >= from && g.a < to);
+    const hits = [];
+    for (const g of gaps) {
+      const x0 = Math.max(left, xOf(g.a)), x1 = Math.min(left + pw, xOf(g.b + DAY));
+      if (x1 <= x0) continue;
+      svg.append(s('rect', { class: 'stool-gap', x: x0, y: top, width: x1 - x0, height: ph }));
+      if (x1 - x0 > 70) { const t = s('text', { class: 'gap-label', x: (x0 + x1) / 2, y: top + 14, 'text-anchor': 'middle' }); t.textContent = st.gapText.replace('%1', g.n); svg.append(t); }
+      hits.push({ x: (x0 + x1) / 2, title: st.gapTip.replace('%1', g.n).replace('%2', fmtDate.format(g.a)).replace('%3', fmtDate.format(g.b)), rows: [] });
+    }
+    svg.append(s('rect', { class: 'frame', x: left, y: top, width: pw, height: ph }));
+    const maxN = Math.max(3, ...inRange.map(([, t]) => t.length));
+    const unit = (ph - 4) / maxN;
+    const axisY = s('g', { class: 'axis' });
+    for (let n = 0; n <= maxN; n += maxN <= 6 ? 1 : 2) {
+      const y = top + ph - n * unit;
+      if (n) svg.append(s('line', { class: 'gridline', x1: left, x2: left + pw, y1: y, y2: y }));
+      const l = s('text', { x: left - 6, y: y + 4, 'text-anchor': 'end' }); l.textContent = `${n}×`; axisY.append(l);
+    }
+    svg.append(axisY);
+    const tt = timeTicks(from, to, pw);
+    const axisX = s('g', { class: 'axis' });
+    for (const t of tt.ticks) {
+      const l = s('text', { x: xOf(t), y: top + ph + 17, 'text-anchor': 'middle' }); l.textContent = tt.fmt.format(t); axisX.append(l);
+    }
+    svg.append(axisX);
+    const dayW = xOf(from + DAY) - xOf(from), gapW = dayW > 8 ? Math.min(dayW * 0.22, 6) : 0;
+    for (const [k, types] of inRange) {
+      const t0 = parseT(k), x = xOf(t0) + gapW / 2, w = Math.max(1, dayW - gapW);
+      types.slice().sort((a, b) => a - b).forEach((ty, i) => {
+        svg.append(s('rect', { x, y: top + ph - (i + 1) * unit + (i ? 1 : 0), width: w, height: unit - (i ? 1 : 0), fill: stoolGroupColor(ty) }));
+      });
+      hits.push({ x: x + w / 2, title: fmtDate.format(t0), rows: [{ color: stoolGroupColor(types[0]), text: `${st.dayTip.replace('%1', types.length)}: ${types.map((t) => st.names[t]).join(', ')}` }] });
+    }
+    if (!inRange.length && !gaps.length) { const m = s('text', { class: 'msg', x: left + pw / 2, y: top + ph / 2, 'text-anchor': 'middle' }); m.textContent = st.none; svg.append(m); }
+    const move = (ev) => {
+      const rect = svg.getBoundingClientRect();
+      const px = ((ev.clientX - rect.left) / rect.width) * width;
+      let best = null, bd = Infinity;
+      for (const hp of hits) { const d = Math.abs(hp.x - px) - (hp.rows.length ? 1000 : 0) * (Math.abs(hp.x - px) < dayW ? 1 : 0); if (d < bd) { bd = d; best = hp; } }
+      if (!best || Math.abs(best.x - px) > Math.max(30, dayW)) { hideTip(); return; }
+      showTip(ev.clientX, ev.clientY, best.title, best.rows);
+    };
+    svg.addEventListener('pointermove', move);
+    svg.addEventListener('pointerdown', move);
+    svg.addEventListener('pointerleave', hideTip);
+    box.append(svg);
+    return box;
+  }
+
   function panelChart(pd, p, from, to) {
+    if (pd.id === 'stool') return stoolChart(pd, p, from, to);
     const c = state.chart;
     const agg = to - from > 62 * DAY;
     const box = h('div', { class: 'panel' });
@@ -865,14 +989,14 @@
     if (!rows.length) { view.append(h('p', { class: 'empty', text: p.rs.length ? L.none : L.noReadings })); return; }
     const { keys, extra } = journalColumns(p);
     const thead = h('tr', {}, h('th', { text: L.when }), h('th', { text: L.context }),
-      keys.map((k) => h('th', { class: 'n', title: state.vitals[k].label }, state.vitals[k].short, h('small', { text: state.vitals[k].unit }))),
+      keys.map((k) => h('th', { class: k === 'stool' ? null : 'n', title: state.vitals[k].label }, state.vitals[k].short, h('small', { text: state.vitals[k].unit }))),
       extra.map((x) => h('th', { text: x })), h('th', { text: L.observations }));
     const tbody = h('tbody');
     for (const r of rows.slice(0, j.shown)) {
       tbody.append(h('tr', { class: r.adm ? 'adm' : null },
         h('td', { class: 'when num', text: fmtDateTime.format(r.ms) }),
         h('td', { text: r.adm ? L.admission : r.ctx || '' }),
-        keys.map((k) => h('td', { class: 'n', text: r.v[k] !== undefined ? fmtNum(r.v[k], state.vitals[k].decimals) : '' })),
+        keys.map((k) => h('td', { class: k === 'stool' ? null : 'n', text: k === 'stool' ? stoolText(r) : r.v[k] !== undefined ? fmtNum(r.v[k], state.vitals[k].decimals) : '' })),
         extra.map((x) => h('td', { text: r.x && r.x[x] !== undefined ? String(r.x[x]) : '' })),
         h('td', { class: 'obs', text: r.obs || '' })));
     }
@@ -892,7 +1016,7 @@
     for (const r of rows.slice().reverse()) {
       const d = new Date(r.ms);
       const stamp = `${isoDate(d)} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-      lines.push([stamp, r.adm ? L.admission : r.ctx || '', ...keys.map((k) => num(r.v[k], state.vitals[k].decimals)),
+      lines.push([stamp, r.adm ? L.admission : r.ctx || '', ...keys.map((k) => (k === 'stool' ? stoolText(r) : num(r.v[k], state.vitals[k].decimals))),
         ...extra.map((x) => (r.x ? r.x[x] : '')), r.obs || ''].map(q).join(sep));
     }
     download(`${p.name.replace(/[\\/:*?"<>|]+/g, '_')} – ${L.tabs.journal}.csv`, new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));

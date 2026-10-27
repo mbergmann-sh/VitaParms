@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "vitaldefs.h"
 #include "appsettings.h"
+#include "stool.h"
 
 #include <QCoreApplication>
 #include <QLocale>
@@ -13,7 +14,7 @@ QList<VitalKey> all()
 {
     return { VitalKey::Pulse, VitalKey::Systolic, VitalKey::Diastolic,
              VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
-             VitalKey::Weight, VitalKey::Height, VitalKey::Bmi };
+             VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::Stool };
 }
 
 QString key(VitalKey k)
@@ -29,6 +30,7 @@ QString key(VitalKey k)
     case VitalKey::Weight:      return QStringLiteral("weight");
     case VitalKey::Height:      return QStringLiteral("height");
     case VitalKey::Bmi:         return QStringLiteral("bmi");
+    case VitalKey::Stool:       return QStringLiteral("stool");
     }
     return {};
 }
@@ -46,6 +48,7 @@ QString label(VitalKey k)
     case VitalKey::Weight:      return tr("Gewicht");
     case VitalKey::Height:      return tr("Körpergröße");
     case VitalKey::Bmi:         return tr("BMI");
+    case VitalKey::Stool:       return tr("Stuhlgang");
     }
     return {};
 }
@@ -63,6 +66,7 @@ QString shortLabel(VitalKey k)
     case VitalKey::Weight:      return tr("Gewicht");
     case VitalKey::Height:      return tr("Größe");
     case VitalKey::Bmi:         return tr("BMI");
+    case VitalKey::Stool:       return tr("Stuhlgang");
     }
     return {};
 }
@@ -82,6 +86,7 @@ QString unit(VitalKey k)
     case VitalKey::Weight:      return tr("kg");
     case VitalKey::Height:      return tr("cm");
     case VitalKey::Bmi:         return tr("kg/m²");
+    case VitalKey::Stool:       return tr("Bristol-Typ");
     }
     return {};
 }
@@ -113,6 +118,7 @@ QColor color(VitalKey k)
     case VitalKey::Weight:      return QColor(0x33, 0x33, 0x33); // Dunkelgrau
     case VitalKey::Height:      return QColor(0x88, 0x88, 0x88);
     case VitalKey::Bmi:         return QColor(0x00, 0x72, 0xB2);
+    case VitalKey::Stool:       return QColor(0x8C, 0x5A, 0x2B); // Braun (Balken)
     }
     return Qt::black;
 }
@@ -130,6 +136,7 @@ MarkerShape marker(VitalKey k)
     case VitalKey::Weight:      return MarkerShape::Square;
     case VitalKey::Height:      return MarkerShape::Cross;
     case VitalKey::Bmi:         return MarkerShape::Diamond;
+    case VitalKey::Stool:       return MarkerShape::Square;
     }
     return MarkerShape::Circle;
 }
@@ -163,12 +170,15 @@ std::optional<double> value(const VitalRecord &r, VitalKey k)
     case VitalKey::Weight:      return r.weight;
     case VitalKey::Height:      return r.height;
     case VitalKey::Bmi:         return r.bmi;
+    case VitalKey::Stool:       return i(r.stool);
     }
     return std::nullopt;
 }
 
 QString formatted(const VitalRecord &r, VitalKey k, bool withUnit)
 {
+    if (k == VitalKey::Stool)
+        return r.stool ? Stool::shortText(*r.stool) : QString();
     const auto v = value(r, k);
     if (!v) return {};
     QString s = QLocale().toString(*v, 'f', decimals(k));
@@ -187,6 +197,7 @@ QList<Panel> panels()
         { QStringLiteral("glucose"), tr("Blutzucker"), { VitalKey::Glucose } },
         { QStringLiteral("weight"),  tr("Gewicht"), { VitalKey::Weight } },
         { QStringLiteral("bmi"),     tr("BMI"), { VitalKey::Bmi } },
+        { QStringLiteral("stool"),   tr("Stuhlgang (Häufigkeit)"), { VitalKey::Stool } },
     };
 }
 

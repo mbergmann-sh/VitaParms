@@ -21,11 +21,11 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 | **Beipackzettel** | je Medikament im Internet nachschlagen (Apotheken Umschau per PZN, Gelbe Liste, Websuche, EMA, openFDA) und anzeigen; Original-PDF per Link oder Datei laden und **verschlüsselt in der Krankenakte** speichern |
 | **Benutzer** | beliebig viele, Auswahl über die Werkzeugleiste; **Hauptbenutzer 1 und 2** per `Strg+1` / `Strg+2`; *Benutzer → Drucken*: Stammblatt, Medikamentenliste, Erinnerungen (anstehende Termine) |
 | **Messung erfassen** | Kopfzeile mit Name/Vorname/Geburtsdatum aus dem Stammblatt; Datum/Uhrzeit vorbelegt und änderbar; Messzeitpunkt für **Tagesprofile** (nüchtern, 2 h nach dem Frühstück …, Liste editierbar); „Speichern & weitere Messung“ für Serien; **Minutenuhr** neben „Atemfrequenz“ (Start- und Endton) zum Zählen der Atemzüge |
-| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), Beobachtungen; Beispiel-Zusatzfelder Atemfrequenz und Schmerz (NRS); **Peak-Flow-Warnhinweise** (grün/gelb/rot) bezogen auf den persönlichen Bestwert oder den Sollwert nach ERS 1994 (biologisches Geschlecht, Alter, Größe) |
+| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), Beobachtungen; Beispiel-Zusatzfelder Atemfrequenz und Schmerz (NRS); **Peak-Flow-Warnhinweise** (grün/gelb/rot) bezogen auf den persönlichen Bestwert oder den Sollwert nach ERS 1994 (biologisches Geschlecht, Alter, Größe); **Stuhlgang** (Häkchen + Art nach der **Bristol-Stuhlformen-Skala**, Menge, Farbe, Beimengungen/Geruch, Begleitsymptome) mit **Hinweis nach drei Tagen ohne Stuhlgang** und bei schwarzem/blutigem Stuhl |
 | **BZ-Tagesprofil** | *Messwerte → BZ-Tagesprofil…*: sieben Zeitpunkte (nüchtern vor dem Frühstück … vor dem Zubettgehen) mit einstellbaren Uhrzeiten; je Zeitpunkt ein Termin mit Erinnerung, „Messung erfassen…“ öffnet das Erfassungsfenster mit Betreff, Uhrzeit und Messzeitpunkt |
 | **Journal / Verlauf** | alle Werte, nach Datum absteigend (aktuellste zuerst), mehrere Messungen pro Tag, Zeitraumfilter |
-| **Grafik** | Tages-, Wochen-, Monats-, **Jahresverlauf** und freier Zeitraum (Wahl wird gespeichert); ab gut zwei Monaten **Tageswerte** (Mittelwert, Strich = Min–Max); Bereiche wählbar, **jede Kurve einzeln ein-/ausblendbar** (Klick auf die Legende oder Menü *Kurven*); Druck/PDF wahlweise **je Bereich eine Seite**; farblich unterscheidbar **und** mit unterschiedlichen Markerformen (auch bei Farbfehlsichtigkeit lesbar), Legende, Tooltips |
-| **Ausgabe** | Druck und Druckvorschau auf **DIN A4**, **PDF**, **Excel (.xlsx)** mit eingebetteter Grafik, Kennwerten (Min/Max/Mittel) und Rohdaten |
+| **Grafik** | Tages-, Wochen-, Monats-, **Jahresverlauf** und freier Zeitraum (Wahl wird gespeichert); ab gut zwei Monaten **Tageswerte** (Mittelwert, Strich = Min–Max); Bereiche wählbar, **jede Kurve einzeln ein-/ausblendbar** (Klick auf die Legende oder Menü *Kurven*); Druck/PDF wahlweise **je Bereich eine Seite**; **Stuhlgang-Häufigkeit** als Tagesbalken (nach Bristol-Typ gefärbt, Zeitspannen ohne Stuhlgang hinterlegt); farblich unterscheidbar **und** mit unterschiedlichen Markerformen (auch bei Farbfehlsichtigkeit lesbar), Legende, Tooltips |
+| **Ausgabe** | Druck und Druckvorschau auf **DIN A4**, **PDF**, **Excel (.xlsx)** mit eingebetteter Grafik, Kennwerten (Min/Max/Mittel) und Rohdaten; **Stuhlprotokoll** (Datum & Uhrzeit, Menge, Konsistenz Typ 1–7, Farbe, Beimengungen/Geruch, Begleitsymptome; Tage ohne Stuhlgang) und **BZ-Tagesprofile** (aus den Messungen zusammengestellt, je Tag nach Profilzeitpunkten) für die aktive Person |
 | **Krankenakte** | PDF-Dokumente (Befunde, Laborwerte, Entlassbriefe …) je Benutzer nach Datum archivieren; Fotos/Scans (JPG, PNG, TIFF) werden beim Import in PDF umgewandelt; Drag & Drop; Vorschläge für Datum, Art und Titel; Dubletten-Erkennung; **Volltextsuche** im PDF-Inhalt; Vorschau; **selektiver Druck**; Inhaltsverzeichnis drucken; **auf dem Tablet**: ansehen, suchen, mit der Kamera fotografieren (mehrere Seiten → ein PDF), Dateien übernehmen, teilen; beim Abgleich gehen die Inhalte **getrennt und nur bei Bedarf** |
 | **Akte versenden** | ausgewählte/gefilterte/alle Dokumente plus Stammblatt, Medikamentenplan, Verlauf und Grafik als **ZIP mit Inhaltsverzeichnis**; optional **AES-256-verschlüsselt**; E-Mail mit Anhang im Standard-Mailprogramm |
 | **Datenschutz** | Datenbank **vollständig verschlüsselt** (SQLite3 Multiple Ciphers, ChaCha20-Poly1305) inkl. aller Dokumente; Sicherungen ebenfalls verschlüsselt |
@@ -492,11 +492,11 @@ Suchreihenfolge für `<name>.ui`:
 | Formular | ausgewertete Elemente |
 |---|---|
 | `patientform.ui` | `lastNameEdit` `firstNameEdit` `birthDateEdit` `sexCombo` `streetEdit` `zipEdit` `cityEdit` `phoneEdit` `mobileEdit` `diagnosesEdit` `notesEdit` `armLeftCombo` `armRightCombo` `legLeftCombo` `legRightCombo` `amputationInfoLabel` `medicationTable` `addMedicationButton` `editMedicationButton` `archiveMedicationButton` `deleteMedicationButton` `showArchivedCheck` `printMedicationButton` `admissionLabel` `admissionButton` |
-| `vitalform.ui` | `headerNameLabel` `headerFirstNameLabel` `headerBirthDateLabel` `dateTimeEdit` `nowButton` `contextCombo` `systolicSpin` `diastolicSpin` `pulseSpin` `temperatureSpin` `spo2Spin` `peakFlowSpin` `glucoseSpin` `glucoseUnitLabel` `weightSpin` `heightSpin` `bmiValueLabel` `bmiInfoLabel` `observationsEdit` |
+| `vitalform.ui` | `headerNameLabel` `headerFirstNameLabel` `headerBirthDateLabel` `dateTimeEdit` `nowButton` `contextCombo` `systolicSpin` `diastolicSpin` `pulseSpin` `temperatureSpin` `spo2Spin` `peakFlowSpin` `glucoseSpin` `glucoseUnitLabel` `weightSpin` `heightSpin` `bmiValueLabel` `bmiInfoLabel` `stoolCheck` `stoolCombo` `stoolDetails` `stoolAmountCombo` `stoolColorCombo` `stoolAdmixtureCombo` `stoolSymptomsEdit` `observationsEdit` (fehlen `stoolCheck`/`stoolCombo` in einer älteren Anpassung, fügt das Programm sie unter der Körpergröße ein) |
 | `documentform.ui` | `dateEdit` `categoryCombo` `titleEdit` `issuerEdit` `notesEdit` `fileInfoLabel` `textInfoLabel` `previewLabel` |
 | `medicationform.ui` | `nameEdit` `substanceEdit` `strengthEdit` `formCombo` `morningEdit` `noonEdit` `eveningEdit` `nightEdit` `unitCombo` `reasonEdit` `notesEdit` `startDateEdit` `endDateCheck` `endDateEdit` `archivedCheck` |
 
-Die Auswahllisten `sexCombo`, `armLeftCombo` usw. sowie `contextCombo` füllt das Programm selbst.
+Die Auswahllisten `sexCombo`, `armLeftCombo` usw. sowie `contextCombo` und die Stuhlgang-Listen füllt das Programm selbst.
 
 ## BMI bei fehlenden Gliedmaßen
 
@@ -565,6 +565,8 @@ src/
   usbsyncdialog.*        Datei → Mit Tablet über USB abgleichen… (adb suchen, Port weiterleiten)
   quarterreminder.*      Erinnerung an den Quartalswechsel (Zeitraum, Bestätigung)
   glucoseprofile.*       BZ-Tagesprofil: Zeitpunkte, Termine anlegen (Dialog: glucoseprofiledialog.*)
+  stool.*                Stuhlgang: Bristol-Skala, Häufigkeit, Hinweis nach drei Tagen ohne
+  protocols.*            Stuhlprotokoll und BZ-Tagesprofile aus den Messwerten (HTML/PDF/Excel; Dialog: protocoldialog.*)
   apptcore.*             Termine: Texte, Wiederholungsauswahl, Speichern/Löschen mit Serien-Umfang (Desktop und Tablet)
   careinfo.*             Pflegegrad, Schwerbehindertenausweis (Merkzeichen, Anzeigetexte)
   websync.*              Website: Paket bauen (Hintergrund-Thread), verschlüsseln (VPW1), hochladen
@@ -590,7 +592,7 @@ tools/
 ## Lizenzhinweise
 
 VitaParms steht unter der MIT-Lizenz (siehe `LICENSE`). Qt (einschließlich Qt PDF) wird unter
-LGPLv3 dynamisch gelinkt (ebenso Qt TextToSpeech und Qt Multimedia). SQLite3 Multiple Ciphers: MIT-Lizenz (`3rdparty/sqlite3mc/LICENSE`),
+LGPLv3 dynamisch gelinkt (ebenso Qt TextToSpeech und Qt Multimedia). SQLite3 Multiple Ciphers: MIT-Lizenz (`3rdparty/sqlite3mc/LICENSE`), OpenSSL 3 für die Android-App (vorgefertigt von KDAB): Apache-2.0-Lizenz (`3rdparty/android_openssl/LICENSE.txt`),
 SQLite selbst ist gemeinfrei.
 Bewusst **nicht** verwendet wurden *Qt Charts* und *Qt Graphs*, da diese Module in der
 Open-Source-Ausgabe nur unter GPLv3 verfügbar sind.
