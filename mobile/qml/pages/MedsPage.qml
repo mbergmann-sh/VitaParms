@@ -9,10 +9,13 @@ Flickable {
     id: page
     property var personId: 0
     signal edit(var id)
+    signal prepare()
+    signal stock()
     property bool archived: false
     property var meds: []
     property var cats: app.medCategories()
-    function reload() { meds = app.medications(personId, archived) }
+    property var reminder: []
+    function reload() { meds = app.medications(personId, archived); reminder = app.stockReminder(personId) }
     onPersonIdChanged: reload()
     onArchivedChanged: reload()
     // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
@@ -32,10 +35,30 @@ Flickable {
         Flow {
             Layout.fillWidth: true
             spacing: Theme.gapS
-            VButton { text: qsTr("Neues Medikament"); iconText: "+"; kind: "primary"; onClicked: page.edit(0) }
+            VButton { objectName: "prepareButton"; text: qsTr("Medikamente stellen"); iconText: "▶"; kind: "primary"; onClicked: page.prepare() }
+            VButton { objectName: "stockButton"; text: qsTr("Bestand und Bestellungen"); onClicked: page.stock() }
+            VButton { text: qsTr("Neues Medikament"); iconText: "+"; onClicked: page.edit(0) }
             VButton { text: qsTr("Medikamentenplan als PDF"); onClicked: { const f = app.exportReport("medplan", page.personId); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VButton { text: qsTr("Liste für die Apotheke"); onClicked: { const f = app.exportReport("pharmacy", page.personId); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VChip { text: qsTr("Historie zeigen"); checked: page.archived; onClicked: page.archived = !page.archived }
+        }
+        // Bestandsführung: offene Bestellung, bis sie als bestellt bestätigt ist
+        Rectangle {
+            objectName: "stockReminder"
+            visible: page.reminder.length > 0
+            Layout.fillWidth: true
+            implicitHeight: remCol.implicitHeight + 24
+            radius: Theme.radius
+            color: Theme.warnWash; border.color: Theme.warn
+            ColumnLayout {
+                id: remCol
+                x: 14; y: 12; width: parent.width - 28
+                spacing: 4
+                Repeater { model: page.reminder; Label { text: modelData; color: Theme.ink; wrapMode: Text.WordWrap; Layout.fillWidth: true } }
+                Label { text: qsTr("Die Bestellliste steht unter „Bestand und Bestellungen“. Bis die Bestellung als bestellt bestätigt ist, erinnert VitaParms daran.")
+                        color: Theme.ink2; font.pixelSize: Theme.fsS; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+            }
+            MouseArea { anchors.fill: parent; onClicked: page.stock() }
         }
         // Wechselwirkungen prüft die Apotheke – Hinweis auf die Medikationsberatung
         Rectangle {
@@ -95,6 +118,8 @@ Flickable {
                                 Label { visible: !!modelData.reminderText; text: "🔔 " + qsTr("Erinnerung: %1").arg(modelData.reminderText); color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                                 Label { visible: !!modelData.reason || !!modelData.notes; text: [modelData.reason, modelData.notes].filter(s => s).join(" – ")
                                         color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                                Label { visible: !!modelData.stockText; text: "▣ " + modelData.stockText; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap
+                                        color: modelData.stockState === -1 ? Theme.brand : modelData.stockState === 4 ? Theme.alert : modelData.stockState >= 2 ? Theme.warn : Theme.ink2 }
                                 Label { visible: modelData.archived || !!modelData.endDate; text: modelData.status + (modelData.stopReason ? " – " + modelData.stopReason : ""); color: Theme.warn; font.pixelSize: Theme.fsXs }
                             }
                         }

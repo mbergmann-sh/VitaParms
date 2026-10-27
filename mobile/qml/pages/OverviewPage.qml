@@ -54,6 +54,8 @@ Flickable {
                     text: modelData.text
                     color: Theme.ink; font.pixelSize: Theme.fsM
                 }
+                // Bestandshinweis: zum Reiter „Medikamente“ (Bestand und Bestellungen)
+                MouseArea { anchors.fill: parent; enabled: modelData.stock === true; onClicked: page.openMeds() }
             }
         }
         SectionTitle { text: qsTr("Letzte Messwerte") }

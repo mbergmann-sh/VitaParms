@@ -16,6 +16,15 @@ Page {
     property var advance: (d.advanceDocs || []).map(a => Object.assign({}, a))
     // ohne Neuzuweisung ändern – sonst baut der Repeater die Felder beim Tippen neu auf
     function setAdvance(i, key, value) { page.advance[i][key] = value }
+    // PDF aus der Krankenakte verknüpfen (sofort gespeichert) – hier bewusst mit Neuaufbau der Liste
+    function linkAdvance(i, docId, title) {
+        if (!app.linkAdvanceDocument(page.personId, page.advance[i].kind, docId)) { win.toast(app.lastError, true); return }
+        const l = page.advance.map(a => Object.assign({}, a))
+        l[i].docId = docId; l[i].docTitle = title; l[i].hasPdf = docId > 0
+        if (docId > 0) l[i].present = true
+        page.advance = l
+        win.toast(docId > 0 ? qsTr("Dokument verknüpft.") : qsTr("Verknüpfung gelöst."))
+    }
     background: Rectangle { color: Theme.paper }
 
     function pfBest() { const v = parseInt(pfBestField.text); return isNaN(v) || v < 0 ? 0 : v }
@@ -52,6 +61,46 @@ Page {
         const id = app.savePerson(m)
         if (id) page.closed(id, qsTr("Stammblatt gespeichert."))
         else win.toast(app.lastError, true)
+    }
+
+    Popup {
+        id: advPicker
+        objectName: "advancePicker"
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: Math.min(640, page.width - 32); height: Math.min(560, page.height - 32)
+        padding: 20
+        property int row: -1
+        property string name: ""
+        property var docs: []
+        function openFor(i, n) { row = i; name = n; docs = app.advanceCandidates(page.personId); open() }
+        background: Rectangle { radius: Theme.radius + 4; color: Theme.surface; border.color: Theme.rule }
+        Overlay.modal: Rectangle { color: "#80000000" }
+        contentItem: ColumnLayout {
+            spacing: Theme.gapS
+            Label { text: qsTr("%1: Dokument aus der Krankenakte").arg(advPicker.name); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink
+                    Layout.fillWidth: true; wrapMode: Text.WordWrap }
+            Label { visible: advPicker.docs.length === 0; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted
+                    text: qsTr("In der Krankenakte liegt noch kein Dokument. Nehmen Sie es dort zuerst auf (Reiter „Krankenakte“).") }
+            ListView {
+                Layout.fillWidth: true; Layout.fillHeight: true
+                clip: true; spacing: 4
+                model: advPicker.docs
+                delegate: AbstractButton {
+                    width: ListView.view.width
+                    implicitHeight: dl.implicitHeight + 20
+                    onClicked: { page.linkAdvance(advPicker.row, modelData.id, modelData.title + (modelData.dateText ? " (" + modelData.dateText + ")" : "")); advPicker.close() }
+                    background: Rectangle { radius: 8; color: parent.down ? Theme.brandWash : Theme.surface2; border.color: Theme.rule }
+                    contentItem: ColumnLayout {
+                        id: dl
+                        spacing: 0
+                        Label { text: modelData.title; font.bold: true; color: Theme.ink; leftPadding: 12; Layout.fillWidth: true; elide: Text.ElideRight }
+                        Label { text: [modelData.category, modelData.dateText].filter(x => x).join(" · "); color: Theme.muted; font.pixelSize: Theme.fsS; leftPadding: 12 }
+                    }
+                }
+            }
+            VButton { text: qsTr("Abbrechen"); kind: "flat"; Layout.alignment: Qt.AlignRight; onClicked: advPicker.close() }
+        }
     }
 
     ContactPopup {
@@ -196,9 +245,26 @@ Page {
                         DateField { label: qsTr("Gültig bis (leer = unbefristet)"); isoDate: modelData.validUntil || ""; Layout.fillWidth: true; Layout.preferredWidth: 10
                                     onIsoDateChanged: page.setAdvance(index, "validUntil", isoDate) }
                     }
+                    // hinterlegtes Dokument (PDF in der Krankenakte)
+                    RowLayout {
+                        visible: advPresent.checked
+                        Layout.fillWidth: true; Layout.leftMargin: 36
+                        spacing: Theme.gapS
+                        Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; font.pixelSize: Theme.fsS
+                                color: modelData.docId > 0 ? Theme.ink : Theme.muted
+                                text: modelData.docId > 0 ? qsTr("Dokument: %1").arg(modelData.docTitle || qsTr("PDF in der Krankenakte"))
+                                                          : page.personId ? qsTr("Kein Dokument hinterlegt.") : qsTr("Nach dem Speichern lässt sich ein Dokument aus der Krankenakte verknüpfen.") }
+                        VButton { visible: modelData.docId > 0; text: qsTr("Anzeigen"); kind: "flat"
+                                  onClicked: if (!app.openDocument(modelData.docId)) win.toast(app.lastError, true) }
+                        VButton { objectName: "advanceLinkButton"; visible: page.personId > 0
+                                  text: modelData.docId > 0 ? qsTr("Anderes Dokument") : qsTr("Aus der Krankenakte wählen"); kind: "flat"
+                                  onClicked: advPicker.openFor(index, modelData.name) }
+                        VButton { visible: modelData.docId > 0; text: qsTr("Verknüpfung lösen"); kind: "flat"
+                                  onClicked: page.linkAdvance(index, 0, "") }
+                    }
                 }
             }
-            Label { text: qsTr("Das Dokument selbst (PDF) legen Sie am Computer in der Krankenakte ab."); color: Theme.muted
+            Label { text: qsTr("Das unterschriebene Dokument nehmen Sie zuerst in die Krankenakte auf (fotografieren oder als PDF übernehmen, Art „Vorsorge“) und verknüpfen es dann hier."); color: Theme.muted
                     font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
 
             SectionTitle { text: qsTr("Diagnosen und Bemerkungen") }

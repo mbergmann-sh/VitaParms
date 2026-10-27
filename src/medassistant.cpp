@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "medassistant.h"
 #include "medstock.h"
+#include "medprep.h"
 #include <QSignalBlocker>
 #include "appsettings.h"
 #include "database.h"
@@ -34,23 +35,8 @@
 #include <QVBoxLayout>
 
 namespace {
-
-QString slotName(int s)
-{
-    switch (s) {
-    case 0: return QCoreApplication::translate("MedicationAssistant", "morgens");
-    case 1: return QCoreApplication::translate("MedicationAssistant", "mittags");
-    case 2: return QCoreApplication::translate("MedicationAssistant", "abends");
-    default: return QCoreApplication::translate("MedicationAssistant", "zur Nacht");
-    }
-}
-
-QString doseOf(const Medication &m, int s)
-{
-    const QString d = (s == 0 ? m.morning : s == 1 ? m.noon : s == 2 ? m.evening : m.night).trimmed();
-    return (d.isEmpty() || d == QLatin1String("0") || d == QLatin1String("-")) ? QString() : d;
-}
-
+QString slotName(int s) { return MedPrep::slotName(s); }
+QString doseOf(const Medication &m, int s) { return MedPrep::doseOf(m, s); }
 } // namespace
 
 MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medication> &meds, QWidget *parent)
@@ -209,7 +195,7 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
         if (!d.medicationChanged() || !cur.id) return;
         cur = d.medication();
         Database::instance().updateMedicationLeaflet(cur.id, cur.pzn, cur.extra);
-        for (Medication &m : m_all)
+        for (Medication &m : m_source)
             if (m.id == cur.id) m = cur;
     });
     connect(logBtn, &QPushButton::clicked, this, [this] {
@@ -251,14 +237,7 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
 
 QString MedicationAssistant::doseSummary(const Medication &m, int slot)
 {
-    QStringList l;
-    for (int s = 0; s < 4; ++s) {
-        if (slot >= 0 && s != slot) continue;
-        const QString d = doseOf(m, s);
-        if (d.isEmpty()) continue;
-        l << slotName(s) + QStringLiteral(": ") + d + (m.unit.isEmpty() ? QString() : QLatin1Char(' ') + m.unit);
-    }
-    return l.join(QStringLiteral(", "));
+    return MedPrep::doseSummary(m, slot);
 }
 
 void MedicationAssistant::updateLastLabel()
@@ -278,45 +257,16 @@ void MedicationAssistant::updateLastLabel()
 void MedicationAssistant::logPreparation(bool complete)
 {
     if (m_prepId) return;   // pro Durchgang nur ein Eintrag
-    MedPreparation p;
-    p.patientId = m_patient.id;
-    p.preparedAt = QDateTime::currentDateTime();
-    p.preparedBy = Session::user();
-    p.slot = m_slot->currentData().toInt();
-    p.forDate = m_date->date();
-    p.days = days();
-    p.total = int(m_list.size());
-    p.confirmed = int(m_confirmed.size());
-    p.complete = complete;
-    for (int i = 0; i < m_list.size(); ++i) {
-        const Medication &m = m_list[i];
-        QJsonObject o;
-        o[QStringLiteral("name")] = m.name;
-        if (!m.strength.isEmpty()) o[QStringLiteral("strength")] = m.strength;
-        if (!m.form.isEmpty()) o[QStringLiteral("form")] = m.form;
-        o[QStringLiteral("dose")] = p.days > 1 ? doseSummary(m, p.slot) + QStringLiteral(" · ")
-                                                    + tr("%1 Tage").arg(p.days) : doseSummary(m, p.slot);
-        o[QStringLiteral("confirmed")] = complete || m_confirmed.contains(i);
-        p.items.append(o);
+    const MedPrep::LogResult r = MedPrep::log(m_patient, Session::user(), m_list, m_confirmed, complete,
+                                              m_slot->currentData().toInt(), m_date->date(), days(),
+                                              m_note ? m_note->text() : QString());
+    if (!r.ok) {
+        qWarning("Stellprotokoll: %s", qPrintable(r.error));
+        return;
     }
-    p.note = m_note ? m_note->text().trimmed() : QString();
-    QString err;
-    if (Database::instance().addPreparation(p, &err)) {
-        m_prepId = p.id;
-        // Bestandsführung: gestellte Menge abbuchen (nur bestätigte Medikamente)
-        QList<Medication> booked;
-        for (int i = 0; i < m_list.size(); ++i)
-            if (complete || m_confirmed.contains(i)) booked << m_list[i];
-        m_shortage.clear();
-        for (int d = 0; d < p.days; ++d)
-            for (const QString &n : MedStock::bookPreparation(m_patient.id, booked, p.forDate.addDays(d), p.slot))
-                if (!m_shortage.contains(n)) m_shortage << n;
-        if (complete)   // Stell-Rhythmus merken (Bestandsführung rechnet damit)
-            MedStock::setPrepPlan(m_patient.id, MedStock::PrepPlan{ p.days, p.forDate.dayOfWeek() });
-        updateLastLabel();
-    } else {
-        qWarning("Stellprotokoll: %s", qPrintable(err));
-    }
+    m_prepId = r.id;
+    m_shortage = r.shortage;
+    updateLastLabel();
 }
 
 void MedicationAssistant::saveNote()
@@ -350,44 +300,12 @@ void MedicationAssistant::updateVoiceInfo()
 
 QList<Medication> MedicationAssistant::currentMedications(const QList<Medication> &all, const QDate &day)
 {
-    QList<Medication> l;
-    for (const Medication &m : all) {
-        if (m.archived) continue;
-        if (m.startDate.isValid() && m.startDate > day) continue;
-        if (m.endDate.isValid() && m.endDate < day) continue;
-        l << m;
-    }
-    return l;
+    return MedPrep::currentMedications(all, day);
 }
 
 QString MedicationAssistant::speechText(const Medication &m, int slot)
 {
-    QStringList parts;
-    QString head = m.name;
-    if (!m.strength.isEmpty()) head += QStringLiteral(", ") + m.strength;
-    if (!m.form.isEmpty()) head += QStringLiteral(", ") + m.form;
-    parts << head + QLatin1Char('.');
-    QStringList doses;
-    for (int s = 0; s < 4; ++s) {
-        if (slot >= 0 && s != slot) continue;
-        const QString d = doseOf(m, s);
-        if (d.isEmpty()) continue;
-        QString text = slotName(s) + QStringLiteral(": ") + d;
-        if (!m.unit.isEmpty()) text += QLatin1Char(' ') + m.unit;
-        doses << text;
-    }
-    if (doses.isEmpty())
-        parts << QCoreApplication::translate("MedicationAssistant", "Keine feste Dosis angegeben.");
-    else
-        parts << doses.join(QStringLiteral(". ")) + QLatin1Char('.');
-    if (MedSchedule::isInterval(m))
-        parts << QCoreApplication::translate("MedicationAssistant", "Einnahme: %1.").arg(MedSchedule::describe(m));
-    if (!m.rhythmNote.isEmpty())
-        parts << QCoreApplication::translate("MedicationAssistant", "Bemerkung: %1.").arg(m.rhythmNote);
-    if (!m.notes.isEmpty()) parts << QCoreApplication::translate("MedicationAssistant", "Hinweis: %1.").arg(m.notes);
-    QString t = parts.join(QLatin1Char(' '));
-    t.replace(QStringLiteral(".."), QStringLiteral("."));
-    return Speech::expand(t);
+    return MedPrep::speechText(m, slot);
 }
 
 void MedicationAssistant::applyFilter()
@@ -398,54 +316,21 @@ void MedicationAssistant::applyFilter()
     if (m_forLabel) m_forLabel->setText(nd > 1 ? tr("ab") : tr("für"));
     if (m_rangeLabel)
         m_rangeLabel->setText(nd > 1 ? tr("bis %1").arg(QLocale().toString(day.addDays(nd - 1), QStringLiteral("ddd dd.MM.yyyy"))) : QString());
-    // aktiv ist ein Medikament, wenn es an mindestens einem Tag des Zeitraums gegeben wird
-    m_all.clear();
-    for (int i = 0; i < nd; ++i)
-        for (const Medication &m : currentMedications(m_source, day.addDays(i)))
-            if (std::none_of(m_all.begin(), m_all.end(), [&](const Medication &x) { return x.id == m.id && x.name == m.name; }))
-                m_all << m;
-    m_list.clear();
-    QStringList notDue, asNeeded, emergency, other;
-    const QLocale loc;
-    for (const Medication &m : std::as_const(m_all)) {
-        if (m.category != Medication::Regular) {
-            const QString t = m.name.toHtmlEscaped() + (m.rhythmNote.isEmpty() ? QString()
-                                                       : QStringLiteral(" (") + m.rhythmNote.toHtmlEscaped() + QLatin1Char(')'));
-            (m.category == Medication::Emergency ? emergency : m.category == Medication::Other ? other : asNeeded) << t;
-            continue;
-        }
-        if (nd > 1) {   // Wochendosierer
-            if (dueInRange(m, slot)) m_list << m;
-            else notDue << tr("%1 (%2)").arg(m.name.toHtmlEscaped(), MedSchedule::describe(m).toHtmlEscaped());
-            continue;
-        }
-        if (!MedSchedule::isDueOn(m, day)) {
-            const QDate n = MedSchedule::nextDue(m, day.addDays(1));
-            notDue << (n.isValid() ? tr("%1 (%2, nächste Gabe %3)").arg(m.name.toHtmlEscaped(), MedSchedule::describe(m).toHtmlEscaped(),
-                                                                    loc.toString(n, QStringLiteral("ddd dd.MM.")))
-                                   : tr("%1 (%2)").arg(m.name.toHtmlEscaped(), MedSchedule::describe(m).toHtmlEscaped()));
-            continue;
-        }
-        if (slot < 0 || !doseOf(m, slot).isEmpty()) m_list << m;
-    }
-    QStringList info;
-    if (!notDue.isEmpty())
-        info << (nd > 1 ? tr("<b>In diesen Tagen nicht fällig:</b> %1") : tr("<b>An diesem Tag nicht fällig:</b> %1"))
-                    .arg(notDue.join(QStringLiteral(" · ")));
-    if (!asNeeded.isEmpty()) info << tr("<b>Bedarfsmedikation:</b> %1").arg(asNeeded.join(QStringLiteral(" · ")));
-    if (!other.isEmpty()) info << tr("<b>Sonstiges:</b> %1").arg(other.join(QStringLiteral(" · ")));
-    if (!emergency.isEmpty())
-        info << tr("<span style=\"color:#D52B1E;\"><b>Notfallmedikation:</b> %1</span>").arg(emergency.join(QStringLiteral(" · ")));
-    if (m_dayInfo) m_dayInfo->setText(info.isEmpty() ? QString() : QStringLiteral("<small>") + info.join(QStringLiteral("<br>")) + QStringLiteral("</small>"));
-    // In der Reihenfolge des Tages vorlesen: zuerst, was morgens genommen wird
-    auto firstSlot = [](const Medication &m) {
-        for (int s = 0; s < 4; ++s) if (!doseOf(m, s).isEmpty()) return s;
-        return 4;
+    const MedPrep::Selection sel = MedPrep::select(m_source, day, nd, slot);
+    m_list = sel.list;
+    auto join = [](const QStringList &l) {
+        QStringList e;
+        for (const QString &x : l) e << x.toHtmlEscaped();
+        return e.join(QStringLiteral(" · "));
     };
-    std::stable_sort(m_list.begin(), m_list.end(), [&](const Medication &a, const Medication &b) {
-        const int fa = firstSlot(a), fb = firstSlot(b);
-        return fa != fb ? fa < fb : a.name.localeAwareCompare(b.name) < 0;
-    });
+    QStringList info;
+    if (!sel.notDue.isEmpty())
+        info << (nd > 1 ? tr("<b>In diesen Tagen nicht fällig:</b> %1") : tr("<b>An diesem Tag nicht fällig:</b> %1")).arg(join(sel.notDue));
+    if (!sel.asNeeded.isEmpty()) info << tr("<b>Bedarfsmedikation:</b> %1").arg(join(sel.asNeeded));
+    if (!sel.other.isEmpty()) info << tr("<b>Sonstiges:</b> %1").arg(join(sel.other));
+    if (!sel.emergency.isEmpty())
+        info << tr("<span style=\"color:#D52B1E;\"><b>Notfallmedikation:</b> %1</span>").arg(join(sel.emergency));
+    if (m_dayInfo) m_dayInfo->setText(info.isEmpty() ? QString() : QStringLiteral("<small>") + info.join(QStringLiteral("<br>")) + QStringLiteral("</small>"));
 }
 
 void MedicationAssistant::restart()
@@ -465,23 +350,11 @@ void MedicationAssistant::restart()
         m_prev->setEnabled(false);
         m_repeat->setEnabled(false);
         m_next->setEnabled(false);
-        speak(tr("Für diesen Tag und Zeitpunkt ist nichts zu stellen."));
+        speak(MedPrep::nothingText(days()));
         return;
     }
     showMedication(0, false);
-    const int slot = m_slot->currentData().toInt();
-    const QDate day = m_date->date();
-    const QString when = day == QDate::currentDate() ? QString()
-                       : QStringLiteral(", ") + QLocale().toString(day, tr("dddd, d. MMMM"));
-    const QString who = m_patient.firstName.isEmpty() ? m_patient.lastName : m_patient.firstName + QLatin1Char(' ') + m_patient.lastName;
-    const QString intro = days() > 1
-        ? tr("Wochendosierer für %1: %2 bis %3%4. %5 Medikamente.")
-              .arg(who, QLocale().toString(day, tr("dddd, d. MMMM")), QLocale().toString(day.addDays(days() - 1), tr("dddd, d. MMMM")),
-                   slot < 0 ? QString() : QStringLiteral(", ") + slotName(slot))
-              .arg(m_list.size())
-        : tr("Medikamente stellen für %1%2. %3 Medikamente.")
-              .arg(who, when + (slot < 0 ? QString() : QStringLiteral(", ") + slotName(slot)))
-              .arg(m_list.size());
+    const QString intro = MedPrep::introText(m_patient, m_date->date(), days(), m_slot->currentData().toInt(), int(m_list.size()));
     speak(intro + QLatin1Char(' ') + textFor(m_list.first()));
 }
 
@@ -603,7 +476,7 @@ void MedicationAssistant::previous()
 
 void MedicationAssistant::repeat()
 {
-    if (m_finished) { speak(tr("Medikamente sind gerichtet."), true); Sounds::play(Sounds::Kind::Done); return; }
+    if (m_finished) { speak(MedPrep::doneText(), true); Sounds::play(Sounds::Kind::Done); return; }
     if (m_index >= 0 && m_index < m_list.size())
         speak(textFor(m_list[m_index]), true);   // immer vorlesen, auch ohne "automatisch"
 }
@@ -632,7 +505,7 @@ void MedicationAssistant::showFinished()
              Session::user().toHtmlEscaped()));
     Sounds::play(Sounds::Kind::Done);
     // Sprachhinweis nach dem Signalton
-    QTimer::singleShot(900, this, [this] { if (m_finished) speak(tr("Medikamente sind gerichtet."), true); });
+    QTimer::singleShot(900, this, [this] { if (m_finished) speak(MedPrep::doneText(), true); });
 }
 
 void MedicationAssistant::speak(const QString &text, bool force)
@@ -686,71 +559,17 @@ void MedicationAssistant::setWeekly(bool weekly)
 
 bool MedicationAssistant::dueInRange(const Medication &m, int slot) const
 {
-    const QDate start = m_date->date();
-    for (int i = 0; i < days(); ++i) {
-        const QDate d = start.addDays(i);
-        if (currentMedications({ m }, d).isEmpty() || !MedSchedule::isDueOn(m, d)) continue;
-        for (int s = 0; s < 4; ++s)
-            if ((slot < 0 || s == slot) && !doseOf(m, s).isEmpty()) return true;
-    }
-    return false;
+    return MedPrep::dueInRange(m, m_date->date(), days(), slot);
 }
 
 QString MedicationAssistant::textFor(const Medication &m) const
 {
-    const int slot = m_slot->currentData().toInt();
-    return days() > 1 ? weekSpeechText(m, m_date->date(), days(), slot) : speechText(m, slot);
+    return MedPrep::textFor(m, m_date->date(), days(), m_slot->currentData().toInt());
 }
 
 QString MedicationAssistant::weekSpeechText(const Medication &m, const QDate &start, int days, int slot)
 {
-    QStringList parts;
-    QString head = m.name;
-    if (!m.strength.isEmpty()) head += QStringLiteral(", ") + m.strength;
-    if (!m.form.isEmpty()) head += QStringLiteral(", ") + m.form;
-    parts << head + QLatin1Char('.');
-    const QLocale loc;
-    // Dosis je Tag als Text; gleiche aufeinanderfolgende Tage zusammenfassen
-    auto dayText = [&](const QDate &d) {
-        if (currentMedications({ m }, d).isEmpty() || !MedSchedule::isDueOn(m, d)) return QString();
-        QStringList l;
-        for (int s = 0; s < 4; ++s) {
-            if (slot >= 0 && s != slot) continue;
-            const QString x = doseOf(m, s);
-            if (!x.isEmpty()) l << slotName(s) + QLatin1Char(' ') + x + (m.unit.isEmpty() ? QString() : QLatin1Char(' ') + m.unit);
-        }
-        return l.join(QStringLiteral(", "));
-    };
-    QStringList groups;
-    int i = 0;
-    while (i < days) {
-        const QString t = dayText(start.addDays(i));
-        int j = i;
-        while (j + 1 < days && dayText(start.addDays(j + 1)) == t) ++j;
-        if (!t.isEmpty()) {
-            const QString from = loc.dayName(start.addDays(i).dayOfWeek());
-            const QString to = loc.dayName(start.addDays(j).dayOfWeek());
-            groups << (i == j ? from : j - i + 1 == days ? QCoreApplication::translate("MedicationAssistant", "Alle %1 Tage").arg(days)
-                                                         : QCoreApplication::translate("MedicationAssistant", "%1 bis %2").arg(from, to))
-                          + QStringLiteral(": ") + t;
-        }
-        i = j + 1;
-    }
-    if (groups.isEmpty())
-        parts << QCoreApplication::translate("MedicationAssistant", "In diesen Tagen nicht zu geben.");
-    else
-        parts << groups.join(QStringLiteral(". ")) + QLatin1Char('.');
-    double total = 0;
-    for (int k = 0; k < days; ++k) total += MedStock::doseOn(m, start.addDays(k), slot);
-    if (total > 0)
-        parts << QCoreApplication::translate("MedicationAssistant", "Insgesamt %1%2.")
-                     .arg(MedStock::qtyText(total), m.unit.isEmpty() ? QString() : QLatin1Char(' ') + m.unit);
-    if (!m.rhythmNote.isEmpty())
-        parts << QCoreApplication::translate("MedicationAssistant", "Bemerkung: %1.").arg(m.rhythmNote);
-    if (!m.notes.isEmpty()) parts << QCoreApplication::translate("MedicationAssistant", "Hinweis: %1.").arg(m.notes);
-    QString t = parts.join(QLatin1Char(' '));
-    t.replace(QStringLiteral(".."), QStringLiteral("."));
-    return Speech::expand(t);
+    return MedPrep::weekSpeechText(m, start, days, slot);
 }
 
 void MedicationAssistant::setDay(const QDate &d)

@@ -67,7 +67,7 @@ private:
     void saveNote();
 
     Patient m_patient;
-    QList<Medication> m_source, m_all, m_list;   // alle / am Tag aktiv / vorzulesen
+    QList<Medication> m_source, m_list;   // alle / vorzulesen
     int  m_index = -1;
     bool m_finished = false;
     QStringList m_shortage;       // Bestand reichte beim Stellen nicht

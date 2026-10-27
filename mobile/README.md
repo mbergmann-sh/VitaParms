@@ -4,16 +4,15 @@ Touch-Version von VitaParms für Android-Tablets (iOS folgt). Sie verwendet dens
 das Desktop-Programm (`../core.pri`): dieselbe verschlüsselte Datenbank, dieselben Berichte und
 den Abgleich über die eigene Website.
 
-**Stand 0.19:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
+**Stand 0.22:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
 Atemfrequenz, Schmerzskala, freier Messzeitpunkt), Messwerte, Verlaufskurven, Stammblatt mit
-Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge, Medikamentenplan wie am Computer
+Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge (Dokument aus der Krankenakte verknüpfen und öffnen), Medikamentenplan wie am Computer
 (Einnahme-Rhythmus, Bedarfs-/Notfallmedikation, PZN, Kennzeichnung, „An Einnahme erinnern“),
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
 mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
-Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Abgleich über Website und USB.
-**Folgt:** Assistent „Medikamente stellen“, Bestand und
-Bestellungen, iOS.
+Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Assistent „Medikamente stellen“ mit Vorlesen (Tages- und Wochendosierer, Protokoll), Medikamentenbestand mit Packungen und Verfallsdatum, Bestelllisten (offen → bestellt → geliefert, PDF), Abgleich über Website und USB.
+**Folgt:** Verwaltung (Konten, Sicherung), iOS.
 
 ## Voraussetzungen
 

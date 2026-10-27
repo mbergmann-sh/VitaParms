@@ -856,6 +856,198 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
     }
 
+    // ---- Medikamente stellen, Bestand und Bestellungen, Vorsorge-PDF (Stufe 4)
+    {
+        const bool en = app.language() == QStringLiteral("en");
+        auto isoIn = [](int days) { return QDate::currentDate().addDays(days).toString(Qt::ISODate); };
+        QList<qint64> regular;
+        for (const QVariant &v : app.medications(pid, false)) {
+            const QVariantMap m = v.toMap();
+            if (m.value(QStringLiteral("category")).toInt() == 0 && !m.value(QStringLiteral("morning")).toString().isEmpty())
+                regular << m.value(QStringLiteral("id")).toLongLong();
+        }
+        check(regular.size() >= 2, "Stellen: Regelmedikation");
+        const qint64 m1 = regular.value(0), m2 = regular.value(1);
+        auto medStock = [&](qint64 id) {
+            for (const QVariant &v : app.stockOverview(pid).value(QStringLiteral("meds")).toList())
+                if (v.toMap().value(QStringLiteral("id")).toLongLong() == id) return v.toMap();
+            return QVariantMap();
+        };
+        auto pkgQty = [&](qint64 id) {
+            double q = 0;
+            for (const QVariant &v : app.stockPackages(pid, id).value(QStringLiteral("packages")).toList()) q += v.toMap().value(QStringLiteral("qty")).toDouble();
+            return q;
+        };
+        check(!medStock(m1).value(QStringLiteral("tracked")).toBool(), "Bestand: zunächst nicht erfasst");
+        check(app.receivePackage(pid, m1, 100, isoIn(700), en ? QStringLiteral("Pharmacy, N3") : QStringLiteral("Apotheke, N3")), "Bestand: Packung einbuchen");
+        check(app.receivePackage(pid, m1, 20, isoIn(-5), QString()), "Bestand: verfallene Packung");
+        check(app.receivePackage(pid, m2, 6, isoIn(400), QString()), "Bestand: kleine Packung");
+        check(!app.receivePackage(pid, m2, 0, QString(), QString()), "Bestand: Menge nötig");
+        const QVariantMap s1 = medStock(m1);
+        check(s1.value(QStringLiteral("tracked")).toBool() && !s1.value(QStringLiteral("expired")).toString().isEmpty(), "Bestand: Übersicht mit Verfall");
+        const int st2 = medStock(m2).value(QStringLiteral("state")).toInt();
+        check(st2 == 3 || st2 == 4, "Bestand: kleine Packung → jetzt bestellen");
+        // Stellen: Tagesdosierer, alle Zeitpunkte
+        const QString today = isoIn(0);
+        const QVariantMap ses = app.prepSession(pid, 1, -1, today);
+        const QVariantList items = ses.value(QStringLiteral("items")).toList();
+        check(!items.isEmpty() && !ses.value(QStringLiteral("intro")).toString().isEmpty(), "Stellen: Auswahl");
+        check(!items.value(0).toMap().value(QStringLiteral("speech")).toString().isEmpty(), "Stellen: Vorlesetext");
+        QVariantList all;
+        for (int i = 0; i < items.size(); ++i) all << i;
+        const double before = pkgQty(m1);
+        const QVariantMap fin = app.prepFinish(pid, 1, -1, today, all, true, QStringLiteral("Autopilot"));
+        check(fin.value(QStringLiteral("ok")).toBool(), "Stellen: Protokoll");
+        check(pkgQty(m1) < before, "Stellen: Abbuchung vom Bestand");
+        check(!fin.value(QStringLiteral("warnings")).toStringList().isEmpty(), "Stellen: Hinweis nachbestellen");
+        const QVariantList log = app.preparationLog(pid, 1);
+        check(!log.isEmpty() && log.value(0).toMap().value(QStringLiteral("complete")).toBool()
+              && log.value(0).toMap().value(QStringLiteral("note")).toString() == QStringLiteral("Autopilot"), "Stellen: Protokoll lesen");
+        // abgebrochener Durchgang: nur bestätigte Medikamente
+        const QVariantMap part = app.prepFinish(pid, 1, 0, today, { 0 }, false, QString());
+        check(part.value(QStringLiteral("ok")).toBool() && !app.preparationLog(pid, 1).value(0).toMap().value(QStringLiteral("complete")).toBool(), "Stellen: abgebrochen");
+        // Wochendosierer
+        app.setPrepPlan(pid, 7, 1);
+        check(app.prepInfo(pid).value(QStringLiteral("weekly")).toBool() && QDate::fromString(app.prepWeekStart(pid), Qt::ISODate).dayOfWeek() == 1, "Stellen: Wochenrhythmus");
+        const QVariantMap wk = app.prepSession(pid, 7, -1, app.prepWeekStart(pid));
+        check(wk.value(QStringLiteral("items")).toList().value(0).toMap().value(QStringLiteral("week")).toList().size() == 7, "Stellen: Woche mit 7 Tagen");
+        // Bestellung: offen → bestellt → geliefert
+        const QStringList rem = app.stockReminder(pid);
+        check(!rem.isEmpty(), "Bestellung: Erinnerung");
+        QVariantMap open;
+        for (const QVariant &v : app.stockOverview(pid).value(QStringLiteral("orders")).toList())
+            if (v.toMap().value(QStringLiteral("status")).toInt() == 0) open = v.toMap();
+        check(!open.isEmpty(), "Bestellung: offene Liste");
+        const qint64 orderId = open.value(QStringLiteral("id")).toLongLong();
+        const QVariantMap item = open.value(QStringLiteral("items")).toList().value(0).toMap();
+        check(app.setOrderItemAmount(pid, item.value(QStringLiteral("id")).toLongLong(), item.value(QStringLiteral("medId")).toLongLong(),
+                                     en ? QStringLiteral("1 pack N3 (100)") : QStringLiteral("1 Packung N3 (100 Stück)")), "Bestellung: Menge");
+        const QString orderPdf = app.exportReport(QStringLiteral("order"), pid, { { QStringLiteral("orderId"), orderId } });
+        QFile of(orderPdf);
+        check(of.open(QIODevice::ReadOnly) && of.read(5) == "%PDF-", "Bestellung: PDF");
+        const QString logPdf = app.exportReport(QStringLiteral("preplog"), pid, { { QStringLiteral("days"), 30 } });
+        QFile lf(logPdf);
+        check(lf.open(QIODevice::ReadOnly) && lf.read(5) == "%PDF-", "Stellen: Protokoll als PDF");
+
+        // Bildschirmfotos (vor dem Bestätigen: offene Bestellliste)
+        QQmlProperty::write(h, QStringLiteral("tab"), 4);
+        wait(400);
+        shot(QStringLiteral("m70_medikamente_bestand"));
+        app.setPrepPlan(pid, 1, 1);
+        QMetaObject::invokeMethod(h, "openPrep");
+        wait(600);
+        QObject *pp = win->findChild<QObject *>(QStringLiteral("prepPage"));
+        check(pp && QQmlProperty::read(pp, QStringLiteral("items")).toList().size() == items.size(), "Stellen: Seite");
+        if (pp) {
+            QMetaObject::invokeMethod(pp, "next");
+            wait(300);
+            shot(QStringLiteral("m71_stellen"));
+            if (QObject *w = win->findChild<QObject *>(QStringLiteral("prepWeekly"))) QMetaObject::invokeMethod(w, "clicked");
+            wait(500);
+            check(QQmlProperty::read(pp, QStringLiteral("days")).toInt() == 7, "Stellen: Wochendosierer gewählt");
+            QMetaObject::invokeMethod(pp, "showCard");
+            wait(300);
+            shot(QStringLiteral("m72_stellen_woche"));
+            if (QObject *dd = win->findChild<QObject *>(QStringLiteral("prepDaily"))) QMetaObject::invokeMethod(dd, "clicked");
+            wait(300);
+            const int n = QQmlProperty::read(pp, QStringLiteral("items")).toList().size();
+            for (int i = 0; i < n; ++i) { QMetaObject::invokeMethod(pp, "next"); wait(60); }
+            wait(400);
+            check(QQmlProperty::read(pp, QStringLiteral("finished")).toBool(), "Stellen: gerichtet");
+            shot(QStringLiteral("m73_gerichtet"));
+            QMetaObject::invokeMethod(pp, "close");
+            wait(3600);                       // Hinweis „Medikamente sind gerichtet“ ausblenden lassen
+        }
+        QMetaObject::invokeMethod(h, "openStock", Q_ARG(QVariant, 0));
+        wait(600);
+        if (QObject *sp = win->findChild<QObject *>(QStringLiteral("stockPage"))) {
+            shot(QStringLiteral("m74_bestand"));
+            QQmlProperty::write(sp, QStringLiteral("tab"), 1);
+            wait(400);
+            shot(QStringLiteral("m75_bestellungen"));
+            QMetaObject::invokeMethod(sp, "closed", Q_ARG(QString, QString()));
+            wait(400);
+        } else check(false, "Bestand: Seite");
+
+        check(app.confirmOrder(orderId, today, en ? QStringLiteral("ordered at the pharmacy") : QStringLiteral("bei der Apotheke bestellt")), "Bestellung: bestätigen");
+        check(app.stockReminder(pid).isEmpty(), "Bestellung: keine Erinnerung mehr");
+        const double q2 = pkgQty(m2);
+        for (const QVariant &v : app.stockOverview(pid).value(QStringLiteral("orders")).toList()) {
+            const QVariantMap o = v.toMap();
+            if (o.value(QStringLiteral("id")).toLongLong() != orderId) continue;
+            check(o.value(QStringLiteral("status")).toInt() == 1, "Bestellung: Status bestellt");
+            for (const QVariant &iv : o.value(QStringLiteral("items")).toList())
+                if (iv.toMap().value(QStringLiteral("medId")).toLongLong() == m2)
+                    check(app.deliverOrderItem(orderId, iv.toMap().value(QStringLiteral("id")).toLongLong(), 50, isoIn(500)), "Bestellung: Lieferung");
+        }
+        check(pkgQty(m2) >= q2 + 50 - 0.01, "Bestellung: Lieferung eingebucht");
+        // Korrektur und Entsorgen
+        const QVariantList pk = app.stockPackages(pid, m1).value(QStringLiteral("packages")).toList();
+        const QVariantMap first = pk.value(0).toMap();
+        check(app.correctPackage(pid, m1, first.value(QStringLiteral("id")).toLongLong(), 42, first.value(QStringLiteral("expiry")).toString(), QStringLiteral("gezählt")), "Bestand: korrigieren");
+        for (const QVariant &v : app.stockPackages(pid, m1).value(QStringLiteral("packages")).toList())
+            if (v.toMap().value(QStringLiteral("expired")).toBool())
+                check(app.discardPackage(m1, v.toMap().value(QStringLiteral("id")).toLongLong()), "Bestand: entsorgen");
+        check(medStock(m1).value(QStringLiteral("expired")).toString().isEmpty(), "Bestand: verfallene Packung entsorgt");
+
+        // Vorsorge-PDF aus der Krankenakte verknüpfen
+        const QString vTitle = en ? QStringLiteral("Lasting power of attorney") : QStringLiteral("Vorsorgevollmacht");
+        QImage vimg(1240, 1754, QImage::Format_RGB32);
+        vimg.fill(Qt::white);
+        {
+            QPainter vp(&vimg);
+            QFont f(QStringLiteral("Sans")); f.setPixelSize(60); f.setBold(true); vp.setFont(f);
+            vp.drawText(QRect(80, 120, 1080, 120), Qt::AlignLeft, vTitle);
+        }
+        app.draftClear();
+        const QString vpath = out + QStringLiteral("/vorsorge.jpg");
+        vimg.save(vpath, "JPG", 85);
+        app.draftAddImage(vpath);
+        const qint64 vdoc = app.saveDraft(pid, { { QStringLiteral("title"), vTitle },
+                                                 { QStringLiteral("category"), QCoreApplication::translate("PatientDialog", "Vorsorge") },
+                                                 { QStringLiteral("date"), isoIn(-400) } });
+        check(vdoc > 0, "Vorsorge: Dokument in der Akte");
+        check(app.advanceCandidates(pid).value(0).toMap().value(QStringLiteral("id")).toLongLong() == vdoc, "Vorsorge: Kategorie zuerst");
+        check(app.linkAdvanceDocument(pid, 1, vdoc), "Vorsorge: verknüpfen");
+        const QVariantMap pd = app.personDetail(pid);
+        check(pd.value(QStringLiteral("advanceDocs")).toList().value(1).toMap().value(QStringLiteral("docId")).toLongLong() == vdoc
+              && pd.value(QStringLiteral("advancePdfs")).toList().size() >= 1, "Vorsorge: zurücklesen");
+        QQmlProperty::write(h, QStringLiteral("tab"), 3);
+        wait(500);
+        shot(QStringLiteral("m76_vorsorge_pdf"));
+        QMetaObject::invokeMethod(h, "editPerson", Q_ARG(QVariant, false));
+        wait(600);
+        // Knöpfe aus einem Repeater hängen nur im Item-Baum (nicht als QObject-Kinder)
+        std::function<QQuickItem *(QQuickItem *, const QString &)> findItem = [&](QQuickItem *root, const QString &name) -> QQuickItem * {
+            if (!root) return nullptr;
+            if (root->objectName() == name && root->isVisible()) return root;
+            for (QQuickItem *c : root->childItems())
+                if (QQuickItem *f = findItem(c, name)) return f;
+            return nullptr;
+        };
+        if (QObject *lb = findItem(win->contentItem(), QStringLiteral("advanceLinkButton"))) {   // zum Abschnitt Vorsorge blättern
+            if (auto *it = qobject_cast<QQuickItem *>(lb)) {
+                for (QQuickItem *p = it->parentItem(); p; p = p->parentItem())
+                    if (p->inherits("QQuickFlickable")) {
+                        QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, it->mapToItem(p->childItems().value(0), QPointF()).y() - 330));
+                        break;
+                    }
+            }
+            wait(300);
+            shot(QStringLiteral("m78_vorsorge_verknuepft"));
+        } else check(false, "Vorsorge: Knopf im Stammblatt");
+        if (QObject *pk2 = win->findChild<QObject *>(QStringLiteral("advancePicker"))) {
+            QMetaObject::invokeMethod(pk2, "openFor", Q_ARG(QVariant, 1), Q_ARG(QVariant, vTitle));
+            wait(400);
+            shot(QStringLiteral("m77_vorsorge_waehlen"));
+            QMetaObject::invokeMethod(pk2, "close");
+        } else check(false, "Vorsorge: Auswahl");
+        stackPop();
+        check(app.linkAdvanceDocument(pid, 1, 0) && app.personDetail(pid).value(QStringLiteral("advanceDocs")).toList().value(1).toMap().value(QStringLiteral("docId")).toLongLong() == 0, "Vorsorge: lösen");
+        check(app.deleteDocument(vdoc), "Vorsorge: Dokument löschen");
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    }
+
     // Hochformat (Tablet gedreht)
     win->resize(800, 1280);
     wait(300);

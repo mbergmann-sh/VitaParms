@@ -5180,37 +5180,37 @@ The default version will be used.</translation>
 You can take over the current template again via “Tools → Customize forms…”.</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="258" />
+        <location filename="../src/formloader.cpp" line="270" />
         <source>Vorhandene Datei kann nicht ersetzt werden.</source>
         <translation>Existing file cannot be replaced.</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="262" />
+        <location filename="../src/formloader.cpp" line="274" />
         <source>Kopieren fehlgeschlagen.</source>
         <translation>Copying failed.</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="276" />
+        <location filename="../src/formloader.cpp" line="288" />
         <source>Datei kann nicht gelöscht werden.</source>
         <translation>File cannot be deleted.</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="288" />
+        <location filename="../src/formloader.cpp" line="300" />
         <source>Datei kann nicht geladen werden: %1</source>
         <translation>File cannot be loaded: %1</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="294" />
+        <location filename="../src/formloader.cpp" line="306" />
         <source>Pflichtelemente fehlen: %1</source>
         <translation>Required elements missing: %1</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="300" />
+        <location filename="../src/formloader.cpp" line="312" />
         <source>Nicht vorhanden (Feld wird nicht bearbeitet): %1</source>
         <translation>Not present (field will not be edited): %1</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="305" />
+        <location filename="../src/formloader.cpp" line="317" />
         <source>Zusatzfelder (vpField): %1</source>
         <translation>Custom fields (vpField): %1</translation>
     </message>
@@ -7222,140 +7222,252 @@ Expected the file “%2” in the folder
 <context>
     <name>MedLogDialog</name>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="27" />
+        <location filename="../src/medlogdialog.cpp" line="28" />
         <source>Protokoll Medikamente stellen – %1</source>
         <translation>Medication preparation log – %1</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="30" />
+        <location filename="../src/medlogdialog.cpp" line="31" />
         <source>Zeitraum:</source>
         <translation>Period:</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="32" />
+        <location filename="../src/medlogdialog.cpp" line="33" />
         <source>letzte 30 Tage</source>
         <translation>last 30 days</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="33" />
+        <location filename="../src/medlogdialog.cpp" line="34" />
         <source>letzte 90 Tage</source>
         <translation>last 90 days</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="34" />
+        <location filename="../src/medlogdialog.cpp" line="35" />
         <source>letzte 12 Monate</source>
         <translation>last 12 months</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="35" />
-        <location filename="../src/medlogdialog.cpp" line="105" />
+        <location filename="../src/medlogdialog.cpp" line="36" />
+        <location filename="../src/medlogdialog.cpp" line="106" />
         <source>gesamter Zeitraum</source>
         <translation>entire period</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="44" />
+        <location filename="../src/medlogdialog.cpp" line="45" />
         <source>Gestellt am</source>
         <translation>Prepared on</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="44" />
+        <location filename="../src/medlogdialog.cpp" line="45" />
         <source>Gestellt von</source>
         <translation>Prepared by</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="44" />
+        <location filename="../src/medlogdialog.cpp" line="45" />
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="44" />
+        <location filename="../src/medlogdialog.cpp" line="45" />
         <source>Für</source>
         <translation>For</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="45" />
+        <location filename="../src/medlogdialog.cpp" line="46" />
         <source>Medikamente</source>
         <translation>Medication</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="45" />
+        <location filename="../src/medlogdialog.cpp" line="46" />
         <source>Bemerkung</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="60" />
+        <location filename="../src/medlogdialog.cpp" line="61" />
         <source>&amp;Drucken…</source>
         <translation>&amp;Print…</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="61" />
+        <location filename="../src/medlogdialog.cpp" line="62" />
         <source>Als &amp;PDF…</source>
         <translation>As &amp;PDF…</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="62" />
+        <location filename="../src/medlogdialog.cpp" line="63" />
         <source>Eintrag &amp;löschen…</source>
         <translation>&amp;Delete entry…</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="64" />
+        <location filename="../src/medlogdialog.cpp" line="65" />
         <source>&amp;Schließen</source>
         <translation>&amp;Close</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="103" />
+        <location filename="../src/medlogdialog.cpp" line="104" />
         <source>%1 – %2</source>
         <translation>%1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="110" />
+        <location filename="../src/medprep.cpp" line="272" />
         <source>✔ vollständig</source>
         <translation>✔ complete</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="110" />
+        <location filename="../src/medprep.cpp" line="273" />
         <source>abgebrochen (%1 von %2)</source>
         <translation>cancelled (%1 of %2)</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="128" />
+        <location filename="../src/medlogdialog.cpp" line="129" />
         <source> &lt;i&gt;(nicht bestätigt)&lt;/i&gt;</source>
         <translation> &lt;i&gt;(not confirmed)&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="146" />
+        <location filename="../src/medlogdialog.cpp" line="147" />
         <source>%1 Medikament(e)</source>
         <translation>%1 medication(s)</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="156" />
+        <location filename="../src/medlogdialog.cpp" line="157" />
         <source>%1 Eintrag/Einträge</source>
         <translation>%1 entry/entries</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="158" />
+        <location filename="../src/medlogdialog.cpp" line="159" />
         <source>&lt;p&gt;Im gewählten Zeitraum wurden keine Medikamente über den Assistenten gestellt.&lt;/p&gt;</source>
         <translation>&lt;p&gt;No medication was prepared with the assistant in the selected period.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="169" />
+        <location filename="../src/medlogdialog.cpp" line="170" />
         <source>für %1</source>
         <translation>for %1</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="170" />
+        <location filename="../src/medlogdialog.cpp" line="171" />
         <source>gestellt von %1</source>
         <translation>prepared by %1</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="172" />
+        <location filename="../src/medlogdialog.cpp" line="173" />
         <source>&lt;p&gt;&lt;b&gt;Bemerkung:&lt;/b&gt; %1&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; %1&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medlogdialog.cpp" line="183" />
+        <location filename="../src/medlogdialog.cpp" line="184" />
         <source>Protokolleintrag vom %1 löschen?</source>
         <translation>Delete log entry of %1?</translation>
+    </message>
+</context>
+<context>
+    <name>MedPrep</name>
+    <message>
+        <location filename="../src/medprep.cpp" line="21" />
+        <source>morgens</source>
+        <translation>in the morning</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="22" />
+        <source>mittags</source>
+        <translation>at noon</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="23" />
+        <source>abends</source>
+        <translation>in the evening</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="24" />
+        <source>zur Nacht</source>
+        <translation>at night</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="85" />
+        <location filename="../src/medprep.cpp" line="92" />
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="90" />
+        <source>%1 (%2, nächste Gabe %3)</source>
+        <translation>%1 (%2, next dose %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="136" />
+        <source>Keine feste Dosis angegeben.</source>
+        <translation>No fixed dose given.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="140" />
+        <source>Einnahme: %1.</source>
+        <translation>Intake: %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="142" />
+        <location filename="../src/medprep.cpp" line="191" />
+        <source>Bemerkung: %1.</source>
+        <translation>Note: %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="143" />
+        <location filename="../src/medprep.cpp" line="192" />
+        <source>Hinweis: %1.</source>
+        <translation>Note: %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="177" />
+        <source>Alle %1 Tage</source>
+        <translation>All %1 days</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="177" />
+        <source>%1 bis %2</source>
+        <translation>%1 to %2</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="183" />
+        <source>In diesen Tagen nicht zu geben.</source>
+        <translation>Not to be given on these days.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="189" />
+        <source>Insgesamt %1%2.</source>
+        <translation>In total %1%2.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="206" />
+        <location filename="../src/medprep.cpp" line="210" />
+        <source>dddd, d. MMMM</source>
+        <translation>dddd, MMMM d</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="209" />
+        <source>Wochendosierer für %1: %2 bis %3%4. %5 Medikamente.</source>
+        <translation>Weekly pill box for %1: %2 to %3%4. %5 medicines.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="213" />
+        <source>Medikamente stellen für %1%2. %3 Medikamente.</source>
+        <translation>Preparing medication for %1%2. %3 medications.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="220" />
+        <source>Für diese Tage und diesen Zeitpunkt ist nichts zu stellen.</source>
+        <translation>There is nothing to prepare for these days and this time.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="221" />
+        <source>Für diesen Tag und Zeitpunkt ist nichts zu stellen.</source>
+        <translation>Nothing to prepare for this day and time.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="226" />
+        <source>Medikamente sind gerichtet.</source>
+        <translation>Medication is prepared.</translation>
+    </message>
+    <message>
+        <location filename="../src/medprep.cpp" line="249" />
+        <source>%1 Tage</source>
+        <translation>%1 days</translation>
     </message>
 </context>
 <context>
@@ -7888,381 +8000,292 @@ Expected the file “%2” in the folder
 <context>
     <name>MedicationAssistant</name>
     <message>
-        <location filename="../src/medassistant.cpp" line="41" />
         <location filename="../src/medschedule.cpp" line="247" />
         <location filename="../src/reportprinter.cpp" line="676" />
         <source>morgens</source>
         <translation>in the morning</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="42" />
         <location filename="../src/medschedule.cpp" line="248" />
         <location filename="../src/reportprinter.cpp" line="677" />
         <source>mittags</source>
         <translation>at noon</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="43" />
         <location filename="../src/medschedule.cpp" line="249" />
         <location filename="../src/reportprinter.cpp" line="678" />
         <source>abends</source>
         <translation>in the evening</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="44" />
         <location filename="../src/medschedule.cpp" line="250" />
         <location filename="../src/reportprinter.cpp" line="679" />
         <source>zur Nacht</source>
         <translation>at night</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="59" />
+        <location filename="../src/medassistant.cpp" line="45" />
         <source>Medikamente stellen – %1</source>
         <translation>Prepare medication – %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="73" />
+        <location filename="../src/medassistant.cpp" line="59" />
         <source>Zeitpunkt:</source>
         <translation>Time of day:</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="76" />
+        <location filename="../src/medassistant.cpp" line="62" />
         <location filename="../src/reportprinter.cpp" line="680" />
         <source>alle Zeitpunkte</source>
         <translation>all times</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="79" />
-        <location filename="../src/medassistant.cpp" line="398" />
+        <location filename="../src/medassistant.cpp" line="65" />
+        <location filename="../src/medassistant.cpp" line="316" />
         <source>für</source>
         <translation>for</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="84" />
+        <location filename="../src/medassistant.cpp" line="70" />
         <source>Tag, für den gestellt wird – z. B. Tag für Tag beim Befüllen eines Wochendosierers</source>
         <translation>Day to prepare for – e.g. day by day when filling a weekly pill box</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="89" />
+        <location filename="../src/medassistant.cpp" line="75" />
         <source>Stimme:</source>
         <translation>Voice:</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="95" />
+        <location filename="../src/medassistant.cpp" line="81" />
         <source>automatisch vorlesen</source>
         <translation>read aloud automatically</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="169" />
+        <location filename="../src/medassistant.cpp" line="155" />
         <source>◀ &amp;Zurück</source>
         <translation>◀ &amp;Back</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="170" />
+        <location filename="../src/medassistant.cpp" line="156" />
         <source>↻ &amp;Wiederholen</source>
         <translation>↻ &amp;Repeat</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="171" />
-        <location filename="../src/medassistant.cpp" line="585" />
+        <location filename="../src/medassistant.cpp" line="157" />
+        <location filename="../src/medassistant.cpp" line="458" />
         <source>&amp;Weiter ▶</source>
         <translation>&amp;Next ▶</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="172" />
+        <location filename="../src/medassistant.cpp" line="158" />
         <source>&amp;Beenden</source>
         <translation>&amp;Close</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="183" />
+        <location filename="../src/medassistant.cpp" line="169" />
         <source>Vorheriges Medikament (Pfeil links)</source>
         <translation>Previous medication (left arrow)</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="184" />
+        <location filename="../src/medassistant.cpp" line="170" />
         <source>Dasselbe Medikament nochmals vorlesen (Taste R)</source>
         <translation>Read the same medication again (key R)</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="185" />
+        <location filename="../src/medassistant.cpp" line="171" />
         <source>Nächstes Medikament (Leertaste, Eingabe oder Pfeil rechts)</source>
         <translation>Next medication (space, Enter or right arrow)</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="191" />
-        <location filename="../src/medassistant.cpp" line="581" />
+        <location filename="../src/medassistant.cpp" line="177" />
+        <location filename="../src/medassistant.cpp" line="454" />
         <source>Beipackzette&amp;l…</source>
         <translation>Package &amp;leaflet…</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="192" />
+        <location filename="../src/medassistant.cpp" line="178" />
         <source>Beipackzettel des angezeigten Medikaments anzeigen bzw. im Internet abrufen</source>
         <translation>Show or retrieve the package leaflet of the displayed medication</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="274" />
+        <location filename="../src/medassistant.cpp" line="253" />
         <source>für %1</source>
         <translation>for %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="342" />
+        <location filename="../src/medassistant.cpp" line="292" />
         <source>&lt;small&gt;Stimme: %1&lt;/small&gt;</source>
         <translation>&lt;small&gt;Voice: %1&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="346" />
+        <location filename="../src/medassistant.cpp" line="296" />
         <source>&lt;small&gt; – ⚠ für die eingestellte Sprache ist keine Systemstimme installiert, die Aussprache kann fremd klingen.&lt;/small&gt;</source>
         <translation>&lt;small&gt; – ⚠ no system voice is installed for the selected language, pronunciation may sound odd.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="424" />
-        <source>%1 (%2, nächste Gabe %3)</source>
-        <translation>%1 (%2, next dose %3)</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="419" />
-        <location filename="../src/medassistant.cpp" line="426" />
-        <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="433" />
+        <location filename="../src/medassistant.cpp" line="328" />
         <source>&lt;b&gt;An diesem Tag nicht fällig:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;Not due on this day:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="436" />
+        <location filename="../src/medassistant.cpp" line="330" />
         <source>&lt;b&gt;Sonstiges:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;Other:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="464" />
+        <location filename="../src/medassistant.cpp" line="349" />
         <source>&lt;p style="font-size:16pt;"&gt;Für diesen Tag und Zeitpunkt ist nichts zu stellen.&lt;/p&gt;</source>
         <translation>&lt;p style="font-size:16pt;"&gt;Nothing to prepare for this day and time.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="468" />
-        <source>Für diesen Tag und Zeitpunkt ist nichts zu stellen.</source>
-        <translation>Nothing to prepare for this day and time.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="475" />
-        <location filename="../src/medassistant.cpp" line="479" />
-        <source>dddd, d. MMMM</source>
-        <translation>dddd, MMMM d</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="338" />
+        <location filename="../src/medassistant.cpp" line="288" />
         <source>&lt;small&gt;⚠ Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. (Unter Linux z. B. speech-dispatcher oder flite installieren.)&lt;/small&gt;</source>
         <translation>&lt;small&gt;⚠ No speech output available – the assistant only displays the information. (On Linux install e.g. speech-dispatcher or flite.)&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="65" />
+        <location filename="../src/medassistant.cpp" line="51" />
         <source>Stellen:</source>
         <translation>Prepare:</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="68" />
+        <location filename="../src/medassistant.cpp" line="54" />
         <source>täglich</source>
         <translation>daily</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="69" />
+        <location filename="../src/medassistant.cpp" line="55" />
         <source>wöchentlich (7 Tage)</source>
         <translation>weekly (7 days)</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="70" />
+        <location filename="../src/medassistant.cpp" line="56" />
         <source>Tagesdosierer: ein Tag – Wochendosierer: sieben Tage ab dem gewählten Tag</source>
         <translation>Daily pill box: one day – weekly pill box: seven days from the selected day</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="154" />
+        <location filename="../src/medassistant.cpp" line="140" />
         <source>Bemerkung:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="157" />
+        <location filename="../src/medassistant.cpp" line="143" />
         <source>optional, z. B. „Wochendosierer KW 43“</source>
         <translation>optional, e.g. “weekly pill box week 43”</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="173" />
+        <location filename="../src/medassistant.cpp" line="159" />
         <source>&amp;Protokoll…</source>
         <translation>&amp;Log…</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="174" />
+        <location filename="../src/medassistant.cpp" line="160" />
         <source>Wann wurde von wem welches Medikament gestellt?</source>
         <translation>When was which medication prepared by whom?</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="268" />
+        <location filename="../src/medassistant.cpp" line="247" />
         <source>&lt;small&gt;Bisher wurden für %1 keine Medikamente mit dem Assistenten gestellt.&lt;/small&gt;</source>
         <translation>&lt;small&gt;No medication has been prepared for %1 with the assistant yet.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="272" />
+        <location filename="../src/medassistant.cpp" line="251" />
         <source>&lt;small&gt;Zuletzt gestellt: &lt;b&gt;%1&lt;/b&gt; von %2 (%3) – %4&lt;/small&gt;</source>
         <translation>&lt;small&gt;Last prepared: &lt;b&gt;%1&lt;/b&gt; by %2 (%3) – %4&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="298" />
-        <source>%1 Tage</source>
-        <translation>%1 days</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="380" />
-        <source>Keine feste Dosis angegeben.</source>
-        <translation>No fixed dose given.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="384" />
-        <source>Einnahme: %1.</source>
-        <translation>Intake: %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="386" />
-        <location filename="../src/medassistant.cpp" line="749" />
-        <source>Bemerkung: %1.</source>
-        <translation>Note: %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="387" />
-        <location filename="../src/medassistant.cpp" line="750" />
-        <source>Hinweis: %1.</source>
-        <translation>Note: %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="398" />
+        <location filename="../src/medassistant.cpp" line="316" />
         <source>ab</source>
         <translation>from</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="400" />
+        <location filename="../src/medassistant.cpp" line="318" />
         <source>bis %1</source>
         <translation>until %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="433" />
+        <location filename="../src/medassistant.cpp" line="328" />
         <source>&lt;b&gt;In diesen Tagen nicht fällig:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;Not due on these days:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="435" />
+        <location filename="../src/medassistant.cpp" line="329" />
         <source>&lt;b&gt;Bedarfsmedikation:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;As-needed medication:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="438" />
+        <location filename="../src/medassistant.cpp" line="332" />
         <source>&lt;span style="color:#D52B1E;"&gt;&lt;b&gt;Notfallmedikation:&lt;/b&gt; %1&lt;/span&gt;</source>
         <translation>&lt;span style="color:#D52B1E;"&gt;&lt;b&gt;Emergency medication:&lt;/b&gt; %1&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="463" />
+        <location filename="../src/medassistant.cpp" line="348" />
         <source>&lt;p style="font-size:16pt;"&gt;Für diese Tage und diesen Zeitpunkt ist nichts zu stellen.&lt;/p&gt;</source>
         <translation>&lt;p style="font-size:16pt;"&gt;Nothing to prepare for these days and this time of day.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="478" />
-        <source>Wochendosierer für %1: %2 bis %3%4. %5 Medikamente.</source>
-        <translation>Weekly pill box for %1: %2 to %3%4. %5 medicines.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="482" />
-        <source>Medikamente stellen für %1%2. %3 Medikamente.</source>
-        <translation>Preparing medication for %1%2. %3 medications.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="495" />
+        <location filename="../src/medassistant.cpp" line="368" />
         <source>&lt;b&gt;Medikament %1 von %2&lt;/b&gt;</source>
         <translation>&lt;b&gt;Medication %1 of %2&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="500" />
+        <location filename="../src/medassistant.cpp" line="373" />
         <source>Wirkstoff: %1</source>
         <translation>Active ingredient: %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="570" />
+        <location filename="../src/medassistant.cpp" line="443" />
         <source>&lt;span style="color:#D55E00;"&gt;&lt;b&gt;Einnahme:&lt;/b&gt; %1&lt;/span&gt;</source>
         <translation>&lt;span style="color:#D55E00;"&gt;&lt;b&gt;Intake:&lt;/b&gt; %1&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="572" />
+        <location filename="../src/medassistant.cpp" line="445" />
         <source>&lt;span style="color:#D55E00;"&gt;&lt;b&gt;Bemerkung:&lt;/b&gt; %1&lt;/span&gt;</source>
         <translation>&lt;span style="color:#D55E00;"&gt;&lt;b&gt;Note:&lt;/b&gt; %1&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="573" />
+        <location filename="../src/medassistant.cpp" line="446" />
         <source>&lt;b&gt;Hinweis:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;Note:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="574" />
+        <location filename="../src/medassistant.cpp" line="447" />
         <source>&lt;b&gt;Grund:&lt;/b&gt; %1</source>
         <translation>&lt;b&gt;Reason:&lt;/b&gt; %1</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="580" />
+        <location filename="../src/medassistant.cpp" line="453" />
         <source>Beipackzette&amp;l ✔…</source>
         <translation>Package &amp;leaflet ✔…</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="585" />
+        <location filename="../src/medassistant.cpp" line="458" />
         <source>&amp;Fertig ✔</source>
         <translation>&amp;Done ✔</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="606" />
-        <location filename="../src/medassistant.cpp" line="635" />
-        <source>Medikamente sind gerichtet.</source>
-        <translation>Medication is prepared.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="619" />
+        <location filename="../src/medassistant.cpp" line="492" />
         <source>Medikamente sind gerichtet</source>
         <translation>Medication is prepared</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="620" />
+        <location filename="../src/medassistant.cpp" line="493" />
         <source>%1 Medikament(e) für %2</source>
         <translation>%1 medication(s) for %2</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="621" />
+        <location filename="../src/medassistant.cpp" line="494" />
         <source>Wochendosierer %1 – %2</source>
         <translation>Weekly pill box %1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="627" />
+        <location filename="../src/medassistant.cpp" line="500" />
         <source>&amp;Von vorn</source>
         <translation>&amp;Start over</translation>
     </message>
     <message>
-        <location filename="../src/medassistant.cpp" line="630" />
+        <location filename="../src/medassistant.cpp" line="503" />
         <source>&lt;small&gt;Im Protokoll vermerkt: %1 von %2&lt;/small&gt;</source>
         <translation>&lt;small&gt;Recorded in the log: %1 by %2&lt;/small&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="733" />
-        <source>Alle %1 Tage</source>
-        <translation>All %1 days</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="734" />
-        <source>%1 bis %2</source>
-        <translation>%1 to %2</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="740" />
-        <source>In diesen Tagen nicht zu geben.</source>
-        <translation>Not to be given on these days.</translation>
-    </message>
-    <message>
-        <location filename="../src/medassistant.cpp" line="746" />
-        <source>Insgesamt %1%2.</source>
-        <translation>In total %1%2.</translation>
     </message>
 </context>
 <context>
@@ -14839,42 +14862,42 @@ Were the values swapped? Save anyway?</translation>
 <context>
     <name>VpField</name>
     <message>
-        <location filename="../src/formloader.cpp" line="485" />
+        <location filename="../src/formloader.cpp" line="497" />
         <source>Atemfrequenz</source>
         <translation>Respiratory rate</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="486" />
+        <location filename="../src/formloader.cpp" line="498" />
         <source>Schmerz (NRS)</source>
         <translation>Pain (NRS)</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="487" />
+        <location filename="../src/formloader.cpp" line="499" />
         <source>Peak-Flow</source>
         <translation>Peak flow</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="488" />
+        <location filename="../src/formloader.cpp" line="500" />
         <source>Krankenkasse</source>
         <translation>Health insurance</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="489" />
+        <location filename="../src/formloader.cpp" line="501" />
         <source>Hausarztpraxis</source>
         <translation>GP practice</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="490" />
+        <location filename="../src/formloader.cpp" line="502" />
         <source>Praxis-Telefon</source>
         <translation>Practice phone</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="491" />
+        <location filename="../src/formloader.cpp" line="503" />
         <source>Notfallkontakt</source>
         <translation>Emergency contact</translation>
     </message>
     <message>
-        <location filename="../src/formloader.cpp" line="492" />
+        <location filename="../src/formloader.cpp" line="504" />
         <source>Allergien</source>
         <translation>Allergies</translation>
     </message>

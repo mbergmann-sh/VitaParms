@@ -4,6 +4,8 @@
 #include "appsettings.h"
 #include "bmi.h"
 #include "careinfo.h"
+#include "medstock.h"
+#include <algorithm>
 #include "contacts.h"
 #include "database.h"
 #include "dbsync.h"
@@ -565,11 +567,18 @@ QVariantMap AppController::personDetail(qint64 id)
     QStringList keys = { QStringLiteral("Allergien") };   // Kontakte stehen in einer eigenen Liste
     for (auto it = p.extra.begin(); it != p.extra.end(); ++it)
         if (!keys.contains(it.key()) && !CareInfo::isInternalExtraKey(it.key())) keys << it.key();
-    {   // Vorsorgedokumente (Anzeige; Bearbeitung und PDF am Computer)
+    {   // Vorsorgedokumente (Anzeige; das hinterlegte PDF lässt sich öffnen)
         QStringList adv;
-        for (int k = 0; k < CareInfo::AdvanceCount; ++k)
+        QVariantList pdfs;
+        for (int k = 0; k < CareInfo::AdvanceCount; ++k) {
             if (const QString l = CareInfo::advanceLine(p, k); !l.isEmpty()) adv << l;
+            const CareInfo::AdvanceDoc a = CareInfo::advanceDoc(p, k);
+            if (a.present && a.docId > 0)
+                pdfs << QVariantMap{ { QStringLiteral("kind"), k }, { QStringLiteral("name"), CareInfo::advanceName(k) },
+                                     { QStringLiteral("docId"), a.docId } };
+        }
         m.insert(QStringLiteral("advance"), adv);
+        m.insert(QStringLiteral("advancePdfs"), pdfs);
     }
     {   // Kontakte (Anzeige; Bearbeitung am Computer im Stammblatt)
         QVariantList cl;
@@ -582,7 +591,7 @@ QVariantMap AppController::personDetail(qint64 id)
             if (!c.mobile.isEmpty()) l << tr("mobil %1").arg(c.mobile);
             if (!c.email.isEmpty()) l << c.email;
             if (!c.website.isEmpty()) l << c.website;
-            cl << QVariantList{ c.kindName(), l.join(QStringLiteral(", ")) + (c.note.isEmpty() ? QString() : QStringLiteral("\n") + c.note) };
+            cl << QVariant(QVariantList{ c.kindName(), l.join(QStringLiteral(", ")) + (c.note.isEmpty() ? QString() : QStringLiteral("\n") + c.note) });
         }
         m.insert(QStringLiteral("contacts"), cl);
         // zum Bearbeiten: alle Felder
@@ -599,6 +608,12 @@ QVariantMap AppController::personDetail(qint64 id)
         m.insert(QStringLiteral("contactList"), edit);
     }
     {   // Vorsorgedokumente zum Bearbeiten
+        const QList<MedicalDocument> docs = p.id ? Database::instance().documents(p.id) : QList<MedicalDocument>{};
+        auto docTitle = [&docs](qint64 id) {
+            for (const MedicalDocument &d : docs)
+                if (d.id == id) return d.title + (d.docDate.isValid() ? QStringLiteral(" (") + QLocale().toString(d.docDate, QStringLiteral("dd.MM.yyyy")) + QLatin1Char(')') : QString());
+            return QString();
+        };
         QVariantList adv;
         for (int k = 0; k < CareInfo::AdvanceCount; ++k) {
             const CareInfo::AdvanceDoc a = CareInfo::advanceDoc(p, k);
@@ -606,7 +621,8 @@ QVariantMap AppController::personDetail(qint64 id)
                                 { QStringLiteral("personLabel"), CareInfo::advancePersonLabel(k) },
                                 { QStringLiteral("present"), a.present }, { QStringLiteral("person"), a.person },
                                 { QStringLiteral("address"), a.address }, { QStringLiteral("phone"), a.phone },
-                                { QStringLiteral("validUntil"), iso(a.validUntil) }, { QStringLiteral("hasPdf"), a.docId > 0 } };
+                                { QStringLiteral("validUntil"), iso(a.validUntil) }, { QStringLiteral("hasPdf"), a.docId > 0 },
+                                { QStringLiteral("docId"), a.docId }, { QStringLiteral("docTitle"), docTitle(a.docId) } };
         }
         m.insert(QStringLiteral("advanceDocs"), adv);
     }
@@ -1254,6 +1270,9 @@ QVariantList AppController::careNotices(qint64 pid)
         if (n.warn) add(n.text, false);
     const Stool::Status st = Stool::status(recent);
     if (st.warn) add(Stool::warningText(st), false);
+    // Bestandsführung: offene Bestellung (wie am Computer beim Programmstart)
+    for (const QString &t : MedStock::reminderLines(MedStock::updateOpenOrder(pid)))
+        l << QVariantMap{ { QStringLiteral("text"), t }, { QStringLiteral("critical"), false }, { QStringLiteral("stock"), true } };
     return l;
 }
 
@@ -1444,7 +1463,17 @@ static QVariantMap medToMap(const Medication &m)
     QVariantList days;
     for (int i = 0; i < 7; ++i)
         days << QVariantMap{ { QStringLiteral("name"), QLocale().dayName(i + 1, QLocale::ShortFormat) }, { QStringLiteral("on"), bool(r.days & (1 << i)) } };
+    // Bestandsführung (Kurzfassung für die Liste)
+    QString stockText;
+    int stockState = 0;
+    if (const MedStock::Forecast f = MedStock::forecast(m); f.tracked) {
+        stockState = f.onOrder && f.state != MedStock::Ok ? -1 : f.state;
+        stockText = AppController::tr("Bestand %1%2").arg(MedStock::qtyText(f.stock), m.unit.isEmpty() ? QString() : QLatin1Char(' ') + m.unit);
+        if (f.runOut.isValid()) stockText += QStringLiteral(" · ") + AppController::tr("reicht bis %1").arg(QLocale().toString(f.runOut.addDays(-1), QStringLiteral("ddd dd.MM.")));
+        stockText += QStringLiteral(" · ") + f.stateText();
+    }
     return QVariantMap{
+        { QStringLiteral("stockText"), stockText }, { QStringLiteral("stockState"), stockState },
         { QStringLiteral("remind"), r.on && MedSchedule::canRemind(m) },
         { QStringLiteral("remindSlots"), slotList },
         { QStringLiteral("remindSlotsStored"), m.extra.contains(QLatin1String(MedSchedule::kRemindTimesKey)) },
@@ -1677,6 +1706,21 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
     } else if (kind == QLatin1String("pharmacy")) {
         path = QStringLiteral("%1/Medikationsliste_Apotheke_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::pharmacyListToPdf(path, *p, db.medications(pid, false));
+    } else if (kind == QLatin1String("order")) {
+        const auto o = MedStock::order(options.value(QStringLiteral("orderId")).toLongLong());
+        if (!o) return {};
+        path = QStringLiteral("%1/Bestellliste_%2_%3.pdf").arg(dir, base, o->createdAt.date().toString(Qt::ISODate));
+        ok = ReportPrinter::orderListToPdf(path, *p, *o);
+    } else if (kind == QLatin1String("preplog")) {
+        const int days = options.value(QStringLiteral("days"), 30).toInt();
+        const QDate from = days > 0 ? QDate::currentDate().addDays(-days) : QDate();
+        QList<MedPreparation> log = db.preparations(pid, from, QDate());
+        std::sort(log.begin(), log.end(), [](const MedPreparation &a, const MedPreparation &b) { return a.preparedAt > b.preparedAt; });
+        const QString period = days > 0 ? tr("%1 – %2").arg(QLocale().toString(from, QStringLiteral("dd.MM.yyyy")),
+                                                               QLocale().toString(QDate::currentDate(), QStringLiteral("dd.MM.yyyy")))
+                                        : tr("alle Einträge");
+        path = QStringLiteral("%1/Stellprotokoll_%2_%3.pdf").arg(dir, base, stamp);
+        ok = ReportPrinter::preparationLogToPdf(path, *p, log, period);
     } else if (kind == QLatin1String("medplan")) {
         path = QStringLiteral("%1/Medikamentenplan_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::medicationPlanToPdf(path, *p, db.medications(pid, false));

@@ -41,6 +41,12 @@ Page {
     Component { id: glucoseComp; GlucoseProfilePage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: apptEditComp; AppointmentEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: medEditComp; MedEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
+    // Medikamente stellen, Bestand und Bestellungen
+    function openPrep() { stackView.push(prepComp, { personId: home.personId }) }
+    function openStock(tab) { stackView.push(stockComp, { personId: home.personId, tab: tab || 0 }) }
+    Component { id: prepComp; PrepPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) }
+                                         onOpenStock: { stackView.pop(); home.openStock(1) } } }
+    Component { id: stockComp; StockPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     // Krankenakte
     function openDocument(id) { stackView.push(docViewComp, { personId: home.personId, docId: id }) }
     function addDocument(how) { stackView.push(docEditComp, { personId: home.personId, docId: 0, startWith: how }) }
@@ -256,7 +262,8 @@ Page {
                 ChartPage { personId: home.personId; active: home.tab === 2 }
                 PersonPage { personId: home.personId; active: home.tab === 3; onEditRequested: home.editPerson(false) }
                 MedsPage { personId: home.personId; active: home.tab === 4
-                           onEdit: (id) => stackView.push(medEditComp, { personId: home.personId, medId: id }) }
+                           onEdit: (id) => stackView.push(medEditComp, { personId: home.personId, medId: id })
+                           onPrepare: home.openPrep(); onStock: home.openStock(0) }
                 AppointmentsPage { personId: home.personId; active: home.tab === 5; onEdit: (id) => home.editAppointment(id) }
                 DocumentsPage { personId: home.personId; active: home.tab === 6; onOpen: (id) => home.openDocument(id); onAdd: (how) => home.addDocument(how)
                                 onShare: (ids) => home.shareDocuments(ids) }

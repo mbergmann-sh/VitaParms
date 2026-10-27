@@ -52,15 +52,29 @@ Flickable {
                     [qsTr("Mobiltelefon"), d.mobile || ""]
                 ]
             }
-            InfoBlock {
-                title: qsTr("Pflege, Ausweis und Vorsorge")
-                rows: [
-                    [qsTr("Pflegegrad"), d.careLevel > 0 ? qsTr("Pflegegrad %1").arg(d.careLevel) : qsTr("kein Pflegegrad")],
-                    [qsTr("Nächste Überprüfung"), d.careLevel > 0 ? page.fmt(d.careReview) : ""],
-                    [qsTr("Schwerbehindertenausweis"), d.disabilityDegree > 0 ? qsTr("GdB %1").arg(d.disabilityDegree) : qsTr("keiner")],
-                    [qsTr("Merkzeichen"), d.disabilityDegree > 0 ? (d.disabilityMarks || []).join(", ") : ""],
-                    [qsTr("Gültig bis"), d.disabilityDegree > 0 ? (d.disabilityValid ? page.fmt(d.disabilityValid) : qsTr("unbefristet")) : ""]
-                ].concat((d.advance || []).map(l => [qsTr("Vorsorge"), l]))
+            ColumnLayout {
+                Layout.fillWidth: true; Layout.alignment: Qt.AlignTop
+                spacing: Theme.gapS
+                InfoBlock {
+                    title: qsTr("Pflege, Ausweis und Vorsorge")
+                    rows: [
+                        [qsTr("Pflegegrad"), d.careLevel > 0 ? qsTr("Pflegegrad %1").arg(d.careLevel) : qsTr("kein Pflegegrad")],
+                        [qsTr("Nächste Überprüfung"), d.careLevel > 0 ? page.fmt(d.careReview) : ""],
+                        [qsTr("Schwerbehindertenausweis"), d.disabilityDegree > 0 ? qsTr("GdB %1").arg(d.disabilityDegree) : qsTr("keiner")],
+                        [qsTr("Merkzeichen"), d.disabilityDegree > 0 ? (d.disabilityMarks || []).join(", ") : ""],
+                        [qsTr("Gültig bis"), d.disabilityDegree > 0 ? (d.disabilityValid ? page.fmt(d.disabilityValid) : qsTr("unbefristet")) : ""]
+                    ].concat((d.advance || []).map(l => [qsTr("Vorsorge"), l]))
+                }
+                Flow {
+                    visible: (d.advancePdfs || []).length > 0
+                    Layout.fillWidth: true
+                    spacing: Theme.gapS
+                    Repeater {
+                        model: d.advancePdfs || []
+                        VButton { objectName: "advancePdfButton"; text: qsTr("%1 öffnen").arg(modelData.name)
+                                  onClicked: if (!app.openDocument(modelData.docId)) win.toast(app.lastError, true) }
+                    }
+                }
             }
             InfoBlock {
                 objectName: "contactsBlock"

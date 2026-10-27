@@ -203,6 +203,38 @@ public:
     void setUsbAskOnExit(bool on);
     bool ensureUsbServer(QString *error);
 
+    // ---- Medikamente stellen (Vorlese-Assistent), Bestand und Bestellungen
+    Q_INVOKABLE QVariantMap speechInfo();
+    Q_INVOKABLE void setVoice(const QString &key);
+    Q_INVOKABLE void say(const QString &text);
+    Q_INVOKABLE void stopSpeech();
+    Q_INVOKABLE QVariantMap prepInfo(qint64 pid);
+    Q_INVOKABLE QString prepWeekStart(qint64 pid);
+    Q_INVOKABLE QVariantMap prepSession(qint64 pid, int days, int slot, const QString &isoDay);
+    Q_INVOKABLE QVariantMap prepFinish(qint64 pid, int days, int slot, const QString &isoDay, const QVariantList &confirmed,
+                                       bool complete, const QString &note);
+    Q_INVOKABLE bool prepNote(qint64 prepId, const QString &note);
+    Q_INVOKABLE QVariantList preparationLog(qint64 pid, int days);
+    Q_INVOKABLE QVariantMap stockOverview(qint64 pid);
+    Q_INVOKABLE QStringList stockReminder(qint64 pid);      // offene Bestellung: Hinweise (legt sie bei Bedarf an)
+    Q_INVOKABLE void setPrepPlan(qint64 pid, int days, int weekday);
+    Q_INVOKABLE void setLeadDays(int days);
+    Q_INVOKABLE QVariantMap stockPackages(qint64 pid, qint64 medId);
+    Q_INVOKABLE bool receivePackage(qint64 pid, qint64 medId, double qty, const QString &isoExpiry, const QString &note);
+    Q_INVOKABLE bool correctPackage(qint64 pid, qint64 medId, qint64 packageId, double qty, const QString &isoExpiry, const QString &note);
+    Q_INVOKABLE bool discardPackage(qint64 medId, qint64 packageId);
+    Q_INVOKABLE bool setStockTracked(qint64 pid, qint64 medId, bool on);
+    Q_INVOKABLE bool addToOrder(qint64 pid, qint64 medId);
+    Q_INVOKABLE int createOrderList(qint64 pid);
+    Q_INVOKABLE bool confirmOrder(qint64 orderId, const QString &isoDay, const QString &note);
+    Q_INVOKABLE bool deliverOrderItem(qint64 orderId, qint64 itemId, double qty, const QString &isoExpiry);
+    Q_INVOKABLE bool setOrderItemAmount(qint64 pid, qint64 itemId, qint64 medId, const QString &amount);
+    Q_INVOKABLE bool removeOrderItem(qint64 itemId);
+    Q_INVOKABLE bool deleteOrder(qint64 orderId);
+    // Vorsorgedokumente: PDF aus der Krankenakte verknüpfen (docId 0 = Verknüpfung lösen)
+    Q_INVOKABLE QVariantList advanceCandidates(qint64 pid);
+    Q_INVOKABLE bool linkAdvanceDocument(qint64 pid, int kind, qint64 docId);
+
     // ---- Einstellungen
     Q_INVOKABLE QString glucoseUnit() const;          // "mg/dl" oder "mmol/l"
     Q_INVOKABLE void setGlucoseUnit(const QString &u);
@@ -239,6 +271,8 @@ private:
     QTimer m_idle;
     class UsbSyncServer *m_usb = nullptr;
     class TabletReminders *m_reminders = nullptr;
+    class Speech *m_speech = nullptr;
+    class Speech *speech();
     bool m_usbConnected = false;
     QString m_usbStatus;
     // Krankenakte: Dokument im Entstehen (Fotos oder eine PDF-Datei)

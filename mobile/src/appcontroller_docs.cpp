@@ -4,6 +4,7 @@
 #include "appcontroller.h"
 
 #include "akteexportcore.h"
+#include "careinfo.h"
 #include "contacts.h"
 #include "database.h"
 #include "dbtransfer.h"
@@ -11,6 +12,7 @@
 #include "session.h"
 
 #include <QBuffer>
+#include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
@@ -400,4 +402,37 @@ QImage AppController::documentPageImage(const QString &id, int page, int width)
     if (m_pageCache.size() > 120) m_pageCache.clear();    // Speicher begrenzen
     if (!img.isNull()) m_pageCache.insert(key, img);
     return img;
+}
+
+// ---------------------------------------------------------------- Vorsorgedokumente
+
+// Dokumente der Krankenakte, die sich als Vorsorgedokument verknüpfen lassen (Kategorie „Vorsorge“ zuerst)
+QVariantList AppController::advanceCandidates(qint64 pid)
+{
+    QVariantList first, rest;
+    if (!loggedIn() || !pid) return first;
+    const QLocale loc;
+    const QString cat = QCoreApplication::translate("PatientDialog", "Vorsorge");
+    for (const MedicalDocument &d : Database::instance().documents(pid)) {
+        const QVariantMap m{ { QStringLiteral("id"), d.id }, { QStringLiteral("title"), d.title },
+                             { QStringLiteral("category"), d.category },
+                             { QStringLiteral("dateText"), d.docDate.isValid() ? loc.toString(d.docDate, QStringLiteral("dd.MM.yyyy")) : QString() } };
+        (d.category.compare(cat, Qt::CaseInsensitive) == 0 ? first : rest) << m;
+    }
+    return first + rest;
+}
+
+bool AppController::linkAdvanceDocument(qint64 pid, int kind, qint64 docId)
+{
+    if (!loggedIn() || kind < 0 || kind >= CareInfo::AdvanceCount) return false;
+    auto p = Database::instance().patient(pid);
+    if (!p) return false;
+    CareInfo::AdvanceDoc a = CareInfo::advanceDoc(*p, kind);
+    a.docId = docId;
+    if (docId) a.present = true;                 // ein hinterlegtes Dokument liegt vor
+    CareInfo::setAdvanceDoc(*p, kind, a);
+    QString err;
+    if (!Database::instance().savePatient(*p, &err)) { setError(err); return false; }
+    bump();
+    return true;
 }

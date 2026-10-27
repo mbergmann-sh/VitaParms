@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "medlogdialog.h"
+#include "medprep.h"
 #include "database.h"
 #include "reportprinter.h"
 #include "session.h"
@@ -107,7 +108,7 @@ QString MedLogDialog::periodText() const
 
 QString MedLogDialog::statusText(const MedPreparation &e)
 {
-    return e.complete ? tr("✔ vollständig") : tr("abgebrochen (%1 von %2)").arg(e.confirmed).arg(e.total);
+    return MedPrep::statusText(e);
 }
 
 QString MedLogDialog::itemsHtml(const MedPreparation &e)
