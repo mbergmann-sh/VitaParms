@@ -47,7 +47,7 @@ Page {
             const first = !draft.kind
             if (app.draftAddImage(p)) refreshDraft(first); else win.toast(app.lastError, true)
         } else if (st === "error") {
-            win.toast(qsTr("Auf diesem Gerät ist keine Kamera-App verfügbar."), true)
+            win.toast(app.lastError, true)
         }
         if (!draft.kind) closeLater()             // nichts aufgenommen
     }

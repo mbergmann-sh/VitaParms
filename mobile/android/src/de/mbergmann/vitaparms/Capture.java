@@ -26,6 +26,24 @@ public class Capture {
         }
     }
 
+    // Datei in einer Anzeige-App öffnen (PDF, Excel). Eigene Umsetzung statt QDesktopServices:
+    // die Anzeige-App braucht die Leseberechtigung für die FileProvider-Adresse, sonst bleibt sie leer.
+    public static boolean view(Context ctx, String path, String mime, String chooserTitle) {
+        try {
+            Uri uri = FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".qtprovider", new File(path));
+            Intent v = new Intent(Intent.ACTION_VIEW);
+            v.setDataAndType(uri, mime);
+            v.setClipData(ClipData.newRawUri("", uri));
+            v.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent chooser = Intent.createChooser(v, chooserTitle);
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            ctx.startActivity(chooser);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     // Dateien über das Teilen-Menü von Android senden (E-Mail, Messenger, Cloud …)
     public static boolean share(Context ctx, String pathsJoined, String mime, String subject, String chooserTitle) {
         try {

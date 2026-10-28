@@ -3134,3 +3134,15 @@ EN.update({
     'Website jetzt aktualisieren': 'Update website now',
     'Zuletzt aktualisiert: %1': 'Last updated: %1',
 })
+
+# ---------------------------------------------------------------- v0.23.1: Tablet – Gerätetest
+EN.update({
+    'Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. Bitte eine Sprachausgabe-App (z. B. „Sprachausgabe von Google“) mit deutscher Stimme installieren; in den Android-Einstellungen über die Suche nach „Text-in-Sprache“ bzw. „Sprachausgabe“ zu finden.':
+        'No speech output available – the assistant only shows the details. Please install a speech app (e.g. “Speech Services by Google”) with a voice for your language; search the Android settings for “text-to-speech”.',
+    'Die Sprachausgabe wird gestartet …': 'Speech output is starting …',
+    'Die Kamera-App hat kein Foto geliefert.': 'The camera app did not deliver a photo.',
+    'Ohne Kamera-Berechtigung kann VitaParms kein Foto aufnehmen. Bitte in den Android-Einstellungen unter Apps → VitaParms → Berechtigungen erlauben.':
+        'Without camera permission VitaParms cannot take a photo. Please allow it in the Android settings under Apps → VitaParms → Permissions.',
+    'Die Kamera ließ sich nicht starten (%1).': 'The camera could not be started (%1).',
+    'Öffnen mit …': 'Open with …',
+})

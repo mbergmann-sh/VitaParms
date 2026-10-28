@@ -24,7 +24,8 @@ QTextToSpeech *sharedEngine()
         tried = true;
         if (!QTextToSpeech::availableEngines().isEmpty()) {
             engine = new QTextToSpeech(QCoreApplication::instance());
-            if (engine->state() == QTextToSpeech::Error) {
+            // Android startet die Engine asynchron: bis dahin meldet sie „Error“ ohne Ursache
+            if (engine->state() == QTextToSpeech::Error && engine->errorReason() != QTextToSpeech::ErrorReason::NoError) {
                 delete engine;
                 engine = nullptr;
             }
@@ -42,6 +43,16 @@ Speech::Speech(QObject *parent) : QObject(parent)
     m_tts = sharedEngine();
     if (m_tts) {
         connect(m_tts, &QTextToSpeech::stateChanged, this, [this](QTextToSpeech::State s) {
+            // Android: die Engine startet asynchron – Stimme erst wählen, wenn sie bereit ist,
+            // und einen in der Zwischenzeit angeforderten Text dann vorlesen
+            if (s == QTextToSpeech::Ready && !m_pending.isEmpty()) {
+                const QString t = m_pending;
+                m_pending.clear();
+                chooseVoice();
+                say(t);
+                return;
+            }
+            if (s == QTextToSpeech::Ready && m_desc.isEmpty()) chooseVoice();
             if (g_speaker != this) return;
             if (s == QTextToSpeech::Speaking) m_speaking = true;
             else if (m_speaking && (s == QTextToSpeech::Ready || s == QTextToSpeech::Error)) {
@@ -66,7 +77,12 @@ Speech::~Speech()
 
 bool Speech::available() const
 {
-    return m_tts != nullptr;
+#ifdef VP_HAVE_TTS
+    return m_tts != nullptr
+           && (m_tts->state() != QTextToSpeech::Error || m_tts->errorReason() == QTextToSpeech::ErrorReason::NoError);
+#else
+    return false;
+#endif
 }
 
 bool Speech::isSpeaking() const
@@ -150,10 +166,15 @@ const QList<VoiceEntry> &allVoices(QTextToSpeech *tts)
     static QList<VoiceEntry> cache;
     static bool done = false;
     if (done || !tts) return cache;
+    if (tts->state() != QTextToSpeech::Ready) return cache;   // Engine startet noch: später erneut
     done = true;
     const QLocale keep = tts->locale();
     const QVoice keepVoice = tts->voice();
     for (const QLocale &l : tts->availableLocales()) {
+#ifdef Q_OS_ANDROID
+        // Android-Engines kennen sehr viele Sprachen; nur Oberflächensprache, Deutsch und Englisch abfragen
+        if (l.language() != QLocale().language() && l.language() != QLocale::German && l.language() != QLocale::English) continue;
+#endif
         tts->setLocale(l);
         for (const QVoice &v : tts->availableVoices())
             cache << VoiceEntry{ l, v, Speech::guessGender(v.name(), v.gender()) };
@@ -236,8 +257,14 @@ void Speech::say(const QString &text)
 {
 #ifdef VP_HAVE_TTS
     if (!m_tts) return;
+    if (m_tts->state() == QTextToSpeech::Error) {
+        // Engine startet noch (Android, ohne Fehlerursache): vorlesen, sobald sie bereit ist
+        if (m_tts->errorReason() == QTextToSpeech::ErrorReason::NoError) m_pending = text;
+        return;
+    }
+    m_pending.clear();
     m_tts->stop();
-    if (g_speaker != this) chooseVoice();   // gemeinsame Engine: eigene Stimme/Tempo wieder setzen
+    if (g_speaker != this || m_desc.isEmpty()) chooseVoice();   // gemeinsame Engine: eigene Stimme/Tempo wieder setzen
     g_speaker = this;
     m_speaking = true;
     m_tts->setRate(m_rate);

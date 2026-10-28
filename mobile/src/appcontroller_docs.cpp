@@ -154,7 +154,13 @@ QString AppController::captureState(const QString &path)
     marker.close();
     marker.remove();
     if (r == QLatin1String("ok") && QFileInfo(path).size() > 0) return QStringLiteral("ok");
-    return r == QLatin1String("cancel") ? QStringLiteral("cancel") : QStringLiteral("error");
+    if (r == QLatin1String("cancel")) return QStringLiteral("cancel");
+    // Ursache für die Meldung: keine Kamera-App, Berechtigung verweigert, kein Foto geliefert …
+    if (r == QLatin1String("ok")) setError(tr("Die Kamera-App hat kein Foto geliefert."));
+    else if (r.contains(QLatin1String("keine Kamera-App"))) setError(tr("Auf diesem Gerät ist keine Kamera-App verfügbar."));
+    else if (r.contains(QLatin1String("Berechtigung"))) setError(tr("Ohne Kamera-Berechtigung kann VitaParms kein Foto aufnehmen. Bitte in den Android-Einstellungen unter Apps → VitaParms → Berechtigungen erlauben."));
+    else setError(tr("Die Kamera ließ sich nicht starten (%1).").arg(r.mid(6)));
+    return QStringLiteral("error");
 }
 
 bool AppController::draftAddImage(const QString &pathOrUrl)

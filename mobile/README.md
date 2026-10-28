@@ -100,11 +100,18 @@ Version installieren.
 ## Krankenakte: Kamera, Teilen, Vorschau
 
 * **Fotos** macht die Kamera-App des Geräts (`CaptureActivity` startet `ACTION_IMAGE_CAPTURE`,
-  das Bild kommt über den FileProvider der App zurück). VitaParms braucht dafür keine
-  Kamera-Berechtigung; im Manifest steht nur die Abfrage (`<queries>`) der Kamera-App.
-* **Teilen** über das Android-Teilen-Menü (`Capture.share`, FileProvider). Die Freigaben des
-  FileProviders stehen in `android/res/xml/qtprovider_paths.xml` (ersetzt die Datei der
-  Qt-Vorlage und enthält deren Pfade).
+  das Bild kommt über den FileProvider der App zurück); im Manifest steht die Abfrage
+  (`<queries>`) der Kamera-App.
+* **Teilen** über das Android-Teilen-Menü (`Capture.share`, FileProvider); **Öffnen** von PDF und
+  Excel ebenfalls über den FileProvider mit Leseberechtigung (`Capture.view`) – `QDesktopServices`
+  gab der Anzeige-App keine Berechtigung, sie blieb leer. Die Freigaben des FileProviders bringt
+  Qt (ab 6.12) selbst mit; eine eigene `qtprovider_paths.xml` wird von Qt ausgeschlossen und ist
+  deshalb entfernt.
+* **Kamera:** Trägt Qt Multimedia die Berechtigung CAMERA ins Manifest ein, startet Android die
+  Kamera-App nur mit erteilter Berechtigung – `CaptureActivity` fragt dann danach.
+* **Sprachausgabe:** Android 11+ zeigt Apps die Sprachausgabe-Engines nur mit
+  `<queries><intent><action android:name="android.intent.action.TTS_SERVICE"/>` im Manifest. Die
+  Engine startet asynchron; VitaParms liest den ersten Text vor, sobald sie bereit ist.
 * **Vorschau und Volltext** der PDFs mit Qt PDF, falls installiert (Qt Maintenance Tool:
   *Additional Libraries → Qt PDF*); sonst öffnet „In PDF-App öffnen“ das Dokument.
 * Beim Abgleich (Website, USB) gehen die Inhalte getrennt von der Datenbank – nur die fehlenden.

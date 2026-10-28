@@ -76,304 +76,309 @@
 <context>
     <name>AppController</name>
     <message>
-        <location filename="../src/appcontroller.cpp" line="61" />
+        <location filename="../src/appcontroller.cpp" line="64" />
         <source>Atemfrequenz</source>
         <translation>Respiratory rate</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="62" />
+        <location filename="../src/appcontroller.cpp" line="65" />
         <source>Schmerz (NRS 0–10)</source>
         <translation>Pain (NRS 0–10)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="82" />
+        <location filename="../src/appcontroller.cpp" line="85" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="83" />
+        <location filename="../src/appcontroller.cpp" line="86" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="84" />
+        <location filename="../src/appcontroller.cpp" line="87" />
         <source>divers</source>
         <translation>diverse</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="184" />
+        <location filename="../src/appcontroller.cpp" line="187" />
         <source>Die Kurzanleitung lässt sich nicht öffnen. Ist eine App zum Anzeigen von PDF-Dateien installiert?</source>
         <translation>The quick guide cannot be opened. Is an app for viewing PDF files installed?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="187" />
+        <location filename="../src/appcontroller.cpp" line="190" />
         <source>Die Kurzanleitung „Erste Schritte“ ist in dieser Installation nicht enthalten.</source>
         <translation>The quick guide “Getting Started” is not included in this installation.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="268" />
+        <location filename="../src/appcontroller.cpp" line="271" />
         <source>Name oder Passwort stimmt nicht.</source>
         <translation>Name or password is incorrect.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="455" />
+        <location filename="../src/appcontroller.cpp" line="458" />
         <source>Bitte auch die zugehörige Schlüsseldatei (.keys) wählen – oder am Computer „Datei → Datenbank exportieren“ verwenden, dann ist alles in einer Datei.</source>
         <translation>Please also select the matching key file (.keys) – or use “File → Export database” on the computer, then everything is in one file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="467" />
+        <location filename="../src/appcontroller.cpp" line="470" />
         <source>Die Datei enthält keine Anmeldekonten (.keys).</source>
         <translation>The file contains no login accounts (.keys).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="482" />
+        <location filename="../src/appcontroller.cpp" line="485" />
         <source>Das ist keine Kopplungsdatei von VitaParms.</source>
         <translation>This is not a VitaParms pairing file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="589" />
+        <location filename="../src/appcontroller.cpp" line="592" />
         <source>Vers.-Nr. %1</source>
         <translation>Ins. no. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="591" />
+        <location filename="../src/appcontroller.cpp" line="594" />
         <source>Tel. %1</source>
         <translation>Tel. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="592" />
+        <location filename="../src/appcontroller.cpp" line="595" />
         <source>mobil %1</source>
         <translation>mobile %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="668" />
+        <location filename="../src/appcontroller.cpp" line="671" />
         <source>Sollwert heute: %1 l/min (%2).</source>
         <translation>Predicted value today: %1 l/min (%2).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="671" />
+        <location filename="../src/appcontroller.cpp" line="674" />
         <source>Warnhinweise beziehen sich auf den %1 (%2 l/min): gelb unter %3, rot unter %4 l/min.</source>
         <translation>Warnings are based on the %1 (%2 l/min): yellow below %3, red below %4 l/min.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="672" />
+        <location filename="../src/appcontroller.cpp" line="675" />
         <source>persönlichen Bestwert</source>
         <translation>personal best</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="672" />
+        <location filename="../src/appcontroller.cpp" line="675" />
         <source>Sollwert</source>
         <translation>predicted value</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="675" />
+        <location filename="../src/appcontroller.cpp" line="678" />
         <source>Ohne Bezugswert gibt es keine Warnhinweise – bitte den persönlichen Bestwert eintragen.</source>
         <translation>Without a reference value there are no warnings – please enter the personal best.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="719" />
+        <location filename="../src/appcontroller.cpp" line="722" />
         <source>Bitte einen Namen eingeben.</source>
         <translation>Please enter a name.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="801" />
+        <location filename="../src/appcontroller.cpp" line="804" />
         <source>Nur Administratoren können Personen löschen.</source>
         <translation>Only administrators can delete persons.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="894" />
+        <location filename="../src/appcontroller.cpp" line="897" />
         <source>RR</source>
         <translation>BP</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="937" />
+        <location filename="../src/appcontroller.cpp" line="940" />
         <source>Begleitsymptome</source>
         <translation>Accompanying symptoms</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="951" />
+        <location filename="../src/appcontroller.cpp" line="954" />
         <source>bei Aufnahme</source>
         <translation>on admission</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1062" />
+        <location filename="../src/appcontroller.cpp" line="1065" />
         <source>Bitte mindestens einen Wert eingeben.</source>
         <translation>Please enter at least one value.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1064" />
+        <location filename="../src/appcontroller.cpp" line="1067" />
         <source>Beim Blutdruck ist nur ein Wert (systolisch oder diastolisch) eingetragen.</source>
         <translation>Only one blood pressure value (systolic or diastolic) has been entered.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1066" />
+        <location filename="../src/appcontroller.cpp" line="1069" />
         <source>Der systolische Wert (%1) ist nicht größer als der diastolische (%2) – vertauscht?</source>
         <translation>The systolic value (%1) is not greater than the diastolic value (%2) – swapped?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1068" />
+        <location filename="../src/appcontroller.cpp" line="1071" />
         <source>Der Messzeitpunkt liegt in der Zukunft.</source>
         <translation>The measurement time is in the future.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1080" />
+        <location filename="../src/appcontroller.cpp" line="1083" />
         <source>Person nicht gefunden.</source>
         <translation>Person not found.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1104" />
+        <location filename="../src/appcontroller.cpp" line="1107" />
         <source>Für den BMI wird die Körpergröße benötigt.</source>
         <translation>Height is required for the BMI.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1105" />
+        <location filename="../src/appcontroller.cpp" line="1108" />
         <source>BMI %1 kg/m²</source>
         <translation>BMI %1 kg/m²</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1108" />
+        <location filename="../src/appcontroller.cpp" line="1111" />
         <source> (Größe aus letzter Messung: %1 cm)</source>
         <translation> (height from last measurement: %1 cm)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1109" />
+        <location filename="../src/appcontroller.cpp" line="1112" />
         <source>, korrigiert für fehlende Gliedmaßen</source>
         <translation>, corrected for missing limbs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1123" />
-        <location filename="../src/appcontroller.cpp" line="1233" />
-        <location filename="../src/appcontroller.cpp" line="1679" />
+        <location filename="../src/appcontroller.cpp" line="1126" />
+        <location filename="../src/appcontroller.cpp" line="1236" />
+        <location filename="../src/appcontroller.cpp" line="1682" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>heute</source>
         <translation>today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1123" />
-        <location filename="../src/appcontroller.cpp" line="1233" />
+        <location filename="../src/appcontroller.cpp" line="1126" />
+        <location filename="../src/appcontroller.cpp" line="1236" />
         <source>gestern</source>
         <translation>yesterday</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1128" />
+        <location filename="../src/appcontroller.cpp" line="1131" />
         <source>Blutdruck</source>
         <translation>Blood pressure</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1194" />
+        <location filename="../src/appcontroller.cpp" line="1197" />
         <source>Ein-/Ausfuhr heute</source>
         <translation>Intake/output today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1196" />
+        <location filename="../src/appcontroller.cpp" line="1199" />
         <source>ml</source>
         <translation>ml</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1197" />
+        <location filename="../src/appcontroller.cpp" line="1200" />
         <source>Bilanz %1</source>
         <translation>Balance %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1234" />
+        <location filename="../src/appcontroller.cpp" line="1237" />
         <source>vor %1 Tagen</source>
         <translation>%1 days ago</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1236" />
+        <location filename="../src/appcontroller.cpp" line="1239" />
         <source>an %1 der letzten 30 Tage</source>
         <translation>on %1 of the last 30 days</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1319" />
+        <location filename="../src/appcontroller.cpp" line="1322" />
         <source>Heute</source>
         <translation>Today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1320" />
+        <location filename="../src/appcontroller.cpp" line="1323" />
         <source>: Einfuhr %1 ml, Ausfuhr %2 ml, Bilanz %3</source>
         <translation>: intake %1 ml, output %2 ml, balance %3</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1353" />
+        <location filename="../src/appcontroller.cpp" line="1356" />
         <source>Ödeme: %1</source>
         <translation>Oedema: %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1472" />
+        <location filename="../src/appcontroller.cpp" line="1475" />
         <source>Bestand %1%2</source>
         <translation>stock %1%2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1473" />
+        <location filename="../src/appcontroller.cpp" line="1476" />
         <source>reicht bis %1</source>
         <translation>lasts until %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1524" />
+        <location filename="../src/appcontroller.cpp" line="1527" />
         <source>Stück</source>
         <translation>pcs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1585" />
+        <location filename="../src/appcontroller.cpp" line="1588" />
         <source>Bitte den Namen des Medikaments eingeben.</source>
         <translation>Please enter the name of the medication.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1605" />
+        <location filename="../src/appcontroller.cpp" line="1608" />
         <source>Bitte mindestens einen Wochentag für die Einnahme wählen.</source>
         <translation>Please choose at least one weekday for the intake.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1618" />
+        <location filename="../src/appcontroller.cpp" line="1621" />
         <source>Das Enddatum liegt vor dem Beginn.</source>
         <translation>The end date is before the start date.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1642" />
+        <location filename="../src/appcontroller.cpp" line="1645" />
         <source>Bitte die Uhrzeit im Format 08:00 eingeben.</source>
         <translation>Please enter the time in the format 08:00.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1646" />
+        <location filename="../src/appcontroller.cpp" line="1649" />
         <source>Bitte mindestens eine Uhrzeit für die Erinnerung wählen.</source>
         <translation>Please choose at least one time for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1647" />
+        <location filename="../src/appcontroller.cpp" line="1650" />
         <source>Bitte mindestens einen Tag für die Erinnerung wählen.</source>
         <translation>Please choose at least one day for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1679" />
+        <location filename="../src/appcontroller.cpp" line="1682" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>morgen</source>
         <translation>tomorrow</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1720" />
+        <location filename="../src/appcontroller.cpp" line="1723" />
         <source>%1 – %2</source>
         <translation>%1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1722" />
+        <location filename="../src/appcontroller.cpp" line="1725" />
         <source>alle Einträge</source>
         <translation>all entries</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1733" />
+        <location filename="../src/appcontroller.cpp" line="1736" />
         <source>letzte %1 Tage</source>
         <translation>last %1 days</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1733" />
+        <location filename="../src/appcontroller.cpp" line="1736" />
         <source>gesamter Verlauf</source>
         <translation>complete history</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1780" />
+        <location filename="../src/appcontroller.cpp" line="1783" />
         <source>Die Ausgabe konnte nicht erstellt werden.</source>
         <translation>The output could not be created.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller.cpp" line="1800" />
+        <source>Öffnen mit …</source>
+        <translation>Open with …</translation>
     </message>
     <message>
         <location filename="../src/appcontroller_appts.cpp" line="92" />
@@ -436,84 +441,104 @@
         <translation>Taking photos is only possible on the tablet – please use “Choose file”.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="166" />
+        <location filename="../src/appcontroller_docs.cpp" line="159" />
+        <source>Die Kamera-App hat kein Foto geliefert.</source>
+        <translation>The camera app did not deliver a photo.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="160" />
+        <source>Auf diesem Gerät ist keine Kamera-App verfügbar.</source>
+        <translation>No camera app is available on this device.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="161" />
+        <source>Ohne Kamera-Berechtigung kann VitaParms kein Foto aufnehmen. Bitte in den Android-Einstellungen unter Apps → VitaParms → Berechtigungen erlauben.</source>
+        <translation>Without camera permission VitaParms cannot take a photo. Please allow it in the Android settings under Apps → VitaParms → Permissions.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="162" />
+        <source>Die Kamera ließ sich nicht starten (%1).</source>
+        <translation>The camera could not be started (%1).</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_docs.cpp" line="172" />
         <source>Das Bild lässt sich nicht lesen.</source>
         <translation>The image cannot be read.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="170" />
+        <location filename="../src/appcontroller_docs.cpp" line="176" />
         <source>Foto_%1.pdf</source>
         <translation>Photo_%1.pdf</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="190" />
+        <location filename="../src/appcontroller_docs.cpp" line="196" />
         <source>Bitte eine PDF-Datei einzeln übernehmen (Fotos lassen sich zu einem Dokument zusammenfassen).</source>
         <translation>Please add a PDF file on its own (photos can be combined into one document).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="197" />
+        <location filename="../src/appcontroller_docs.cpp" line="203" />
         <source>Dokument.pdf</source>
         <translation>Document.pdf</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="202" />
+        <location filename="../src/appcontroller_docs.cpp" line="208" />
         <source>Nur PDF-Dateien und Bilder (JPEG, PNG) lassen sich übernehmen.</source>
         <translation>Only PDF files and images (JPEG, PNG) can be added.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="210" />
+        <location filename="../src/appcontroller_docs.cpp" line="216" />
         <source>Scan</source>
         <translation>Scan</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="262" />
-        <location filename="../src/appcontroller_docs.cpp" line="300" />
+        <location filename="../src/appcontroller_docs.cpp" line="268" />
+        <location filename="../src/appcontroller_docs.cpp" line="306" />
         <source>Bitte einen Titel eingeben.</source>
         <translation>Please enter a title.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="265" />
+        <location filename="../src/appcontroller_docs.cpp" line="271" />
         <source>Bitte zuerst ein Foto aufnehmen oder eine Datei wählen.</source>
         <translation>Please take a photo or choose a file first.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="267" />
+        <location filename="../src/appcontroller_docs.cpp" line="273" />
         <source>Das PDF ließ sich nicht erstellen.</source>
         <translation>The PDF could not be created.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="272" />
+        <location filename="../src/appcontroller_docs.cpp" line="278" />
         <source>Dieses Dokument ist bereits in der Akte: „%1“.</source>
         <translation>This document is already in the record: “%1”.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="298" />
+        <location filename="../src/appcontroller_docs.cpp" line="304" />
         <source>Das Dokument gibt es nicht mehr.</source>
         <translation>The document no longer exists.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="333" />
+        <location filename="../src/appcontroller_docs.cpp" line="339" />
         <source>Der Inhalt dieses Dokuments fehlt noch – er kommt mit dem nächsten Abgleich.</source>
         <translation>The content of this document is still missing – it arrives with the next synchronisation.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="335" />
+        <location filename="../src/appcontroller_docs.cpp" line="341" />
         <source>Keine App zum Anzeigen von PDF-Dateien gefunden.</source>
         <translation>No app for viewing PDF files found.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="349" />
+        <location filename="../src/appcontroller_docs.cpp" line="355" />
         <source>Bitte mindestens ein Dokument mit Inhalt wählen.</source>
         <translation>Please choose at least one document with content.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="359" />
+        <location filename="../src/appcontroller_docs.cpp" line="365" />
         <location filename="../src/appcontroller_reports.cpp" line="145" />
         <source>Das Passwort sollte mindestens 8 Zeichen lang sein.</source>
         <translation>The password should be at least 8 characters long.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="369" />
+        <location filename="../src/appcontroller_docs.cpp" line="375" />
         <source>Krankenakte – %1</source>
         <translation>Medical record – %1</translation>
     </message>
@@ -669,121 +694,126 @@
     </message>
     <message>
         <location filename="../src/appcontroller_stock.cpp" line="64" />
-        <source>Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. (Unter Android: Einstellungen → Bedienungshilfen → Text-in-Sprache-Ausgabe.)</source>
-        <translation>No speech output available – the assistant only shows the details. (On Android: Settings → Accessibility → Text-to-speech output.)</translation>
+        <source>Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. Bitte eine Sprachausgabe-App (z. B. „Sprachausgabe von Google“) mit deutscher Stimme installieren; in den Android-Einstellungen über die Suche nach „Text-in-Sprache“ bzw. „Sprachausgabe“ zu finden.</source>
+        <translation>No speech output available – the assistant only shows the details. Please install a speech app (e.g. “Speech Services by Google”) with a voice for your language; search the Android settings for “text-to-speech”.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="69" />
+        <location filename="../src/appcontroller_stock.cpp" line="68" />
+        <source>Die Sprachausgabe wird gestartet …</source>
+        <translation>Speech output is starting …</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_stock.cpp" line="72" />
         <source>Für die eingestellte Sprache ist keine Systemstimme installiert, die Aussprache kann fremd klingen.</source>
         <translation>No system voice is installed for the selected language, so the pronunciation may sound foreign.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="102" />
+        <location filename="../src/appcontroller_stock.cpp" line="105" />
         <source>alle Zeitpunkte</source>
         <translation>all times</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="107" />
+        <location filename="../src/appcontroller_stock.cpp" line="110" />
         <source>Zuletzt gestellt: %1 von %2 (für %3) – %4</source>
         <translation>Last prepared: %1 by %2 (for %3) – %4</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="111" />
+        <location filename="../src/appcontroller_stock.cpp" line="114" />
         <source>Bisher wurden für %1 keine Medikamente mit dem Assistenten gestellt.</source>
         <translation>No medicines have been prepared for %1 with the assistant yet.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="136" />
+        <location filename="../src/appcontroller_stock.cpp" line="139" />
         <source>Wirkstoff: %1</source>
         <translation>Active ingredient: %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="158" />
+        <location filename="../src/appcontroller_stock.cpp" line="161" />
         <source>Einnahme:</source>
         <translation>Intake:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="159" />
+        <location filename="../src/appcontroller_stock.cpp" line="162" />
         <source>Bemerkung:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="160" />
+        <location filename="../src/appcontroller_stock.cpp" line="163" />
         <source>Hinweis:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="161" />
+        <location filename="../src/appcontroller_stock.cpp" line="164" />
         <source>Grund:</source>
         <translation>Reason:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="169" />
+        <location filename="../src/appcontroller_stock.cpp" line="172" />
         <source>insgesamt %1%2</source>
         <translation>%1%2 in total</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="176" />
+        <location filename="../src/appcontroller_stock.cpp" line="179" />
         <source>%1 bis %2</source>
         <translation>%1 to %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="201" />
+        <location filename="../src/appcontroller_stock.cpp" line="204" />
         <source>Medikament %1: Der Bestand reichte beim Stellen nicht – bitte Bestand prüfen.</source>
         <translation>Medicine %1: the stock was insufficient when preparing – please check the stock.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="206" />
+        <location filename="../src/appcontroller_stock.cpp" line="209" />
         <source>Im Protokoll vermerkt: %1 von %2</source>
         <translation>Logged: %1 by %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="231" />
+        <location filename="../src/appcontroller_stock.cpp" line="234" />
         <source>nicht bestätigt</source>
         <translation>not confirmed</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="272" />
+        <location filename="../src/appcontroller_stock.cpp" line="275" />
         <source>mehr als ein Jahr</source>
         <translation>more than a year</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="293" />
+        <location filename="../src/appcontroller_stock.cpp" line="296" />
         <source>geliefert am %1 (%2)</source>
         <translation>delivered on %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="338" />
+        <location filename="../src/appcontroller_stock.cpp" line="341" />
         <source>gestellt</source>
         <translation>prepared</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="338" />
+        <location filename="../src/appcontroller_stock.cpp" line="341" />
         <source>Eingang</source>
         <translation>Received</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="338" />
+        <location filename="../src/appcontroller_stock.cpp" line="341" />
         <source>Korrektur</source>
         <translation>Correction</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="338" />
+        <location filename="../src/appcontroller_stock.cpp" line="341" />
         <source>entsorgt</source>
         <translation>disposed of</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="357" />
+        <location filename="../src/appcontroller_stock.cpp" line="360" />
         <source>Bitte eine Menge angeben.</source>
         <translation>Please enter a quantity.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="408" />
+        <location filename="../src/appcontroller_stock.cpp" line="411" />
         <source>von Hand hinzugefügt</source>
         <translation>added manually</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="437" />
+        <location filename="../src/appcontroller_stock.cpp" line="440" />
         <source>Das Medikament steht nicht mehr im Medikamentenplan.</source>
         <translation>The medicine is no longer in the medication plan.</translation>
     </message>
@@ -2136,11 +2166,6 @@
 </context>
 <context>
     <name>DocumentEditPage</name>
-    <message>
-        <location filename="../qml/pages/DocumentEditPage.qml" line="50" />
-        <source>Auf diesem Gerät ist keine Kamera-App verfügbar.</source>
-        <translation>No camera app is available on this device.</translation>
-    </message>
     <message>
         <location filename="../qml/pages/DocumentEditPage.qml" line="68" />
         <source>Bitte ein gültiges Datum eingeben (TT.MM.JJJJ).</source>
@@ -6494,7 +6519,7 @@ You can take over the current template again via “Tools → Customize forms…
 <context>
     <name>PatientDialog</name>
     <message>
-        <location filename="../src/appcontroller_docs.cpp" line="402" />
+        <location filename="../src/appcontroller_docs.cpp" line="408" />
         <location filename="../src/autopilot.cpp" line="1008" />
         <source>Vorsorge</source>
         <translation>Advance directive</translation>
@@ -7744,167 +7769,167 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>Medication is prepared.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="96" />
+        <location filename="../qml/pages/PrepPage.qml" line="100" />
         <source>Beenden</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="99" />
+        <location filename="../qml/pages/PrepPage.qml" line="103" />
         <source>Medikamente stellen</source>
         <translation>Prepare medication</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="102" />
+        <location filename="../qml/pages/PrepPage.qml" line="106" />
         <source>Protokoll</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="113" />
+        <location filename="../qml/pages/PrepPage.qml" line="117" />
         <source>◀ Zurück</source>
         <translation>◀ Back</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="116" />
+        <location filename="../qml/pages/PrepPage.qml" line="120" />
         <source>↻ Wiederholen</source>
         <translation>↻ Repeat</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="120" />
+        <location filename="../qml/pages/PrepPage.qml" line="124" />
         <source>Von vorn</source>
         <translation>Start over</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="120" />
+        <location filename="../qml/pages/PrepPage.qml" line="124" />
         <source>Weiter ▶</source>
         <translation>Next ▶</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="120" />
+        <location filename="../qml/pages/PrepPage.qml" line="124" />
         <source>Fertig ✔</source>
         <translation>Done ✔</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="141" />
+        <location filename="../qml/pages/PrepPage.qml" line="145" />
         <source>täglich</source>
         <translation>daily</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="143" />
+        <location filename="../qml/pages/PrepPage.qml" line="147" />
         <source>wöchentlich (7 Tage)</source>
         <translation>weekly (7 days)</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="150" />
+        <location filename="../qml/pages/PrepPage.qml" line="154" />
         <source>Zeitpunkt</source>
         <translation>Time</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="153" />
+        <location filename="../qml/pages/PrepPage.qml" line="157" />
         <source>ab</source>
         <translation>eve</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="153" />
+        <location filename="../qml/pages/PrepPage.qml" line="157" />
         <source>für</source>
         <translation>for</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="156" />
+        <location filename="../qml/pages/PrepPage.qml" line="160" />
         <source>Stimme</source>
         <translation>Voice</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="161" />
+        <location filename="../qml/pages/PrepPage.qml" line="165" />
         <source>automatisch vorlesen</source>
         <translation>read aloud automatically</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="164" />
+        <location filename="../qml/pages/PrepPage.qml" line="168" />
         <source>Wochendosierer: %1</source>
         <translation>Weekly pill organiser: %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="176" />
+        <location filename="../qml/pages/PrepPage.qml" line="180" />
         <source>In diesen Tagen nicht fällig:</source>
         <translation>Not due on these days:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="176" />
+        <location filename="../qml/pages/PrepPage.qml" line="180" />
         <source>An diesem Tag nicht fällig:</source>
         <translation>Not due on this day:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="177" />
+        <location filename="../qml/pages/PrepPage.qml" line="181" />
         <source>Bedarfsmedikation:</source>
         <translation>As-needed medication:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="178" />
+        <location filename="../qml/pages/PrepPage.qml" line="182" />
         <source>Sonstiges:</source>
         <translation>Other:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="179" />
+        <location filename="../qml/pages/PrepPage.qml" line="183" />
         <source>Notfallmedikation:</source>
         <translation>Emergency medication:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="208" />
+        <location filename="../qml/pages/PrepPage.qml" line="212" />
         <source>Medikament %1 von %2</source>
         <translation>Medicine %1 of %2</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="289" />
+        <location filename="../qml/pages/PrepPage.qml" line="293" />
         <source>Medikamente sind gerichtet</source>
         <translation>Medication is prepared</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="291" />
+        <location filename="../qml/pages/PrepPage.qml" line="295" />
         <source>%1 Medikament(e) für %2</source>
         <translation>%1 medication(s) for %2</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="292" />
+        <location filename="../qml/pages/PrepPage.qml" line="296" />
         <source>Wochendosierer %1</source>
         <translation>Weekly pill organiser %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="295" />
+        <location filename="../qml/pages/PrepPage.qml" line="299" />
         <source>Bemerkung</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="295" />
+        <location filename="../qml/pages/PrepPage.qml" line="299" />
         <source>optional, z. B. „Wochendosierer KW 43“</source>
         <translation>optional, e.g. “weekly pill box week 43”</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="312" />
+        <location filename="../qml/pages/PrepPage.qml" line="316" />
         <source>Bestand und Bestellungen</source>
         <translation>Stock and orders</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="336" />
+        <location filename="../qml/pages/PrepPage.qml" line="340" />
         <source>Protokoll – letzte 90 Tage</source>
         <translation>Log – last 90 days</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="337" />
+        <location filename="../qml/pages/PrepPage.qml" line="341" />
         <source>Als PDF</source>
         <translation>As PDF</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="338" />
+        <location filename="../qml/pages/PrepPage.qml" line="342" />
         <source>Schließen</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="340" />
+        <location filename="../qml/pages/PrepPage.qml" line="344" />
         <source>Noch keine Einträge.</source>
         <translation>No entries yet.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/PrepPage.qml" line="353" />
+        <location filename="../qml/pages/PrepPage.qml" line="357" />
         <source>für %1</source>
         <translation>for %1</translation>
     </message>
@@ -10286,52 +10311,52 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>Speech</name>
     <message>
-        <location filename="../../src/speech.cpp" line="172" />
+        <location filename="../../src/speech.cpp" line="193" />
         <source>weiblich (automatisch)</source>
         <translation>female (automatic)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="173" />
+        <location filename="../../src/speech.cpp" line="194" />
         <source>männlich (automatisch)</source>
         <translation>male (automatic)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="183" />
+        <location filename="../../src/speech.cpp" line="204" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="184" />
+        <location filename="../../src/speech.cpp" line="205" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="185" />
+        <location filename="../../src/speech.cpp" line="206" />
         <source>unbekannt</source>
         <translation>unknown</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="209" />
+        <location filename="../../src/speech.cpp" line="230" />
         <source>Die gewählte Stimme ist nicht mehr installiert – es wird automatisch gewählt.</source>
         <translation>The selected voice is no longer installed – choosing automatically.</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="225" />
+        <location filename="../../src/speech.cpp" line="246" />
         <source> (Tonhöhe angepasst)</source>
         <translation> (pitch adjusted)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="226" />
+        <location filename="../../src/speech.cpp" line="247" />
         <source>Keine männliche Stimme für %1 installiert</source>
         <translation>No male voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="227" />
+        <location filename="../../src/speech.cpp" line="248" />
         <source>Keine weibliche Stimme für %1 installiert</source>
         <translation>No female voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="229" />
+        <location filename="../../src/speech.cpp" line="250" />
         <source> – die vorhandene Stimme wird nur in der Tonhöhe verändert. Weitere Stimmen lassen sich in den Sprach-Einstellungen des Betriebssystems installieren.</source>
         <translation> – only the pitch of the available voice is changed. More voices can be installed in the operating system’s language settings.</translation>
     </message>

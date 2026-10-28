@@ -61,8 +61,11 @@ QVariantMap AppController::speechInfo()
         voices << QVariantMap{ { QStringLiteral("key"), k }, { QStringLiteral("label"), label } };
     QString info;
     if (!s->available())
-        info = tr("Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. "
-                  "(Unter Android: Einstellungen → Bedienungshilfen → Text-in-Sprache-Ausgabe.)");
+        info = tr("Keine Sprachausgabe verfügbar – der Assistent zeigt die Angaben nur an. Bitte eine "
+                  "Sprachausgabe-App (z. B. „Sprachausgabe von Google“) mit deutscher Stimme installieren; in den "
+                  "Android-Einstellungen über die Suche nach „Text-in-Sprache“ bzw. „Sprachausgabe“ zu finden.");
+    else if (s->voiceDescription().isEmpty())
+        info = tr("Die Sprachausgabe wird gestartet …");
     else if (!s->hint().isEmpty())
         info = s->hint();
     else if (!s->languageMatches())

@@ -12624,52 +12624,52 @@ Restart VitaParms now? (You will need to log in again.)</translation>
 <context>
     <name>Speech</name>
     <message>
-        <location filename="../src/speech.cpp" line="172" />
+        <location filename="../src/speech.cpp" line="193" />
         <source>weiblich (automatisch)</source>
         <translation>female (automatic)</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="173" />
+        <location filename="../src/speech.cpp" line="194" />
         <source>männlich (automatisch)</source>
         <translation>male (automatic)</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="183" />
+        <location filename="../src/speech.cpp" line="204" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="184" />
+        <location filename="../src/speech.cpp" line="205" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="185" />
+        <location filename="../src/speech.cpp" line="206" />
         <source>unbekannt</source>
         <translation>unknown</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="209" />
+        <location filename="../src/speech.cpp" line="230" />
         <source>Die gewählte Stimme ist nicht mehr installiert – es wird automatisch gewählt.</source>
         <translation>The selected voice is no longer installed – choosing automatically.</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="225" />
+        <location filename="../src/speech.cpp" line="246" />
         <source> (Tonhöhe angepasst)</source>
         <translation> (pitch adjusted)</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="226" />
+        <location filename="../src/speech.cpp" line="247" />
         <source>Keine männliche Stimme für %1 installiert</source>
         <translation>No male voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="227" />
+        <location filename="../src/speech.cpp" line="248" />
         <source>Keine weibliche Stimme für %1 installiert</source>
         <translation>No female voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../src/speech.cpp" line="229" />
+        <location filename="../src/speech.cpp" line="250" />
         <source> – die vorhandene Stimme wird nur in der Tonhöhe verändert. Weitere Stimmen lassen sich in den Sprach-Einstellungen des Betriebssystems installieren.</source>
         <translation> – only the pitch of the available voice is changed. More voices can be installed in the operating system’s language settings.</translation>
     </message>

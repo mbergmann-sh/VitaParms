@@ -44,6 +44,7 @@ private:
     QTextToSpeech *m_tts = nullptr;
     QString m_choice = QStringLiteral("female");
     QString m_desc, m_hint;
+    QString m_pending;          // Text, der nach dem Start der Engine vorgelesen wird
     bool m_speaking = false;
     double m_rate = 0.0;
 };

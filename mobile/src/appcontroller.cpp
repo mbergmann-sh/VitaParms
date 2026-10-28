@@ -49,6 +49,9 @@
 #include <QStyleHints>
 #include <QUrl>
 #include <cmath>
+#ifdef Q_OS_ANDROID
+#include <QJniObject>
+#endif
 
 namespace {
 QString iso(const QDate &d) { return d.isValid() ? d.toString(Qt::ISODate) : QString(); }
@@ -1783,9 +1786,22 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
 
 bool AppController::openFile(const QString &path)
 {
-    // Android: Qt reicht die Datei über den FileProvider an eine Anzeige-App weiter
+    // Android: über den FileProvider der App mit Leseberechtigung an eine Anzeige-App geben
     // (dort drucken, teilen, speichern). Am Desktop: Standardanwendung.
+#ifdef Q_OS_ANDROID
+    const QString suffix = QFileInfo(path).suffix().toLower();
+    const QString mime = suffix == QLatin1String("pdf") ? QStringLiteral("application/pdf")
+                       : suffix == QLatin1String("xlsx") ? QStringLiteral("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                       : suffix == QLatin1String("zip") ? QStringLiteral("application/zip") : QStringLiteral("*/*");
+    const QJniObject ctx(QNativeInterface::QAndroidApplication::context());
+    const jboolean ok = QJniObject::callStaticMethod<jboolean>("de/mbergmann/vitaparms/Capture", "view",
+        "(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z",
+        ctx.object(), QJniObject::fromString(path).object<jstring>(), QJniObject::fromString(mime).object<jstring>(),
+        QJniObject::fromString(tr("Öffnen mit …")).object<jstring>());
+    return ok;
+#else
     return QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+#endif
 }
 
 // ---------------------------------------------------------------- Abgleich

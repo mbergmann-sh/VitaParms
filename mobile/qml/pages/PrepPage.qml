@@ -83,6 +83,10 @@ Page {
         if (finished) saveNote(); else logAborted()
         page.closed(finished ? qsTr("Medikamente sind gerichtet.") : "")
     }
+    // Android startet die Sprachausgabe verzögert: Stimmen und Hinweis nach kurzer Zeit neu lesen
+    Timer { interval: 1500; repeat: true; running: !page.voice.description && page.voice.available === true
+            property int tries: 0
+            onTriggered: { page.voice = app.speechInfo(); if (++tries > 10) stop() } }
     Timer { id: doneSpeech; interval: 900; onTriggered: if (page.finished) page.speak(page.session.doneText, true) }
     Component.onCompleted: { day.isoDate = info.start; ready = true; restart() }
     Component.onDestruction: app.stopSpeech()
