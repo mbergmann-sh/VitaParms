@@ -37,7 +37,9 @@ Page {
     Component { id: measureComp; MeasurePage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: personEditComp; PersonEditPage {
         onClosed: (id, msg) => { stackView.pop(); if (id) home.select(id); if (msg) win.toast(msg) } } }
-    Component { id: settingsComp; SettingsPage { onClosed: stackView.pop() } }
+    function openAdmin() { stackView.push(adminComp) }
+    Component { id: settingsComp; SettingsPage { onClosed: stackView.pop(); onOpenAdmin: home.openAdmin() } }
+    Component { id: adminComp; AdminPage { onClosed: stackView.pop() } }
     Component { id: glucoseComp; GlucoseProfilePage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: apptEditComp; AppointmentEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: medEditComp; MedEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
@@ -135,6 +137,10 @@ Page {
                         onActivated: (i) => home.select(home.persons[i].id)
                     }
                     Item { Layout.fillWidth: win.wide }
+                    // Demo: deutlich kennzeichnen, Beenden mit einem Tipp
+                    Badge { visible: app.demo; text: qsTr("Demo – erfundene Daten"); warn: true }
+                    VButton { objectName: "stopDemoButton"; visible: app.demo; text: qsTr("Demo beenden"); kind: "flat"
+                              onClicked: { app.stopDemo(); win.goStart() } }
                     // Abgleich
                     AbstractButton {
                         implicitWidth: syncRow.implicitWidth + 24; implicitHeight: 44

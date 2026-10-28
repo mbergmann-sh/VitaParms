@@ -8,6 +8,7 @@ import ".."
 Page {
     id: page
     signal closed()
+    signal openAdmin()
     property var cfg: app.syncConfig()
     background: Rectangle { color: Theme.paper }
     property var web: app.websiteConfig()
@@ -34,6 +35,12 @@ Page {
             x: Theme.gapL; y: Theme.gap
             width: Math.min(900, page.width - 2 * Theme.gapL)
             spacing: Theme.gap
+
+            SectionTitle { text: qsTr("Verwaltung") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: app.isAdmin ? qsTr("Eigenes Passwort, Anmeldekonten, Wiederherstellungsschlüssel, Sicherung und Demo-Datenbank.")
+                                      : qsTr("Eigenes Passwort ändern, Demo-Datenbank.") }
+            VButton { objectName: "adminButton"; text: qsTr("Verwaltung öffnen"); onClicked: page.openAdmin() }
 
             SectionTitle { text: qsTr("Sprache und Hilfe") }
             Flow {

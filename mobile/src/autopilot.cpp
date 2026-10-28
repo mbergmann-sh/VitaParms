@@ -10,6 +10,8 @@
 #include "fluid.h"
 #include <QLocale>
 #include "database.h"
+#include "keystore.h"
+#include "session.h"
 #include "websync.h"
 #include <QUrl>
 
@@ -1150,6 +1152,90 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         // Website wieder abschalten (die Demo-Datenbank soll nicht ins Leere hochladen)
         wc.insert(QStringLiteral("enabled"), false);
         app.saveWebsiteConfig(wc);
+    }
+
+    // ---- Verwaltung: Konten, Passwort, Wiederherstellung, Sicherung, Demo (Stufe 6)
+    {
+        const QString self = app.userName();
+        const QString selfPw = qEnvironmentVariable("VP_AUTOPILOT_PASSWORD");
+        auto names = [&] { QStringList l; for (const QVariant &v : app.accountList()) l << v.toMap().value(QStringLiteral("name")).toString(); return l; };
+        check(names().contains(self, Qt::CaseInsensitive), "Verwaltung: Kontenliste");
+        check(!app.addAccount(QStringLiteral("pflege"), QStringLiteral("Pflege-Test-1"), QStringLiteral("anders"), false), "Verwaltung: Passwörter verschieden");
+        check(app.addAccount(QStringLiteral("pflege"), QStringLiteral("Pflege-Test-1"), QStringLiteral("Pflege-Test-1"), false)
+              && names().contains(QStringLiteral("pflege")), "Verwaltung: Konto anlegen");
+        check(!app.addAccount(QStringLiteral("pflege"), QStringLiteral("Pflege-Test-1"), QStringLiteral("Pflege-Test-1"), false), "Verwaltung: Konto doppelt");
+        {
+            QByteArray k; Role r;
+            check(Session::keyStore().unlock(QStringLiteral("pflege"), QStringLiteral("Pflege-Test-1"), &k, &r) && r == Role::User, "Verwaltung: neues Konto entsperrt");
+        }
+        check(app.setAccountAdmin(QStringLiteral("pflege"), true) && app.setAccountAdmin(QStringLiteral("pflege"), false), "Verwaltung: Rolle");
+        check(app.resetAccountPassword(QStringLiteral("pflege"), QStringLiteral("Pflege-Neu-22"), QStringLiteral("Pflege-Neu-22")), "Verwaltung: Passwort neu setzen");
+        {
+            QByteArray k; Role r;
+            check(Session::keyStore().unlock(QStringLiteral("pflege"), QStringLiteral("Pflege-Neu-22"), &k, &r), "Verwaltung: neues Passwort gilt");
+            KeyStore disk;
+            check(disk.load(Session::keyStore().path()) && disk.find(QStringLiteral("pflege")), "Verwaltung: Schlüsseldatei gespeichert");
+        }
+        check(!app.removeAccount(self), "Verwaltung: eigenes Konto bleibt");
+        check(!app.changeOwnPassword(QStringLiteral("falsch"), QStringLiteral("Neues-Passwort-1"), QStringLiteral("Neues-Passwort-1")), "Verwaltung: altes Passwort geprüft");
+        check(app.changeOwnPassword(selfPw, QStringLiteral("Neues-Passwort-1"), QStringLiteral("Neues-Passwort-1"))
+              && app.changeOwnPassword(QStringLiteral("Neues-Passwort-1"), selfPw, selfPw), "Verwaltung: eigenes Passwort ändern");
+        const QString code = app.recoveryCode();
+        check(code.size() > 20 && !KeyStore::keyFromRecoveryCode(code).isEmpty(), "Verwaltung: Wiederherstellungsschlüssel");
+        { QFile f(app.recoveryCodePdf()); check(f.open(QIODevice::ReadOnly) && f.read(5) == "%PDF-", "Verwaltung: Schlüssel als PDF"); }
+        const QString backup = app.createBackup();
+        check(!backup.isEmpty() && DbTransfer::isBundle(backup), "Verwaltung: Sicherung");
+        check(app.shareBackup() && app.lastShared().value(0).endsWith(QStringLiteral(".vpdb")), "Verwaltung: Sicherung teilen");
+
+        // Bildschirmfotos der Verwaltung
+        QMetaObject::invokeMethod(h, "openAdmin");
+        wait(600);
+        if (QObject *ap = win->findChild<QObject *>(QStringLiteral("adminPage"))) {
+            shot(QStringLiteral("m90_verwaltung"));
+            QQmlProperty::write(ap, QStringLiteral("code"), code);
+            if (QObject *fl = win->findChild<QObject *>(QStringLiteral("adminFlick"))) {
+                wait(300);
+                QQmlProperty::write(fl, QStringLiteral("contentY"), std::max(0.0, QQmlProperty::read(fl, QStringLiteral("contentHeight")).toDouble()
+                                                                                  - QQmlProperty::read(fl, QStringLiteral("height")).toDouble() - 300));
+            }
+            wait(400);
+            shot(QStringLiteral("m91_verwaltung_sicherung"));
+        } else check(false, "Verwaltung: Seite");
+        stackPop();
+        check(app.removeAccount(QStringLiteral("pflege")) && !names().contains(QStringLiteral("pflege")), "Verwaltung: Konto löschen");
+
+        // Passwort vergessen: sperren, mit dem Wiederherstellungsschlüssel wieder hinein
+        app.lock();
+        QMetaObject::invokeMethod(win, "goStart");
+        wait(600);
+        if (QObject *lp = win->findChild<QObject *>(QStringLiteral("loginPage"))) {
+            if (QObject *rp = win->findChild<QObject *>(QStringLiteral("recoverPopup"))) {
+                QMetaObject::invokeMethod(rp, "open");
+                wait(300);
+                if (QObject *f = win->findChild<QObject *>(QStringLiteral("recoveryCodeField"))) QQmlProperty::write(f, QStringLiteral("text"), code);
+                wait(300);
+                shot(QStringLiteral("m92_passwort_vergessen"));
+                QMetaObject::invokeMethod(rp, "close");
+            } else check(false, "Wiederherstellung: Dialog");
+            Q_UNUSED(lp)
+        } else check(false, "Wiederherstellung: Anmeldeseite");
+        check(!app.recoverAccess(code.left(code.size() - 3) + QStringLiteral("XYZ"), self, selfPw, selfPw), "Wiederherstellung: Tippfehler erkannt");
+        check(app.recoverAccess(code, self, selfPw, selfPw) && app.loggedIn() && app.isAdmin(), "Wiederherstellung: entsperrt");
+        // Demo-Datenbank auf dem Tablet
+        check(app.startDemo() && app.isDemo() && app.loggedIn(), "Demo: gestartet");
+        bool erika = false;
+        for (const QVariant &v : app.persons()) erika = erika || v.toMap().value(QStringLiteral("name")).toString().contains(QStringLiteral("Mustermann"));
+        check(erika && app.journal(app.persons().value(0).toMap().value(QStringLiteral("id")).toLongLong()).size() > 100, "Demo: Daten erzeugt");
+        QMetaObject::invokeMethod(win, "goStart");
+        wait(900);
+        shot(QStringLiteral("m93_demo"));
+        app.stopDemo();
+        check(!app.isDemo() && !app.loggedIn(), "Demo: beendet");
+        check(app.login(self, selfPw) && !app.isDemo(), "Demo: eigene Datenbank wieder");
+        QMetaObject::invokeMethod(win, "goStart");
+        wait(800);
+        h = home();
+        if (!h) { qWarning("HomePage nach der Demo nicht gefunden"); return fails + 1; }
     }
 
     // Hochformat (Tablet gedreht)

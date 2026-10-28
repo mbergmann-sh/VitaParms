@@ -30,6 +30,7 @@ ApplicationWindow {
     function popPage() { stack.pop() }
     function showLanguagePage() { stack.push(languagePage) }   // Bildschirmfotos (Autopilot)
     function openUsbSync() { stack.push(usbSyncPage) }
+    function openImport() { stack.push(setupPage, { mode: 3, fromMenu: true }) }   // Sicherung wiederherstellen
 
     // Vor dem Beenden bzw. Sperren an den USB-Abgleich erinnern (einstellbar auf der USB-Seite)
     property bool usbSynced: false       // in dieser Sitzung schon abgeglichen
@@ -127,7 +128,7 @@ ApplicationWindow {
     Component { id: disclaimerPage; DisclaimerPage { onDone: win.goStart() } }
     Component { id: setupPage; SetupPage { onDone: win.goStart() } }
     Component { id: loginPage; LoginPage { onDone: win.goStart(); onSetupRequested: stack.push(setupPage)
-                                         onImportRequested: stack.push(setupPage, { mode: 3 }) } }
+                                         onImportRequested: stack.push(setupPage, { mode: 3, fromMenu: true }) } }
     Component { id: usbSyncPage; UsbSyncPage { onClosed: stack.pop() } }
     Component { id: homePage; HomePage { objectName: "home"; stackView: stack } }
 

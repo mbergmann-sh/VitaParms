@@ -123,6 +123,48 @@ bool login(const QString &dbPath, const QString &name, const QString &password, 
     return true;
 }
 
+bool recover(const QString &dbPath, const QString &recoveryCode, const QString &name, const QString &password,
+             QString *error)
+{
+    const QByteArray key = KeyStore::keyFromRecoveryCode(recoveryCode);
+    if (key.isEmpty()) {
+        if (error) *error = tr("Der Wiederherstellungsschlüssel ist unvollständig oder enthält einen Tippfehler.");
+        return false;
+    }
+    if (const QString p = KeyStore::passwordProblem(password); !p.isEmpty()) { if (error) *error = p; return false; }
+    if (name.trimmed().isEmpty()) { if (error) *error = tr("Bitte einen Kontonamen angeben."); return false; }
+    Database &db = Database::instance();
+    db.close();
+    QString err;
+    if (db.open(dbPath, key, &err) != Database::OpenResult::Ok) {
+        if (error) *error = tr("Der Wiederherstellungsschlüssel passt nicht zu dieser Datenbank.");
+        return false;
+    }
+    KeyStore ks;
+    const QString keysPath = KeyStore::pathFor(dbPath);
+    if (!QFile::exists(keysPath) || !ks.load(keysPath)) {
+        ks = KeyStore();
+        ks.setPath(keysPath);            // Schlüsseldatei fehlt oder ist beschädigt: neu anlegen
+    }
+    bool ok;
+    if (const Account *a = ks.find(name.trimmed())) {
+        const QString n = a->name;
+        ok = ks.setPassword(n, password, key) && ks.setRole(n, Role::Admin, &err);
+    } else {
+        ok = ks.addAccount(name.trimmed(), password, Role::Admin, key, &err);
+    }
+    if (ok) ok = ks.save(key, &err);
+    if (!ok) {
+        db.close();
+        if (error) *error = err;
+        return false;
+    }
+    const Account *a = ks.find(name.trimmed());
+    set(a ? a->name : name.trimmed(), Role::Admin, ks, key);
+    rememberUser(user());
+    return true;
+}
+
 #ifndef VP_MOBILE
 // Datenbank-Datei wählen und an die Stelle der bisherigen setzen (die bisherige bleibt als Kopie)
 static bool importInteractive(QWidget *parent, const QString &dbPath)

@@ -3163,3 +3163,70 @@ EN.update({
     'Neu starten': 'Restart',
     'Aktualisieren': 'Refresh',
 })
+
+# ---------------------------------------------------------------- v0.24: Tablet – Verwaltung
+EN.update({
+    'Verwaltung': 'Administration',
+    'Ihr Konto': 'Your account',
+    'Angemeldet als %1 (%2)': 'Signed in as %1 (%2)',
+    'Bisheriges Passwort': 'Current password',
+    'Neues Passwort': 'New password',
+    'Neues Passwort wiederholen': 'Repeat new password',
+    'Passwort in Ordnung.': 'Password OK.',
+    'Passwort ändern': 'Change password',
+    'Passwort geändert.': 'Password changed.',
+    'Administratoren verwalten Konten, Sicherungen und die Website; Anwender erfassen und sehen Daten. Die Konten gelten für diese Datenbank – nach dem nächsten Abgleich bzw. Kopieren der Datenbank auch am Computer (Schlüsseldatei).':
+        'Administrators manage accounts, backups and the website; users enter and view data. The accounts apply to this database – after the next synchronisation or copy of the database also on the computer (key file).',
+    '(Sie)': '(you)',
+    'angelegt %1': 'created %1',
+    'Das Konto „%1“ löschen? Die Daten bleiben erhalten.': 'Delete the account “%1”? The data are kept.',
+    'Neues Konto': 'New account',
+    'Konto anlegen': 'Create account',
+    'Konto „%1“ angelegt.': 'Account “%1” created.',
+    'Der Schlüssel öffnet die Datenbank, wenn alle Passwörter vergessen sind (Anmeldung → „Passwort vergessen?“). Er gilt für Computer und Tablet. Bewahren Sie ihn ausgedruckt an einem sicheren Ort auf – nicht auf dem Tablet.':
+        'The key opens the database when all passwords are forgotten (sign-in → “Forgot password?”). It works on the computer and the tablet. Keep it printed in a safe place – not on the tablet.',
+    'Ausblenden': 'Hide',
+    'Als PDF (zum Ausdrucken)': 'As PDF (for printing)',
+    'Die Sicherung ist eine Datei (.vpdb) mit der verschlüsselten Datenbank und den Anmeldekonten, wie „Datenbank exportieren“ am Computer. Über das Teilen-Menü legen Sie sie z. B. in „Dateien“, in der Cloud oder auf dem Computer ab. Ohne Kontopasswort oder Wiederherstellungsschlüssel lässt sie sich nicht öffnen.':
+        'The backup is a file (.vpdb) with the encrypted database and the sign-in accounts, like “Export database” on the computer. Use the share menu to store it e.g. in “Files”, in the cloud or on the computer. It cannot be opened without an account password or the recovery key.',
+    'Sicherung erstellen und ablegen': 'Create and store backup',
+    'Sicherung wiederherstellen …': 'Restore backup …',
+    'Die Demo läuft. „Demo beenden“ (oder Sperren) kehrt zur eigenen Datenbank zurück; dort melden Sie sich wie gewohnt an.':
+        'The demo is running. “End demo” (or Lock) returns to your own database, where you sign in as usual.',
+    'Die Demo zeigt VitaParms mit der erfundenen Person Erika Mustermann: ein Jahr Messwerte, Medikamente, Termine und Befunde. Sie hat eine eigene Datenbank und wird bei jedem Start neu erzeugt – Ihre Daten bleiben unberührt. Die eigene Datenbank wird dafür gesperrt.':
+        'The demo shows VitaParms with the fictitious person Erika Mustermann: one year of readings, medication, appointments and reports. It has its own database and is created afresh at every start – your data remain untouched. Your own database is locked meanwhile.',
+    'Demo beenden': 'End demo',
+    'Demo starten': 'Start demo',
+    'Konto löschen': 'Delete account',
+    'Die Datenbank dieses Tablets wird durch die gewählte Sicherung ersetzt; der bisherige Stand bleibt als Kopie erhalten. Danach melden Sie sich mit einem Konto der Sicherung an. Fortfahren?':
+        'This tablet’s database will be replaced by the chosen backup; the previous state is kept as a copy. Afterwards sign in with an account of the backup. Continue?',
+    'Datei wählen …': 'Choose file …',
+    'Die eigene Datenbank wird gesperrt und die Demo erzeugt (das dauert einige Sekunden). Konto „demo“, Passwort „demo1234“.':
+        'Your own database is locked and the demo is created (this takes a few seconds). Account “demo”, password “demo1234”.',
+    'Die Demo wird erzeugt …': 'Creating the demo …',
+    'Neues Passwort für „%1“': 'New password for “%1”',
+    'Teilen Sie es dem Kontoinhaber persönlich mit.': 'Tell it to the account holder in person.',
+    'Passwort neu gesetzt.': 'Password reset.',
+    'Die Schlüsseldatei konnte nicht gespeichert werden: %1': 'The key file could not be saved: %1',
+    'Nur Administratoren können Konten verwalten.': 'Only administrators can manage accounts.',
+    'Bitte einen Namen für das Konto eingeben.': 'Please enter a name for the account.',
+    'Das Konto gibt es nicht.': 'The account does not exist.',
+    'Das eigene Konto lässt sich nicht löschen.': 'You cannot delete your own account.',
+    'Das bisherige Passwort stimmt nicht.': 'The current password is wrong.',
+    'Nur Administratoren sehen den Wiederherstellungsschlüssel.': 'Only administrators can see the recovery key.',
+    'VitaParms – Wiederherstellungsschlüssel': 'VitaParms – recovery key',
+    '<h2>VitaParms – Wiederherstellungsschlüssel</h2><p>Erstellt am: %1</p><p style="font-family: monospace; font-size: 15pt; font-weight: bold;">%2</p><p>Dieser Schlüssel öffnet die verschlüsselte Datenbank ohne Passwort. Sicher und getrennt vom Gerät aufbewahren. Nicht weitergeben.</p><p>Verwendung: Anmeldung → „Passwort vergessen?“ (Tablet) bzw. „Wiederherstellungsschlüssel…“ (Computer).</p>':
+        '<h2>VitaParms – recovery key</h2><p>Created on: %1</p><p style="font-family: monospace; font-size: 15pt; font-weight: bold;">%2</p><p>This key opens the encrypted database without a password. Keep it safe and separate from the device. Do not pass it on.</p><p>Use: sign-in → “Forgot password?” (tablet) or “Recovery key…” (computer).</p>',
+    'Nur Administratoren können Sicherungen erstellen.': 'Only administrators can create backups.',
+    'VitaParms-Sicherung': 'VitaParms backup',
+    'Die Demo konnte nicht erstellt werden.': 'The demo could not be created.',
+    'Demo – erfundene Daten': 'Demo – fictitious data',
+    'Passwort vergessen?': 'Forgot password?',
+    'Mit dem Wiederherstellungsschlüssel (beim Einrichten ausgedruckt bzw. am Computer unter Extras → Anmeldekonten) erhält ein Konto ein neues Passwort und Administratorrechte. Gibt es das Konto nicht, wird es angelegt.':
+        'With the recovery key (printed during setup, or on the computer under Tools → Login accounts) an account gets a new password and administrator rights. If the account does not exist, it is created.',
+    'Entsperren': 'Unlock',
+    'Der Wiederherstellungsschlüssel ist unvollständig oder enthält einen Tippfehler.': 'The recovery key is incomplete or contains a typo.',
+    'Eigenes Passwort, Anmeldekonten, Wiederherstellungsschlüssel, Sicherung und Demo-Datenbank.': 'Own password, sign-in accounts, recovery key, backup and demo database.',
+    'Eigenes Passwort ändern, Demo-Datenbank.': 'Change own password, demo database.',
+    'Verwaltung öffnen': 'Open administration',
+})

@@ -2017,17 +2017,17 @@ Which appointments should the changes apply to?</translation>
 <context>
     <name>DemoData</name>
     <message>
-        <location filename="../src/demodata.cpp" line="97" />
+        <location filename="../src/demodata.cpp" line="99" />
         <source>Beispieldokument der VitaParms-Demo – keine echten Befunddaten</source>
         <translation>Sample document of the VitaParms demo – no real medical data</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="153" />
+        <location filename="../src/demodata.cpp" line="159" />
         <source>Die alte Demo-Datenbank %1 lässt sich nicht löschen.</source>
         <translation>The old demo database %1 cannot be deleted.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="181" />
+        <location filename="../src/demodata.cpp" line="187" />
         <source>Arterielle Hypertonie (I10.90)
 Diabetes mellitus Typ 2 (E11.90)
 Asthma bronchiale (J45.9)
@@ -2038,576 +2038,576 @@ Bronchial asthma (J45.9)
 Obesity class I (E66.0)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="183" />
+        <location filename="../src/demodata.cpp" line="189" />
         <source>Demo-Person: Alle Angaben sind frei erfunden.</source>
         <translation>Demo person: all details are fictitious.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="184" />
+        <location filename="../src/demodata.cpp" line="190" />
         <source>Penicillin (Hautausschlag)</source>
         <translation>Penicillin (skin rash)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="196" />
+        <location filename="../src/demodata.cpp" line="202" />
         <source>Muster-Krankenkasse</source>
         <translation>Sample Health Insurance</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="238" />
+        <location filename="../src/demodata.cpp" line="244" />
         <source>Tablette</source>
         <translation>tablet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="238" />
+        <location filename="../src/demodata.cpp" line="244" />
         <source>Filmtablette</source>
         <translation>film-coated tablet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="238" />
+        <location filename="../src/demodata.cpp" line="244" />
         <source>Stück</source>
         <translation>pcs</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="239" />
+        <location filename="../src/demodata.cpp" line="245" />
         <source>Bluthochdruck</source>
         <translation>High blood pressure</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="239" />
+        <location filename="../src/demodata.cpp" line="245" />
         <source>Diabetes mellitus Typ 2</source>
         <translation>Type 2 diabetes</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="239" />
+        <location filename="../src/demodata.cpp" line="245" />
         <source>Asthma bronchiale</source>
         <translation>Bronchial asthma</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="243" />
+        <location filename="../src/demodata.cpp" line="249" />
         <source>Amlodipin</source>
         <translation>Amlodipine</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="253" />
+        <location filename="../src/demodata.cpp" line="259" />
         <source>Budesonid/Formoterol</source>
         <translation>Budesonide/formoterol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="254" />
+        <location filename="../src/demodata.cpp" line="260" />
         <source>160/4,5 µg/Hub</source>
         <translation>160/4.5 µg/puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="254" />
+        <location filename="../src/demodata.cpp" line="260" />
         <source>Pulver zur Inhalation</source>
         <translation>inhalation powder</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="254" />
-        <location filename="../src/demodata.cpp" line="269" />
+        <location filename="../src/demodata.cpp" line="260" />
+        <location filename="../src/demodata.cpp" line="275" />
         <source>Hub</source>
         <translation>puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="255" />
+        <location filename="../src/demodata.cpp" line="261" />
         <source>nach der Inhalation Mund ausspülen</source>
         <translation>rinse mouth after inhaling</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="257" />
+        <location filename="../src/demodata.cpp" line="263" />
         <source>Acetylsalicylsäure</source>
         <translation>Acetylsalicylic acid</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="258" />
+        <location filename="../src/demodata.cpp" line="264" />
         <source>Vorbeugung</source>
         <translation>Prevention</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="260" />
+        <location filename="../src/demodata.cpp" line="266" />
         <source>erhöhte Blutfette</source>
         <translation>Raised blood lipids</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="261" />
+        <location filename="../src/demodata.cpp" line="267" />
         <source>Colecalciferol (Vitamin D3)</source>
         <translation>Colecalciferol (vitamin D3)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="261" />
+        <location filename="../src/demodata.cpp" line="267" />
         <source>20.000 IE</source>
         <translation>20,000 IU</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="262" />
+        <location filename="../src/demodata.cpp" line="268" />
         <source>Weichkapsel</source>
         <translation>soft capsule</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="262" />
+        <location filename="../src/demodata.cpp" line="268" />
         <source>Vitamin-D-Mangel</source>
         <translation>Vitamin D deficiency</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="266" />
+        <location filename="../src/demodata.cpp" line="272" />
         <source>einmal pro Woche, sonntags zum Frühstück</source>
         <translation>once a week, on Sundays with breakfast</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="268" />
+        <location filename="../src/demodata.cpp" line="274" />
         <source>100 µg/Hub</source>
         <translation>100 µg/puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="269" />
+        <location filename="../src/demodata.cpp" line="275" />
         <source>Dosieraerosol</source>
         <translation>metered-dose inhaler</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="269" />
+        <location filename="../src/demodata.cpp" line="275" />
         <source>Atemnot</source>
         <translation>Shortness of breath</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="270" />
+        <location filename="../src/demodata.cpp" line="276" />
         <source>1–2 Hübe bei Atemnot, höchstens 8 Hübe am Tag</source>
         <translation>1–2 puffs when short of breath, at most 8 puffs a day</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="273" />
+        <location filename="../src/demodata.cpp" line="279" />
         <source>Schmerzen, Fieber</source>
         <translation>Pain, fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="274" />
+        <location filename="../src/demodata.cpp" line="280" />
         <source>bei Fieber über 38,5 °C, höchstens 3× täglich</source>
         <translation>for fever above 38.5 °C, at most 3 times a day</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="276" />
+        <location filename="../src/demodata.cpp" line="282" />
         <source>Prednisolon</source>
         <translation>Prednisolone</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="277" />
+        <location filename="../src/demodata.cpp" line="283" />
         <source>schwerer Asthmaanfall</source>
         <translation>Severe asthma attack</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="278" />
+        <location filename="../src/demodata.cpp" line="284" />
         <source>2 Tabletten bei schwerem Asthmaanfall, danach Notruf 112</source>
         <translation>2 tablets in a severe asthma attack, then call 112</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="280" />
+        <location filename="../src/demodata.cpp" line="286" />
         <source>Dexpanthenol</source>
         <translation>Dexpanthenol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="280" />
+        <location filename="../src/demodata.cpp" line="286" />
         <source>Salbe</source>
         <translation>ointment</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="281" />
+        <location filename="../src/demodata.cpp" line="287" />
         <source>trockene Haut an den Füßen</source>
         <translation>Dry skin on the feet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="301" />
+        <location filename="../src/demodata.cpp" line="307" />
         <source>Neues Blutdruckmessgerät (Oberarm) in Betrieb genommen</source>
         <translation>Started using a new upper-arm blood pressure monitor</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="302" />
+        <location filename="../src/demodata.cpp" line="308" />
         <source>Spaziergang 45 Minuten, gut vertragen</source>
         <translation>Walked for 45 minutes, well tolerated</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="303" />
+        <location filename="../src/demodata.cpp" line="309" />
         <source>Blutdruck seit Wochen zu hoch – Hausarzt verordnet zusätzlich Amlodipin</source>
         <translation>Blood pressure too high for weeks – GP adds amlodipine</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="304" />
+        <location filename="../src/demodata.cpp" line="310" />
         <source>Knöchel abends leicht geschwollen (Amlodipin?) – beim nächsten Termin ansprechen</source>
         <translation>Ankles slightly swollen in the evening (amlodipine?) – mention at next appointment</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="305" />
+        <location filename="../src/demodata.cpp" line="311" />
         <source>HbA1c 7,8 % – Metformin wird auf 1000 mg erhöht</source>
         <translation>HbA1c 7.8 % – metformin increased to 1000 mg</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="306" />
+        <location filename="../src/demodata.cpp" line="312" />
         <source>Fußpflege; Haut an den Fersen trocken</source>
         <translation>Chiropody; skin on the heels dry</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="307" />
+        <location filename="../src/demodata.cpp" line="313" />
         <source>Husten, Halsschmerzen, Fieber seit gestern Abend</source>
         <translation>Cough, sore throat, fever since last night</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="308" />
+        <location filename="../src/demodata.cpp" line="314" />
         <source>Hausarzt: Bronchitis, Antibiotikum (kein Penicillin) verordnet</source>
         <translation>GP: bronchitis, antibiotic prescribed (no penicillin)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="309" />
+        <location filename="../src/demodata.cpp" line="315" />
         <source>Atemnot nachts, 2 Hübe Salbutamol</source>
         <translation>Short of breath at night, 2 puffs of salbutamol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="310" />
+        <location filename="../src/demodata.cpp" line="316" />
         <source>deutlich besser, kein Fieber mehr</source>
         <translation>much better, no more fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="311" />
+        <location filename="../src/demodata.cpp" line="317" />
         <source>Diabetesschulung begonnen</source>
         <translation>Started diabetes education course</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="312" />
+        <location filename="../src/demodata.cpp" line="318" />
         <source>Gewicht stabil, Ernährungsumstellung zeigt Wirkung</source>
         <translation>Weight stable, change of diet is working</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="316" />
+        <location filename="../src/demodata.cpp" line="322" />
         <source>Transaktion konnte nicht gestartet werden.</source>
         <translation>Could not start the transaction.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="330" />
+        <location filename="../src/demodata.cpp" line="336" />
         <source>Aufnahme in VitaParms</source>
         <translation>Admission to VitaParms</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="405" />
+        <location filename="../src/demodata.cpp" line="411" />
         <source>Zittrig nach Gartenarbeit – Traubenzucker gegessen, nach 15 min 102 mg/dl</source>
         <translation>Shaky after gardening – took glucose tablets, 102 mg/dl after 15 min</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="471" />
+        <location filename="../src/demodata.cpp" line="477" />
         <source>Die Demo-Daten konnten nicht gespeichert werden.</source>
         <translation>The demo data could not be saved.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="491" />
+        <location filename="../src/demodata.cpp" line="497" />
         <source>Praxis Dr. Sommer, Musterstadt</source>
         <translation>Dr Sommer’s practice, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="494" />
+        <location filename="../src/demodata.cpp" line="500" />
         <source>Hausarzt: Blutdruckkontrolle</source>
         <translation>GP: blood pressure check</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="495" />
+        <location filename="../src/demodata.cpp" line="501" />
         <source>Labor: Blutabnahme (HbA1c)</source>
         <translation>Laboratory: blood test (HbA1c)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="495" />
+        <location filename="../src/demodata.cpp" line="501" />
         <source>nüchtern erscheinen</source>
         <translation>come fasting</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="496" />
+        <location filename="../src/demodata.cpp" line="502" />
         <source>Hausarzt: Husten und Fieber</source>
         <translation>GP: cough and fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="497" />
+        <location filename="../src/demodata.cpp" line="503" />
         <source>Lungenfacharzt: Lungenfunktion</source>
         <translation>Lung specialist: lung function test</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="498" />
+        <location filename="../src/demodata.cpp" line="504" />
         <source>Pneumologie am Markt, Musterstadt</source>
         <translation>Market Square Respiratory Clinic, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="498" />
+        <location filename="../src/demodata.cpp" line="504" />
         <source>Peak-Flow-Werte mitbringen</source>
         <translation>bring peak flow readings</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="499" />
+        <location filename="../src/demodata.cpp" line="505" />
         <source>Hausarzt: Kontrolle Blutdruck und Blutzucker</source>
         <translation>GP: blood pressure and blood glucose check</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="500" />
+        <location filename="../src/demodata.cpp" line="506" />
         <source>Blutzucker-Tagebuch und Medikamentenplan mitnehmen</source>
         <translation>bring blood glucose diary and medication plan</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="501" />
+        <location filename="../src/demodata.cpp" line="507" />
         <source>Labor: Blutabnahme</source>
         <translation>Laboratory: blood test</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="502" />
+        <location filename="../src/demodata.cpp" line="508" />
         <source>nüchtern erscheinen, Versichertenkarte mitnehmen</source>
         <translation>come fasting, bring health insurance card</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="503" />
+        <location filename="../src/demodata.cpp" line="509" />
         <source>Diabetesschulung, Teil 4</source>
         <translation>Diabetes education, part 4</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="206" />
-        <location filename="../src/demodata.cpp" line="504" />
+        <location filename="../src/demodata.cpp" line="212" />
+        <location filename="../src/demodata.cpp" line="510" />
         <source>Diabeteszentrum Musterstadt</source>
         <translation>Sampletown Diabetes Centre</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="196" />
+        <location filename="../src/demodata.cpp" line="202" />
         <source>Kassenplatz 1</source>
         <translation>1 Insurance Square</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="197" />
-        <location filename="../src/demodata.cpp" line="202" />
-        <location filename="../src/demodata.cpp" line="205" />
-        <location filename="../src/demodata.cpp" line="207" />
-        <location filename="../src/demodata.cpp" line="209" />
-        <location filename="../src/demodata.cpp" line="210" />
+        <location filename="../src/demodata.cpp" line="203" />
+        <location filename="../src/demodata.cpp" line="208" />
+        <location filename="../src/demodata.cpp" line="211" />
+        <location filename="../src/demodata.cpp" line="213" />
+        <location filename="../src/demodata.cpp" line="215" />
+        <location filename="../src/demodata.cpp" line="216" />
         <source>Musterstadt</source>
         <translation>Sampletown</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="201" />
+        <location filename="../src/demodata.cpp" line="207" />
         <source>Dr. med. Anna Sommer</source>
         <translation>Dr Anna Sommer</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="201" />
+        <location filename="../src/demodata.cpp" line="207" />
         <source>Allgemeinmedizin</source>
         <translation>General practice</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="201" />
+        <location filename="../src/demodata.cpp" line="207" />
         <source>Lindenweg 3</source>
         <translation>3 Linden Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="204" />
+        <location filename="../src/demodata.cpp" line="210" />
         <source>Dr. med. Peter Winter</source>
         <translation>Dr Peter Winter</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="204" />
+        <location filename="../src/demodata.cpp" line="210" />
         <source>Kardiologie</source>
         <translation>Cardiology</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="204" />
+        <location filename="../src/demodata.cpp" line="210" />
         <source>Am Markt 8</source>
         <translation>8 Market Square</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="206" />
+        <location filename="../src/demodata.cpp" line="212" />
         <source>Diabetologie</source>
         <translation>Diabetology</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="206" />
+        <location filename="../src/demodata.cpp" line="212" />
         <source>Diabetesberaterin Frau Klein</source>
         <translation>diabetes adviser Mrs Klein</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="207" />
+        <location filename="../src/demodata.cpp" line="213" />
         <source>Bahnhofstraße 20</source>
         <translation>20 Station Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="208" />
+        <location filename="../src/demodata.cpp" line="214" />
         <source>Klinikum Musterstadt</source>
         <translation>Sampletown General Hospital</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="208" />
+        <location filename="../src/demodata.cpp" line="214" />
         <source>Innere Medizin, Station 4b</source>
         <translation>Internal medicine, ward 4b</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="208" />
+        <location filename="../src/demodata.cpp" line="214" />
         <source>Klinikallee 1</source>
         <translation>1 Hospital Avenue</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="210" />
+        <location filename="../src/demodata.cpp" line="216" />
         <source>Linden-Apotheke</source>
         <translation>Linden Pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="210" />
+        <location filename="../src/demodata.cpp" line="216" />
         <source>Lindenweg 5</source>
         <translation>5 Linden Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="212" />
+        <location filename="../src/demodata.cpp" line="218" />
         <source>Ehemann</source>
         <translation>husband</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="505" />
+        <location filename="../src/demodata.cpp" line="511" />
         <source>Augenarzt: Netzhautkontrolle (Diabetes)</source>
         <translation>Ophthalmologist: retina check (diabetes)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="506" />
+        <location filename="../src/demodata.cpp" line="512" />
         <source>Augenpraxis Lindenallee</source>
         <translation>Lindenallee Eye Clinic</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="506" />
+        <location filename="../src/demodata.cpp" line="512" />
         <source>Pupillen werden erweitert – nicht selbst fahren</source>
         <translation>pupils will be dilated – do not drive yourself</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="507" />
+        <location filename="../src/demodata.cpp" line="513" />
         <source>Rezept abholen: Metformin, Symbicort</source>
         <translation>Collect prescription: metformin, Symbicort</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="515" />
+        <location filename="../src/demodata.cpp" line="521" />
         <source>Physiotherapie: Atemtherapie</source>
         <translation>Physiotherapy: breathing therapy</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="516" />
+        <location filename="../src/demodata.cpp" line="522" />
         <source>Physiopraxis Bewegung, Musterstadt</source>
         <translation>Bewegung Physiotherapy, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="516" />
+        <location filename="../src/demodata.cpp" line="522" />
         <source>Handtuch mitbringen</source>
         <translation>bring a towel</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="526" />
+        <location filename="../src/demodata.cpp" line="532" />
         <source>Patientin: Erika Mustermann, geb. 14.03.1952</source>
         <translation>Patient: Erika Mustermann, born 14/03/1952</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="530" />
+        <location filename="../src/demodata.cpp" line="536" />
         <source>Langzeit-Blutdruckmessung (24 h)</source>
         <translation>24-hour ambulatory blood pressure monitoring</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="530" />
+        <location filename="../src/demodata.cpp" line="536" />
         <source>Praxis Dr. med. Anna Sommer</source>
         <translation>Dr Anna Sommer’s practice</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="531" />
+        <location filename="../src/demodata.cpp" line="537" />
         <source>Mittelwert 24 h: 138/86 mmHg, Tag 142/89 mmHg, Nacht 127/78 mmHg.</source>
         <translation>24-hour mean: 138/86 mmHg, day 142/89 mmHg, night 127/78 mmHg.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="532" />
+        <location filename="../src/demodata.cpp" line="538" />
         <source>Nächtliche Absenkung 11 % (normal: 10–20 %).</source>
         <translation>Nocturnal dip 11 % (normal: 10–20 %).</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="533" />
+        <location filename="../src/demodata.cpp" line="539" />
         <source>Beurteilung: unter Ramipril und Amlodipin deutlich gebesserte, aber noch nicht optimale Einstellung.</source>
         <translation>Assessment: clearly improved on ramipril and amlodipine, but not yet optimally controlled.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="534" />
+        <location filename="../src/demodata.cpp" line="540" />
         <source>Empfehlung: Fortführung der Therapie, Kontrolle in drei Monaten.</source>
         <translation>Recommendation: continue treatment, review in three months.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="535" />
-        <location filename="../src/demodata.cpp" line="544" />
+        <location filename="../src/demodata.cpp" line="541" />
+        <location filename="../src/demodata.cpp" line="550" />
         <source>Laborbefund</source>
         <translation>Laboratory report</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="535" />
-        <location filename="../src/demodata.cpp" line="544" />
+        <location filename="../src/demodata.cpp" line="541" />
+        <location filename="../src/demodata.cpp" line="550" />
         <source>Labor Musterstadt</source>
         <translation>Musterstadt Laboratory</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="536" />
+        <location filename="../src/demodata.cpp" line="542" />
         <source>HbA1c: 7,8 % (Zielbereich individuell &lt; 7,5 %)</source>
         <translation>HbA1c: 7.8 % (individual target &lt; 7.5 %)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="536" />
+        <location filename="../src/demodata.cpp" line="542" />
         <source>Nüchternglukose: 151 mg/dl</source>
         <translation>Fasting glucose: 151 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="537" />
+        <location filename="../src/demodata.cpp" line="543" />
         <source>Kreatinin: 0,9 mg/dl, eGFR 68 ml/min/1,73 m²</source>
         <translation>Creatinine: 0.9 mg/dl, eGFR 68 ml/min/1.73 m²</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="537" />
+        <location filename="../src/demodata.cpp" line="543" />
         <source>LDL-Cholesterin: 104 mg/dl</source>
         <translation>LDL cholesterol: 104 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="538" />
+        <location filename="../src/demodata.cpp" line="544" />
         <source>Kalium: 4,4 mmol/l</source>
         <translation>Potassium: 4.4 mmol/l</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="539" />
+        <location filename="../src/demodata.cpp" line="545" />
         <source>Arztbrief Pneumologie</source>
         <translation>Letter from the respiratory specialist</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="539" />
+        <location filename="../src/demodata.cpp" line="545" />
         <source>Pneumologie am Markt, Dr. med. Jonas Berg</source>
         <translation>Market Square Respiratory Clinic, Dr Jonas Berg</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="540" />
+        <location filename="../src/demodata.cpp" line="546" />
         <source>Vorstellung nach infektgetriggerter Asthma-Exazerbation.</source>
         <translation>Seen after an infection-triggered exacerbation of asthma.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="541" />
+        <location filename="../src/demodata.cpp" line="547" />
         <source>Lungenfunktion: FEV1 82 % des Sollwerts, nach Bronchospasmolyse 91 %.</source>
         <translation>Lung function: FEV1 82 % of predicted, 91 % after bronchodilator.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="542" />
+        <location filename="../src/demodata.cpp" line="548" />
         <source>Peak-Flow-Protokoll mit deutlichem Abfall während des Infekts, inzwischen wieder im persönlichen Bestbereich.</source>
         <translation>Peak flow diary with a clear drop during the infection, now back within the personal best range.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="543" />
+        <location filename="../src/demodata.cpp" line="549" />
         <source>Therapie: Symbicort 160/4,5 µg 2× täglich fortführen, Salbutamol bei Bedarf. Kontrolle in sechs Monaten.</source>
         <translation>Treatment: continue Symbicort 160/4.5 µg twice daily, salbutamol as needed. Review in six months.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="545" />
+        <location filename="../src/demodata.cpp" line="551" />
         <source>HbA1c: 6,9 %</source>
         <translation>HbA1c: 6.9 %</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="545" />
+        <location filename="../src/demodata.cpp" line="551" />
         <source>Nüchternglukose: 124 mg/dl</source>
         <translation>Fasting glucose: 124 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="546" />
+        <location filename="../src/demodata.cpp" line="552" />
         <source>Kreatinin: 0,9 mg/dl, eGFR 70 ml/min/1,73 m²</source>
         <translation>Creatinine: 0.9 mg/dl, eGFR 70 ml/min/1.73 m²</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="546" />
+        <location filename="../src/demodata.cpp" line="552" />
         <source>LDL-Cholesterin: 92 mg/dl</source>
         <translation>LDL cholesterol: 92 mg/dl</translation>
     </message>
@@ -12048,21 +12048,31 @@ Please enter the recovery key (case and hyphens do not matter):</translation>
         <translation>Account or password is wrong.</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="130" />
-        <location filename="../src/session.cpp" line="136" />
-        <location filename="../src/session.cpp" line="144" />
-        <location filename="../src/session.cpp" line="156" />
-        <location filename="../src/session.cpp" line="159" />
+        <location filename="../src/session.cpp" line="131" />
+        <source>Der Wiederherstellungsschlüssel ist unvollständig oder enthält einen Tippfehler.</source>
+        <translation>The recovery key is incomplete or contains a typo.</translation>
+    </message>
+    <message>
+        <location filename="../src/session.cpp" line="135" />
+        <source>Bitte einen Kontonamen angeben.</source>
+        <translation>Please enter an account name.</translation>
+    </message>
+    <message>
+        <location filename="../src/session.cpp" line="172" />
+        <location filename="../src/session.cpp" line="178" />
+        <location filename="../src/session.cpp" line="186" />
+        <location filename="../src/session.cpp" line="198" />
+        <location filename="../src/session.cpp" line="201" />
         <source>Datenbank importieren</source>
         <translation>Import database</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="132" />
+        <location filename="../src/session.cpp" line="174" />
         <source>VitaParms-Datenbank (*.vpdb *.sqlite *.db);;Alle Dateien (*)</source>
         <translation>VitaParms database (*.vpdb *.sqlite *.db);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="137" />
+        <location filename="../src/session.cpp" line="179" />
         <source>Neben der Datenbank liegt keine Schlüsseldatei (.keys) mit den Anmeldekonten.
 
 Schlüsseldatei jetzt auswählen? (Ohne sie lässt sich die Datenbank nur mit dem Wiederherstellungsschlüssel öffnen.)</source>
@@ -12071,17 +12081,17 @@ Schlüsseldatei jetzt auswählen? (Ohne sie lässt sich die Datenbank nur mit de
 Select the key file now? (Without it the database can only be opened with the recovery key.)</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="140" />
+        <location filename="../src/session.cpp" line="182" />
         <source>Schlüsseldatei wählen</source>
         <translation>Select key file</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="141" />
+        <location filename="../src/session.cpp" line="183" />
         <source>Schlüsseldatei (*.keys);;Alle Dateien (*)</source>
         <translation>Key file (*.keys);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="145" />
+        <location filename="../src/session.cpp" line="187" />
         <source>Die Datenbank
 %1
 wird durch die gewählte ersetzt. Der bisherige Stand bleibt als Kopie (*.vor-import-…) im selben Ordner erhalten.
@@ -12094,12 +12104,12 @@ will be replaced by the selected one. The previous state is kept as a copy (*.vo
 Afterwards you log in with an account of the imported database. Continue?</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="160" />
+        <location filename="../src/session.cpp" line="202" />
         <source>Die Datenbank wurde übernommen.%1</source>
         <translation>The database has been taken over.%1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="161" />
+        <location filename="../src/session.cpp" line="203" />
         <source>
 
 Der bisherige Stand liegt als Kopie unter
@@ -12110,55 +12120,55 @@ The previous state is kept as a copy at
 %1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="187" />
-        <location filename="../src/session.cpp" line="205" />
+        <location filename="../src/session.cpp" line="229" />
+        <location filename="../src/session.cpp" line="247" />
         <source>Datenbank</source>
         <translation>Database</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="187" />
+        <location filename="../src/session.cpp" line="229" />
         <source>Die Datenbank kann nicht angelegt werden:
 %1</source>
         <translation>The database cannot be created:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="191" />
+        <location filename="../src/session.cpp" line="233" />
         <source>&lt;p&gt;&lt;b&gt;Neue, verschlüsselte Datenbank&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Legen Sie das erste &lt;b&gt;Administrator-Konto&lt;/b&gt; an. Weitere Konten (Administratoren oder Anwender) können Sie danach unter &lt;i&gt;Extras → Anmeldekonten&lt;/i&gt; hinzufügen.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;New encrypted database&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Create the first &lt;b&gt;administrator account&lt;/b&gt;. You can add further accounts (administrators or users) afterwards under &lt;i&gt;Tools → Login accounts&lt;/i&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="205" />
+        <location filename="../src/session.cpp" line="247" />
         <source>Die Datenbank kann nicht geöffnet werden:
 %1</source>
         <translation>The database cannot be opened:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="208" />
-        <location filename="../src/session.cpp" line="223" />
+        <location filename="../src/session.cpp" line="250" />
+        <location filename="../src/session.cpp" line="265" />
         <source>Datenbank verschlüsseln</source>
         <translation>Encrypt database</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="209" />
+        <location filename="../src/session.cpp" line="251" />
         <source>&lt;p&gt;Diese Datenbank ist noch &lt;b&gt;nicht verschlüsselt&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;VitaParms verschlüsselt sie jetzt (ChaCha20-Poly1305, 256 Bit). Danach ist der Zugriff nur noch mit einem Anmeldekonto oder dem Wiederherstellungsschlüssel möglich.&lt;/p&gt;&lt;p&gt;Tipp: Unverschlüsselte Sicherungskopien aus früheren Versionen sollten Sie anschließend löschen.&lt;/p&gt;</source>
         <translation>&lt;p&gt;This database is &lt;b&gt;not encrypted&lt;/b&gt; yet.&lt;/p&gt;&lt;p&gt;VitaParms will encrypt it now (ChaCha20-Poly1305, 256 bit). Afterwards access is only possible with a login account or the recovery key.&lt;/p&gt;&lt;p&gt;Tip: you should delete unencrypted backup copies from earlier versions afterwards.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="223" />
+        <location filename="../src/session.cpp" line="265" />
         <source>Verschlüsselung fehlgeschlagen:
 %1</source>
         <translation>Encryption failed:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="230" />
+        <location filename="../src/session.cpp" line="272" />
         <source>&lt;p&gt;Die Datenbank ist jetzt verschlüsselt. Legen Sie das erste &lt;b&gt;Administrator-Konto&lt;/b&gt; an.&lt;/p&gt;</source>
         <translation>&lt;p&gt;The database is now encrypted. Create the first &lt;b&gt;administrator account&lt;/b&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="244" />
+        <location filename="../src/session.cpp" line="286" />
         <source>Zur Datenbank
 %1
 fehlt die Schlüsseldatei (%2).
@@ -12169,51 +12179,52 @@ is missing.
 The database can only be opened with the recovery key.</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="249" />
-        <location filename="../src/session.cpp" line="293" />
-        <location filename="../src/session.cpp" line="312" />
+        <location filename="../src/session.cpp" line="291" />
+        <location filename="../src/session.cpp" line="335" />
+        <location filename="../src/session.cpp" line="354" />
         <source>Wiederherstellung</source>
         <translation>Recovery</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="250" />
-        <location filename="../src/session.cpp" line="294" />
+        <location filename="../src/session.cpp" line="140" />
+        <location filename="../src/session.cpp" line="292" />
+        <location filename="../src/session.cpp" line="336" />
         <source>Der Wiederherstellungsschlüssel passt nicht zu dieser Datenbank.</source>
         <translation>The recovery key does not match this database.</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="253" />
+        <location filename="../src/session.cpp" line="295" />
         <source>&lt;p&gt;Datenbank entsperrt. Legen Sie ein neues &lt;b&gt;Administrator-Konto&lt;/b&gt; an.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Database unlocked. Create a new &lt;b&gt;administrator account&lt;/b&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="257" />
-        <location filename="../src/session.cpp" line="267" />
-        <location filename="../src/session.cpp" line="273" />
+        <location filename="../src/session.cpp" line="299" />
+        <location filename="../src/session.cpp" line="309" />
+        <location filename="../src/session.cpp" line="315" />
         <source>Anmeldung</source>
         <translation>Login</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="268" />
+        <location filename="../src/session.cpp" line="310" />
         <source>Die Anmeldung war korrekt, aber die Datenbank passt nicht zur Schlüsseldatei:
 %1</source>
         <translation>The login was correct, but the database does not match the key file:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="274" />
+        <location filename="../src/session.cpp" line="316" />
         <source>Die Kontenliste in der Schlüsseldatei wurde außerhalb von VitaParms verändert.
 Aus Sicherheitsgründen werden Sie nur mit Anwenderrechten angemeldet. Ein Administrator sollte die Konten prüfen.</source>
         <translation>The account list in the key file was modified outside VitaParms.
 For security reasons you are logged in with user rights only. An administrator should check the accounts.</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="290" />
+        <location filename="../src/session.cpp" line="332" />
         <source>Alle Passwörter vergessen?</source>
         <translation>Forgot all passwords?</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="298" />
+        <location filename="../src/session.cpp" line="340" />
         <source>&lt;p&gt;Datenbank entsperrt. Vergeben Sie ein neues Passwort für ein bestehendes Administrator-Konto oder legen Sie ein neues an.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Database unlocked. Set a new password for an existing administrator account or create a new one.&lt;/p&gt;</translation>
     </message>

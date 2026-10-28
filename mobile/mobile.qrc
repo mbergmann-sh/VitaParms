@@ -42,6 +42,7 @@
         <file>qml/pages/PrepPage.qml</file>
         <file>qml/pages/StockPage.qml</file>
         <file>qml/pages/ReportsPage.qml</file>
+        <file>qml/pages/AdminPage.qml</file>
         <file>qml/pages/DocumentsPage.qml</file>
         <file>qml/pages/DocumentEditPage.qml</file>
         <file>qml/pages/DocumentViewPage.qml</file>

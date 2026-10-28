@@ -29,7 +29,7 @@ SOURCES += \
     $$PWD/src/speech.cpp \
     $$PWD/src/recurrence.cpp \
     $$PWD/src/medschedule.cpp \
-    $$PWD/src/medstock.cpp $$PWD/src/medprep.cpp \
+    $$PWD/src/medstock.cpp $$PWD/src/medprep.cpp $$PWD/src/demodata.cpp \
     $$PWD/src/dbtransfer.cpp \
     $$PWD/src/drugclass.cpp \
     $$PWD/src/websync.cpp \
@@ -63,7 +63,7 @@ HEADERS += \
     $$PWD/src/speech.h \
     $$PWD/src/recurrence.h \
     $$PWD/src/medschedule.h \
-    $$PWD/src/medstock.h $$PWD/src/medprep.h \
+    $$PWD/src/medstock.h $$PWD/src/medprep.h $$PWD/src/demodata.h \
     $$PWD/src/dbtransfer.h \
     $$PWD/src/drugclass.h \
     $$PWD/src/websync.h \

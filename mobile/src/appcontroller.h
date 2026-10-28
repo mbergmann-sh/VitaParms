@@ -36,6 +36,7 @@ class AppController : public QObject
     Q_PROPERTY(bool usbConnected READ usbConnected NOTIFY usbChanged)
     Q_PROPERTY(QString usbCode READ usbCode NOTIFY usbChanged)
     Q_PROPERTY(QString usbStatus READ usbStatus NOTIFY usbChanged)
+    Q_PROPERTY(bool demo READ isDemo NOTIFY sessionChanged)
     Q_PROPERTY(bool usbAskOnExit READ usbAskOnExit WRITE setUsbAskOnExit NOTIFY usbChanged)
 
 public:
@@ -249,6 +250,22 @@ public:
     bool publishWebsiteBlocking(int timeoutMs);        // Autopilot
     QStringList lastShared() const { return m_lastShared; }
 
+    // ---- Verwaltung: Konten, Wiederherstellungsschlüssel, Sicherung, Demo
+    Q_INVOKABLE QVariantList accountList();
+    Q_INVOKABLE bool addAccount(const QString &name, const QString &password, const QString &repeat, bool admin);
+    Q_INVOKABLE bool resetAccountPassword(const QString &name, const QString &password, const QString &repeat);
+    Q_INVOKABLE bool setAccountAdmin(const QString &name, bool admin);
+    Q_INVOKABLE bool removeAccount(const QString &name);
+    Q_INVOKABLE bool changeOwnPassword(const QString &oldPassword, const QString &password, const QString &repeat);
+    Q_INVOKABLE QString recoveryCode();
+    Q_INVOKABLE QString recoveryCodePdf();
+    Q_INVOKABLE bool recoverAccess(const QString &code, const QString &name, const QString &password, const QString &repeat);
+    Q_INVOKABLE QString createBackup();
+    Q_INVOKABLE bool shareBackup();
+    Q_INVOKABLE bool startDemo();
+    Q_INVOKABLE void stopDemo();
+    bool isDemo() const;
+
     // ---- Einstellungen
     Q_INVOKABLE QString glucoseUnit() const;          // "mg/dl" oder "mmol/l"
     Q_INVOKABLE void setGlucoseUnit(const QString &u);
@@ -271,6 +288,7 @@ signals:
     void usbFinished(bool ok, const QString &message);
     void usbReplaced();
     void websiteChanged();
+    void accountsChanged();
     void websiteFinished(bool ok, const QString &message);                              // Datenbank vom Computer übernommen → anmelden
 
 private:
@@ -289,6 +307,8 @@ private:
     class TabletReminders *m_reminders = nullptr;
     class Speech *m_speech = nullptr;
     QStringList m_lastShared;
+    bool m_demo = false;
+    bool persistKeys();
     void setupWebsiteSignals();
     class Speech *speech();
     bool m_usbConnected = false;

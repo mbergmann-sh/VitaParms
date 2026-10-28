@@ -29,5 +29,9 @@ bool openInteractive(QWidget *parent, const QString &dbPath, bool createNew = fa
 bool createDatabase(const QString &dbPath, const QString &adminName, const QString &password,
                     QString *recoveryCode = nullptr, QString *error = nullptr);
 bool login(const QString &dbPath, const QString &name, const QString &password, QString *error = nullptr);
+// Wiederherstellung ohne Dialoge (Tablet): Datenbank mit dem Wiederherstellungsschlüssel öffnen und
+// für 'name' ein Administrator-Konto mit neuem Passwort setzen bzw. anlegen (auch ohne .keys-Datei)
+bool recover(const QString &dbPath, const QString &recoveryCode, const QString &name, const QString &password,
+             QString *error = nullptr);
 
 } // namespace Session

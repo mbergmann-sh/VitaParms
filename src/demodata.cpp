@@ -15,7 +15,9 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPdfWriter>
+#if QT_CONFIG(process)
 #include <QProcess>
+#endif
 #include <QRandomGenerator>
 #include <QSettings>
 #include <QStandardPaths>
@@ -140,7 +142,11 @@ QString DemoData::databasePath()
 
 bool DemoData::launch()
 {
+#if QT_CONFIG(process) && !defined(VP_MOBILE)
     return QProcess::startDetached(QCoreApplication::applicationFilePath(), { QStringLiteral("--demo") });
+#else
+    return false;      // Tablet: die App wechselt selbst in die Demo (AppController::startDemo)
+#endif
 }
 
 bool DemoData::create(const QString &path, qint64 *patientId, QString *error,

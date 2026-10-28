@@ -10,6 +10,7 @@ Page {
     id: page
     signal done()
     property int mode: 0          // 0 Auswahl, 1 vom Computer, 2 neu, 3 Datei
+    property bool fromMenu: false // aus Anmeldung/Verwaltung geöffnet: „Zurück“ schließt die Seite
     property string dbFile: ""
     property string keysFile: ""
     property string recovery: ""
@@ -79,7 +80,7 @@ Page {
                 Label { id: status; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2 }
                 RowLayout {
                     spacing: Theme.gapS
-                    VButton { text: qsTr("Zurück"); onClicked: page.mode = 0 }
+                    VButton { text: qsTr("Zurück"); onClicked: if (page.fromMenu) win.popPage(); else page.mode = 0 }
                     VButton {
                         text: qsTr("Datenbank laden"); kind: "primary"; enabled: url.text !== "" && key.text !== ""
                         onClicked: {
@@ -112,7 +113,7 @@ Page {
                 Label { id: fileStatus; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.alert; visible: text !== "" }
                 RowLayout {
                     spacing: Theme.gapS
-                    VButton { text: qsTr("Zurück"); onClicked: page.mode = 0 }
+                    VButton { text: qsTr("Zurück"); onClicked: if (page.fromMenu) win.popPage(); else page.mode = 0 }
                     VButton {
                         text: qsTr("Datenbank übernehmen"); kind: "primary"; enabled: page.dbFile !== ""
                         onClicked: {
@@ -139,7 +140,7 @@ Page {
                 Label { id: newStatus; color: Theme.alert; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                 RowLayout {
                     spacing: Theme.gapS
-                    VButton { text: qsTr("Zurück"); onClicked: page.mode = 0 }
+                    VButton { text: qsTr("Zurück"); onClicked: if (page.fromMenu) win.popPage(); else page.mode = 0 }
                     VButton {
                         text: qsTr("Datenbank anlegen"); kind: "primary"
                         enabled: admin.text.trim() !== "" && pw1.text !== "" && pw1.text === pw2.text && app.passwordProblem(pw1.text) === ""

@@ -5,7 +5,7 @@
     <DisplayName xml:lang="de">VitaParms</DisplayName>
     <Description>Vital signs diary with journal, charts, medication plan, medical record and appointments</Description>
     <Description xml:lang="de">Vitalwerte-Tagebuch mit Journal, Verlaufskurven, Medikamentenplan, Krankenakte und Terminen</Description>
-    <Version>0.23.2</Version>
+    <Version>0.24.0</Version>
     <ReleaseDate>2026-10-28</ReleaseDate>
     <Default>true</Default>
     <ForcedInstallation>true</ForcedInstallation>

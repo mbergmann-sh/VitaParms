@@ -10,6 +10,7 @@
 #include "database.h"
 #include "dbsync.h"
 #include "dbtransfer.h"
+#include "demodata.h"
 #include "drugclass.h"
 #include "usbsync.h"
 #include "tabletreminders.h"
@@ -100,7 +101,7 @@ AppController::AppController(QObject *parent) : QObject(parent)
 #endif
     m_reminders = new TabletReminders(this);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState s) {
-        if (s == Qt::ApplicationActive && loggedIn()) m_reminders->scheduleSoon();
+        if (s == Qt::ApplicationActive && loggedIn() && !m_demo) m_reminders->scheduleSoon();
     });
     m_idle.setSingleShot(true);
     connect(&m_idle, &QTimer::timeout, this, [this] {
@@ -130,7 +131,7 @@ AppController::AppController(QObject *parent) : QObject(parent)
 }
 
 QString AppController::version() const { return QCoreApplication::applicationVersion(); }
-QString AppController::dbPath() const { return AppSettings::databasePath(); }
+QString AppController::dbPath() const { return m_demo ? DemoData::databasePath() : AppSettings::databasePath(); }
 bool AppController::hasDatabase() const { return Database::fileHasContent(dbPath()) && QFile::exists(KeyStore::pathFor(dbPath())); }
 bool AppController::loggedIn() const { return Session::isLoggedIn() && Database::instance().isOpen(); }
 bool AppController::isAdmin() const { return Session::isAdmin(); }
@@ -202,7 +203,7 @@ void AppController::setError(const QString &e)
 
 void AppController::bump()
 {
-    if (m_reminders && loggedIn()) m_reminders->scheduleSoon();   // Erinnerungen neu stellen
+    if (m_reminders && loggedIn() && !m_demo) m_reminders->scheduleSoon();   // Erinnerungen neu stellen (nicht in der Demo)
     ++m_revision;
     emit dataChanged();
     emit syncStatusChanged();
@@ -284,6 +285,7 @@ void AppController::afterLogin()
     emit sessionChanged();
     bump();
     QTimer::singleShot(1500, this, &AppController::syncIfDue);
+    if (m_demo) return;            // Demo: keine Erinnerungen, kein Abgleich per USB
     // Termin-Erinnerungen: beim ersten Mal um Erlaubnis bitten, dann die nächsten Erinnerungen stellen
     if (!QSettings().value(QStringLiteral("reminders/asked"), false).toBool()) {
         QSettings().setValue(QStringLiteral("reminders/asked"), true);
@@ -323,6 +325,10 @@ void AppController::lock()
     m_idle.stop();
     // mit gültigem Code bleibt der USB-Abgleich bis zum Programmende erreichbar (z. B. Einrichtung)
     if (m_usb && !m_usb->codeEnabled()) { m_usb->stop(); m_usbConnected = false; }
+    if (m_demo) {                  // Sperren beendet die Demo – danach wieder die eigene Datenbank
+        m_demo = false;
+        DemoData::setActive(false);
+    }
     emit sessionChanged();
 }
 

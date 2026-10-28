@@ -74,7 +74,6 @@ SOURCES += \
     src/upcoming.cpp \
     src/leaflet.cpp \
     src/manual.cpp \
-    src/demodata.cpp \
     src/websitedialog.cpp \
     src/usbsyncdialog.cpp \
     src/glucoseprofiledialog.cpp \
@@ -107,7 +106,6 @@ HEADERS += \
     src/upcoming.h \
     src/leaflet.h \
     src/manual.h \
-    src/demodata.h \
     src/websitedialog.h \
     src/usbsyncdialog.h \
     src/glucoseprofiledialog.h \
