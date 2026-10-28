@@ -208,6 +208,9 @@ public:
     Q_INVOKABLE void setVoice(const QString &key);
     Q_INVOKABLE void say(const QString &text);
     Q_INVOKABLE void stopSpeech();
+    Q_INVOKABLE QString speechDiagnostics();
+    Q_INVOKABLE void restartSpeech();
+    Q_INVOKABLE void testSpeech();
     Q_INVOKABLE QVariantMap prepInfo(qint64 pid);
     Q_INVOKABLE QString prepWeekStart(qint64 pid);
     Q_INVOKABLE QVariantMap prepSession(qint64 pid, int days, int slot, const QString &isoDay);

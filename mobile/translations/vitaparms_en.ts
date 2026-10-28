@@ -708,112 +708,117 @@
         <translation>No system voice is installed for the selected language, so the pronunciation may sound foreign.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="105" />
+        <location filename="../src/appcontroller_stock.cpp" line="104" />
+        <source>Dies ist eine Probe der Sprachausgabe von VitaParms.</source>
+        <translation>This is a sample of the VitaParms speech output.</translation>
+    </message>
+    <message>
+        <location filename="../src/appcontroller_stock.cpp" line="122" />
         <source>alle Zeitpunkte</source>
         <translation>all times</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="110" />
+        <location filename="../src/appcontroller_stock.cpp" line="127" />
         <source>Zuletzt gestellt: %1 von %2 (für %3) – %4</source>
         <translation>Last prepared: %1 by %2 (for %3) – %4</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="114" />
+        <location filename="../src/appcontroller_stock.cpp" line="131" />
         <source>Bisher wurden für %1 keine Medikamente mit dem Assistenten gestellt.</source>
         <translation>No medicines have been prepared for %1 with the assistant yet.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="139" />
+        <location filename="../src/appcontroller_stock.cpp" line="156" />
         <source>Wirkstoff: %1</source>
         <translation>Active ingredient: %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="161" />
+        <location filename="../src/appcontroller_stock.cpp" line="178" />
         <source>Einnahme:</source>
         <translation>Intake:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="162" />
+        <location filename="../src/appcontroller_stock.cpp" line="179" />
         <source>Bemerkung:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="163" />
+        <location filename="../src/appcontroller_stock.cpp" line="180" />
         <source>Hinweis:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="164" />
+        <location filename="../src/appcontroller_stock.cpp" line="181" />
         <source>Grund:</source>
         <translation>Reason:</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="172" />
+        <location filename="../src/appcontroller_stock.cpp" line="189" />
         <source>insgesamt %1%2</source>
         <translation>%1%2 in total</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="179" />
+        <location filename="../src/appcontroller_stock.cpp" line="196" />
         <source>%1 bis %2</source>
         <translation>%1 to %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="204" />
+        <location filename="../src/appcontroller_stock.cpp" line="221" />
         <source>Medikament %1: Der Bestand reichte beim Stellen nicht – bitte Bestand prüfen.</source>
         <translation>Medicine %1: the stock was insufficient when preparing – please check the stock.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="209" />
+        <location filename="../src/appcontroller_stock.cpp" line="226" />
         <source>Im Protokoll vermerkt: %1 von %2</source>
         <translation>Logged: %1 by %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="234" />
+        <location filename="../src/appcontroller_stock.cpp" line="251" />
         <source>nicht bestätigt</source>
         <translation>not confirmed</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="275" />
+        <location filename="../src/appcontroller_stock.cpp" line="292" />
         <source>mehr als ein Jahr</source>
         <translation>more than a year</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="296" />
+        <location filename="../src/appcontroller_stock.cpp" line="313" />
         <source>geliefert am %1 (%2)</source>
         <translation>delivered on %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="341" />
+        <location filename="../src/appcontroller_stock.cpp" line="358" />
         <source>gestellt</source>
         <translation>prepared</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="341" />
+        <location filename="../src/appcontroller_stock.cpp" line="358" />
         <source>Eingang</source>
         <translation>Received</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="341" />
+        <location filename="../src/appcontroller_stock.cpp" line="358" />
         <source>Korrektur</source>
         <translation>Correction</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="341" />
+        <location filename="../src/appcontroller_stock.cpp" line="358" />
         <source>entsorgt</source>
         <translation>disposed of</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="360" />
+        <location filename="../src/appcontroller_stock.cpp" line="377" />
         <source>Bitte eine Menge angeben.</source>
         <translation>Please enter a quantity.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="411" />
+        <location filename="../src/appcontroller_stock.cpp" line="428" />
         <source>von Hand hinzugefügt</source>
         <translation>added manually</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller_stock.cpp" line="440" />
+        <location filename="../src/appcontroller_stock.cpp" line="457" />
         <source>Das Medikament steht nicht mehr im Medikamentenplan.</source>
         <translation>The medicine is no longer in the medication plan.</translation>
     </message>
@@ -9802,7 +9807,7 @@ For security reasons you are logged in with user rights only. An administrator s
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="62" />
         <location filename="../qml/pages/SettingsPage.qml" line="97" />
-        <location filename="../qml/pages/SettingsPage.qml" line="150" />
+        <location filename="../qml/pages/SettingsPage.qml" line="166" />
         <source>Gespeichert.</source>
         <translation>Saved.</translation>
     </message>
@@ -9878,121 +9883,146 @@ For security reasons you are logged in with user rights only. An administrator s
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="106" />
+        <source>Sprachausgabe (Medikamente stellen)</source>
+        <translation>Speech output (preparing medication)</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="108" />
+        <source>VitaParms nutzt die Sprachausgabe von Android. Bleibt es stumm: „Probe vorlesen“ tippen und – falls nötig – „Neu starten“. Die Angaben darunter helfen bei der Fehlersuche.</source>
+        <translation>VitaParms uses the Android speech output. If it stays silent, tap “Read sample” and – if necessary – “Restart”. The details below help with troubleshooting.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="112" />
+        <source>Probe vorlesen</source>
+        <translation>Read sample</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="113" />
+        <source>Neu starten</source>
+        <translation>Restart</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="114" />
+        <source>Aktualisieren</source>
+        <translation>Refresh</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="122" />
         <source>Abgleich über das USB-Kabel</source>
         <translation>Synchronising over the USB cable</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="108" />
+        <location filename="../qml/pages/SettingsPage.qml" line="124" />
         <source>Ohne Website: Tablet per USB-Kabel an den Computer anschließen und die Datenbank direkt abgleichen.</source>
         <translation>Without a website: connect the tablet to the computer with a USB cable and synchronise the database directly.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="109" />
+        <location filename="../qml/pages/SettingsPage.qml" line="125" />
         <source>USB-Abgleich mit dem Computer</source>
         <translation>USB sync with the computer</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="111" />
+        <location filename="../qml/pages/SettingsPage.qml" line="127" />
         <source>Erinnerungen</source>
         <translation>Reminders</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="112" />
+        <location filename="../qml/pages/SettingsPage.qml" line="128" />
         <source>An den Quartalswechsel erinnern (KV-Karte in den Praxen einlesen lassen)</source>
         <translation>Remind me of the change of quarter (have the health insurance card read at the practices)</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="115" />
+        <location filename="../qml/pages/SettingsPage.qml" line="131" />
         <source>Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.</source>
         <translation>Notifications are allowed: appointments and the BG day profile remind you even when VitaParms is in the background.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="116" />
+        <location filename="../qml/pages/SettingsPage.qml" line="132" />
         <source>Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.</source>
         <translation>Notifications are not allowed – reminders only appear while VitaParms is open.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="117" />
+        <location filename="../qml/pages/SettingsPage.qml" line="133" />
         <source>Benachrichtigungen erlauben</source>
         <translation>Allow notifications</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="119" />
+        <location filename="../qml/pages/SettingsPage.qml" line="135" />
         <source>Darstellung</source>
         <translation>Appearance</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="124" />
+        <location filename="../qml/pages/SettingsPage.qml" line="140" />
         <source>wie das System</source>
         <translation>like the system</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="124" />
+        <location filename="../qml/pages/SettingsPage.qml" line="140" />
         <source>hell</source>
         <translation>light</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="124" />
+        <location filename="../qml/pages/SettingsPage.qml" line="140" />
         <source>dunkel</source>
         <translation>dark</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="128" />
+        <location filename="../qml/pages/SettingsPage.qml" line="144" />
         <source>Blutzucker</source>
         <translation>Blood glucose</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="137" />
+        <location filename="../qml/pages/SettingsPage.qml" line="153" />
         <source>Sicherheit</source>
         <translation>Security</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="138" />
+        <location filename="../qml/pages/SettingsPage.qml" line="154" />
         <source>Automatisch sperren nach</source>
         <translation>Lock automatically after</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="142" />
+        <location filename="../qml/pages/SettingsPage.qml" line="158" />
         <source>nie</source>
         <translation>never</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="142" />
+        <location filename="../qml/pages/SettingsPage.qml" line="158" />
         <source>5 Minuten</source>
         <translation>5 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="142" />
+        <location filename="../qml/pages/SettingsPage.qml" line="158" />
         <source>10 Minuten</source>
         <translation>10 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="142" />
+        <location filename="../qml/pages/SettingsPage.qml" line="158" />
         <source>30 Minuten</source>
         <translation>30 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="148" />
+        <location filename="../qml/pages/SettingsPage.qml" line="164" />
         <source>Messzeitpunkte für Tagesprofile</source>
         <translation>Measurement times for daily profiles</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="149" />
+        <location filename="../qml/pages/SettingsPage.qml" line="165" />
         <source>Ein Eintrag pro Zeile</source>
         <translation>One entry per line</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="150" />
+        <location filename="../qml/pages/SettingsPage.qml" line="166" />
         <source>Messzeitpunkte speichern</source>
         <translation>Save measurement times</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="152" />
+        <location filename="../qml/pages/SettingsPage.qml" line="168" />
         <source>Über VitaParms</source>
         <translation>About VitaParms</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="154" />
+        <location filename="../qml/pages/SettingsPage.qml" line="170" />
         <source>VitaParms %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt. Open Source (MIT-Lizenz). Angemeldet als %2.</source>
         <translation>VitaParms %1 – personal health diary, not a medical device. Open source (MIT licence). Logged in as %2.</translation>
     </message>
@@ -10311,54 +10341,84 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>Speech</name>
     <message>
-        <location filename="../../src/speech.cpp" line="193" />
+        <location filename="../../src/speech.cpp" line="213" />
         <source>weiblich (automatisch)</source>
         <translation>female (automatic)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="194" />
+        <location filename="../../src/speech.cpp" line="214" />
         <source>männlich (automatisch)</source>
         <translation>male (automatic)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="204" />
+        <location filename="../../src/speech.cpp" line="224" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="205" />
+        <location filename="../../src/speech.cpp" line="225" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="206" />
+        <location filename="../../src/speech.cpp" line="226" />
         <source>unbekannt</source>
         <translation>unknown</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="230" />
+        <location filename="../../src/speech.cpp" line="250" />
         <source>Die gewählte Stimme ist nicht mehr installiert – es wird automatisch gewählt.</source>
         <translation>The selected voice is no longer installed – choosing automatically.</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="246" />
+        <location filename="../../src/speech.cpp" line="266" />
         <source> (Tonhöhe angepasst)</source>
         <translation> (pitch adjusted)</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="247" />
+        <location filename="../../src/speech.cpp" line="267" />
         <source>Keine männliche Stimme für %1 installiert</source>
         <translation>No male voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="248" />
+        <location filename="../../src/speech.cpp" line="268" />
         <source>Keine weibliche Stimme für %1 installiert</source>
         <translation>No female voice installed for %1</translation>
     </message>
     <message>
-        <location filename="../../src/speech.cpp" line="250" />
+        <location filename="../../src/speech.cpp" line="270" />
         <source> – die vorhandene Stimme wird nur in der Tonhöhe verändert. Weitere Stimmen lassen sich in den Sprach-Einstellungen des Betriebssystems installieren.</source>
         <translation> – only the pitch of the available voice is changed. More voices can be installed in the operating system’s language settings.</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="338" />
+        <source>Engines: %1</source>
+        <translation>Engines: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="343" />
+        <source>Verwendet: %1, Zustand: %2</source>
+        <translation>In use: %1, state: %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="345" />
+        <source>Fehler: %1 (%2)</source>
+        <translation>Error: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="347" />
+        <source>Sprache: %1, Stimmen: %2, Sprachen: %3</source>
+        <translation>Language: %1, voices: %2, languages: %3</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="349" />
+        <source>Stimme: %1</source>
+        <translation>Voice: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/speech.cpp" line="352" />
+        <source>Ohne Qt TextToSpeech gebaut.</source>
+        <translation>Built without Qt TextToSpeech.</translation>
     </message>
 </context>
 <context>

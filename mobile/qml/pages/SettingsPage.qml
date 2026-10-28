@@ -103,6 +103,22 @@ Page {
                     text: page.web.last ? (page.web.lastResult || qsTr("Zuletzt aktualisiert: %1").arg(page.web.last))
                                         : (webOn.checked && !page.web.ready ? (page.web.why || "") : "") }
 
+            SectionTitle { text: qsTr("Sprachausgabe (Medikamente stellen)") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: qsTr("VitaParms nutzt die Sprachausgabe von Android. Bleibt es stumm: „Probe vorlesen“ tippen und – falls nötig – „Neu starten“. Die Angaben darunter helfen bei der Fehlersuche.") }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                VButton { objectName: "speechTestButton"; text: qsTr("Probe vorlesen"); onClicked: { app.testSpeech(); speechDiag.refresh() } }
+                VButton { text: qsTr("Neu starten"); kind: "flat"; onClicked: { app.restartSpeech(); speechDiag.refresh(); speechTimer.restart() } }
+                VButton { text: qsTr("Aktualisieren"); kind: "flat"; onClicked: speechDiag.refresh() }
+            }
+            Label { id: speechDiag; objectName: "speechDiagnostics"; Layout.fillWidth: true; wrapMode: Text.WordWrap
+                    font.pixelSize: Theme.fsS; color: Theme.muted
+                    function refresh() { text = app.speechDiagnostics() }
+                    Component.onCompleted: refresh() }
+            Timer { id: speechTimer; interval: 2000; onTriggered: speechDiag.refresh() }
+
             SectionTitle { text: qsTr("Abgleich über das USB-Kabel") }
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
                     text: qsTr("Ohne Website: Tablet per USB-Kabel an den Computer anschließen und die Datenbank direkt abgleichen.") }

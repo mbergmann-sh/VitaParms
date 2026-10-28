@@ -29,6 +29,10 @@ public:
     bool isSpeaking() const;
     bool languageMatches() const;           // Stimme passt zur Oberflächensprache
 
+    // Fehlersuche: Engine, Zustand, Fehler, Sprache und Stimmen; Engine neu starten
+    static QString diagnostics();
+    static void restartEngine();
+
     // Medizinische Kürzel und Brüche für die Aussprache ausschreiben
     static QString expand(const QString &text);
 

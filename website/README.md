@@ -28,6 +28,11 @@ Medikamentenplan, Termine und Berichte zum Herunterladen. Die Krankenakte wird n
 - **HTTPS** (Let's Encrypt genügt) – die Web Crypto API funktioniert nur über HTTPS
 - keine Datenbank, keine weiteren Module
 
+**Eigener Server im Heimnetz** (z. B. Raspberry Pi mit Apache2 und PHP) geht ebenso: Zertifikat
+für eine Subdomain der eigenen Domain per Let's-Encrypt-DNS-Prüfung (der DNS-Eintrag zeigt auf die
+Heimnetz-Adresse), `AllowOverride All`, `a2enmod rewrite headers ssl`, `data/` und `sync/` für
+`www-data` beschreibbar; unterwegs per VPN. Einzelheiten: Handbuch, Kapitel „Die eigene Website“.
+
 ## Installation
 
 1. Subdomain anlegen, z. B. `vitaparms.example.de`, und auf einen **leeren Ordner** zeigen

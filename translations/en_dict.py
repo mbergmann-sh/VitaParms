@@ -3146,3 +3146,20 @@ EN.update({
     'Die Kamera ließ sich nicht starten (%1).': 'The camera could not be started (%1).',
     'Öffnen mit …': 'Open with …',
 })
+
+# ---------------------------------------------------------------- v0.23.2: Sprachausgabe – Fehlersuche
+EN.update({
+    'Engines: %1': 'Engines: %1',
+    'Verwendet: %1, Zustand: %2': 'In use: %1, state: %2',
+    'Fehler: %1 (%2)': 'Error: %1 (%2)',
+    'Sprache: %1, Stimmen: %2, Sprachen: %3': 'Language: %1, voices: %2, languages: %3',
+    'Stimme: %1': 'Voice: %1',
+    'Ohne Qt TextToSpeech gebaut.': 'Built without Qt TextToSpeech.',
+    'Dies ist eine Probe der Sprachausgabe von VitaParms.': 'This is a sample of the VitaParms speech output.',
+    'Sprachausgabe (Medikamente stellen)': 'Speech output (preparing medication)',
+    'VitaParms nutzt die Sprachausgabe von Android. Bleibt es stumm: „Probe vorlesen“ tippen und – falls nötig – „Neu starten“. Die Angaben darunter helfen bei der Fehlersuche.':
+        'VitaParms uses the Android speech output. If it stays silent, tap “Read sample” and – if necessary – “Restart”. The details below help with troubleshooting.',
+    'Probe vorlesen': 'Read sample',
+    'Neu starten': 'Restart',
+    'Aktualisieren': 'Refresh',
+})

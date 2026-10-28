@@ -87,6 +87,23 @@ void AppController::say(const QString &text)
     speech()->say(text);
 }
 
+QString AppController::speechDiagnostics()
+{
+    speech();
+    return Speech::diagnostics();
+}
+
+void AppController::restartSpeech()
+{
+    speech();
+    Speech::restartEngine();
+}
+
+void AppController::testSpeech()
+{
+    speech()->say(tr("Dies ist eine Probe der Sprachausgabe von VitaParms."));
+}
+
 void AppController::stopSpeech()
 {
     if (m_speech) m_speech->stop();
