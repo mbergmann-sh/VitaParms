@@ -235,6 +235,17 @@ public:
     Q_INVOKABLE QVariantList advanceCandidates(qint64 pid);
     Q_INVOKABLE bool linkAdvanceDocument(qint64 pid, int kind, qint64 docId);
 
+    // ---- Ausgaben (Reiter „Berichte“), Teilen, Website aktualisieren
+    Q_INVOKABLE QVariantList reportCatalog(qint64 pid);
+    Q_INVOKABLE QString createReport(qint64 pid, const QString &kind, bool xlsx, int days, const QVariantMap &options = {});
+    Q_INVOKABLE QVariantMap shareReports(qint64 pid, const QVariantList &items, const QVariantMap &opts);
+    Q_INVOKABLE bool shareFiles(const QStringList &files, const QString &subject);
+    Q_INVOKABLE QVariantMap websiteConfig();
+    Q_INVOKABLE bool saveWebsiteConfig(const QVariantMap &m);
+    Q_INVOKABLE bool publishWebsite();
+    bool publishWebsiteBlocking(int timeoutMs);        // Autopilot
+    QStringList lastShared() const { return m_lastShared; }
+
     // ---- Einstellungen
     Q_INVOKABLE QString glucoseUnit() const;          // "mg/dl" oder "mmol/l"
     Q_INVOKABLE void setGlucoseUnit(const QString &u);
@@ -255,7 +266,9 @@ signals:
     void locked();                                   // automatische Sperre
     void usbChanged();
     void usbFinished(bool ok, const QString &message);
-    void usbReplaced();                              // Datenbank vom Computer übernommen → anmelden
+    void usbReplaced();
+    void websiteChanged();
+    void websiteFinished(bool ok, const QString &message);                              // Datenbank vom Computer übernommen → anmelden
 
 private:
     class QQmlEngine *m_engine = nullptr;
@@ -272,6 +285,8 @@ private:
     class UsbSyncServer *m_usb = nullptr;
     class TabletReminders *m_reminders = nullptr;
     class Speech *m_speech = nullptr;
+    QStringList m_lastShared;
+    void setupWebsiteSignals();
     class Speech *speech();
     bool m_usbConnected = false;
     QString m_usbStatus;

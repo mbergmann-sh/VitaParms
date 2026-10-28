@@ -10,7 +10,9 @@ Page {
     signal closed()
     property var cfg: app.syncConfig()
     background: Rectangle { color: Theme.paper }
-    Connections { target: app; function onSyncStatusChanged() { page.cfg = app.syncConfig() } }
+    property var web: app.websiteConfig()
+    Connections { target: app; function onSyncStatusChanged() { page.cfg = app.syncConfig() }
+                  function onWebsiteChanged() { page.web = app.websiteConfig() } }
 
     header: ToolBar {
         implicitHeight: 64
@@ -65,6 +67,41 @@ Page {
 
             Label { objectName: "tlsInfo"; Layout.fillWidth: true; wrapMode: Text.WordWrap; font.pixelSize: Theme.fsS
                     color: page.cfg.tlsOk === false ? Theme.alert : Theme.muted; text: page.cfg.tls || "" }
+
+            SectionTitle { text: qsTr("Website (Ansicht im Browser)") }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    text: qsTr("Die Website zeigt Messwerte, Kurven, Medikamente, Termine und Berichte zum Ansehen im Browser – mit dem Master-Passwort verschlüsselt. Von hier aus lässt sie sich wie am Computer mit dem aktuellen Stand aktualisieren.") }
+            CheckBox { id: webOn; objectName: "webEnabled"; text: qsTr("Website vom Tablet aus aktualisieren"); checked: page.web.enabled === true; font.pixelSize: Theme.fsM }
+            GridLayout {
+                visible: webOn.checked
+                Layout.fillWidth: true
+                columns: page.width > 900 ? 2 : 1
+                columnSpacing: Theme.gap; rowSpacing: Theme.gapS
+                VField { id: webUrl; label: qsTr("Adresse der Website"); text: page.web.url || ""; Layout.fillWidth: true
+                         inputMethodHints: Qt.ImhUrlCharactersOnly | Qt.ImhNoAutoUppercase }
+                VField { id: webKey; label: qsTr("Upload-Schlüssel"); text: page.web.uploadKey || ""; Layout.fillWidth: true
+                         inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText | Qt.ImhSensitiveData }
+                VField { id: webPw; objectName: "webPassword"; label: page.web.hasPassword ? qsTr("Master-Passwort (leer = unverändert)") : qsTr("Master-Passwort der Website")
+                         echoMode: TextInput.Password; Layout.fillWidth: true
+                         inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText | Qt.ImhSensitiveData }
+                VField { id: webPw2; objectName: "webPassword2"; label: qsTr("Passwort wiederholen"); echoMode: TextInput.Password; Layout.fillWidth: true
+                         inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText | Qt.ImhSensitiveData }
+            }
+            CheckBox { id: webAfter; visible: webOn.checked; text: qsTr("Nach jedem Abgleich automatisch aktualisieren"); checked: page.web.afterSync === true; font.pixelSize: Theme.fsM }
+            Label { visible: webOn.checked; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted; font.pixelSize: Theme.fsS
+                    text: qsTr("Das Master-Passwort ist dasselbe wie am Computer (VitaParms → Extras → Website). Es bleibt verschlüsselt in der Datenbank dieses Tablets.") }
+            Flow {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                VButton { text: qsTr("Übernehmen"); kind: "primary"
+                          onClicked: { if (app.saveWebsiteConfig({ enabled: webOn.checked, url: webUrl.text, uploadKey: webKey.text, password: webPw.text, repeat: webPw2.text, afterSync: webAfter.checked })) { webPw.text = ""; webPw2.text = ""; page.web = app.websiteConfig(); win.toast(qsTr("Gespeichert.")) } else win.toast(app.lastError, true) } }
+                VButton { objectName: "publishWebsiteButton"; text: page.web.busy ? qsTr("Wird aktualisiert …") : qsTr("Website jetzt aktualisieren")
+                          enabled: page.web.ready === true && !page.web.busy
+                          onClicked: if (!app.publishWebsite()) win.toast(app.lastError, true) }
+            }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted
+                    text: page.web.last ? (page.web.lastResult || qsTr("Zuletzt aktualisiert: %1").arg(page.web.last))
+                                        : (webOn.checked && !page.web.ready ? (page.web.why || "") : "") }
 
             SectionTitle { text: qsTr("Abgleich über das USB-Kabel") }
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2

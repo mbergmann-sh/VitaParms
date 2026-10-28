@@ -234,7 +234,7 @@ Page {
                         id: tabRow
                         height: parent.height
                         Repeater {
-                            model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Krankenakte")]
+                            model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Krankenakte"), qsTr("Berichte")]
                             delegate: AbstractButton {
                                 height: tabRow.height
                                 width: tl.implicitWidth + 36
@@ -267,6 +267,7 @@ Page {
                 AppointmentsPage { personId: home.personId; active: home.tab === 5; onEdit: (id) => home.editAppointment(id) }
                 DocumentsPage { personId: home.personId; active: home.tab === 6; onOpen: (id) => home.openDocument(id); onAdd: (how) => home.addDocument(how)
                                 onShare: (ids) => home.shareDocuments(ids) }
+                ReportsPage { personId: home.personId; active: home.tab === 7 }
             }
         }
     }

@@ -349,7 +349,6 @@ QVariantMap AppController::shareDocuments(qint64 pid, const QVariantList &ids, c
     if (docs.isEmpty() && !zip) { setError(tr("Bitte mindestens ein Dokument mit Inhalt wählen.")); return r; }
     const QString dir = workDir(QStringLiteral("share"));
     QStringList files;
-    QString mime = QStringLiteral("application/pdf");
     if (zip) {
         AkteExport::Options o;
         for (const MedicalDocument &d : docs) o.documentIds << d.id;
@@ -362,24 +361,12 @@ QVariantMap AppController::shareDocuments(qint64 pid, const QVariantList &ids, c
         QString err;
         if (!AkteExport::build(path, *p, o, &err)) { setError(err); return r; }
         files << path;
-        mime = QStringLiteral("application/zip");
     } else {
         for (int i = 0; i < docs.size(); ++i)
             if (const QString f = docFile(i + 1, docs[i], dir); !f.isEmpty()) files << f;
     }
     r[QStringLiteral("files")] = files;
-    const QString subject = tr("Krankenakte – %1").arg(p->displayName());
-#ifdef Q_OS_ANDROID
-    const QJniObject ctx(QNativeInterface::QAndroidApplication::context());
-    const jboolean ok = QJniObject::callStaticMethod<jboolean>("de/mbergmann/vitaparms/Capture", "share",
-        "(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z",
-        ctx.object(), QJniObject::fromString(files.join(QLatin1Char('\n'))).object<jstring>(),
-        QJniObject::fromString(mime).object<jstring>(), QJniObject::fromString(subject).object<jstring>(),
-        QJniObject::fromString(tr("Teilen mit …")).object<jstring>());
-    if (!ok) { setError(tr("Teilen ist auf diesem Gerät nicht möglich.")); return r; }
-#else
-    Q_UNUSED(subject)
-#endif
+    if (!shareFiles(files, tr("Krankenakte – %1").arg(p->displayName()))) return r;
     r[QStringLiteral("ok")] = true;
     return r;
 }

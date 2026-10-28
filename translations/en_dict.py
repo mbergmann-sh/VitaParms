@@ -3077,3 +3077,60 @@ EN.update({
     'Bestätigen': 'Confirm',
 })
 CONTEXT.update({("PrepPage", "Beenden"): "Close"})
+
+# ---------------------------------------------------------------- v0.23: Tablet – Berichte, Teilen, Website
+EN.update({
+    'Es gibt nichts zu teilen.': 'There is nothing to share.',
+    'Die Datei %1 fehlt.': 'The file %1 is missing.',
+    'Person und Medikamente': 'Person and medication',
+    'Protokolle': 'Logs',
+    'Angaben zur Person, Diagnosen, Kontakte, Vorsorge, Medikamente': 'Personal details, diagnoses, contacts, advance directives, medication',
+    'aktueller Plan mit Einnahmezeiten, zum Ausdrucken': 'current plan with intake times, for printing',
+    'alle Arzneimittel mit Wirkstoff und PZN – für die Prüfung auf Wechselwirkungen':
+        'all medicines with active substance and PZN – for the interaction check',
+    'Bestellliste': 'Order list',
+    'vom %1 – %2': 'of %1 – %2',
+    'Verlauf (alle Messwerte)': 'History (all readings)',
+    'Tabelle mit allen Werten, neueste zuerst': 'table of all values, newest first',
+    'Kurven mit Legende und Kennwerten (DIN A4)': 'charts with legend and key figures (A4)',
+    'Blutzuckerwerte je Tag, nach Uhrzeit geordnet': 'blood glucose values per day, by time',
+    'Stuhlgänge mit Bristol-Typ und Angaben, Tage ohne Stuhlgang': 'bowel movements with Bristol type and details, days without',
+    'Einträge mit Tagessummen und Bilanz': 'entries with daily totals and balance',
+    'wann von wem was gestellt wurde': 'what was prepared when and by whom',
+    'Bitte mindestens einen Bericht wählen.': 'Please choose at least one report.',
+    'VitaParms – %1': 'VitaParms – %1',
+    'Berichte': 'Reports',
+    'Website aktualisiert.': 'Website updated.',
+    'Liste an die Apotheke senden': 'Send list to the pharmacy',
+    'Keine App zum Anzeigen von Excel-Dateien gefunden.': 'No app found for viewing Excel files.',
+    'Berichte öffnen sich in der Anzeige-App des Tablets (dort auch drucken). „Teilen“ gibt sie per E-Mail, Messenger oder Cloud weiter – Gesundheitsdaten bitte nur verschlüsselt oder an vertrauenswürdige Empfänger senden.':
+        'Reports open in the tablet’s viewer app (print from there). “Share” passes them on by e-mail, messenger or cloud – please send health data only encrypted or to trusted recipients.',
+    '7 Tage': '7 days',
+    'alles': 'all',
+    'Der Zeitraum gilt für Verlauf, Kurven und Protokolle; Verlaufskurven zeigen die Woche, den Monat bzw. das Jahr bis heute.':
+        'The period applies to the history, charts and logs; charts show the week, month or year up to today.',
+    'Keine Einträge vorhanden.': 'No entries available.',
+    'auswählen:': 'select:',
+    'Teilen': 'Share',
+    'Excel öffnen': 'Open Excel',
+    '%1 Bericht(e) ausgewählt': '%1 report(s) selected',
+    'Mehrere Berichte zusammen teilen: oben „PDF“ bzw. „Excel“ antippen.': 'To share several reports together, tap “PDF” or “Excel” above.',
+    'als ZIP-Archiv mit Passwort (AES-256)': 'as a ZIP archive with password (AES-256)',
+    'Passwort (mindestens 8 Zeichen)': 'Password (at least 8 characters)',
+    'Das Passwort teilen Sie auf anderem Weg mit (z. B. am Telefon). Öffnen lässt sich das Archiv u. a. mit 7-Zip, WinZip oder Keka.':
+        'Pass on the password another way (e.g. by phone). The archive opens with 7-Zip, WinZip or Keka, among others.',
+    'Ausgewählte teilen': 'Share selected',
+    'Auswahl aufheben': 'Clear selection',
+    'Website (Ansicht im Browser)': 'Website (view in the browser)',
+    'Die Website zeigt Messwerte, Kurven, Medikamente, Termine und Berichte zum Ansehen im Browser – mit dem Master-Passwort verschlüsselt. Von hier aus lässt sie sich wie am Computer mit dem aktuellen Stand aktualisieren.':
+        'The website shows readings, charts, medication, appointments and reports for viewing in the browser – encrypted with the master password. From here it can be updated with the current data, just as on the computer.',
+    'Website vom Tablet aus aktualisieren': 'Update the website from the tablet',
+    'Master-Passwort (leer = unverändert)': 'Master password (empty = unchanged)',
+    'Master-Passwort der Website': 'Master password of the website',
+    'Nach jedem Abgleich automatisch aktualisieren': 'Update automatically after each synchronisation',
+    'Das Master-Passwort ist dasselbe wie am Computer (VitaParms → Extras → Website). Es bleibt verschlüsselt in der Datenbank dieses Tablets.':
+        'The master password is the same as on the computer (VitaParms → Tools → Website). It stays encrypted in this tablet’s database.',
+    'Wird aktualisiert …': 'Updating …',
+    'Website jetzt aktualisieren': 'Update website now',
+    'Zuletzt aktualisiert: %1': 'Last updated: %1',
+})

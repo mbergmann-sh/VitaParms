@@ -46,6 +46,7 @@ SOURCES += \
     src/appcontroller_appts.cpp \
     src/appcontroller_docs.cpp \
     src/appcontroller_stock.cpp \
+    src/appcontroller_reports.cpp \
     src/tabletreminders.cpp \
     src/chartitem.cpp
 HEADERS += \

@@ -40,6 +40,8 @@ Flickable {
             VButton { text: qsTr("Neues Medikament"); iconText: "+"; onClicked: page.edit(0) }
             VButton { text: qsTr("Medikamentenplan als PDF"); onClicked: { const f = app.exportReport("medplan", page.personId); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VButton { text: qsTr("Liste für die Apotheke"); onClicked: { const f = app.exportReport("pharmacy", page.personId); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
+            VButton { objectName: "pharmacyShareButton"; text: qsTr("Liste an die Apotheke senden")
+                      onClicked: { const r = app.shareReports(page.personId, [{ kind: "pharmacy", xlsx: false }], {}); if (!r.ok) win.toast(app.lastError, true) } }
             VChip { text: qsTr("Historie zeigen"); checked: page.archived; onClicked: page.archived = !page.archived }
         }
         // Bestandsführung: offene Bestellung, bis sie als bestellt bestätigt ist

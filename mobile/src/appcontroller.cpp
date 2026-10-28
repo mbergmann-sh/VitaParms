@@ -123,6 +123,7 @@ AppController::AppController(QObject *parent) : QObject(parent)
         emit syncStatusChanged();
         emit syncFinished(ok, msg);
     });
+    setupWebsiteSignals();
 }
 
 QString AppController::version() const { return QCoreApplication::applicationVersion(); }
@@ -1757,7 +1758,7 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         QString err;
         ok = xlsx ? Protocols::toXlsx(t, *p, Protocols::periodText(o), path, &err)
                   : Protocols::toPdf(t, *p, Protocols::periodText(o), path);
-    } else if (kind == QLatin1String("chart")) {
+    } else if (kind == QLatin1String("chart") || kind == QLatin1String("chartXlsx")) {
         ChartSpec spec;
         spec.scale = ChartSpec::Scale(qBound(0, options.value(QStringLiteral("scale")).toInt(), 3));
         ChartSpec::rangeFor(spec.scale, fromIso(options.value(QStringLiteral("ref"))).isValid()
@@ -1766,8 +1767,15 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         spec.panelIds = options.value(QStringLiteral("panels")).toStringList();
         spec.hiddenKeys = options.value(QStringLiteral("hidden")).toStringList();
         spec.records = db.vitals(pid, spec.from.addDays(-31), spec.to);
-        path = QStringLiteral("%1/Verlaufskurven_%2_%3.pdf").arg(dir, base, stamp);
-        ok = ReportPrinter::chartsToPdf(path, *p, spec);
+        spec.setPatient(*p);
+        if (kind == QLatin1String("chartXlsx")) {
+            path = QStringLiteral("%1/Verlaufskurven_%2_%3.xlsx").arg(dir, base, stamp);
+            QString err;
+            ok = ReportPrinter::chartsToXlsx(path, *p, spec, &err);
+        } else {
+            path = QStringLiteral("%1/Verlaufskurven_%2_%3.pdf").arg(dir, base, stamp);
+            ok = ReportPrinter::chartsToPdf(path, *p, spec);
+        }
     }
     if (!ok) { setError(tr("Die Ausgabe konnte nicht erstellt werden.")); return {}; }
     return path;

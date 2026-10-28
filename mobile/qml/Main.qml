@@ -137,6 +137,7 @@ ApplicationWindow {
         function onUsbFinished(ok, message) { if (ok) win.usbSynced = true }
         function onSessionChanged() { if (!app.loggedIn) win.usbSynced = false; else Qt.callLater(win.checkDue) }
         function onSyncFinished(ok, message) { if (app.loggedIn) win.toast(ok ? message : qsTr("Abgleich: %1").arg(message), !ok) }
+        function onWebsiteFinished(ok, message) { if (app.loggedIn) win.toast(ok ? qsTr("Website aktualisiert.") : qsTr("Website: %1").arg(message), !ok) }
     }
 
     Toast { id: toastItem }

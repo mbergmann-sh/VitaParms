@@ -10,6 +10,7 @@
 #include "fluid.h"
 #include <QLocale>
 #include "database.h"
+#include "websync.h"
 #include <QUrl>
 
 #include <QCoreApplication>
@@ -1046,6 +1047,109 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         check(app.linkAdvanceDocument(pid, 1, 0) && app.personDetail(pid).value(QStringLiteral("advanceDocs")).toList().value(1).toMap().value(QStringLiteral("docId")).toLongLong() == 0, "Vorsorge: lösen");
         check(app.deleteDocument(vdoc), "Vorsorge: Dokument löschen");
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    }
+
+    // ---- Ausgaben: Berichte öffnen/teilen, verschlüsseltes ZIP, Website aktualisieren (Stufe 5)
+    {
+        const QVariantList cat = app.reportCatalog(pid);
+        QStringList kinds;
+        for (const QVariant &v : cat) kinds << v.toMap().value(QStringLiteral("kind")).toString();
+        check(kinds.contains(QStringLiteral("sheet")) && kinds.contains(QStringLiteral("pharmacy")) && kinds.contains(QStringLiteral("journal"))
+              && kinds.contains(QStringLiteral("chart")) && kinds.contains(QStringLiteral("preplog")), "Berichte: Liste");
+        auto head = [](const QString &f, int n) { QFile x(f); return x.open(QIODevice::ReadOnly) ? x.read(n) : QByteArray(); };
+        int made = 0;
+        for (const QVariant &v : cat) {
+            const QVariantMap it = v.toMap();
+            if (!it.value(QStringLiteral("available")).toBool()) continue;
+            const QString k = it.value(QStringLiteral("kind")).toString();
+            const QString pdf = app.createReport(pid, k, false, 30, it.value(QStringLiteral("options")).toMap());
+            if (head(pdf, 5) != "%PDF-") { check(false, "Berichte: PDF"); qWarning("PDF fehlt: %s", qPrintable(k)); }
+            else ++made;
+            if (it.value(QStringLiteral("xlsx")).toBool()) {
+                const QString x = app.createReport(pid, k, true, 30, it.value(QStringLiteral("options")).toMap());
+                if (head(x, 2) != "PK") { check(false, "Berichte: Excel"); qWarning("Excel fehlt: %s", qPrintable(k)); }
+                else ++made;
+            }
+        }
+        qInfo("Berichte: %d Dateien erzeugt", made);
+        check(made >= 10, "Berichte: alle Ausgaben");
+        const QVariantMap s1 = app.shareReports(pid, { QVariantMap{ { QStringLiteral("kind"), QStringLiteral("sheet") } },
+                                                      QVariantMap{ { QStringLiteral("kind"), QStringLiteral("journal") }, { QStringLiteral("xlsx"), true } } },
+                                                { { QStringLiteral("days"), 7 } });
+        check(s1.value(QStringLiteral("ok")).toBool() && app.lastShared().size() == 2 && app.lastShared().value(1).endsWith(QStringLiteral(".xlsx")), "Berichte: zwei teilen");
+        check(!app.shareReports(pid, { QVariantMap{ { QStringLiteral("kind"), QStringLiteral("sheet") } } },
+                                { { QStringLiteral("zip"), true }, { QStringLiteral("password"), QStringLiteral("kurz") } }).value(QStringLiteral("ok")).toBool(), "Berichte: Passwort zu kurz");
+        const QVariantMap s2 = app.shareReports(pid, { QVariantMap{ { QStringLiteral("kind"), QStringLiteral("pharmacy") } },
+                                                      QVariantMap{ { QStringLiteral("kind"), QStringLiteral("medplan") } } },
+                                                { { QStringLiteral("zip"), true }, { QStringLiteral("password"), QStringLiteral("Geheim-Passwort-1") } });
+        check(s2.value(QStringLiteral("ok")).toBool() && app.lastShared().size() == 1 && head(app.lastShared().value(0), 2) == "PK", "Berichte: verschlüsseltes ZIP");
+        check(!app.shareReports(pid, {}, {}).value(QStringLiteral("ok")).toBool(), "Berichte: nichts gewählt");
+
+        // Website vom Tablet aus aktualisieren (Testserver: VP_AUTOPILOT_WEB, frische Kopie der Website)
+        const QString webUrl = qEnvironmentVariable("VP_AUTOPILOT_WEB");
+        const QString key = WebSync::generateUploadKey();
+        QVariantMap wc{ { QStringLiteral("enabled"), true }, { QStringLiteral("url"), webUrl.isEmpty() ? QStringLiteral("https://example.invalid/") : webUrl },
+                        { QStringLiteral("uploadKey"), key }, { QStringLiteral("password"), QStringLiteral("Website-Passwort-1") },
+                        { QStringLiteral("repeat"), QStringLiteral("anders") }, { QStringLiteral("afterSync"), false } };
+        check(!app.saveWebsiteConfig(wc), "Website: Passwörter verschieden");
+        wc.insert(QStringLiteral("repeat"), QStringLiteral("Website-Passwort-1"));
+        check(app.saveWebsiteConfig(wc) && app.websiteConfig().value(QStringLiteral("ready")).toBool(), "Website: Einstellungen");
+        if (!webUrl.isEmpty()) {
+            check(app.publishWebsiteBlocking(180000), "Website: aktualisiert");
+            qInfo("Website: %s", qPrintable(app.websiteConfig().value(QStringLiteral("lastResult")).toString()));
+            check(!app.websiteConfig().value(QStringLiteral("last")).toString().isEmpty(), "Website: Zeitpunkt");
+        } else {
+            QString err;
+            const WebSync::Bundle b = WebSync::buildBundle(WebSync::config(), &err);
+            check(b.persons >= 1 && b.files.contains(QStringLiteral("data.vpw")), "Website: Paket");
+        }
+
+        wait(3600);                           // Hinweis „Website aktualisiert“ ausblenden lassen
+        QQmlProperty::write(h, QStringLiteral("tab"), 7);
+        wait(600);
+        if (QObject *rp = win->findChild<QObject *>(QStringLiteral("reportsPage"))) {
+            QQmlProperty::write(rp, QStringLiteral("selected"), QVariantList{ QStringLiteral("sheet"), QStringLiteral("medplan"), QStringLiteral("journal:xlsx") });
+            wait(300);
+            shot(QStringLiteral("m80_berichte"));
+            if (QObject *z = win->findChild<QObject *>(QStringLiteral("reportsZip"))) QQmlProperty::write(z, QStringLiteral("checked"), true);
+            wait(400);
+            QQmlProperty::write(rp, QStringLiteral("contentY"), std::max(0.0, QQmlProperty::read(rp, QStringLiteral("contentHeight")).toDouble()
+                                                                            - QQmlProperty::read(rp, QStringLiteral("height")).toDouble()));
+            wait(300);
+            shot(QStringLiteral("m81_berichte_teilen"));
+            QQmlProperty::write(rp, QStringLiteral("selected"), QVariantList{});
+        } else check(false, "Berichte: Seite");
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+        QMetaObject::invokeMethod(h, "openSettings");
+        wait(600);
+        if (QObject *we = win->findChild<QObject *>(QStringLiteral("webEnabled"))) {
+            if (auto *it = qobject_cast<QQuickItem *>(we)) {
+                for (QQuickItem *p = it->parentItem(); p; p = p->parentItem())
+                    if (p->inherits("QQuickFlickable")) {
+                        QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, it->mapToItem(p->childItems().value(0), QPointF()).y() - 120));
+                        break;
+                    }
+            }
+            // für das Bildschirmfoto: Beispieladresse statt Testserver, Schlüssel gekürzt
+            for (QQuickItem *f = nullptr; !f;) {
+                f = qobject_cast<QQuickItem *>(win->contentItem());
+                std::function<void(QQuickItem *)> walk = [&](QQuickItem *i) {
+                    for (QQuickItem *c : i->childItems()) {
+                        const QString t = QQmlProperty::read(c, QStringLiteral("text")).toString();
+                        if (c->inherits("QQuickTextField") && t == webUrl) QQmlProperty::write(c, QStringLiteral("text"), QStringLiteral("https://vitaparms.example.de/"));
+                        else if (c->inherits("QQuickTextField") && t == key) QQmlProperty::write(c, QStringLiteral("text"), key.left(6) + QStringLiteral("…"));
+                        walk(c);
+                    }
+                };
+                walk(f);
+            }
+            wait(300);
+            shot(QStringLiteral("m82_website"));
+        } else check(false, "Website: Einstellungen auf der Seite");
+        stackPop();
+        // Website wieder abschalten (die Demo-Datenbank soll nicht ins Leere hochladen)
+        wc.insert(QStringLiteral("enabled"), false);
+        app.saveWebsiteConfig(wc);
     }
 
     // Hochformat (Tablet gedreht)
