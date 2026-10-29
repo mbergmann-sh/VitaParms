@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "i18n.h"
+#include "qtcompat.h"
 #include "appsettings.h"
 
 #include <QApplication>
@@ -34,7 +35,7 @@ QString install(QCoreApplication &app)
 
     auto *qtTr = new QTranslator(&app);
     if (qtTr->load(locale, QStringLiteral("qtbase"), QStringLiteral("_"),
-                   QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
+                   vpLibraryPath(QLibraryInfo::TranslationsPath)))
         app.installTranslator(qtTr);
     s_installed << qtTr;
 

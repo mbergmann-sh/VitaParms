@@ -113,17 +113,17 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
 
     for (const QString &n : { QStringLiteral("weightSpin"), QStringLiteral("heightSpin") }) {
         if (auto *s = m_form->findChild<QDoubleSpinBox *>(n))
-            connect(s, &QDoubleSpinBox::valueChanged, this, &VitalDialog::updateBmi);
+            connect(s, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &VitalDialog::updateBmi);
         else if (auto *s2 = m_form->findChild<QSpinBox *>(n))
-            connect(s2, &QSpinBox::valueChanged, this, &VitalDialog::updateBmi);
+            connect(s2, qOverload<int>(&QSpinBox::valueChanged), this, &VitalDialog::updateBmi);
     }
     if (m_peakFlowInfo) {
         if (auto *s = m_form->findChild<QSpinBox *>(QStringLiteral("peakFlowSpin")))
-            connect(s, &QSpinBox::valueChanged, this, &VitalDialog::updatePeakFlow);
+            connect(s, qOverload<int>(&QSpinBox::valueChanged), this, &VitalDialog::updatePeakFlow);
         if (auto *s = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("heightSpin")))
-            connect(s, &QDoubleSpinBox::valueChanged, this, &VitalDialog::updatePeakFlow);
+            connect(s, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &VitalDialog::updatePeakFlow);
         else if (auto *s2 = m_form->findChild<QSpinBox *>(QStringLiteral("heightSpin")))
-            connect(s2, &QSpinBox::valueChanged, this, &VitalDialog::updatePeakFlow);
+            connect(s2, qOverload<int>(&QSpinBox::valueChanged), this, &VitalDialog::updatePeakFlow);
         if (auto *d = m_form->findChild<QDateTimeEdit *>(QStringLiteral("dateTimeEdit")))
             connect(d, &QDateTimeEdit::dateTimeChanged, this, &VitalDialog::updatePeakFlow);
     }
@@ -563,14 +563,14 @@ void VitalDialog::setupCareValues()
             c->addItem(Fluid::edemaName(g), g);
             c->setItemData(c->count() - 1, Fluid::edemaDescription(g), Qt::ToolTipRole);
         }
-        connect(c, &QComboBox::currentIndexChanged, this, &VitalDialog::updateCareInfo);
+        connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &VitalDialog::updateCareInfo);
     }
     for (const char *n : { "edemaSiteCombo", "edemaSideCombo" })
         if (auto *c = m_form->findChild<QComboBox *>(QLatin1String(n)))
             connect(c, &QComboBox::currentTextChanged, this, &VitalDialog::updateCareInfo);
     for (const char *n : { "fluidInSpin", "fluidOutSpin" })
         if (auto *sp = m_form->findChild<QSpinBox *>(QLatin1String(n)))
-            connect(sp, &QSpinBox::valueChanged, this, &VitalDialog::updateCareInfo);
+            connect(sp, qOverload<int>(&QSpinBox::valueChanged), this, &VitalDialog::updateCareInfo);
     // INR: Hinweis unter dem Feld (wie beim Peak Flow eingefügt)
     if (auto *spin = m_form->findChild<QDoubleSpinBox *>(QStringLiteral("inrSpin"))) {
         m_inrInfo = new QLabel(m_form);
@@ -583,7 +583,7 @@ void VitalDialog::setupCareValues()
             form->getWidgetPosition(spin, &row, &role);
             if (row >= 0) form->insertRow(row + 1, QString(), m_inrInfo);
         }
-        connect(spin, &QDoubleSpinBox::valueChanged, this, &VitalDialog::updateCareInfo);
+        connect(spin, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &VitalDialog::updateCareInfo);
     }
 }
 

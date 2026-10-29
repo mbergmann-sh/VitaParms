@@ -48,7 +48,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
         m_theme->addItem(Themes::displayName(t), t);
     m_theme->setCurrentIndex(std::max(0, m_theme->findData(m_initialTheme)));
     lf->addRow(tr("&Theme:"), m_theme);
-    connect(m_theme, &QComboBox::currentIndexChanged, this, [this] {
+    connect(m_theme, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] {
         Themes::apply(m_theme->currentData().toString());   // sofortige Vorschau
     });
     auto *hint = new QLabel(tr("<small>Die Sprache wird nach einem Neustart wirksam, das Theme sofort.</small>"), look);

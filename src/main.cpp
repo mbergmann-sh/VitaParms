@@ -72,6 +72,11 @@ static void chooseLanguageOnFirstStart()
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Qt 5: hochauflösende Bildschirme (Retina, Windows-Skalierung) wie unter Qt 6 berücksichtigen
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
     QApplication app(argc, argv);
     QApplication::setOrganizationName(QStringLiteral("VitaParms"));
     QApplication::setApplicationName(QStringLiteral("VitaParms"));

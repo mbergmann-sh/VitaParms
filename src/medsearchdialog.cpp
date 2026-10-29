@@ -81,7 +81,7 @@ MedSearchDialog::MedSearchDialog(const Patient &p, const QList<Medication> &meds
     });
     lay->addWidget(bb);
 
-    connect(m_group, &QComboBox::currentIndexChanged, this, &MedSearchDialog::run);
+    connect(m_group, qOverload<int>(&QComboBox::currentIndexChanged), this, &MedSearchDialog::run);
     connect(m_text, &QLineEdit::textChanged, this, &MedSearchDialog::run);
     connect(m_archived, &QCheckBox::toggled, this, &MedSearchDialog::run);
     m_group->setCurrentIndex(std::max(0, m_group->findData(group)));

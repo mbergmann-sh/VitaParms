@@ -45,6 +45,17 @@
       advance: 'Vorsorge', disability: 'Schwerbehindertenausweis', gdb: 'GdB', validUntil: 'gültig bis', unlimited: 'unbefristet', reviewSoon: 'bald fällig',
       footer: 'Daten mit AES-256 verschlüsselt, entschlüsselt nur in diesem Browser. Automatische Abmeldung nach 30 Minuten ohne Benutzung.',
       idle: 'Sie wurden nach 30 Minuten ohne Benutzung abgemeldet.',
+      userName: 'Ihr Name', userNameHint: 'Für das Zugriffsprotokoll',
+      log: 'Zugriffsprotokoll', logShort: 'Protokoll', logIntro: 'Wer wann von welcher IP-Adresse auf diese Website zugegriffen hat – neueste zuerst. Der Name ist der bei der Anmeldung eingegebene; Zeiten in der Zeitzone dieses Geräts.',
+      logBack: 'Zurück zu den Daten', logLoading: 'Protokoll wird geladen …', logEmpty: 'Noch keine Einträge.',
+      logCols: ['Datum', 'Uhrzeit', 'Benutzer', 'IP-Adresse', 'Ereignis', 'Angabe'],
+      logCsvCols: ['Datum', 'Uhrzeit', 'Benutzer', 'IP-Adresse', 'Weitergeleitet für', 'Ereignis', 'Angabe', 'Server-Anmeldung', 'Bestätigt'],
+      logFilter: { all: 'Alle Ereignisse', login: 'Nur Anmeldungen', failed: 'Nur fehlgeschlagene Anmeldungen' },
+      logSearchPh: 'Name oder IP-Adresse …', logCount: (n) => `${n} Eintr${n === 1 ? 'ag' : 'äge'}`,
+      logDownload: 'Herunterladen (CSV)', via: 'über', unverified: 'unbestätigt', serverLogin: 'Server-Anmeldung', yes: 'ja', no: 'nein',
+      events: { login: 'Anmeldung', 'login-failed': 'Anmeldung fehlgeschlagen', logout: 'Abmeldung', 'idle-logout': 'Abmeldung (30 min ohne Benutzung)',
+        report: 'Bericht heruntergeladen', csv: 'Messwerte als CSV heruntergeladen', 'log-view': 'Zugriffsprotokoll angezeigt', 'log-download': 'Zugriffsprotokoll heruntergeladen' },
+      logError: 'Das Zugriffsprotokoll ist nicht verfügbar: ',
     },
     en: {
       locale: 'en-GB',
@@ -84,6 +95,17 @@
       advance: 'Advance directives', disability: 'Severe disability card', gdb: 'Degree of disability', validUntil: 'valid until', unlimited: 'unlimited', reviewSoon: 'due soon',
       footer: 'Data encrypted with AES-256, decrypted only in this browser. Automatic logout after 30 minutes without use.',
       idle: 'You were logged out after 30 minutes without use.',
+      userName: 'Your name', userNameHint: 'For the access log',
+      log: 'Access log', logShort: 'Log', logIntro: 'Who accessed this website, when and from which IP address – newest first. The name is the one entered at sign-in; times in this device’s time zone.',
+      logBack: 'Back to the data', logLoading: 'Loading the log …', logEmpty: 'No entries yet.',
+      logCols: ['Date', 'Time', 'User', 'IP address', 'Event', 'Detail'],
+      logCsvCols: ['Date', 'Time', 'User', 'IP address', 'Forwarded for', 'Event', 'Detail', 'Server login', 'Verified'],
+      logFilter: { all: 'All events', login: 'Sign-ins only', failed: 'Failed sign-ins only' },
+      logSearchPh: 'Name or IP address …', logCount: (n) => `${n} entr${n === 1 ? 'y' : 'ies'}`,
+      logDownload: 'Download (CSV)', via: 'via', unverified: 'unverified', serverLogin: 'server login', yes: 'yes', no: 'no',
+      events: { login: 'Sign-in', 'login-failed': 'Sign-in failed', logout: 'Sign-out', 'idle-logout': 'Sign-out (30 min without use)',
+        report: 'Report downloaded', csv: 'Readings downloaded as CSV', 'log-view': 'Access log viewed', 'log-download': 'Access log downloaded' },
+      logError: 'The access log is not available: ',
     },
   };
   let L = TEXT.de;
@@ -170,6 +192,12 @@
   async function passwordMatches(keys, checkB64) {
     return crypto.subtle.verify('HMAC', keys.mac, b64(checkB64), enc.encode('vitaparms-password-check'));
   }
+  // Zugriffswert für das Zugriffsprotokoll: HMAC(macKey, "vitaparms-access-log") als Hex-Text.
+  // Der Server kennt nur dessen SHA-256 (von VitaParms beim Hochladen abgelegt).
+  async function accessToken(keys) {
+    const sig = new Uint8Array(await crypto.subtle.sign('HMAC', keys.mac, enc.encode('vitaparms-access-log')));
+    return Array.from(sig, (x) => x.toString(16).padStart(2, '0')).join('');
+  }
   async function decrypt(buffer, keys) {
     const u8 = new Uint8Array(buffer);
     if (u8.length < 52 || String.fromCharCode(...u8.slice(0, 4)) !== 'VPW1') throw new Error('format');
@@ -194,7 +222,17 @@
     chart: { scale: 'month', ref: startOfDay(new Date()), from: null, to: null, panels: null, hidden: new Set() },
     journal: { range: 'all', query: '', shown: 200 },
     meds: { archived: false }, appts: { allPast: false },
+    user: '', access: '', logView: false, log: { entries: null, error: '', filter: 'all', query: '', shown: 200 },
   };
+  const USER = 'vitaparms.user';
+
+  // ---------------------------------------------------------------- Zugriffsprotokoll (Server)
+  function logEvent(event, detail = '') {
+    const headers = { 'Content-Type': 'application/json' };
+    if (state.access) headers['X-VitaParms-Access'] = state.access;
+    return fetch('api/log.php', { method: 'POST', headers, keepalive: true, cache: 'no-store',
+      body: JSON.stringify({ event, user: state.user, detail }) }).catch(() => {});
+  }
   const SESSION = 'vitaparms.session';
 
   // ================================================================ Start und Anmeldung
@@ -222,15 +260,20 @@
       const saved = JSON.parse(sessionStorage.getItem(SESSION) || 'null');
       if (saved && saved.bundle === manifest.bundle && saved.salt === manifest.kdf.salt) {
         state.keys = await importKeys(b64(saved.key));
+        state.user = saved.user || '';
+        state.access = saved.access || '';
         if (await passwordMatches(state.keys, manifest.check)) return loadData();
       }
     } catch (e) { /* neu anmelden */ }
     $('#login').hidden = false;
-    $('#password').focus();
+    ($('#userName').value ? $('#password') : $('#userName')).focus();
   }
 
   function buildLogin() {
     $('#loginIntro').textContent = L.loginIntro;
+    $('#userLabel').textContent = L.userName;
+    $('#userName').placeholder = L.userNameHint;
+    try { $('#userName').value = localStorage.getItem(USER) || ''; } catch (e) { /* ohne Speicher */ }
     $('#pwLabel').textContent = L.password;
     $('#pwShow').textContent = L.show;
     $('#loginBtn').textContent = L.open;
@@ -243,18 +286,24 @@
     $('#loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pw = $('#password').value;
-      if (!pw || !state.manifest) return;
+      state.user = $('#userName').value.trim().slice(0, 60);
+      if (!pw || !state.user || !state.manifest) return;
+      try { localStorage.setItem(USER, state.user); } catch (e2) { /* ohne Speicher */ }
       $('#loginBtn').disabled = true;
       loginMessage(L.decrypting, true);
       try {
         state.keys = await deriveKeys(pw, b64(state.manifest.kdf.salt), state.manifest.kdf.iterations);
         if (!(await passwordMatches(state.keys, state.manifest.check))) {
           state.keys = null;
+          logEvent('login-failed');
           loginMessage(L.wrongPassword);
           $('#password').select();
           return;
         }
-        sessionStorage.setItem(SESSION, JSON.stringify({ bundle: state.manifest.bundle, salt: state.manifest.kdf.salt, key: toB64(state.keys.raw) }));
+        state.access = await accessToken(state.keys);
+        sessionStorage.setItem(SESSION, JSON.stringify({ bundle: state.manifest.bundle, salt: state.manifest.kdf.salt, key: toB64(state.keys.raw),
+                                                         user: state.user, access: state.access }));
+        logEvent('login');
         await loadData();
       } catch (err) {
         loginMessage(L.loadError + err.message);
@@ -307,7 +356,8 @@
     if (rerender && state.person) renderView();
   }
 
-  function logout(idle = false) {
+  async function logout(idle = false) {
+    await Promise.race([logEvent(idle ? 'idle-logout' : 'logout'), new Promise((res) => setTimeout(res, 1500))]);
     sessionStorage.removeItem(SESSION);
     if (idle) sessionStorage.setItem('vitaparms.idle', '1');
     location.hash = '';
@@ -326,6 +376,9 @@
 
   function buildShell() {
     $('#logout').textContent = L.logout;
+    $('#logBtn').replaceChildren(h('span', { class: 'long', text: L.log }), h('span', { class: 'short', text: L.logShort }));
+    $('#logBtn').title = L.log;
+    $('#logBtn').addEventListener('click', () => { location.hash = '#log'; });
     $('#logout').addEventListener('click', () => logout());
     $('#personSelectLabel').textContent = L.person;
     $('#stamp').textContent = `${L.asOf}: ${fmtDateTime.format(new Date(state.data.generated))}`;
@@ -346,7 +399,7 @@
       tabs.append(h('button', { type: 'button', role: 'tab', 'data-tab': t, onclick: () => go({ tab: t }), text: L.tabs[t] }));
     addEventListener('hashchange', route);
     let rt = null;
-    addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (state.tab === 'chart') renderView(); }, 150); });
+    addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (state.tab === 'chart' && !state.logView) renderView(); }, 150); });
   }
 
   function go({ person, tab }) {
@@ -357,6 +410,10 @@
 
   function route() {
     const q = new URLSearchParams(location.hash.slice(1));
+    state.logView = q.has('log');
+    $('#tabs').hidden = state.logView;
+    $('#logBtn').setAttribute('aria-pressed', state.logView ? 'true' : 'false');
+    if (state.logView) { openLog(); return; }
     const persons = state.data.persons;
     const p = persons.find((x) => x.id === q.get('p')) || persons[0];
     const t = TABS.includes(q.get('t')) ? q.get('t') : 'overview';
@@ -442,6 +499,7 @@
 
   // ================================================================ Ansichten
   function renderView() {
+    if (state.logView) { renderLog(); return; }
     const view = $('#view');
     view.replaceChildren();
     hideTip();
@@ -1126,6 +1184,7 @@
         ...extra.map((x) => (r.x ? r.x[x] : '')), r.obs || ''].map(q).join(sep));
     }
     download(`${p.name.replace(/[\\/:*?"<>|]+/g, '_')} – ${L.tabs.journal}.csv`, new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+    logEvent('csv');
   }
 
   // ---------------------------------------------------------------- Medikamente
@@ -1186,7 +1245,7 @@
       const btn = h('button', { type: 'button', class: 'primary', text: L.download });
       btn.addEventListener('click', async () => {
         btn.disabled = true;
-        try { download(r.name, new Blob([await fetchFile(r.file)], { type: r.mime })); }
+        try { download(r.name, new Blob([await fetchFile(r.file)], { type: r.mime })); logEvent('report', r.title); }
         catch (e) { alert(L.loadError + e.message); }
         finally { btn.disabled = false; }
       });
@@ -1195,6 +1254,93 @@
     const csv = h('button', { type: 'button', class: 'ghost', text: L.download, onclick: () => downloadCsv(p, p.rs.slice().reverse()) });
     ul.append(h('li', {}, h('div', { class: 'grow' }, h('div', { text: L.csvReport }), h('div', { class: 'type', text: L.csvType })), csv));
     view.append(ul);
+  }
+
+  // ---------------------------------------------------------------- Zugriffsprotokoll (Ansicht)
+  async function openLog() {
+    const lg = state.log;
+    lg.entries = null; lg.error = ''; lg.shown = 200;
+    document.title = `${L.log} – VitaParms`;
+    for (const b of $('#rail').querySelectorAll('button')) b.setAttribute('aria-current', 'false');
+    $('#personHead').replaceChildren(h('h1', { text: L.log }));
+    renderLog();
+    try {
+      const r = await fetch('api/log.php', { cache: 'no-store', headers: { 'X-VitaParms-Access': state.access || '' } });
+      const body = await r.json().catch(() => ({}));
+      if (!r.ok || !body.ok) throw new Error(body.error || `HTTP ${r.status}`);
+      lg.entries = body.entries || [];
+      logEvent('log-view');
+    } catch (e) {
+      lg.error = e.message;
+    }
+    if (state.logView) renderLog();
+  }
+
+  function logRows() {
+    const lg = state.log;
+    let rows = lg.entries || [];
+    if (lg.filter === 'login') rows = rows.filter((e) => e.event === 'login' || e.event === 'login-failed');
+    if (lg.filter === 'failed') rows = rows.filter((e) => e.event === 'login-failed');
+    if (lg.query) {
+      const q = lg.query.toLowerCase();
+      rows = rows.filter((e) => [e.user, e.ip, e.fwd, e.auth].some((x) => (x || '').toLowerCase().includes(q)));
+    }
+    return rows;
+  }
+
+  function logEventText(e) { return L.events[e.event] || e.event; }
+
+  function renderLog() {
+    const view = $('#view');
+    view.replaceChildren();
+    hideTip();
+    const lg = state.log;
+    const back = h('button', { type: 'button', class: 'linkbtn', text: `← ${L.logBack}`, onclick: () => go({}) });
+    view.append(h('p', { class: 'noprint' }, back), h('p', { class: 'hint', text: L.logIntro }));
+    if (lg.error) { view.append(h('div', { class: 'banner warn', role: 'alert', text: L.logError + lg.error })); return; }
+    if (!lg.entries) { view.append(h('p', { class: 'empty', text: L.logLoading })); return; }
+    const filter = h('select', { 'aria-label': L.logFilter.all });
+    for (const [v, t] of Object.entries(L.logFilter)) filter.append(h('option', { value: v, text: t, selected: lg.filter === v }));
+    filter.addEventListener('change', () => { lg.filter = filter.value; lg.shown = 200; renderLog(); });
+    const search = h('input', { type: 'search', placeholder: L.logSearchPh, 'aria-label': L.search, value: lg.query });
+    let st = null;
+    search.addEventListener('input', () => { clearTimeout(st); st = setTimeout(() => { lg.query = search.value.trim(); lg.shown = 200; renderLog(); $('#view input[type=search]')?.focus(); }, 250); });
+    const rows = logRows();
+    view.append(h('div', { class: 'toolbar' }, filter, search, h('span', { class: 'grow hint', text: L.logCount(rows.length) }),
+      h('button', { type: 'button', class: 'primary', text: L.logDownload, onclick: () => downloadLog(rows) })));
+    if (!rows.length) { view.append(h('p', { class: 'empty', text: L.logEmpty })); return; }
+    const tbody = h('tbody');
+    for (const e of rows.slice(0, lg.shown)) {
+      const d = new Date(e.time);
+      const user = h('td', {}, e.user || '–');
+      if (e.unverified) user.append(h('div', { class: 'sub', text: L.unverified }));
+      if (e.auth) user.append(h('div', { class: 'sub', text: `${L.serverLogin}: ${e.auth}` }));
+      const ip = h('td', { class: 'num' }, e.ip || '');
+      if (e.fwd) ip.append(h('div', { class: 'sub', text: `${L.via} ${e.fwd}` }));
+      tbody.append(h('tr', { class: e.event === 'login-failed' ? 'failed' : null },
+        h('td', { class: 'num', text: fmtDate.format(d) }), h('td', { class: 'num', text: d.toLocaleTimeString(L.locale) }),
+        user, ip, h('td', { text: logEventText(e) }), h('td', { text: e.detail || '' })));
+    }
+    view.append(h('div', { class: 'tablewrap' }, h('table', { class: 'accesslog' },
+      h('thead', {}, h('tr', {}, L.logCols.map((t) => h('th', { text: t })))), tbody)));
+    if (rows.length > lg.shown)
+      view.append(h('p', {}, h('button', { type: 'button', class: 'linkbtn noprint', text: L.more(Math.min(200, rows.length - lg.shown)),
+        onclick: () => { lg.shown += 200; renderLog(); } })));
+  }
+
+  function downloadLog(rows) {
+    const de = L === TEXT.de;
+    const sep = de ? ';' : ',';
+    const q = (v) => { const t = String(v ?? ''); return /[";\n,]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+    const lines = [L.logCsvCols.map(q).join(sep)];
+    for (const e of rows) {
+      const d = new Date(e.time);
+      lines.push([isoDate(d), d.toLocaleTimeString(L.locale), e.user || '', e.ip || '', e.fwd || '', logEventText(e), e.detail || '', e.auth || '',
+        e.event === 'login-failed' ? '' : e.unverified ? L.no : L.yes].map(q).join(sep));
+    }
+    download(`VitaParms-${de ? 'Zugriffsprotokoll' : 'access-log'}-${isoDate(new Date())}.csv`,
+      new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+    logEvent('log-download');
   }
 
   init().catch((e) => loginMessage(L.loadError + e.message));

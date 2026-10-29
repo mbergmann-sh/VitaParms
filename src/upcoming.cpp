@@ -161,7 +161,7 @@ RemindersPrintDialog::RemindersPrintDialog(const Patient &p, QWidget *parent, in
     auto update = [this, count] {
         count->setText(tr("<small>%1 Termin(e) im gewählten Zeitraum.</small>").arg(appointments().size()));
     };
-    connect(m_period, &QComboBox::currentIndexChanged, this, update);
+    connect(m_period, qOverload<int>(&QComboBox::currentIndexChanged), this, update);
     connect(m_meds, &QCheckBox::toggled, this, update);
     update();
 

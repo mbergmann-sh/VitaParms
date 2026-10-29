@@ -193,8 +193,8 @@ DocumentsPage::DocumentsPage(QWidget *parent) : QWidget(parent)
     timer->setInterval(200);
     connect(m_search, &QLineEdit::textChanged, timer, qOverload<>(&QTimer::start));
     connect(timer, &QTimer::timeout, this, &DocumentsPage::applyFilter);
-    connect(m_category, &QComboBox::activated, this, &DocumentsPage::applyFilter);
-    connect(m_year, &QComboBox::activated, this, &DocumentsPage::applyFilter);
+    connect(m_category, qOverload<int>(&QComboBox::activated), this, &DocumentsPage::applyFilter);
+    connect(m_year, qOverload<int>(&QComboBox::activated), this, &DocumentsPage::applyFilter);
 
     // ---- Liste + Vorschau
     m_splitter = new QSplitter(Qt::Horizontal, this);

@@ -291,7 +291,7 @@ WoundDialog::WoundDialog(const Wound &w, QWidget *parent) : QDialog(parent), m_w
     m_kind->setCurrentIndex(qBound(0, w.kind, int(KindCount) - 1));
     updateGrades();
     m_grade->setCurrentIndex(w.grade < 0 ? 0 : qMin(w.grade + 1, m_grade->count() - 1));
-    connect(m_kind, &QComboBox::currentIndexChanged, this, [this] { updateGrades(); });
+    connect(m_kind, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] { updateGrades(); });
     m_diagnosis->setText(w.diagnosis);
     setText(m_site, w.site);
     if (w.site.isEmpty()) m_site->setEditText(QString());
@@ -318,7 +318,7 @@ WoundDialog::WoundDialog(const Wound &w, QWidget *parent) : QDialog(parent), m_w
     m_status->setCurrentIndex(qBound(0, w.status, m_status->count() - 1));
     if (w.closedAt.isValid()) m_closed->setDate(w.closedAt);
     m_closed->setEnabled(w.status != Open);
-    connect(m_status, &QComboBox::currentIndexChanged, this, [this](int i) { m_closed->setEnabled(i != Open); });
+    connect(m_status, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int i) { m_closed->setEnabled(i != Open); });
     m_notes->setPlainText(w.notes);
     resize(720, 760);
 }
@@ -594,13 +594,13 @@ WoundEntryDialog::WoundEntryDialog(const Wound &w, const Entry &e, QWidget *pare
     m_next->setEnabled(next);
     m_notes->setPlainText(e.notes);
 
-    connect(m_kind, &QComboBox::currentIndexChanged, this, [this] { updateKind(); });
+    connect(m_kind, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] { updateKind(); });
     for (QDoubleSpinBox *s : { m_len, m_wid, m_dep })
-        connect(s, &QDoubleSpinBox::valueChanged, this, [this] { updateArea(); });
+        connect(s, qOverload<double>(&QDoubleSpinBox::valueChanged), this, [this] { updateArea(); });
     for (QSpinBox *s : { m_gran, m_epi, m_fib, m_nec })
-        connect(s, &QSpinBox::valueChanged, this, [this] { updateArea(); });
+        connect(s, qOverload<int>(&QSpinBox::valueChanged), this, [this] { updateArea(); });
     connect(m_hasNext, &QCheckBox::toggled, m_next, &QWidget::setEnabled);
-    connect(m_interval, &QSpinBox::valueChanged, this, [this](int v) {
+    connect(m_interval, qOverload<int>(&QSpinBox::valueChanged), this, [this](int v) {
         if (v > 0) {
             m_hasNext->setChecked(true);
             m_next->setDate(m_at->date().addDays(v));

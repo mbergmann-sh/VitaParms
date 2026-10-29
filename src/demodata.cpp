@@ -223,7 +223,7 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
     p.careLevel = 2;
     p.careReview = QDate::currentDate().addDays(45);
     p.disabilityDegree = 60;
-    p.disabilityMarks = { QStringLiteral("G"), QStringLiteral("RF") };
+    p.disabilityMarks = QStringList{ QStringLiteral("G"), QStringLiteral("RF") };
     p.disabilityValidUntil = QDate(QDate::currentDate().year() + 3, 12, 31);
     if (!db.savePatient(p, error)) return false;
     if (patientId) *patientId = p.id;

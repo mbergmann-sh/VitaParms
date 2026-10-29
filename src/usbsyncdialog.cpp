@@ -272,7 +272,7 @@ UsbSyncDialog::UsbSyncDialog(QWidget *parent)
     connect(m_merge, &QPushButton::clicked, this, &UsbSyncDialog::doMerge);
     connect(m_send, &QPushButton::clicked, this, &UsbSyncDialog::doSend);
     connect(m_fetch, &QPushButton::clicked, this, &UsbSyncDialog::doFetch);
-    connect(m_devices, &QComboBox::currentIndexChanged, this, [this] { updateState(); });
+    connect(m_devices, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] { updateState(); });
     connect(m_client, &UsbSyncClient::progress, this, [this](const QString &t) {
         m_result->setStyleSheet(QString());
         m_result->setText(t);

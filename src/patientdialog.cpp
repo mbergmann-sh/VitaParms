@@ -97,12 +97,12 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
     for (const char *n : { "armLeftCombo", "armRightCombo" })
         if (auto *c = m_form->findChild<QComboBox *>(QLatin1String(n))) {
             fillArmCombo(c);
-            connect(c, &QComboBox::currentIndexChanged, this, &PatientDialog::updateAmputationInfo);
+            connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &PatientDialog::updateAmputationInfo);
         }
     for (const char *n : { "legLeftCombo", "legRightCombo" })
         if (auto *c = m_form->findChild<QComboBox *>(QLatin1String(n))) {
             fillLegCombo(c);
-            connect(c, &QComboBox::currentIndexChanged, this, &PatientDialog::updateAmputationInfo);
+            connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &PatientDialog::updateAmputationInfo);
         }
 
     setupCareWidgets();
@@ -292,9 +292,9 @@ void PatientDialog::setupCareWidgets()
     }
     setupAdvanceWidgets();
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("careLevelCombo")))
-        connect(c, &QComboBox::currentIndexChanged, this, &PatientDialog::updateCareEnabled);
+        connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &PatientDialog::updateCareEnabled);
     if (auto *sp = m_form->findChild<QSpinBox *>(QStringLiteral("disabilityDegreeSpin")))
-        connect(sp, &QSpinBox::valueChanged, this, &PatientDialog::updateCareEnabled);
+        connect(sp, qOverload<int>(&QSpinBox::valueChanged), this, &PatientDialog::updateCareEnabled);
     if (auto *cb = m_form->findChild<QCheckBox *>(QStringLiteral("disabilityUnlimitedCheck")))
         connect(cb, &QCheckBox::toggled, this, &PatientDialog::updateCareEnabled);
 }
@@ -503,8 +503,8 @@ void PatientDialog::setupTargets()
                 t = tr("Nicht eingetragen: Bewertet wird gegen den Standard 2,0–3,0.");
             info->setText(QStringLiteral("<small>%1</small>").arg(t.toHtmlEscaped()));
         };
-        connect(lo, &QDoubleSpinBox::valueChanged, this, upd);
-        connect(hi, &QDoubleSpinBox::valueChanged, this, upd);
+        connect(lo, qOverload<double>(&QDoubleSpinBox::valueChanged), this, upd);
+        connect(hi, qOverload<double>(&QDoubleSpinBox::valueChanged), this, upd);
         upd();
     }
     if (auto *s = m_form->findChild<QSpinBox *>(QStringLiteral("fluidMinSpin"))) s->setValue(Fluid::minIntake(m_patient));
@@ -524,14 +524,14 @@ void PatientDialog::setupPeakFlow()
         const QChar s = PeakFlow::biologicalSex(m_patient);
         bio->setCurrentIndex(std::max(0, bio->findData(s.isNull() ? QString() : QString(s))));
         m_bioSexTouched = PeakFlow::bioSexDiffers(m_patient);
-        connect(bio, &QComboBox::activated, this, [this] { m_bioSexTouched = true; });
-        connect(bio, &QComboBox::currentIndexChanged, this, [this] { updateBioSex(false); });
+        connect(bio, qOverload<int>(&QComboBox::activated), this, [this] { m_bioSexTouched = true; });
+        connect(bio, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] { updateBioSex(false); });
     }
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("sexCombo")))
-        connect(c, &QComboBox::currentIndexChanged, this, [this] { updateBioSex(true); });
+        connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, [this] { updateBioSex(true); });
     if (best) {
         best->setValue(PeakFlow::personalBest(m_patient));
-        connect(best, &QSpinBox::valueChanged, this, &PatientDialog::updatePeakFlowInfo);
+        connect(best, qOverload<int>(&QSpinBox::valueChanged), this, &PatientDialog::updatePeakFlowInfo);
     }
     if (auto *d = m_form->findChild<QDateEdit *>(QStringLiteral("birthDateEdit")))
         connect(d, &QDateEdit::dateChanged, this, &PatientDialog::updatePeakFlowInfo);

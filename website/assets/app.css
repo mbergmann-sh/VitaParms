@@ -272,3 +272,16 @@ th.n small { display: block; font-weight: 400; color: var(--muted); }
 .plot .inr-band { fill: rgba(27, 127, 75, 0.12); }
 .plot .limit-min { stroke: #1B7F4B; stroke-width: 1.2; stroke-dasharray: 5 4; }
 .plot .limit-max { stroke: #B35C00; stroke-width: 1.2; stroke-dasharray: 5 4; }
+
+/* ------------------------------------------------------------- Zugriffsprotokoll */
+.login-box #userName { font-size: var(--fs-l); }
+#logBtn[aria-pressed="true"] { background: var(--brand-wash); border-color: var(--brand); }
+.accesslog td { vertical-align: top; }
+.accesslog .sub { color: var(--muted); font-size: var(--fs-xs); }
+.accesslog tr.failed td { color: var(--alert); }
+#logBtn .short { display: none; }
+@media (max-width: 960px) {
+  #logBtn { padding-inline: 0.6rem; }
+  #logBtn .long { display: none; }
+  #logBtn .short { display: inline; }
+}

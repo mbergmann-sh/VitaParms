@@ -117,6 +117,20 @@ qmake6 VitaParms.pro      # bzw. qmake aus der Qt-6-Installation
 make -j                   # Windows/MSVC: nmake oder jom
 ```
 
+**Qt 5.15 (ältere macOS-Versionen, 10.13–10.15):** Das Desktop-Programm übersetzt sich auch mit
+Qt 5.15 – einfach das `qmake` der Qt-5-Installation verwenden (qmake meldet „Build mit Qt 5.15…“).
+Die Unterschiede gleicht `src/qtcompat.h` aus (u. a. `QVariant::typeId`/`isNull`, Mausposition,
+`QList(n, wert)`, Sprachausgabe-API); überladene Signale sind mit `qOverload<…>()` eindeutig.
+Datenbank, Abgleich und Berichte sind identisch. Einschränkung: Qt PDF gibt es nur für Qt 6 –
+in der Qt-5-Variante öffnen sich Dokumente der Krankenakte im System-PDF-Programm, Volltextsuche
+und direkter Druck aus der Akte entfallen. Die Tablet-App (`mobile/`) benötigt weiterhin Qt 6.
+
+```sh
+~/Qt/5.15.2/clang_64/bin/qmake VitaParms.pro && make -j
+~/Qt/5.15.2/clang_64/bin/macdeployqt VitaParms.app -dmg
+Debian/Ubuntu: sudo apt install qtbase5-dev qttools5-dev qttools5-dev-tools qtmultimedia5-dev libqt5texttospeech5-dev
+```
+
 Ebenfalls optional:
 
 * **Qt TextToSpeech** (`texttospeech`, LGPLv3) für das Vorlesen im Medikamenten-Assistenten.

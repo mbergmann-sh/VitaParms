@@ -142,7 +142,7 @@ AppointmentDialog::AppointmentDialog(const Appointment &a, QWidget *parent)
         if (auto *c = m_form->findChild<QCheckBox *>(QLatin1String(n)))
             connect(c, &QCheckBox::toggled, this, &AppointmentDialog::updateEnabled);
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("remindCombo")))
-        connect(c, &QComboBox::currentIndexChanged, this, &AppointmentDialog::updateEnabled);
+        connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &AppointmentDialog::updateEnabled);
 
     const bool smtp = Smtp::loadConfig().isValid();
     FormIO::write(m_form, QStringLiteral("reminderHintLabel"), smtp
@@ -320,10 +320,10 @@ void AppointmentDialog::setupRecurrence()
 
     for (const char *n : { "repeatCombo", "monthModeCombo", "repeatEndCombo" })
         if (auto *c = m_form->findChild<QComboBox *>(QLatin1String(n)))
-            connect(c, &QComboBox::currentIndexChanged, this, &AppointmentDialog::updateRecurrenceUi);
+            connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &AppointmentDialog::updateRecurrenceUi);
     for (const char *n : { "intervalSpin", "repeatCountSpin" })
         if (auto *sp = m_form->findChild<QSpinBox *>(QLatin1String(n)))
-            connect(sp, &QSpinBox::valueChanged, this, &AppointmentDialog::updateRecurrenceUi);
+            connect(sp, qOverload<int>(&QSpinBox::valueChanged), this, &AppointmentDialog::updateRecurrenceUi);
     if (auto *d = m_form->findChild<QDateEdit *>(QStringLiteral("repeatUntilEdit")))
         connect(d, &QDateEdit::dateChanged, this, &AppointmentDialog::updateRecurrenceUi);
     if (auto *st = m_form->findChild<QDateTimeEdit *>(QStringLiteral("startEdit")))

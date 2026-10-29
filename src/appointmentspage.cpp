@@ -230,9 +230,9 @@ AppointmentsPage::AppointmentsPage(QWidget *parent) : QWidget(parent)
         ->setToolTip(tr("Termine als .ics-Datei für Kalender-Programme und Smartphones exportieren"));
     v->addLayout(row);
 
-    connect(m_view, &QComboBox::currentIndexChanged, this, &AppointmentsPage::reload);
-    connect(m_patient, &QComboBox::activated, this, &AppointmentsPage::reload);
-    connect(m_owner, &QComboBox::activated, this, &AppointmentsPage::reload);
+    connect(m_view, qOverload<int>(&QComboBox::currentIndexChanged), this, &AppointmentsPage::reload);
+    connect(m_patient, qOverload<int>(&QComboBox::activated), this, &AppointmentsPage::reload);
+    connect(m_owner, qOverload<int>(&QComboBox::activated), this, &AppointmentsPage::reload);
     connect(m_showDone, &QCheckBox::toggled, this, &AppointmentsPage::reload);
     connect(m_cal, &QCalendarWidget::selectionChanged, this, [this] {
         if (m_view->currentIndex() == ViewUpcoming || m_view->currentIndex() == ViewAll)

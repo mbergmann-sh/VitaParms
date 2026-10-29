@@ -39,7 +39,7 @@ SmtpDialog::SmtpDialog(QWidget *parent) : QDialog(parent)
     m_port->setRange(1, 65535);
     m_port->setValue(c.port);
     f->addRow(tr("&Port:"), m_port);
-    connect(m_sec, &QComboBox::activated, this, [this] {
+    connect(m_sec, qOverload<int>(&QComboBox::activated), this, [this] {
         const auto s = Smtp::Security(m_sec->currentData().toInt());
         m_port->setValue(s == Smtp::Security::SslTls ? 465 : s == Smtp::Security::StartTls ? 587 : 25);
     });

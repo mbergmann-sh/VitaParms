@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "formloader.h"
+#include "qtcompat.h"
 #include "appsettings.h"
 
 #include <QAbstractButton>
@@ -457,7 +458,7 @@ QStringList extraFieldNames(QWidget *root)
 static QJsonValue toJson(const QVariant &v)
 {
     if (!v.isValid() || v.isNull()) return QJsonValue(QJsonValue::Null);
-    switch (v.typeId()) {
+    switch (vpTypeId(v)) {
     case QMetaType::Bool:    return v.toBool();
     case QMetaType::Int:
     case QMetaType::LongLong: return v.toLongLong();

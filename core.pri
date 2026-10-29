@@ -56,6 +56,7 @@ HEADERS += \
     $$PWD/src/formloader.h \
     $$PWD/src/journalmodel.h \
     $$PWD/src/reportprinter.h \
+    $$PWD/src/qtcompat.h \
     $$PWD/src/vitaldefs.h \
     $$PWD/src/xlsxwriter.h \
     $$PWD/src/zipwriter.h \

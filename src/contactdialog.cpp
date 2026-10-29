@@ -111,7 +111,7 @@ ContactDialog::ContactDialog(const Contacts::Contact &c, QWidget *parent)
     connect(bb, &QDialogButtonBox::rejected, this, &QDialog::reject);
     lay->addWidget(bb);
 
-    connect(m_kind, &QComboBox::currentIndexChanged, this, &ContactDialog::updateKind);
+    connect(m_kind, qOverload<int>(&QComboBox::currentIndexChanged), this, &ContactDialog::updateKind);
     for (QLineEdit *e : findChildren<QLineEdit *>())        // Hinweis verschwindet bei der nächsten Eingabe
         connect(e, &QLineEdit::textChanged, m_msg, &QLabel::hide);
     updateKind();

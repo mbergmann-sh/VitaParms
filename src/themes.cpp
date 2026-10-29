@@ -90,7 +90,12 @@ const char *kVSCodeStyleSheet =
 void init()
 {
     if (g_platformStyle.isEmpty() && QApplication::style())
-        g_platformStyle = QApplication::style()->name();
+        g_platformStyle =
+#if QT_VERSION >= QT_VERSION_CHECK(6, 1, 0)
+            QApplication::style()->name();
+#else
+            QApplication::style()->objectName();
+#endif
     apply(current());
 }
 

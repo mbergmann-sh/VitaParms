@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "sqlquery.h"
+#include "qtcompat.h"
 
 #include "sqlite3mc.h"
 
@@ -62,10 +63,10 @@ bool SqlQuery::exec()
         const QVariant &v = m_binds[i];
         const int idx = i + 1;
         int rc = SQLITE_OK;
-        if (!v.isValid() || v.isNull()) {
+        if (!v.isValid() || vpIsNull(v)) {
             rc = sqlite3_bind_null(m_stmt, idx);
         } else {
-            switch (v.typeId()) {
+            switch (vpTypeId(v)) {
             case QMetaType::QByteArray: {
                 const QByteArray b = v.toByteArray();
                 rc = sqlite3_bind_blob64(m_stmt, idx, b.constData(), sqlite3_uint64(b.size()), SQLITE_TRANSIENT);

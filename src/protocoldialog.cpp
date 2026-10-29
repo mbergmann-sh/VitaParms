@@ -59,12 +59,12 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
         m_minValues->setValue(4);
         m_minValues->setSuffix(tr(" Werten"));
         m_minValues->setToolTip(tr("1 = jeder Tag mit einem Blutzuckerwert; ab 4 Werten: Tagesprofile"));
-        connect(m_minValues, &QSpinBox::valueChanged, this, &ProtocolDialog::reload);
+        connect(m_minValues, qOverload<int>(&QSpinBox::valueChanged), this, &ProtocolDialog::reload);
         top->addWidget(m_minValues);
     }
     top->addStretch();
     lay->addLayout(top);
-    connect(m_period, &QComboBox::currentIndexChanged, this, [this, dash] {
+    connect(m_period, qOverload<int>(&QComboBox::currentIndexChanged), this, [this, dash] {
         const bool custom = m_period->currentData().toInt() == 0;
         m_from->setEnabled(custom);
         m_to->setEnabled(custom);

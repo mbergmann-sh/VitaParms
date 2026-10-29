@@ -2,6 +2,7 @@
 #include "drugclass.h"
 #include "medschedule.h"
 
+#include <cmath>
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QLocale>

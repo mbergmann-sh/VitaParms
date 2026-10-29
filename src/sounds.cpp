@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "sounds.h"
+#include "qtcompat.h"
 
 #include <QApplication>
 #include <QUrl>
@@ -48,10 +49,10 @@ void play(Kind k, bool loadOnly)
     if (loadOnly) return;
     if (fx->status() == QSoundEffect::Error) { QApplication::beep(); return; }
     if (fx->status() != QSoundEffect::Ready) {          // erster Aufruf: nach dem Laden abspielen
-        QObject::connect(fx, &QSoundEffect::statusChanged, fx, [fx] {
+        vpConnectOnce(fx, &QSoundEffect::statusChanged, fx, [fx] {
             if (fx->status() == QSoundEffect::Ready) fx->play();
             else if (fx->status() == QSoundEffect::Error) QApplication::beep();
-        }, Qt::SingleShotConnection);
+        });
         return;
     }
     fx->play();

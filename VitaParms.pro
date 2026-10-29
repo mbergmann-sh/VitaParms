@@ -4,12 +4,25 @@
 #
 #  Build:   qmake6 VitaParms.pro && make        (Linux/macOS)
 #           qmake6 VitaParms.pro && nmake/jom   (Windows, MSVC)
-#  Benötigt Qt >= 6.4 mit den Modulen: widgets printsupport uitools network
+#           qmake (Qt 5.15) VitaParms.pro && make – z. B. für macOS 10.13–10.15
+#  Benötigt Qt 6.4 oder neuer bzw. Qt 5.15 mit den Modulen: widgets printsupport uitools network
+#  (Qt-5/6-Unterschiede gleicht src/qtcompat.h aus; Qt PDF gibt es nur für Qt 6)
 #  Optional: texttospeech (Vorlesen im Medikamenten-Assistenten), multimedia (Signaltöne)
 #  Datenbank: SQLite3 Multiple Ciphers (3rdparty/sqlite3mc, MIT) – fest eingebaut, verschlüsselt
 #  Empfohlen: Qt PDF (pdf, pdfwidgets) für Vorschau, Volltextsuche und Druck der
 #  Dokumente in der Krankenakte – ohne Qt PDF wird trotzdem gebaut.
 # ---------------------------------------------------------------------------
+
+# Qt 5.15 (ältere macOS-Versionen) oder Qt 6.4 und neuer
+lessThan(QT_MAJOR_VERSION, 5) | equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 15) {
+    error("VitaParms braucht Qt 5.15 oder Qt 6.4 und neuer (gefunden: $$[QT_VERSION])")
+}
+equals(QT_MAJOR_VERSION, 6):lessThan(QT_MINOR_VERSION, 4) {
+    error("VitaParms braucht unter Qt 6 mindestens Qt 6.4 (gefunden: $$[QT_VERSION])")
+}
+equals(QT_MAJOR_VERSION, 5): message("VitaParms: Build mit Qt $$[QT_VERSION] (Qt-5-Kompatibilitaet, ohne Qt PDF)")
+# Qt 5.15 auf macOS: lauffähig ab macOS 10.13 (High Sierra) – auch wenn auf einem neueren Mac gebaut wird
+macx:equals(QT_MAJOR_VERSION, 5): QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
 
 QT       += core gui widgets printsupport uitools network
 
@@ -40,7 +53,7 @@ TARGET    = VitaParms
 
 include(version.pri)
 DEFINES  += VITAPARMS_VERSION=\\\"$$VERSION\\\"
-DEFINES  += QT_DISABLE_DEPRECATED_UP_TO=0x060400
+greaterThan(QT_MAJOR_VERSION, 5): DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x060400
 
 INCLUDEPATH += src
 

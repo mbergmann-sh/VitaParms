@@ -216,7 +216,7 @@ QString qtyText(double q)
     QString s = loc.toString(q, 'f', 2);
     if (s.contains(loc.decimalPoint())) {
         while (s.endsWith(QLatin1Char('0'))) s.chop(1);
-        if (s.endsWith(loc.decimalPoint())) s.chop(loc.decimalPoint().size());
+        if (s.endsWith(loc.decimalPoint())) s.chop(QString(loc.decimalPoint()).size());
     }
     return s;
 }

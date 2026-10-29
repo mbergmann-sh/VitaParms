@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "protocols.h"
+#include "qtcompat.h"
 #include "glucoseprofile.h"
 #include "reportprinter.h"
 #include "stool.h"
@@ -47,7 +48,7 @@ Table stoolProtocol(const QList<VitalRecord> &records, const Options &o)
     const QLocale loc;
     Table t;
     t.title = title(Kind::Stool);
-    t.heads = { tr("Datum & Uhrzeit"), tr("Menge"), tr("Konsistenz (Typ 1–7)"), tr("Farbe"),
+    t.heads = QStringList{ tr("Datum & Uhrzeit"), tr("Menge"), tr("Konsistenz (Typ 1–7)"), tr("Farbe"),
                 tr("Beimengungen / Geruch"), tr("Begleitsymptome / Besonderheiten") };
     t.widths = { 15, 8, 25, 12, 17, 23 };
 
@@ -65,7 +66,7 @@ Table stoolProtocol(const QList<VitalRecord> &records, const Options &o)
         Table::Row row;
         row.when = r->measuredAt;
         const int type = *r->stool;
-        row.cells = { loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")),
+        row.cells = QStringList{ loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")),
                       r->stoolDetail.amount,
                       type >= 1 ? Stool::choiceText(type) : tr("Stuhlgang, Art nicht angegeben"),
                       r->stoolDetail.color, r->stoolDetail.admixture, r->stoolDetail.symptoms };
@@ -109,7 +110,7 @@ Table stoolProtocol(const QList<VitalRecord> &records, const Options &o)
             Table::Row row;
             row.when = QDateTime(d, QTime(0, 0));
             row.spanAfterFirst = true;
-            row.cells = { loc.toString(d, QStringLiteral("ddd dd.MM.yyyy")),
+            row.cells = QStringList{ loc.toString(d, QStringLiteral("ddd dd.MM.yyyy")),
                           n >= Stool::kWarnDays ? tr("kein Stuhlgang eingetragen – %1. Tag ohne Stuhlgang").arg(n)
                           : n > 0 ? tr("kein Stuhlgang eingetragen (%1. Tag)").arg(n) : tr("kein Stuhlgang eingetragen") };
             row.flag = n >= Stool::kWarnDays ? Table::Alert : Table::Muted;
@@ -176,15 +177,15 @@ Table glucoseProfiles(const QList<VitalRecord> &records, const Options &o)
     auto fmt = [&](double mgdl) { return loc.toString(VitalDefs::glucoseToDisplay(mgdl), 'f', dec); };
     auto isAlert = [](double mgdl) { return mgdl < 70 || mgdl > 250; };
 
-    QList<double> colSum(pts.size() + 1, 0.0);
-    QList<int> colN(pts.size() + 1, 0);
+    QList<double> colSum = vpFilledList<double>(pts.size() + 1, 0.0);
+    QList<int> colN = vpFilledList<int>(pts.size() + 1, 0);
     double allSum = 0;
     int allN = 0, alerts = 0;
     for (auto it = byDay.constBegin(); it != byDay.constEnd(); ++it) {
         QList<const VitalRecord *> list = it.value();
         if (list.size() < std::max(1, o.minValues)) continue;
         std::sort(list.begin(), list.end(), [](const VitalRecord *a, const VitalRecord *b) { return a->measuredAt < b->measuredAt; });
-        QList<QStringList> cells(pts.size());
+        QList<QStringList> cells = vpFilledList<QStringList>(pts.size());
         QStringList more;
         QList<int> alertCols;
         bool moreAlert = false;
@@ -247,7 +248,7 @@ Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Pa
     const QLocale loc;
     Table t;
     t.title = title(Kind::Fluid);
-    t.heads = { tr("Datum & Uhrzeit"), tr("Einfuhr (ml)"), tr("Art"), tr("Ausfuhr (ml)"), tr("Art"), tr("Bemerkung") };
+    t.heads = QStringList{ tr("Datum & Uhrzeit"), tr("Einfuhr (ml)"), tr("Art"), tr("Ausfuhr (ml)"), tr("Art"), tr("Bemerkung") };
     t.widths = { 16, 10, 16, 10, 16, 32 };
     QList<const VitalRecord *> list;
     for (const VitalRecord &r : records)
@@ -259,7 +260,7 @@ Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Pa
         Table::Row row;
         row.when = QDateTime(d, QTime(23, 59, 59));
         row.flag = Table::Summary;
-        row.cells = { tr("Summe %1").arg(loc.toString(d, QStringLiteral("dd.MM."))), loc.toString(day.in), QString(),
+        row.cells = QStringList{ tr("Summe %1").arg(loc.toString(d, QStringLiteral("dd.MM."))), loc.toString(day.in), QString(),
                       loc.toString(day.out), QString(), tr("Bilanz %1").arg(Fluid::signedMl(day.balance())) };
         if (d < QDate::currentDate() && ((lo && day.in < lo) || (hi && day.in > hi))) row.alertCells << 1;
         if (d < QDate::currentDate() && lo && day.in < lo) ++under;
@@ -277,7 +278,7 @@ Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Pa
         if (r->fluidOut) { day.out += *r->fluidOut; ++day.nOut; }
         Table::Row row;
         row.when = r->measuredAt;
-        row.cells = { loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")),
+        row.cells = QStringList{ loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")),
                       r->fluidIn ? loc.toString(*r->fluidIn) : QString(), r->fluidIn ? r->fluidInKind : QString(),
                       r->fluidOut ? loc.toString(*r->fluidOut) : QString(), r->fluidOut ? r->fluidOutKind : QString(),
                       r->observations.simplified() };
@@ -288,7 +289,7 @@ Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Pa
     if (nDays) {
         Table::Row mean;
         mean.flag = Table::Summary;
-        mean.cells = { tr("Ø je Tag (%1 Tage)").arg(nDays), loc.toString(qRound(double(sumIn) / nDays)), QString(),
+        mean.cells = QStringList{ tr("Ø je Tag (%1 Tage)").arg(nDays), loc.toString(qRound(double(sumIn) / nDays)), QString(),
                        loc.toString(qRound(double(sumOut) / nDays)), QString(),
                        tr("Bilanz %1").arg(Fluid::signedMl(qRound(double(sumIn - sumOut) / nDays))) };
         t.footer << mean;

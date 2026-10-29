@@ -104,6 +104,17 @@ QByteArray checkValue(const QByteArray &keys)
                                             QCryptographicHash::Sha256);
 }
 
+QByteArray accessToken(const QByteArray &keys)
+{
+    return QMessageAuthenticationCode::hash(QByteArrayLiteral("vitaparms-access-log"), keys.mid(32, 32),
+                                            QCryptographicHash::Sha256);
+}
+
+QByteArray accessVerifier(const QByteArray &keys)
+{
+    return QCryptographicHash::hash(accessToken(keys), QCryptographicHash::Sha256).toHex();
+}
+
 } // namespace WebCrypto
 
 // ====================================================================== Einstellungen
@@ -517,6 +528,8 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
                                               { QStringLiteral("salt"), QString::fromLatin1(snap.salt.toBase64()) },
                                               { QStringLiteral("iterations"), WebCrypto::kIterations } } },
         { QStringLiteral("check"), QString::fromLatin1(WebCrypto::checkValue(keys).toBase64()) },
+        // Zugriffsprotokoll der Website: der Server legt diesen Prüfwert geschützt ab (nicht im Manifest)
+        { QStringLiteral("access"), QString::fromLatin1(WebCrypto::accessVerifier(keys)) },
         { QStringLiteral("data"), QStringLiteral("data.vpw") },
         { QStringLiteral("lang"), root.value(QStringLiteral("lang")) },
     };

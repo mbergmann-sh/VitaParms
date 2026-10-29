@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "chartwidget.h"
+#include "qtcompat.h"
 #include "themes.h"
 #include "stool.h"
 #include "inr.h"
@@ -1114,7 +1115,7 @@ void ChartWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton)
         for (const auto &l : std::as_const(m_legend))
-            if (l.rect.contains(e->position())) {
+            if (l.rect.contains(vpPos(e))) {
                 emit legendClicked(l.key);
                 return;
             }
@@ -1125,16 +1126,16 @@ void ChartWidget::mouseMoveEvent(QMouseEvent *e)
 {
     bool overLegend = false;
     for (const auto &l : std::as_const(m_legend))
-        if (l.rect.contains(e->position())) { overLegend = true; break; }
+        if (l.rect.contains(vpPos(e))) { overLegend = true; break; }
     setCursor(overLegend ? Qt::PointingHandCursor : Qt::ArrowCursor);
     if (overLegend) {
-        QToolTip::showText(e->globalPosition().toPoint(), tr("Klicken: Kurve ein- oder ausblenden"), this);
+        QToolTip::showText(vpGlobalPos(e).toPoint(), tr("Klicken: Kurve ein- oder ausblenden"), this);
         return;
     }
 
     int best = -1;
     qreal bestD = 12.0 * 12.0;
-    const QPointF pos = e->position();
+    const QPointF pos = vpPos(e);
     for (int i = 0; i < m_hits.size(); ++i) {
         const QPointF d = m_hits[i].pos - pos;
         const qreal dd = d.x() * d.x() + d.y() * d.y();
@@ -1144,7 +1145,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent *e)
         m_hover = best;
         update();
         if (best >= 0)
-            QToolTip::showText(e->globalPosition().toPoint(), m_hits[best].text, this);
+            QToolTip::showText(vpGlobalPos(e).toPoint(), m_hits[best].text, this);
         else
             QToolTip::hideText();
     }

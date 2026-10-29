@@ -21,6 +21,8 @@
     <img src="assets/icon-180.png" alt="" width="72" height="72">
     <h1>VitaParms</h1>
     <p id="loginIntro" class="login-intro"></p>
+    <label for="userName" id="userLabel"></label>
+    <input id="userName" type="text" autocomplete="name" required spellcheck="false" maxlength="60">
     <label for="password" id="pwLabel"></label>
     <div class="pw-row">
       <input id="password" type="password" autocomplete="current-password" required spellcheck="false">
@@ -39,6 +41,7 @@
     <label class="person-select-wrap" for="personSelect"><span class="sr" id="personSelectLabel"></span>
       <select id="personSelect"></select></label>
     <span class="stamp" id="stamp"></span>
+    <button type="button" id="logBtn" class="ghost"></button>
     <button type="button" id="logout" class="ghost"></button>
   </header>
   <div class="layout">

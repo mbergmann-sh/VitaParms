@@ -79,12 +79,12 @@ QByteArray winzipAesEncrypt(const QByteArray &plain, const QString &password)
     uint8_t counter[16] = {};
     uint8_t stream[16];
     quint64 n = 0;
-    for (qsizetype off = 0; off < plain.size(); off += 16) {
+    for (int off = 0; off < plain.size(); off += 16) {
         ++n;                                   // Zähler beginnt bei 1, little endian
         for (int i = 0; i < 8; ++i) counter[i] = uint8_t(n >> (8 * i));
         aes.encryptBlock(counter, stream);
-        const qsizetype len = std::min<qsizetype>(16, plain.size() - off);
-        for (qsizetype i = 0; i < len; ++i)
+        const int len = std::min<int>(16, int(plain.size()) - off);
+        for (int i = 0; i < len; ++i)
             cipher[off + i] = char(plain[off + i] ^ char(stream[i]));
     }
     const QByteArray mac = QMessageAuthenticationCode::hash(cipher, macKey, QCryptographicHash::Sha1).left(10);

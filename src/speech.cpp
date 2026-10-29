@@ -14,6 +14,26 @@
 
 #ifdef VP_HAVE_TTS
 namespace {
+// ---- Unterschiede Qt 5 / Qt 6 bei QTextToSpeech
+// Qt 6: Zustand „Error“ mit Ursache (Android meldet beim Start „Error“ ohne Ursache);
+// Qt 5: Zustand „BackendError“, keine Ursache, kein Engine-Name, kein Neustart
+QString g_engineName;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+constexpr QTextToSpeech::State kErrorState = QTextToSpeech::Error;
+bool realError(const QTextToSpeech *t) { return t->state() == QTextToSpeech::Error && t->errorReason() != QTextToSpeech::ErrorReason::NoError; }
+bool stillStarting(const QTextToSpeech *t) { return t->state() == QTextToSpeech::Error && t->errorReason() == QTextToSpeech::ErrorReason::NoError; }
+QString errorText(const QTextToSpeech *t) { return t->errorString(); }
+int errorCode(const QTextToSpeech *t) { return int(t->errorReason()); }
+QString engineName(const QTextToSpeech *t) { return t->engine(); }
+#else
+constexpr QTextToSpeech::State kErrorState = QTextToSpeech::BackendError;
+bool realError(const QTextToSpeech *t) { return t->state() == QTextToSpeech::BackendError; }
+bool stillStarting(const QTextToSpeech *) { return false; }
+QString errorText(const QTextToSpeech *) { return {}; }
+int errorCode(const QTextToSpeech *) { return 0; }
+QString engineName(const QTextToSpeech *) { return g_engineName; }
+#endif
+
 // Eine einzige Engine für das ganze Programm: Einige Engines (z. B. flite) geben beim
 // Zerstören globale Stimmdaten frei, während eine zweite Instanz noch spricht → Absturz.
 QTextToSpeech *g_engine = nullptr;
@@ -39,12 +59,15 @@ QTextToSpeech *sharedEngine()
         const QString name = preferredEngine();
         if (!name.isEmpty()) {
             g_engine = new QTextToSpeech(name, QCoreApplication::instance());
+            g_engineName = name;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             QObject::connect(g_engine, &QTextToSpeech::errorOccurred, g_engine, [](QTextToSpeech::ErrorReason, const QString &msg) {
                 qWarning("Sprachausgabe: %s", qPrintable(msg));
             });
+#endif
             // Android startet die Engine asynchron: bis dahin meldet sie „Error“ ohne Ursache
-            if (g_engine->state() == QTextToSpeech::Error && g_engine->errorReason() != QTextToSpeech::ErrorReason::NoError)
-                qWarning("Sprachausgabe (%s): %s", qPrintable(name), qPrintable(g_engine->errorString()));
+            if (realError(g_engine))
+                qWarning("Sprachausgabe (%s): %s", qPrintable(name), qPrintable(errorText(g_engine)));
         } else {
             qWarning("Sprachausgabe: keine Engine (verfügbar: %s)", qPrintable(QTextToSpeech::availableEngines().join(QStringLiteral(", "))));
         }
@@ -73,7 +96,7 @@ Speech::Speech(QObject *parent) : QObject(parent)
             if (s == QTextToSpeech::Ready && (m_desc.isEmpty() || !g_voicesDone)) chooseVoice();
             if (g_speaker != this) return;
             if (s == QTextToSpeech::Speaking) m_speaking = true;
-            else if (m_speaking && (s == QTextToSpeech::Ready || s == QTextToSpeech::Error)) {
+            else if (m_speaking && (s == QTextToSpeech::Ready || s == kErrorState)) {
                 m_speaking = false;
                 emit finished();
             }
@@ -96,8 +119,7 @@ Speech::~Speech()
 bool Speech::available() const
 {
 #ifdef VP_HAVE_TTS
-    return m_tts != nullptr
-           && (m_tts->state() != QTextToSpeech::Error || m_tts->errorReason() == QTextToSpeech::ErrorReason::NoError);
+    return m_tts != nullptr && !realError(m_tts);
 #else
     return false;
 #endif
@@ -277,9 +299,9 @@ void Speech::say(const QString &text)
 {
 #ifdef VP_HAVE_TTS
     if (!m_tts) return;
-    if (m_tts->state() == QTextToSpeech::Error) {
+    if (m_tts->state() == kErrorState) {
         // Engine startet noch (Android, ohne Fehlerursache): vorlesen, sobald sie bereit ist
-        if (m_tts->errorReason() == QTextToSpeech::ErrorReason::NoError) m_pending = text;
+        if (stillStarting(m_tts)) m_pending = text;
         return;
     }
     m_pending.clear();
@@ -340,10 +362,10 @@ QString Speech::diagnostics()
     if (!t) return l.join(QLatin1Char('\n'));
     static const char *const states[] = { "Ready", "Speaking", "Paused", "Error", "Synthesizing" };
     const int st = int(t->state());
-    l << QCoreApplication::translate("Speech", "Verwendet: %1, Zustand: %2").arg(t->engine(), QLatin1String(st >= 0 && st < 5 ? states[st] : "?"));
-    if (t->state() == QTextToSpeech::Error)
-        l << QCoreApplication::translate("Speech", "Fehler: %1 (%2)").arg(t->errorString().isEmpty() ? QStringLiteral("–") : t->errorString())
-                                                                         .arg(int(t->errorReason()));
+    l << QCoreApplication::translate("Speech", "Verwendet: %1, Zustand: %2").arg(engineName(t), QLatin1String(st >= 0 && st < 5 ? states[st] : "?"));
+    if (t->state() == kErrorState)
+        l << QCoreApplication::translate("Speech", "Fehler: %1 (%2)").arg(errorText(t).isEmpty() ? QStringLiteral("–") : errorText(t))
+                                                                         .arg(errorCode(t));
     l << QCoreApplication::translate("Speech", "Sprache: %1, Stimmen: %2, Sprachen: %3")
              .arg(t->locale().name()).arg(t->availableVoices().size()).arg(t->availableLocales().size());
     if (!t->voice().name().isEmpty()) l << QCoreApplication::translate("Speech", "Stimme: %1").arg(t->voice().name());
@@ -360,7 +382,9 @@ void Speech::restartEngine()
     g_voicesDone = false;
     if (!g_engine) { g_tried = false; sharedEngine(); return; }
     g_engine->stop();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     const QString name = preferredEngine();
     if (!name.isEmpty()) g_engine->setEngine(name);   // startet dieselbe Engine neu (Zeiger bleiben gültig)
+#endif
 #endif
 }

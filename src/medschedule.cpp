@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "medschedule.h"
+#include "qtcompat.h"
 #include "database.h"
 #include "session.h"
 
@@ -338,7 +339,7 @@ void setReminder(Medication &m, const Reminder &r)
 
 QList<SlotTime> reminderSlots(const Medication &m)
 {
-    QList<SlotTime> l(SlotCount);
+    QList<SlotTime> l = vpFilledList<SlotTime>(SlotCount);
     for (int s = 0; s < SlotCount; ++s) l[s].time = slotDefaultTime(s);
     const QList<QTime> times = m.extra.contains(QLatin1String(kRemindTimesKey)) ? reminder(m).times : defaultTimes(m);
     for (const QTime &t : times) {

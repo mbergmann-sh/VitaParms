@@ -69,6 +69,29 @@ unter einer Kennung, die nichts über das Dokument verrät. Nicht mehr gebraucht
 nach einem Tag gelöscht. Ohne `api/files.php` überträgt VitaParms die Datenbank wie bisher
 vollständig (alle Geräte sollten dieselbe Version verwenden).
 
+## Zugriffsprotokoll
+
+Die Website führt ein Protokoll der Zugriffe: **Benutzer** (der bei der Anmeldung eingegebene
+Name), **Datum und Uhrzeit** und **IP-Adresse** – bei Anmeldung, fehlgeschlagener Anmeldung,
+Abmeldung, Herunterladen von Berichten/CSV und beim Ansehen oder Herunterladen des Protokolls.
+Im Web-Interface öffnet **Zugriffsprotokoll** (oben rechts) die Liste (neueste zuerst, Filter,
+Suche) mit **Herunterladen (CSV)**.
+
+* Ablage: `data/.access-log.php` (von außen nicht abrufbar, beginnt mit einer PHP-Sperrzeile,
+  eine JSON-Zeile je Eintrag). Ab 1 MB wird es nach `data/.access-log.1.php` verschoben; die
+  ältere Datei wird dabei ersetzt.
+* Lesen dürfen nur Personen mit dem Master-Passwort: Der Browser leitet daraus einen Zugriffswert
+  ab, den der Server mit dem Prüfwert in `data/.access.php` vergleicht. VitaParms legt diesen
+  Prüfwert beim Hochladen ab (ab Version 0.26 – vorher einmal *Website aktualisieren*).
+* Fehlgeschlagene Anmeldungen werden auch ohne Passwort protokolliert, je IP-Adresse höchstens
+  20 pro Stunde.
+* Der Name wird nicht geprüft (es gibt ein gemeinsames Master-Passwort). Ist die Website zusätzlich
+  per HTTP-Authentifizierung geschützt, wird auch deren Anmeldename vermerkt („Server-Anmeldung“).
+* Hinter einem Proxy des Anbieters wird die Adresse aus `X-Forwarded-For` zusätzlich vermerkt
+  („über …“); sie kann gefälscht sein.
+* Datenschutz: IP-Adressen sind personenbezogene Daten. Weisen Sie Nutzer der Website auf das
+  Protokoll hin und löschen Sie es bei Bedarf (siehe Wartung).
+
 ## Wartung
 
 | Aufgabe | Vorgehen |
@@ -79,6 +102,7 @@ vollständig (alle Geräte sollten dieselbe Version verwenden).
 | Abgleich zurücksetzen | Inhalt von `sync/` löschen (außer `.htaccess`), danach am Computer abgleichen |
 | Fehler „post_max_size“ | `upload_max_filesize` und `post_max_size` beim Anbieter erhöhen (z. B. 64M) |
 | endlose Umleitung | in `.htaccess` den Block `mod_rewrite` auskommentieren |
+| Zugriffsprotokoll löschen | `data/.access-log.php` und `data/.access-log.1.php` löschen |
 
 Auf dem Server liegen jeweils das aktuelle und das vorige Paket; ältere werden beim Hochladen
 gelöscht.
@@ -94,6 +118,7 @@ assets/fonts/       Atkinson Hyperlegible (SIL Open Font License 1.1, OFL.txt)
 api/upload.php      Annahme eines neuen Pakets (POST) und Zustand (GET ?status=1)
 api/sync.php        Datenbank-Abgleich: Zustand, Herunterladen, Hochladen mit Revisionsprüfung
 api/files.php       Inhalte der Krankenakte beim Abgleich (einzeln, verschlüsselt)
+api/log.php         Zugriffsprotokoll: Eintrag schreiben (POST), anzeigen (GET, mit Zugriffswert)
 api/lib.php         gemeinsame Hilfsfunktionen (nicht direkt abrufbar)
 data/               Ablage der verschlüsselten Pakete; current.json zeigt auf das aktuelle
 sync/               verschlüsselte Datenbank und Dokumentinhalte (files/) für den Abgleich
@@ -112,5 +137,11 @@ Installation: upload the contents of this folder (including the hidden `.htacces
 document root of your (sub)domain, make `data/` and `sync/` writable (755/775), then in VitaParms choose
 *Tools → Website…*, enter the address and master password, click **Test connection** and
 **Upload now**. To accept a new upload key, delete `data/.uploadkey.php` on the server.
+
+Access log: the website records who (the name entered at sign-in), when and from which IP
+address it was accessed (sign-in, failed sign-in, sign-out, downloads). **Access log** (top right)
+shows the list and downloads it as CSV. Only users with the master password can read it (VitaParms
+0.26 or later stores the verifier when uploading). Stored in `data/.access-log.php`; delete it to
+clear the log.
 
 License: MIT (VitaParms); font: SIL Open Font License 1.1.

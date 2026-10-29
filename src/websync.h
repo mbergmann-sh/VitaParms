@@ -32,6 +32,8 @@ QByteArray deriveKeys(const QString &password, const QByteArray &salt, int itera
 QByteArray encrypt(const QByteArray &plain, const QByteArray &keys);
 QByteArray decrypt(const QByteArray &blob, const QByteArray &keys, bool *ok = nullptr);   // für Tests
 QByteArray checkValue(const QByteArray &keys);            // erlaubt der Website, das Passwort zu prüfen
+QByteArray accessToken(const QByteArray &keys);           // Zugriffswert für das Zugriffsprotokoll (Browser)
+QByteArray accessVerifier(const QByteArray &keys);        // SHA-256 davon (hex), für den Server
 }
 
 class WebSync : public QObject

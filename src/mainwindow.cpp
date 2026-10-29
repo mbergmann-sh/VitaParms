@@ -227,7 +227,7 @@ void MainWindow::buildUi()
     auto *dash = new QLabel(QStringLiteral("–"), jw);
     filter->addWidget(dash);
     filter->addWidget(m_toEdit);
-    connect(m_periodCombo, &QComboBox::currentIndexChanged, dash, [this, dash] {
+    connect(m_periodCombo, qOverload<int>(&QComboBox::currentIndexChanged), dash, [this, dash] {
         dash->setVisible(m_periodCombo->currentIndex() == Custom);
     });
     dash->setVisible(false);
@@ -238,7 +238,7 @@ void MainWindow::buildUi()
     m_countLabel = new QLabel(jw);
     filter->addWidget(m_countLabel);
     jl->addLayout(filter);
-    connect(m_periodCombo, &QComboBox::currentIndexChanged, this, &MainWindow::onPeriodChanged);
+    connect(m_periodCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::onPeriodChanged);
     connect(m_admissionCheck, &QCheckBox::toggled, this, &MainWindow::reloadJournal);
 
     m_model = new JournalModel(this);
@@ -310,7 +310,7 @@ void MainWindow::buildUi()
     m_customRange->hide();
     ctrl->addStretch();
     cl->addLayout(ctrl);
-    connect(m_scaleCombo, &QComboBox::currentIndexChanged, this, &MainWindow::onScaleChanged);
+    connect(m_scaleCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::onScaleChanged);
     m_customRange->setVisible(m_scaleCombo->currentIndex() == 4);
     m_navigation->setVisible(m_scaleCombo->currentIndex() != 4);
 
@@ -631,7 +631,7 @@ void MainWindow::buildMenus()
     m_userCombo = new QComboBox(tb);
     m_userCombo->setMinimumContentsLength(24);
     m_userCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    connect(m_userCombo, &QComboBox::activated, this, &MainWindow::onUserComboChanged);
+    connect(m_userCombo, qOverload<int>(&QComboBox::activated), this, &MainWindow::onUserComboChanged);
     tb->addWidget(m_userCombo);
     tb->addAction(m_actPrimary[0]);
     tb->addAction(m_actPrimary[1]);

@@ -700,7 +700,11 @@ bool DbSync::runSync(QString *message)
 bool DbSync::tlsAvailable(QString *text)
 {
     if (QSslSocket::supportsSsl()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 1, 0)
         if (text) *text = tr("TLS bereit: %1 (%2)").arg(QSslSocket::sslLibraryVersionString(), QSslSocket::activeBackend());
+#else
+        if (text) *text = tr("TLS bereit: %1 (%2)").arg(QSslSocket::sslLibraryVersionString(), QStringLiteral("openssl"));
+#endif
         return true;
     }
     if (text) {

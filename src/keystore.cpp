@@ -54,11 +54,11 @@ QByteArray aesCtr(const QByteArray &key32, const QByteArray &nonce16, const QByt
     memcpy(counter, nonce16.constData(), 16);
     uint8_t stream[16];
     QByteArray out(data.size(), Qt::Uninitialized);
-    for (qsizetype off = 0; off < data.size(); off += 16) {
+    for (int off = 0; off < data.size(); off += 16) {
         aes.encryptBlock(counter, stream);
         for (int i = 15; i >= 0; --i) if (++counter[i]) break;   // big endian hochzählen
-        const qsizetype n = std::min<qsizetype>(16, data.size() - off);
-        for (qsizetype i = 0; i < n; ++i) out[off + i] = char(data[off + i] ^ char(stream[i]));
+        const int n = std::min<int>(16, int(data.size()) - off);
+        for (int i = 0; i < n; ++i) out[off + i] = char(data[off + i] ^ char(stream[i]));
     }
     return out;
 }
@@ -67,7 +67,7 @@ bool constantTimeEqual(const QByteArray &a, const QByteArray &b)
 {
     if (a.size() != b.size()) return false;
     unsigned char d = 0;
-    for (qsizetype i = 0; i < a.size(); ++i) d |= uchar(a[i] ^ b[i]);
+    for (int i = 0; i < a.size(); ++i) d |= uchar(a[i] ^ b[i]);
     return d == 0;
 }
 

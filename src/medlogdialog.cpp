@@ -73,7 +73,7 @@ MedLogDialog::MedLogDialog(const Patient &p, QWidget *parent) : QDialog(parent),
     connect(m_delete, &QPushButton::clicked, this, &MedLogDialog::deleteSelected);
     lay->addWidget(bb);
 
-    connect(m_period, &QComboBox::currentIndexChanged, this, &MedLogDialog::reload);
+    connect(m_period, qOverload<int>(&QComboBox::currentIndexChanged), this, &MedLogDialog::reload);
     connect(m_table, &QTableWidget::itemSelectionChanged, this, &MedLogDialog::showDetails);
     connect(&Database::instance(), &Database::preparationsChanged, this, &MedLogDialog::reload);
     m_period->setCurrentIndex(Days90);

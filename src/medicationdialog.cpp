@@ -261,7 +261,7 @@ void MedicationDialog::setupRhythm()
         for (int k = 0; k < Medication::CategoryCount; ++k)
             cat->addItem(MedSchedule::categoryName(k), k);
         cat->setCurrentIndex(std::max(0, cat->findData(m_med.category)));
-        connect(cat, &QComboBox::currentIndexChanged, this, &MedicationDialog::updateRhythmUi);
+        connect(cat, qOverload<int>(&QComboBox::currentIndexChanged), this, &MedicationDialog::updateRhythmUi);
     }
     const QLocale loc;
     for (int i = 1; i <= 7; ++i)
@@ -276,11 +276,11 @@ void MedicationDialog::setupRhythm()
     }
     if (auto *sp = m_form->findChild<QSpinBox *>(QStringLiteral("rhythmIntervalSpin"))) {
         sp->setValue(std::max(1, m_med.rhythm.interval));
-        connect(sp, &QSpinBox::valueChanged, this, &MedicationDialog::updateRhythmUi);
+        connect(sp, qOverload<int>(&QSpinBox::valueChanged), this, &MedicationDialog::updateRhythmUi);
     }
     FormIO::write(m_form, QStringLiteral("rhythmStartEdit"), MedSchedule::anchor(m_med));
     FormIO::write(m_form, QStringLiteral("rhythmNoteEdit"), m_med.rhythmNote);
-    connect(c, &QComboBox::currentIndexChanged, this, &MedicationDialog::updateRhythmUi);
+    connect(c, qOverload<int>(&QComboBox::currentIndexChanged), this, &MedicationDialog::updateRhythmUi);
     if (auto *d = m_form->findChild<QDateEdit *>(QStringLiteral("rhythmStartEdit")))
         connect(d, &QDateEdit::dateChanged, this, &MedicationDialog::updateRhythmUi);
     updateRhythmUi();

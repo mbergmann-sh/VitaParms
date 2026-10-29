@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "formcustomizedialog.h"
+#include "qtcompat.h"
 #include "appsettings.h"
 #include "formloader.h"
 
@@ -84,7 +85,7 @@ FormCustomizeDialog::FormCustomizeDialog(QWidget *parent) : QDialog(parent)
 QString FormCustomizeDialog::findDesigner()
 {
     QStringList candidates;
-    const QString bin = QLibraryInfo::path(QLibraryInfo::BinariesPath);
+    const QString bin = vpLibraryPath(QLibraryInfo::BinariesPath);
 #if defined(Q_OS_MACOS)
     candidates << bin + QStringLiteral("/Designer.app/Contents/MacOS/Designer");
 #elif defined(Q_OS_WIN)

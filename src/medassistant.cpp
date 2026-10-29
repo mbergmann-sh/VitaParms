@@ -203,7 +203,7 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
         MedLogDialog d(m_patient, this);
         d.exec();
     });
-    connect(m_slot, &QComboBox::activated, this, &MedicationAssistant::restart);
+    connect(m_slot, qOverload<int>(&QComboBox::activated), this, &MedicationAssistant::restart);
     {   // Stell-Rhythmus der Person vorbelegen (zuletzt verwendet)
         const MedStock::PrepPlan plan = MedStock::prepPlan(m_patient.id);
         if (plan.weekly()) {
@@ -211,7 +211,7 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
             m_date->setDate(MedStock::nextPrepStart(plan, QDate::currentDate()));
         }
     }
-    connect(m_mode, &QComboBox::activated, this, [this] {
+    connect(m_mode, qOverload<int>(&QComboBox::activated), this, [this] {
         if (m_mode->currentData().toInt() >= 7) {   // Wochendosierer: ab dem gewohnten Wochentag
             MedStock::PrepPlan plan = MedStock::prepPlan(m_patient.id);
             if (!plan.weekly()) plan.weekday = QDate::currentDate().dayOfWeek();
@@ -221,7 +221,7 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
         restart();
     });
     connect(m_date, &QDateEdit::dateChanged, this, &MedicationAssistant::restart);
-    connect(m_voice, &QComboBox::activated, this, [this] {
+    connect(m_voice, qOverload<int>(&QComboBox::activated), this, [this] {
         m_speech->setChoice(m_voice->currentData().toString());
         AppSettings::setVoiceGender(m_voice->currentData().toString());   // Wahl merken
         updateVoiceInfo();

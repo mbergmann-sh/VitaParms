@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "xlsxwriter.h"
+#include "qtcompat.h"
 #include "zipwriter.h"
 
 #include <QBuffer>
@@ -227,11 +228,11 @@ bool XlsxWriter::save(const QString &path, QString *error) const
                 const QVariant &v = cit.value().v;
                 const int st = int(cit.value().s);
                 const QString sAttr = st ? QStringLiteral(" s=\"%1\"").arg(st) : QString();
-                if (!v.isValid() || v.isNull()) {
+                if (!v.isValid() || vpIsNull(v)) {
                     if (st) x += QStringLiteral("<c r=\"%1\"%2/>").arg(ref, sAttr);
                     continue;
                 }
-                switch (v.typeId()) {
+                switch (vpTypeId(v)) {
                 case QMetaType::Int: case QMetaType::LongLong: case QMetaType::Double:
                 case QMetaType::Float: case QMetaType::UInt: case QMetaType::ULongLong:
                     x += QStringLiteral("<c r=\"%1\"%2><v>%3</v></c>").arg(ref, sAttr, num(v.toDouble()));

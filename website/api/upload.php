@@ -108,6 +108,13 @@ $manifestOut = [
     'lang'       => ($manifest['lang'] ?? 'de') === 'en' ? 'en' : 'de',
     'uploaded'   => gmdate('c'),
 ];
+// Prüfwert für das Zugriffsprotokoll (SHA-256 des aus dem Passwort abgeleiteten Zugriffswerts) –
+// nicht im öffentlichen Manifest, sondern geschützt abgelegt (siehe log.php)
+$access = strtolower((string) ($manifest['access'] ?? ''));
+if (preg_match('/^[0-9a-f]{64}$/', $access)) {
+    file_put_contents(DATA_DIR . '/.access.php', "<?php http_response_code(404); exit; ?>\n#" . $access . "\n", LOCK_EX);
+    @chmod(DATA_DIR . '/.access.php', 0600);
+}
 $tmp = DATA_DIR . '/current.json.tmp';
 file_put_contents($tmp, json_encode($manifestOut, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 if (!rename($tmp, DATA_DIR . '/current.json')) {

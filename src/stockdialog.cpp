@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 #include "stockdialog.h"
+#include "qtcompat.h"
 #include "appsettings.h"
 #include "database.h"
 #include "reportprinter.h"
 #include "session.h"
 
+#include <cmath>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDateEdit>
@@ -106,7 +108,7 @@ void StockDialog::buildStockPage(QWidget *page)
                         "Wochenende, gilt der Freitag davor."));
     auto *leadLbl = new QLabel(tr("&Vorlauf:"), page);
     leadLbl->setBuddy(lead);
-    connect(lead, &QSpinBox::valueChanged, this, [this](int v) { setLeadDays(v); fillStock(); });
+    connect(lead, qOverload<int>(&QSpinBox::valueChanged), this, [this](int v) { setLeadDays(v); fillStock(); });
     h->addWidget(m_btnReceive);
     h->addWidget(m_btnPackages);
     h->addWidget(m_btnToOrder);
@@ -128,8 +130,8 @@ void StockDialog::buildStockPage(QWidget *page)
         setPrepPlan(m_patient.id, PrepPlan{ mode->currentData().toInt(), wd->currentData().toInt() });
         fillStock();
     };
-    connect(mode, &QComboBox::activated, this, applyPlan);
-    connect(wd, &QComboBox::activated, this, applyPlan);
+    connect(mode, qOverload<int>(&QComboBox::activated), this, applyPlan);
+    connect(wd, qOverload<int>(&QComboBox::activated), this, applyPlan);
     auto *modeLbl = new QLabel(tr("&Gestellt wird:"), page);
     modeLbl->setBuddy(mode);
     mode->setToolTip(tr("Wird der Wochendosierer gestellt, muss der Bestand am Stelltag für die ganze Woche reichen."));
@@ -207,7 +209,7 @@ void StockDialog::fillStock()
         m_stock->insertRow(r);
         const QString unit = m.unit.isEmpty() ? QString() : QLatin1Char(' ') + m.unit;
         QString name = m.name + (m.strength.isEmpty() ? QString() : QLatin1Char(' ') + m.strength);
-        QStringList cells(SCount);
+        QStringList cells = vpFilledList<QString>(SCount);
         cells[SName] = name;
         cells[SState] = f.stateText();
         if (f.tracked) {
