@@ -4,14 +4,14 @@ Touch-Version von VitaParms für Android-Tablets (iOS folgt). Sie verwendet dens
 das Desktop-Programm (`../core.pri`): dieselbe verschlüsselte Datenbank, dieselben Berichte und
 den Abgleich über die eigene Website.
 
-**Stand 0.24:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
+**Stand 0.25:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
 Atemfrequenz, Schmerzskala, freier Messzeitpunkt), Messwerte, Verlaufskurven, Stammblatt mit
 Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge (Dokument aus der Krankenakte verknüpfen und öffnen), Medikamentenplan wie am Computer
 (Einnahme-Rhythmus, Bedarfs-/Notfallmedikation, PZN, Kennzeichnung, „An Einnahme erinnern“),
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
 mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
-Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Assistent „Medikamente stellen“ mit Vorlesen (Tages- und Wochendosierer, Protokoll), Medikamentenbestand mit Packungen und Verfallsdatum, Bestelllisten (offen → bestellt → geliefert, PDF), Reiter „Berichte“ (alle Ausgaben als PDF/Excel öffnen oder über das Android-Teilen-Menü weitergeben, mehrere zusammen auch als AES-256-verschlüsseltes ZIP), Website vom Tablet aus aktualisieren, Verwaltung (eigenes Passwort, Anmeldekonten, Wiederherstellungsschlüssel, Sicherung als .vpdb teilen/wiederherstellen, „Passwort vergessen?“, Demo-Datenbank), Abgleich über Website und USB.
+Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Assistent „Medikamente stellen“ mit Vorlesen (Tages- und Wochendosierer, Protokoll), Medikamentenbestand mit Packungen und Verfallsdatum, Bestelllisten (offen → bestellt → geliefert, PDF), Reiter „Berichte“ (alle Ausgaben als PDF/Excel öffnen oder über das Android-Teilen-Menü weitergeben, mehrere zusammen auch als AES-256-verschlüsseltes ZIP), Website vom Tablet aus aktualisieren, Verwaltung (eigenes Passwort, Anmeldekonten, Wiederherstellungsschlüssel, Sicherung als .vpdb teilen/wiederherstellen, „Passwort vergessen?“, Demo-Datenbank), Wunddokumentation (Reiter „Wunden“: Wunde mit Wundanamnese, auch bei Aufnahme, Wundbeurteilung und Verbandwechsel mit Kamerafoto, Flächenverlauf, Hinweise in der Übersicht, PDF/Excel), Abgleich über Website und USB.
 **Folgt:** iOS.
 
 ## Voraussetzungen

@@ -250,6 +250,22 @@ public:
     bool publishWebsiteBlocking(int timeoutMs);        // Autopilot
     QStringList lastShared() const { return m_lastShared; }
 
+    // ---- Wunddokumentation (Wunde, Chronik aus Wundbeurteilungen und Verbandwechseln, Fotos)
+    Q_INVOKABLE QVariantMap woundChoices();
+    Q_INVOKABLE QVariantList woundList(qint64 pid, bool includeClosed);
+    Q_INVOKABLE QVariantMap woundData(qint64 pid, qint64 id, bool onAdmission = false);
+    Q_INVOKABLE qint64 saveWound(qint64 pid, const QVariantMap &m);
+    Q_INVOKABLE bool deleteWound(qint64 id);
+    Q_INVOKABLE bool setWoundHealed(qint64 id);
+    Q_INVOKABLE QVariantList woundEntries(qint64 woundId);
+    Q_INVOKABLE QVariantMap woundEntryData(qint64 woundId, qint64 entryId, int kind);   // lädt auch das Foto in den Entwurf
+    Q_INVOKABLE bool saveWoundEntry(qint64 woundId, const QVariantMap &m);
+    Q_INVOKABLE bool deleteWoundEntry(qint64 id);
+    Q_INVOKABLE int woundPhotoFrom(const QString &pathOrUrl);   // Kamera bzw. Datei → Entwurf (Revision, 0 = Fehler)
+    Q_INVOKABLE int woundPhotoClear();
+    bool setWoundPhotoData(const QByteArray &jpeg);               // Autopilot
+    QImage woundImage(const QString &id, int width);              // für image://wound/<Eintrag | draft | chart-<Wunde>>
+
     // ---- Verwaltung: Konten, Wiederherstellungsschlüssel, Sicherung, Demo
     Q_INVOKABLE QVariantList accountList();
     Q_INVOKABLE bool addAccount(const QString &name, const QString &password, const QString &repeat, bool admin);
@@ -318,5 +334,8 @@ private:
     QByteArray m_draftPdf;
     QString m_draftFileName;
     int m_draftRevision = 0;
-    QHash<QString, QImage> m_pageCache;           // gerenderte Seiten (Inhalte ändern sich nie)
+    QHash<QString, QImage> m_pageCache;
+    // Wunddokumentation: Foto des Eintrags im Entstehen
+    QByteArray m_woundPhoto;
+    int m_woundPhotoRevision = 0;           // gerenderte Seiten (Inhalte ändern sich nie)
 };

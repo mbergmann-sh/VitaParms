@@ -56,6 +56,9 @@ private:
     int  currentMedicationIndex() const;
     Patient collectPatient() const;
     void updateAdmissionLabel();
+    void setupWoundWidgets();        // „Wunden bei Aufnahme“ unter den Aufnahmewerten
+    void updateWoundLabel();
+    void addAdmissionWound();
 
     Patient  m_patient;
     bool     m_bioSexTouched = false;   // biologisches Geschlecht von Hand gewählt
@@ -78,4 +81,6 @@ private:
     QList<Medication> m_removedMeds;     // gelöschte (für das Beenden ihrer Terminserien)
     std::optional<VitalRecord> m_admission;
     bool m_admissionChanged = false;
+    class QLabel *m_woundLabel = nullptr;
+    class QPushButton *m_woundAdd = nullptr, *m_woundOpen = nullptr;
 };

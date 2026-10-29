@@ -11,6 +11,7 @@ Flickable {
     signal openChart()
     signal openMeds()
     signal openAppointments()
+    signal openWounds()
     property var tiles: []
     property var appts: []
     property var meds: []
@@ -55,7 +56,8 @@ Flickable {
                     color: Theme.ink; font.pixelSize: Theme.fsM
                 }
                 // Bestandshinweis: zum Reiter „Medikamente“ (Bestand und Bestellungen)
-                MouseArea { anchors.fill: parent; enabled: modelData.stock === true; onClicked: page.openMeds() }
+                MouseArea { anchors.fill: parent; enabled: modelData.stock === true || modelData.wound === true
+                            onClicked: modelData.wound === true ? page.openWounds() : page.openMeds() }
             }
         }
         SectionTitle { text: qsTr("Letzte Messwerte") }

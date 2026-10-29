@@ -84,6 +84,7 @@ private slots:
     void printPharmacyList();
     void medicationAssistant();
     void medicationStock();
+    void showWounds(qint64 woundId = 0);
     void exportDatabase();
 
     // Datei / Extras
@@ -170,6 +171,7 @@ private:
     InactivityWatcher *m_idle = nullptr;
     QList<QAction *> m_actMedSearch;
     QAction *m_actMedStock = nullptr;
+    QAction *m_actWounds = nullptr;
     QAction *m_actExportDb = nullptr;
     QAction *m_actMedAssist = nullptr, *m_actMedLog = nullptr, *m_actNewAppt = nullptr;
     QList<QAction *> m_actUserPrint;   // Benutzer → Drucken → …

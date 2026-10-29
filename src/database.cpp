@@ -379,6 +379,20 @@ bool Database::createSchema(QString *error)
             " amount TEXT, reason TEXT, delivered INTEGER NOT NULL DEFAULT 0, delivered_qty REAL,"
             " delivered_at TEXT, modified_at TEXT)"),
         QStringLiteral("CREATE INDEX IF NOT EXISTS idx_order_items ON med_order_items(order_id)"),
+        // Schema 11: Wunddokumentation (Wunde mit Wundanamnese, Chronik aus Beurteilungen und Verbandwechseln)
+        QStringLiteral(
+            "CREATE TABLE IF NOT EXISTS wounds ("
+            " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            " patient_id INTEGER NOT NULL REFERENCES patients(id) ON DELETE CASCADE,"
+            " created_at TEXT NOT NULL, created_by TEXT, status INTEGER NOT NULL DEFAULT 0, closed_at TEXT,"
+            " on_admission INTEGER NOT NULL DEFAULT 0, data TEXT, modified_at TEXT)"),
+        QStringLiteral(
+            "CREATE TABLE IF NOT EXISTS wound_entries ("
+            " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            " patient_id INTEGER NOT NULL REFERENCES patients(id) ON DELETE CASCADE,"
+            " wound_id INTEGER NOT NULL REFERENCES wounds(id) ON DELETE CASCADE,"
+            " at TEXT NOT NULL, kind INTEGER NOT NULL DEFAULT 0, by_user TEXT, data TEXT, photo BLOB, modified_at TEXT)"),
+        QStringLiteral("CREATE INDEX IF NOT EXISTS idx_wound_entries ON wound_entries(wound_id, at)"),
         QStringLiteral(
             "CREATE TABLE IF NOT EXISTS med_stock_moves ("
             " id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -506,6 +520,8 @@ const QList<Database::SyncTable> &Database::syncTables()
         { "med_orders",         "patient_id", {} },
         { "med_order_items",    "patient_id", {} },
         { "med_stock_moves",    "patient_id", {} },
+        { "wounds",             "patient_id", {} },
+        { "wound_entries",      "patient_id", {} },
     };
     return t;
 }

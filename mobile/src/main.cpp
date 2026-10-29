@@ -80,6 +80,21 @@ int main(int argc, char *argv[])
         }
     };
     engine.addImageProvider(QStringLiteral("docpage"), new DocPages(&controller));
+    // Wunddokumentation: image://wound/<Eintrag-ID | draft | chart-<Wunden-ID>>?r=<Revision>
+    struct WoundImages : QQuickImageProvider {
+        AppController *c;
+        explicit WoundImages(AppController *ctl) : QQuickImageProvider(QQuickImageProvider::Image), c(ctl) {}
+        QImage requestImage(const QString &id, QSize *size, const QSize &requested) override {
+            QImage img = c->woundImage(id.section(QLatin1Char('?'), 0, 0), requested.width() > 0 ? requested.width() : 1024);
+            if (img.isNull()) {
+                img = QImage(1, 1, QImage::Format_ARGB32);
+                img.fill(Qt::transparent);
+            }
+            if (size) *size = img.size();
+            return img;
+        }
+    };
+    engine.addImageProvider(QStringLiteral("wound"), new WoundImages(&controller));
     engine.rootContext()->setContextProperty(QStringLiteral("app"), &controller);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty())

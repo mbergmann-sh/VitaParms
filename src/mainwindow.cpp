@@ -7,6 +7,8 @@
 #include "inr.h"
 #include "fluid.h"
 #include "stockdialog.h"
+#include "wounddialogs.h"
+#include "wounds.h"
 #include "careinfo.h"
 #include "dbsync.h"
 #include "appsettings.h"
@@ -83,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     Database &db = Database::instance();
     connect(&db, &Database::patientsChanged, this, &MainWindow::reloadPatients);
     connect(&db, &Database::stockChanged, this, [this](qint64) { updateHeader(); });
+    connect(&db, &Database::woundsChanged, this, [this](qint64) { updateHeader(); });
     connect(&db, &Database::vitalsChanged, this, [this](qint64 pid) {
         if (pid == m_patientId) { reloadJournal(); reloadChart(); updateHeader(); }
     });
@@ -450,6 +453,10 @@ void MainWindow::buildMenus()
     m_actMedStock = users->addAction(tr("Medikamenten&bestand und Bestellungen…"), this, &MainWindow::medicationStock);
     m_actMedStock->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_L));
     m_actMedStock->setStatusTip(tr("Packungen mit Verfallsdatum, Verbrauch beim Stellen, Reichweite und Bestelllisten"));
+    m_actWounds = users->addAction(tr("&Wunddokumentation…"), this, [this] { showWounds(); });
+    m_actWounds->setObjectName(QStringLiteral("actWounds"));
+    m_actWounds->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_W));
+    m_actWounds->setStatusTip(tr("Wunden mit Wundanamnese, Chronik aus Wundbeurteilungen und Verbandwechseln, Fotos und Flächenverlauf"));
     {
         QMenu *search = users->addMenu(tr("Medikamente &suchen"));
         for (int g = 0; g < DrugClass::GroupCount; ++g) {
@@ -568,6 +575,9 @@ void MainWindow::buildMenus()
     m_actUserPrint << out->addAction(tr("Ein- und Ausfuhr (&Bilanz)…"), this, [this] { showProtocol(Protocols::Kind::Fluid); });
     m_actUserPrint.last()->setObjectName(QStringLiteral("actFluidProtocol"));
     m_actUserPrint.last()->setStatusTip(tr("Einfuhr und Ausfuhr je Eintrag, Tagessummen und Bilanz"));
+    m_actUserPrint << out->addAction(tr("&Wunddokumentation…"), this, [this] { showWounds(); });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actWoundReport"));
+    m_actUserPrint.last()->setStatusTip(tr("Wunde wählen und Dokumentation mit Chronik, Fotos und Flächenverlauf drucken, als PDF oder Excel ausgeben"));
 
     // ---- Extras
     QMenu *extras = menuBar()->addMenu(tr("E&xtras"));
@@ -786,6 +796,15 @@ void MainWindow::updateHeader()
         } else {
             m_header->setToolTip(QString());
         }
+    }
+    // Wunden: Beurteilung fällig, Infektionszeichen, Verschlechterung, Verbandwechsel fällig
+    {
+        QStringList w;
+        for (const Wounds::Notice &n : Wounds::patientNotices(p->id))
+            w << QStringLiteral("<span style=\"color:%1;\">%2</span>")
+                     .arg(n.warn ? QStringLiteral("#D52B1E") : QStringLiteral("#B35C00"), n.text.toHtmlEscaped());
+        if (!w.isEmpty())
+            t += QStringLiteral("<br><small><b>%1</b> %2</small>").arg(tr("Wunden:"), w.join(QStringLiteral(" · ")));
     }
     m_header->setText(t);
     setWindowTitle(QStringLiteral("%1 – %2").arg(appTitle(), p->displayName()));
@@ -1132,6 +1151,7 @@ void MainWindow::updateActions()
         for (QAction *a : { m_actAddDoc, m_actPackAkte, m_actDocList }) a->setEnabled(hasPatient);
         m_actMedAssist->setEnabled(hasPatient);
         m_actMedStock->setEnabled(hasPatient);
+        m_actWounds->setEnabled(hasPatient);
         m_actMedLog->setEnabled(hasPatient);
         for (QAction *a : std::as_const(m_actUserPrint)) a->setEnabled(hasPatient);
         for (QAction *a : std::as_const(m_actMedSearch)) a->setEnabled(hasPatient);
@@ -1273,6 +1293,15 @@ void MainWindow::medicationStock()
     const auto p = currentPatient();
     if (!p) return;
     StockDialog d(*p, this);
+    d.exec();
+    updateHeader();
+}
+
+void MainWindow::showWounds(qint64 woundId)
+{
+    const auto p = currentPatient();
+    if (!p) return;
+    WoundsDialog d(*p, this, woundId);
     d.exec();
     updateHeader();
 }

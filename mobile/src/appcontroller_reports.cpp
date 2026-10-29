@@ -8,6 +8,7 @@
 #include "dbsync.h"
 #include "medstock.h"
 #include "websync.h"
+#include "wounds.h"
 #include "zipwriter.h"
 
 #include <QDir>
@@ -100,6 +101,12 @@ QVariantList AppController::reportCatalog(qint64 pid)
     add(QStringLiteral("stool"), gProt, tr("Stuhlprotokoll"), tr("Stuhlgänge mit Bristol-Typ und Angaben, Tage ohne Stuhlgang"), true, true, stool);
     add(QStringLiteral("fluid"), gProt, tr("Ein- und Ausfuhr (Bilanz)"), tr("Einträge mit Tagessummen und Bilanz"), true, true, fluid);
     add(QStringLiteral("preplog"), gProt, tr("Protokoll Medikamente stellen"), tr("wann von wem was gestellt wurde"), false, true, preps);
+    // Wunddokumentation: je Wunde (offene zuerst)
+    for (const Wounds::Wound &w : Wounds::wounds(pid))
+        add(QStringLiteral("wound-%1").arg(w.id), tr("Wunddokumentation"), w.title(),
+            w.status == Wounds::Open ? tr("Wundanamnese, Chronik mit Fotos und Flächenverlauf")
+                                     : tr("%1 am %2").arg(Wounds::statusNames().value(w.status), QLocale().toString(w.closedAt, QStringLiteral("dd.MM.yyyy"))),
+            true, false);
     return l;
 }
 

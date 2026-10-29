@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "wounds.h"
 
 #include "appsettings.h"
 #include "bmi.h"
@@ -119,6 +120,7 @@ AppController::AppController(QObject *parent) : QObject(parent)
     connect(&db, &Database::vitalsChanged, this, &AppController::bump);
     connect(&db, &Database::appointmentsChanged, this, &AppController::bump);
     connect(&db, &Database::documentsChanged, this, &AppController::bump);
+    connect(&db, &Database::woundsChanged, this, &AppController::bump);
     DbSync &ds = DbSync::instance();
     connect(&ds, &DbSync::started, this, [this] { emit syncBusyChanged(); });
     connect(&ds, &DbSync::finished, this, [this](bool ok, const QString &msg) {
@@ -1283,6 +1285,9 @@ QVariantList AppController::careNotices(qint64 pid)
     // Bestandsführung: offene Bestellung (wie am Computer beim Programmstart)
     for (const QString &t : MedStock::reminderLines(MedStock::updateOpenOrder(pid)))
         l << QVariantMap{ { QStringLiteral("text"), t }, { QStringLiteral("critical"), false }, { QStringLiteral("stock"), true } };
+    // Wunden: Beurteilung fällig, Infektionszeichen, Verschlechterung, Verbandwechsel fällig
+    for (const Wounds::Notice &n : Wounds::patientNotices(pid))
+        l << QVariantMap{ { QStringLiteral("text"), n.text }, { QStringLiteral("critical"), n.warn }, { QStringLiteral("wound"), true } };
     return l;
 }
 
@@ -1767,6 +1772,16 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         QString err;
         ok = xlsx ? Protocols::toXlsx(t, *p, Protocols::periodText(o), path, &err)
                   : Protocols::toPdf(t, *p, Protocols::periodText(o), path);
+    } else if (kind.startsWith(QLatin1String("wound-"))) {
+        // Wunddokumentation einer Wunde: „wound-<ID>“ bzw. „wound-<ID>Xlsx“
+        const bool xlsx = kind.endsWith(QLatin1String("Xlsx"));
+        const auto w = Wounds::wound(kind.mid(6).remove(QStringLiteral("Xlsx")).toLongLong());
+        if (!w || w->patientId != pid) return {};
+        QString label = w->label;
+        label.replace(QRegularExpression(QStringLiteral("[^\\w\\-]+")), QStringLiteral("_"));
+        path = QStringLiteral("%1/Wunddokumentation_%2_%3_%4.%5").arg(dir, base, label, stamp, xlsx ? QStringLiteral("xlsx") : QStringLiteral("pdf"));
+        QString err;
+        ok = xlsx ? Wounds::toXlsx(*p, *w, path, &err) : Wounds::toPdf(*p, *w, path);
     } else if (kind == QLatin1String("chart") || kind == QLatin1String("chartXlsx")) {
         ChartSpec spec;
         spec.scale = ChartSpec::Scale(qBound(0, options.value(QStringLiteral("scale")).toInt(), 3));

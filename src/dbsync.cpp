@@ -75,6 +75,7 @@ QList<QPair<QString, QString>> foreignKeys(const Database::SyncTable &t)
         fk << qMakePair(QStringLiteral("medication_id"), QStringLiteral("medications"));
     if (qstrcmp(t.name, "med_stock_moves") == 0) fk << qMakePair(QStringLiteral("stock_id"), QStringLiteral("med_stock"));
     if (qstrcmp(t.name, "med_order_items") == 0) fk << qMakePair(QStringLiteral("order_id"), QStringLiteral("med_orders"));
+    if (qstrcmp(t.name, "wound_entries") == 0) fk << qMakePair(QStringLiteral("wound_id"), QStringLiteral("wounds"));
     return fk;
 }
 

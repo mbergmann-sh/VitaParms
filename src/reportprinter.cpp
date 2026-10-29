@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "reportprinter.h"
+#include "wounds.h"
 #include "peakflow.h"
 #include "inr.h"
 #include "fluid.h"
@@ -853,6 +854,7 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                 if (!admission->observations.trimmed().isEmpty())
                     h += QStringLiteral("<p>%1</p>").arg(admission->observations.toHtmlEscaped());
             }
+            h += Wounds::admissionHtml(p.id);
             h += QStringLiteral("<h3>%1</h3>").arg(tr("Aktueller Medikamentenplan"));
             QList<Medication> active;
             for (const Medication &m : meds) if (!m.archived) active << m;

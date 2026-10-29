@@ -71,6 +71,7 @@ SOURCES += \
     src/medlogdialog.cpp \
     src/protocoldialog.cpp \
     src/stockdialog.cpp \
+    src/wounddialogs.cpp \
     src/upcoming.cpp \
     src/leaflet.cpp \
     src/manual.cpp \
@@ -103,6 +104,7 @@ HEADERS += \
     src/medlogdialog.h \
     src/protocoldialog.h \
     src/stockdialog.h \
+    src/wounddialogs.h \
     src/upcoming.h \
     src/leaflet.h \
     src/manual.h \

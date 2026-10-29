@@ -36,7 +36,9 @@ Page {
 
     Component { id: measureComp; MeasurePage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: personEditComp; PersonEditPage {
-        onClosed: (id, msg) => { stackView.pop(); if (id) home.select(id); if (msg) win.toast(msg) } } }
+        onClosed: (id, msg) => { stackView.pop(); if (id) home.select(id); if (msg) win.toast(msg) }
+        onAddWound: home.editWound(0, true)
+        onOpenWound: (id) => home.editWound(id, false) } }
     function openAdmin() { stackView.push(adminComp) }
     Component { id: settingsComp; SettingsPage { onClosed: stackView.pop(); onOpenAdmin: home.openAdmin() } }
     Component { id: adminComp; AdminPage { onClosed: stackView.pop() } }
@@ -60,6 +62,12 @@ Page {
         onShare: (ids) => home.shareDocuments(ids) } }
     Component { id: docEditComp; DocumentEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     SharePopup { id: sharePopup; onShared: (msg) => win.toast(msg) }
+    // Wunddokumentation
+    function editWound(id, admission) { stackView.push(woundEditComp, { personId: home.personId, woundId: id || 0, admission: admission === true }) }
+    function editWoundEntry(woundId, entryId, kind) { stackView.push(woundEntryComp, { woundId: woundId, entryId: entryId || 0, startKind: kind || 0 }) }
+    Component { id: woundEditComp; WoundEditPage { onClosed: (msg, id) => { stackView.pop(); if (msg) win.toast(msg); if (id) home.woundSelected(id) } } }
+    Component { id: woundEntryComp; WoundEntryPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
+    signal woundSelected(var id)
 
     RowLayout {
         anchors.fill: parent
@@ -240,7 +248,7 @@ Page {
                         id: tabRow
                         height: parent.height
                         Repeater {
-                            model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Krankenakte"), qsTr("Berichte")]
+                            model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Wunden"), qsTr("Krankenakte"), qsTr("Berichte")]
                             delegate: AbstractButton {
                                 height: tabRow.height
                                 width: tl.implicitWidth + 36
@@ -262,7 +270,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 currentIndex: home.tab
-                OverviewPage { personId: home.personId; active: home.tab === 0; onOpenChart: home.tab = 2; onOpenMeds: home.tab = 4; onOpenAppointments: home.tab = 5 }
+                OverviewPage { personId: home.personId; active: home.tab === 0; onOpenChart: home.tab = 2; onOpenMeds: home.tab = 4; onOpenAppointments: home.tab = 5; onOpenWounds: home.tab = 6 }
                 JournalPage { personId: home.personId; active: home.tab === 1; onEdit: (id) => home.measure(id)
                               onGlucoseProfile: stackView.push(glucoseComp, { personId: home.personId }) }
                 ChartPage { personId: home.personId; active: home.tab === 2 }
@@ -271,9 +279,13 @@ Page {
                            onEdit: (id) => stackView.push(medEditComp, { personId: home.personId, medId: id })
                            onPrepare: home.openPrep(); onStock: home.openStock(0) }
                 AppointmentsPage { personId: home.personId; active: home.tab === 5; onEdit: (id) => home.editAppointment(id) }
-                DocumentsPage { personId: home.personId; active: home.tab === 6; onOpen: (id) => home.openDocument(id); onAdd: (how) => home.addDocument(how)
+                WoundsPage { id: woundsPage; personId: home.personId; active: home.tab === 6
+                             onEditWound: (id, admission) => home.editWound(id, admission)
+                             onEditEntry: (wid, eid, kind) => home.editWoundEntry(wid, eid, kind)
+                             Connections { target: home; function onWoundSelected(id) { woundsPage.reload(); woundsPage.select(id) } } }
+                DocumentsPage { personId: home.personId; active: home.tab === 7; onOpen: (id) => home.openDocument(id); onAdd: (how) => home.addDocument(how)
                                 onShare: (ids) => home.shareDocuments(ids) }
-                ReportsPage { personId: home.personId; active: home.tab === 7 }
+                ReportsPage { personId: home.personId; active: home.tab === 8 }
             }
         }
     }

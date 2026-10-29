@@ -827,7 +827,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         check(!app.shareDocuments(pid, { d1 }, { { QStringLiteral("zip"), true }, { QStringLiteral("password"), QStringLiteral("kurz") } }).value(QStringLiteral("ok")).toBool(), "Akte: Passwort zu kurz");
 
         // Bildschirmfotos
-        QQmlProperty::write(h, QStringLiteral("tab"), 6);
+        QQmlProperty::write(h, QStringLiteral("tab"), 7);
         wait(400);
         shot(QStringLiteral("m60_akte"));
         call(h, "openDocument", d1);
@@ -1051,6 +1051,191 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
     }
 
+    // ---- Wunddokumentation: Wunde bei Aufnahme, Chronik, Foto, Hinweise, Bericht (Stufe 7)
+    {
+        std::function<QQuickItem *(QQuickItem *, const QString &)> findItem = [&](QQuickItem *root, const QString &name) -> QQuickItem * {
+            if (!root) return nullptr;
+            if (root->objectName() == name && root->isVisible()) return root;
+            for (QQuickItem *c : root->childItems())
+                if (QQuickItem *f = findItem(c, name)) return f;
+            return nullptr;
+        };
+        auto scrollTo = [&](QQuickItem *it, double above) {
+            for (QQuickItem *p = it ? it->parentItem() : nullptr; p; p = p->parentItem())
+                if (p->inherits("QQuickFlickable")) {
+                    QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, it->mapToItem(p->childItems().value(0), QPointF()).y() - above));
+                    break;
+                }
+        };
+        auto isoIn = [](int days) { return QDate::currentDate().addDays(days).toString(Qt::ISODate); };
+        const bool en = app.language() == QStringLiteral("en");
+        const QVariantMap ch = app.woundChoices();
+        check(ch.value(QStringLiteral("kinds")).toStringList().size() == 10 && ch.value(QStringLiteral("grades")).toList().value(0).toStringList().size() == 6,
+              "Wunden: Auswahllisten");
+        const QStringList sites = ch.value(QStringLiteral("sites")).toStringList();
+        QVariantMap wm = app.woundData(pid, 0, true);
+        check(wm.value(QStringLiteral("onAdmission")).toBool() && !wm.value(QStringLiteral("admissionDate")).toString().isEmpty(), "Wunden: Vorgaben bei Aufnahme");
+        check(app.saveWound(pid, wm) == 0, "Wunden: Lokalisation Pflicht");
+        wm.insert(QStringLiteral("site"), sites.value(4));          // Ferse
+        wm.insert(QStringLiteral("side"), ch.value(QStringLiteral("sides")).toStringList().value(1));
+        wm.insert(QStringLiteral("kind"), 0);
+        wm.insert(QStringLiteral("grade"), 2);
+        wm.insert(QStringLiteral("since"), isoIn(-30));
+        wm.insert(QStringLiteral("origin"), ch.value(QStringLiteral("origins")).toStringList().value(1));
+        wm.insert(QStringLiteral("photoConsent"), true);
+        wm.insert(QStringLiteral("admissionDate"), isoIn(-25));
+        wm.insert(QStringLiteral("limitations"), QStringList{ ch.value(QStringLiteral("limitations")).toStringList().value(0) });
+        const qint64 wid = app.saveWound(pid, wm);
+        check(wid > 0, "Wunden: bei Aufnahme angelegt");
+        // Wundfoto (gezeichnet) mit Maßband
+        auto photo = [&](int r) {
+            QImage img(800, 600, QImage::Format_RGB32);
+            img.fill(QColor(0xe6, 0xc0, 0xa2));
+            QPainter pa(&img);
+            pa.setRenderHint(QPainter::Antialiasing);
+            pa.setPen(Qt::NoPen);
+            pa.setBrush(QColor(0xc4, 0x52, 0x52)); pa.drawEllipse(QPointF(400, 280), r * 1.4, r);
+            pa.setBrush(QColor(0xdc, 0xcd, 0x84)); pa.drawEllipse(QPointF(380, 270), r * 0.5, r * 0.35);
+            pa.setBrush(Qt::white); pa.drawRect(100, 500, 600, 44);
+            pa.setPen(Qt::black);
+            for (int i = 0; i <= 15; ++i) pa.drawLine(100 + i * 40, 500, 100 + i * 40, i % 2 ? 512 : 522);
+            pa.end();
+            const QString path = out + QStringLiteral("/wunde_%1.jpg").arg(r);
+            img.save(path, "JPG", 90);
+            return path;
+        };
+        struct A { int day; const char *l, *w; int gran, fib; int trend; };
+        const A as[] = { { -25, "3,5", "2,8", 30, 70, -1 }, { -11, "3,0", "2,2", 55, 45, 0 }, { -2, "2,4", "1,8", 75, 25, 0 } };
+        for (const A &a : as) {
+            QVariantMap e = app.woundEntryData(wid, 0, 0);
+            e.insert(QStringLiteral("date"), isoIn(a.day));
+            e.insert(QStringLiteral("time"), QStringLiteral("09:15"));
+            e.insert(QStringLiteral("length"), QString::fromLatin1(a.l));
+            e.insert(QStringLiteral("width"), QString::fromLatin1(a.w));
+            e.insert(QStringLiteral("depth"), QStringLiteral("0,2"));
+            e.insert(QStringLiteral("granulation"), a.gran);
+            e.insert(QStringLiteral("fibrin"), a.fib);
+            e.insert(QStringLiteral("exudate"), 1);
+            e.insert(QStringLiteral("exudateKind"), ch.value(QStringLiteral("exudateKinds")).toStringList().value(0));
+            e.insert(QStringLiteral("edge"), QStringList{ ch.value(QStringLiteral("edges")).toStringList().value(0) });
+            e.insert(QStringLiteral("pain"), QStringLiteral("3"));
+            e.insert(QStringLiteral("trend"), a.trend);
+            e.insert(QStringLiteral("phase"), a.gran > 50 ? 1 : 0);
+            e.insert(QStringLiteral("cleansing"), en ? QStringLiteral("Wound irrigation solution") : QStringLiteral("Wundspüllösung"));
+            e.insert(QStringLiteral("dressing"), en ? QStringLiteral("Foam dressing") : QStringLiteral("Schaumverband"));
+            e.insert(QStringLiteral("compression"), en ? QStringLiteral("Heel offloading") : QStringLiteral("Ferse frei lagern"));
+            e.insert(QStringLiteral("intervalDays"), 3);
+            e.insert(QStringLiteral("nextChange"), isoIn(a.day + 3));
+            check(app.woundPhotoFrom(photo(int(QString::fromLatin1(a.l).replace(QLatin1Char(','), QLatin1Char('.')).toDouble() * 28))) > 0, "Wunden: Foto übernommen");
+            check(app.saveWoundEntry(wid, e), "Wunden: Wundbeurteilung");
+        }
+        {
+            QVariantMap e = app.woundEntryData(wid, 0, 1);
+            e.insert(QStringLiteral("date"), isoIn(0));
+            e.insert(QStringLiteral("time"), QStringLiteral("08:30"));
+            check(e.value(QStringLiteral("dressing")).toString() == (en ? QStringLiteral("Foam dressing") : QStringLiteral("Schaumverband")), "Wunden: Versorgung übernommen");
+            app.woundPhotoClear();
+            QVariantMap empty = e; empty.insert(QStringLiteral("dressing"), QString());
+            check(!app.saveWoundEntry(wid, empty), "Wunden: leerer Verbandwechsel abgelehnt");
+            e.insert(QStringLiteral("description"), en ? QStringLiteral("Wound clean, edges pink") : QStringLiteral("Wunde sauber, Rand rosig"));
+            e.insert(QStringLiteral("trend"), 0);
+            check(app.saveWoundEntry(wid, e), "Wunden: Verbandwechsel");
+        }
+        const QVariantList ents = app.woundEntries(wid);
+        check(ents.size() == 4 && ents.value(1).toMap().value(QStringLiteral("hasPhoto")).toBool(), "Wunden: Chronik");
+        check(!app.woundImage(QStringLiteral("chart-%1").arg(wid), 600).isNull(), "Wunden: Flächenverlauf");
+        // zweite Wunde mit Infektionszeichen → Hinweis in der Übersicht
+        QVariantMap w2 = app.woundData(pid, 0, false);
+        w2.insert(QStringLiteral("site"), sites.value(7));
+        w2.insert(QStringLiteral("kind"), 1);
+        const qint64 wid2 = app.saveWound(pid, w2);
+        QVariantMap i2 = app.woundEntryData(wid2, 0, 0);
+        i2.insert(QStringLiteral("time"), QStringLiteral("10:00"));
+        i2.insert(QStringLiteral("length"), QStringLiteral("2"));
+        i2.insert(QStringLiteral("width"), QStringLiteral("1,5"));
+        i2.insert(QStringLiteral("infection"), QStringList{ ch.value(QStringLiteral("infection")).toStringList().value(0), ch.value(QStringLiteral("infection")).toStringList().value(1) });
+        check(wid2 > 0 && app.saveWoundEntry(wid2, i2), "Wunden: zweite Wunde");
+        bool woundNotice = false;
+        for (const QVariant &v : app.careNotices(pid)) woundNotice |= v.toMap().value(QStringLiteral("wound")).toBool() && v.toMap().value(QStringLiteral("critical")).toBool();
+        check(woundNotice, "Wunden: Hinweis in der Übersicht");
+        // Bericht je Wunde
+        bool listed = false;
+        for (const QVariant &v : app.reportCatalog(pid)) listed |= v.toMap().value(QStringLiteral("kind")).toString() == QStringLiteral("wound-%1").arg(wid);
+        check(listed, "Wunden: unter Berichte");
+        const QString wpdf = app.createReport(pid, QStringLiteral("wound-%1").arg(wid), false, 0);
+        QFile wf(wpdf);
+        check(wf.open(QIODevice::ReadOnly) && wf.read(5) == "%PDF-", "Wunden: PDF");
+        const QString wx = app.createReport(pid, QStringLiteral("wound-%1").arg(wid), true, 0);
+        check(wx.endsWith(QLatin1String(".xlsx")) && QFileInfo(wx).size() > 2000, "Wunden: Excel");
+        const QString sheet = app.exportReport(QStringLiteral("sheet"), pid);
+        check(QFileInfo(sheet).size() > 1000, "Wunden: Stammblatt");
+
+        // Bildschirmfotos
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+        wait(500);
+        shot(QStringLiteral("m94_uebersicht_wunden"));
+        QQmlProperty::write(h, QStringLiteral("tab"), 6);
+        wait(500);
+        if (QObject *wp = win->findChild<QObject *>(QStringLiteral("woundsPage"))) {
+            QMetaObject::invokeMethod(wp, "select", Q_ARG(QVariant, wid));
+            wait(500);
+            shot(QStringLiteral("m95_wunden"));
+            QQmlProperty::write(wp, QStringLiteral("contentY"), 420);
+            wait(300);
+            shot(QStringLiteral("m95b_wunden_chronik"));
+            QQmlProperty::write(wp, QStringLiteral("contentY"), 0);
+        } else check(false, "Wunden: Seite");
+        QMetaObject::invokeMethod(h, "editWoundEntry", Q_ARG(QVariant, wid), Q_ARG(QVariant, 0), Q_ARG(QVariant, 0));
+        wait(600);
+        if (QObject *ep = win->findChild<QObject *>(QStringLiteral("woundEntryPage"))) {
+            app.woundPhotoFrom(photo(56));
+            QQmlProperty::write(ep, QStringLiteral("photoRev"), 99);
+            QQmlProperty::write(ep, QStringLiteral("hasPhoto"), true);
+            if (QQuickItem *f = findItem(win->contentItem(), QStringLiteral("entryLength"))) QQmlProperty::write(f, QStringLiteral("text"), QStringLiteral("2,0"));
+            if (QQuickItem *f = findItem(win->contentItem(), QStringLiteral("entryWidth"))) QQmlProperty::write(f, QStringLiteral("text"), QStringLiteral("1,5"));
+            wait(400);
+            shot(QStringLiteral("m96_wundbeurteilung"));
+            if (QQuickItem *t = findItem(win->contentItem(), QStringLiteral("entryInfection"))) scrollTo(t, 200);
+            wait(300);
+            shot(QStringLiteral("m96b_wundbeurteilung_zustand"));
+            if (QQuickItem *t = findItem(win->contentItem(), QStringLiteral("entryPhoto"))) scrollTo(t, 520);
+            wait(300);
+            shot(QStringLiteral("m96c_wundbeurteilung_foto"));
+            QMetaObject::invokeMethod(ep, "closed", Q_ARG(QString, QString()));
+            wait(400);
+        } else check(false, "Wunden: Seite Wundbeurteilung");
+        QMetaObject::invokeMethod(h, "editWoundEntry", Q_ARG(QVariant, wid), Q_ARG(QVariant, 0), Q_ARG(QVariant, 1));
+        wait(600);
+        if (QObject *ep = win->findChild<QObject *>(QStringLiteral("woundEntryPage"))) {
+            check(!QQmlProperty::read(ep, QStringLiteral("full")).toBool(), "Wunden: Verbandwechsel kurz");
+            if (QQuickItem *f = findItem(win->contentItem(), QStringLiteral("entryDescription")))
+                QQmlProperty::write(f, QStringLiteral("text"), en ? QStringLiteral("Edges epithelialising") : QStringLiteral("Ränder epithelisieren"));
+            if (QQuickItem *t = findItem(win->contentItem(), QStringLiteral("trend_0"))) QMetaObject::invokeMethod(t, "clicked");
+            wait(400);
+            shot(QStringLiteral("m97_verbandwechsel"));
+            QMetaObject::invokeMethod(ep, "closed", Q_ARG(QString, QString()));
+            wait(400);
+        } else check(false, "Wunden: Seite Verbandwechsel");
+        QMetaObject::invokeMethod(h, "editWound", Q_ARG(QVariant, wid), Q_ARG(QVariant, false));
+        wait(600);
+        if (win->findChild<QObject *>(QStringLiteral("woundEditPage"))) {
+            shot(QStringLiteral("m98_wunde_bearbeiten"));
+            stackPop();
+        } else check(false, "Wunden: Seite Wunde");
+        QQmlProperty::write(h, QStringLiteral("tab"), 3);
+        QMetaObject::invokeMethod(h, "editPerson", Q_ARG(QVariant, false));
+        wait(700);
+        if (QQuickItem *b = findItem(win->contentItem(), QStringLiteral("admissionWoundButton"))) {
+            scrollTo(b, 330);
+            wait(300);
+            shot(QStringLiteral("m99_stammblatt_wunden"));
+        } else check(false, "Wunden: Stammblatt-Abschnitt");
+        stackPop();
+        check(app.setWoundHealed(wid2) && app.woundList(pid, false).size() == 1, "Wunden: abgeheilt");
+        check(app.deleteWound(wid2) && app.woundList(pid, true).size() == 1, "Wunden: löschen");
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    }
+
     // ---- Ausgaben: Berichte öffnen/teilen, verschlüsseltes ZIP, Website aktualisieren (Stufe 5)
     {
         const QVariantList cat = app.reportCatalog(pid);
@@ -1107,7 +1292,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         }
 
         wait(3600);                           // Hinweis „Website aktualisiert“ ausblenden lassen
-        QQmlProperty::write(h, QStringLiteral("tab"), 7);
+        QQmlProperty::write(h, QStringLiteral("tab"), 8);
         wait(600);
         if (QObject *rp = win->findChild<QObject *>(QStringLiteral("reportsPage"))) {
             QQmlProperty::write(rp, QStringLiteral("selected"), QVariantList{ QStringLiteral("sheet"), QStringLiteral("medplan"), QStringLiteral("journal:xlsx") });

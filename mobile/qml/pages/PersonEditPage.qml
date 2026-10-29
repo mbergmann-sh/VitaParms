@@ -9,6 +9,10 @@ Page {
     id: page
     property var personId: 0
     signal closed(var id, string message)
+    signal addWound()
+    signal openWound(var id)
+    // Wunden bei Aufnahme (Wunddokumentation); neu laden, wenn sich Daten ändern
+    property var admissionWounds: { app.dataRevision; return page.personId ? app.woundList(page.personId, true).filter(w => w.onAdmission) : [] }
     property var d: app.personDetail(personId)
     property var marks: app.careMarks()
     property var selectedMarks: d.disabilityMarks || []
@@ -270,6 +274,24 @@ Page {
             SectionTitle { text: qsTr("Diagnosen und Bemerkungen") }
             VArea { id: diagnoses; label: qsTr("Diagnosen (eine pro Zeile)"); text: d.diagnoses; Layout.fillWidth: true }
             VArea { id: notes; label: qsTr("Bemerkungen"); text: d.notes; Layout.fillWidth: true; minHeight: 80 }
+
+            SectionTitle { text: qsTr("Wunden bei Aufnahme") }
+            Label { visible: !page.personId; text: qsTr("Wunden lassen sich erfassen, sobald das Stammblatt einmal gespeichert ist.")
+                    color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+            Label { visible: page.personId && page.admissionWounds.length === 0; text: qsTr("Keine Wunden bei Aufnahme erfasst."); color: Theme.muted }
+            Repeater {
+                model: page.admissionWounds
+                delegate: AbstractButton {
+                    Layout.fillWidth: true
+                    implicitHeight: wl.implicitHeight + 20
+                    onClicked: page.openWound(modelData.id)
+                    background: Rectangle { color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule; radius: 6 }
+                    contentItem: Label { id: wl; leftPadding: 14; rightPadding: 14; text: "• " + modelData.summary + (modelData.size ? " – " + modelData.size : "")
+                                         color: Theme.ink; wrapMode: Text.WordWrap }
+                }
+            }
+            VButton { objectName: "admissionWoundButton"; visible: !!page.personId; text: qsTr("Wunde bei Aufnahme erfassen"); iconText: "+"
+                      onClicked: page.addWound() }
 
             SectionTitle { text: qsTr("Weitere Angaben") }
             Repeater {

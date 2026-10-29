@@ -143,7 +143,8 @@ public:
     qint64 syncChangeCounter();                    // steigt bei jeder Änderung
     void notifyExternalChange();
     void notifyDocumentsChanged();      // Inhalte nachgeladen (Abgleich)
-    void notifyStockChanged(qint64 patientId) { emit stockChanged(patientId); }                   // nach dem Zusammenführen: Ansichten neu laden
+    void notifyStockChanged(qint64 patientId) { emit stockChanged(patientId); }
+    void notifyWoundsChanged(qint64 patientId) { emit woundsChanged(patientId); }                   // nach dem Zusammenführen: Ansichten neu laden
     SqlDb handleDb() { return db(); }
 
 signals:
@@ -154,6 +155,7 @@ signals:
     void documentsChanged(qint64 patientId);
     void appointmentsChanged();
     void preparationsChanged(qint64 patientId);
+    void woundsChanged(qint64 patientId);                // Wunddokumentation geändert
 
 private:
     Database() = default;
@@ -178,5 +180,5 @@ private:
     QByteArray m_key;
     bool       m_wasOpen = false;
     QString    m_path;
-    static constexpr int kSchemaVersion = 10;  // 9: vitals.stool; 10: inr, fluid_in/out, edema
+    static constexpr int kSchemaVersion = 11;  // 9: vitals.stool; 10: inr, fluid_in/out, edema; 11: wounds
 };

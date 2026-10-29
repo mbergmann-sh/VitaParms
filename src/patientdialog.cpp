@@ -12,6 +12,8 @@
 #include <QGroupBox>
 #include <QToolButton>
 #include "pdftools.h"
+#include "wounddialogs.h"
+#include "wounds.h"
 #include "leaflet.h"
 #include "medsearchdialog.h"
 #include "medschedule.h"
@@ -195,6 +197,7 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
     if (p.id)
         m_admission = Database::instance().admissionVitals(p.id);
     updateAdmissionLabel();
+    setupWoundWidgets();
 
     const QByteArray geo = AppSettings::windowState(QStringLiteral("patientdialog"));
     if (!geo.isEmpty()) restoreGeometry(geo);
@@ -924,6 +927,80 @@ void PatientDialog::updateAdmissionLabel()
     FormIO::write(m_form, QStringLiteral("admissionLabel"), t);
     if (auto *b = m_form->findChild<QAbstractButton *>(QStringLiteral("admissionButton")))
         b->setText(m_admission ? tr("Aufnahmewerte &bearbeiten…") : tr("Aufnahmewerte &erfassen…"));
+}
+
+void PatientDialog::setupWoundWidgets()
+{
+    // Abschnitt direkt unter „Vitalwerte bei Aufnahme“ einfügen (auch bei angepassten Formularen,
+    // solange die Gruppe „admissionGroup“ in einem Box-Layout steht)
+    auto *adm = m_form->findChild<QWidget *>(QStringLiteral("admissionGroup"));
+    auto *box = adm && adm->parentWidget() ? qobject_cast<QBoxLayout *>(adm->parentWidget()->layout()) : nullptr;
+    if (!box) return;
+    auto *g = new QGroupBox(tr("Wunden bei Aufnahme"), adm->parentWidget());
+    g->setObjectName(QStringLiteral("admissionWoundGroup"));
+    auto *v = new QVBoxLayout(g);
+    m_woundLabel = new QLabel(g);
+    m_woundLabel->setObjectName(QStringLiteral("admissionWoundLabel"));
+    m_woundLabel->setWordWrap(true);
+    m_woundLabel->setTextFormat(Qt::RichText);
+    v->addWidget(m_woundLabel);
+    auto *row = new QHBoxLayout;
+    m_woundAdd = new QPushButton(tr("Wunde bei Aufnahme e&rfassen…"), g);
+    m_woundAdd->setObjectName(QStringLiteral("admissionWoundButton"));
+    m_woundOpen = new QPushButton(tr("Wunddokumentation…"), g);
+    row->addWidget(m_woundAdd);
+    row->addWidget(m_woundOpen);
+    row->addStretch(1);
+    v->addLayout(row);
+    box->insertWidget(box->indexOf(adm) + 1, g);
+    connect(m_woundAdd, &QPushButton::clicked, this, &PatientDialog::addAdmissionWound);
+    connect(m_woundOpen, &QPushButton::clicked, this, [this] {
+        WoundsDialog d(m_patient, this);
+        d.exec();
+        updateWoundLabel();
+    });
+    updateWoundLabel();
+}
+
+void PatientDialog::updateWoundLabel()
+{
+    if (!m_woundLabel) return;
+    const bool saved = m_patient.id != 0;
+    m_woundAdd->setEnabled(saved);
+    m_woundOpen->setEnabled(saved);
+    if (!saved) {
+        m_woundLabel->setText(tr("Wunden lassen sich erfassen, sobald das Stammblatt einmal gespeichert ist."));
+        return;
+    }
+    QStringList l;
+    for (const Wounds::Wound &w : Wounds::wounds(m_patient.id))
+        if (w.onAdmission) l << QStringLiteral("• ") + Wounds::woundSummary(w).toHtmlEscaped();
+    m_woundLabel->setText(l.isEmpty() ? tr("Keine Wunden bei Aufnahme erfasst.") : l.join(QStringLiteral("<br>")));
+}
+
+void PatientDialog::addAdmissionWound()
+{
+    if (!m_patient.id) return;
+    Wounds::Wound w;
+    w.patientId = m_patient.id;
+    w.onAdmission = true;
+    w.admissionDate = m_admission ? m_admission->measuredAt.date() : QDate::currentDate();
+    WoundDialog d(w, this);
+    if (d.exec() != QDialog::Accepted) return;
+    updateWoundLabel();
+    // Aufnahmebefund gleich mit einer ersten Wundbeurteilung festhalten
+    if (QMessageBox::question(this, tr("Wunde bei Aufnahme"),
+                              tr("Jetzt die erste Wundbeurteilung (Aufnahmebefund mit Größe, Wundgrund, Exsudat …) erfassen?"))
+        == QMessageBox::Yes) {
+        Wounds::Entry e;
+        e.woundId = d.wound().id;
+        e.kind = Wounds::Assessment;
+        e.at = m_admission ? m_admission->measuredAt : QDateTime::currentDateTime();
+        e.grade = d.wound().grade;
+        WoundEntryDialog ed(d.wound(), e, this);
+        ed.exec();
+        updateWoundLabel();
+    }
 }
 
 void PatientDialog::accept()
