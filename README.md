@@ -36,7 +36,7 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 | **Automatische Sperre** | nach 10/20/30/60 Minuten ohne Benutzung (Einstellungen) |
 | **Sprachen** | Deutsch und Englisch, Auswahl in den Einstellungen (oder Systemsprache) |
 | **Themes** | alle Qt-Styles der Plattform sowie „Dark“ und „Visual Studio Code Dark“ aus AmigaED 4.0 – sofort umschaltbar |
-| **Daten** | Sicherung/Wiederherstellung, mehrere Datenbanken möglich |
+| **Daten** | Sicherung/Wiederherstellung, **automatische Sicherung** (beim Beenden bzw. täglich, die letzten n Stände, Ordner wählbar), mehrere Datenbanken möglich |
 | **Demo** | *Hilfe → Demo-Datenbank starten*: zweites Fenster mit einer erfundenen Person und **365 Tagen** Messwerten bis heute, Medikamentenplan, Terminen und Befunden; eigene verschlüsselte Datenbank und eigene Einstellungen, bei jedem Start neu erzeugt (auch `VitaParms --demo`) |
 | **Website** | *Extras → Website…*: die Daten **aller Personen** (gesamter Messwert-Verlauf mit Verlaufskurven, Medikamente, Termine, Berichte als PDF/Excel – **ohne Krankenakte**) auf der eigenen Website, geschützt durch ein Master-Passwort; Ende-zu-Ende-verschlüsselt (AES-256, Entschlüsselung erst im Browser), automatisch aktualisiert (*Datei → Website aktualisieren*, `Strg+Umschalt+U`). Siehe `website/README.md` |
 | **Übertragen** | *Datei → Datenbank exportieren* (eine `.vpdb`-Datei mit Datenbank und Anmeldekonten) und **Import bei der Anmeldung** (*Datenbank importieren…*, auch beim ersten Start, am Computer und auf dem Tablet) – ohne Website, z. B. per USB-Kabel |
@@ -411,6 +411,16 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
 * Der Wiederherstellungsschlüssel ist der Datenbankschlüssel selbst (Base32 mit Prüfsumme). Er
   funktioniert auch ohne `.keys`-Datei – entsprechend sicher aufbewahren.
 * **Sicherungen** bestehen aus zwei Dateien: `…sqlite` (verschlüsselt) und `…sqlite.keys`.
+* **Automatische Sicherung** (ab 0.27, Desktop): beim Beenden, wenn sich etwas geändert hat, und
+  beim Start, wenn die letzte älter als 24 Stunden ist. Die letzten n Stände (Standard 7) bleiben
+  in `<Programmdaten>/Sicherungen` oder einem gewählten Ordner (*Extras → Einstellungen →
+  Automatische Sicherung*); Dateiname `VitaParms-Auto_<datenbank>_<datum>_<zeit>.sqlite` + `.keys`.
+  Ist der Ordner nicht erreichbar, warnt VitaParms; nach 7 Tagen ohne Sicherung deutlich.
+* **Versionsschutz** (ab 0.27): Das Datenbankformat steht in `PRAGMA user_version`
+  (`Database::kSchemaVersion`). Eine Datenbank aus einer neueren Version wird nicht geöffnet,
+  ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
+  nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
+  aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
 
 **Grenzen (ehrlich benannt):** Die Rollen sind eine Regel innerhalb von VitaParms. Wer mit einem
 Anwenderkonto die Datenbank entsperren kann, könnte sie mit eigenen Werkzeugen auch vollständig

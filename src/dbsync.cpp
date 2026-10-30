@@ -65,6 +65,11 @@ QString fileHash(const QString &path)
 namespace DbMerge {
 
 namespace {
+// lupdate ordnet die Texte dieses Namensraums dem Kontext „DbMerge“ zu – zur Laufzeit ebenso
+QString tr(const char *t) { return QCoreApplication::translate("DbMerge", t); }
+} // namespace
+
+namespace {
 // Fremdschlüssel einer Tabelle: Spalte → Elterntabelle
 QList<QPair<QString, QString>> foreignKeys(const Database::SyncTable &t)
 {
@@ -156,6 +161,14 @@ bool mergeFrom(const QString &remotePath, const QByteArray &key, Stats *stats, Q
     if (scalar(d, QStringLiteral("SELECT count(*) FROM r.sqlite_master")) < 0) {
         detach();
         return fail(tr("Die Datenbank des anderen Geräts passt nicht zu dieser Datenbank (anderer Schlüssel)."));
+    }
+    // Versionsschutz: Die Gegenseite hat ein neueres Datenbankformat (z. B. Wunddokumentation). Diese
+    // Version würde deren neue Tabellen beim Hochladen auf den Server nicht mitnehmen → ablehnen.
+    if (const int remote = Database::schemaVersionOf(d, QStringLiteral("r")); remote > Database::kSchemaVersion) {
+        detach();
+        return fail(tr("Das andere Gerät verwendet eine neuere VitaParms-Version (Datenbankformat %1, hier %2). "
+                       "Bitte VitaParms auf diesem Gerät aktualisieren – erst dann ist ein Abgleich möglich, "
+                       "ohne dass Daten verloren gehen.").arg(remote).arg(Database::kSchemaVersion));
     }
     if (scalar(d, QStringLiteral("SELECT count(*) FROM r.sqlite_master WHERE name = 'sync_deleted'")) != 1) {
         detach();
@@ -556,6 +569,13 @@ bool DbSync::runSync(QString *message)
             return false;
         }
         const qint64 serverRev = st.json().value(QStringLiteral("rev")).toVariant().toLongLong();
+        // Versionsschutz: Auf dem Server liegt eine Datenbank einer neueren VitaParms-Version
+        if (const int serverSchema = st.json().value(QStringLiteral("schema")).toInt(); serverSchema > Database::kSchemaVersion) {
+            *message = tr("Ein anderes Gerät verwendet eine neuere VitaParms-Version (Datenbankformat %1, hier %2). "
+                          "Bitte VitaParms auf diesem Gerät aktualisieren – erst dann ist ein Abgleich möglich, "
+                          "ohne dass Daten verloren gehen.").arg(serverSchema).arg(Database::kSchemaVersion);
+            return false;
+        }
         if (attempt == 0) filesApi = st.json().value(QStringLiteral("files")).toInt() >= 1;
         const QString serverKeys = st.json().value(QStringLiteral("keysHash")).toString();
         const qint64 lastRev = db.setting(s(kRev), QStringLiteral("0")).toLongLong();
@@ -637,6 +657,11 @@ bool DbSync::runSync(QString *message)
         base.setHeader(QNetworkRequest::ContentDispositionHeader, QStringLiteral("form-data; name=\"base\""));
         base.setBody(QByteArray::number(serverRev));
         multi->append(base);
+        // Datenbankformat mitschicken: der Server lehnt danach Uploads älterer Versionen ab
+        QHttpPart schema;
+        schema.setHeader(QNetworkRequest::ContentDispositionHeader, QStringLiteral("form-data; name=\"schema\""));
+        schema.setBody(QByteArray::number(Database::kSchemaVersion));
+        multi->append(schema);
         for (const auto &[name, path] : { qMakePair(QStringLiteral("db"), copy), qMakePair(QStringLiteral("keys"), keysPath) }) {
             auto *f = new QFile(path, multi);
             if (!f->open(QIODevice::ReadOnly)) { delete multi; *message = f->errorString(); return false; }

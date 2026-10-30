@@ -255,12 +255,28 @@ bool Database::isEncryptedFile(const QString &path)
     return f.size() > 0 && !f.read(16).startsWith("SQLite format 3");
 }
 
+int Database::schemaVersionOf(SqlDb &d, const QString &schema)
+{
+    SqlQuery q(d);
+    if (!q.exec(QStringLiteral("PRAGMA %1.user_version").arg(schema)) || !q.next()) return -1;
+    return q.value(0).toInt();
+}
+
 bool Database::createSchema(QString *error)
 {
     SqlQuery q(db());
     q.exec(QStringLiteral("PRAGMA user_version"));
     const int version = q.next() ? q.value(0).toInt() : 0;
     q.finish();
+    // Versionsschutz: Eine Datenbank einer neueren VitaParms-Version nicht öffnen – diese Version
+    // kennt deren Tabellen nicht und könnte beim Abgleich oder Ersetzen Daten verlieren.
+    if (version > kSchemaVersion) {
+        if (error)
+            *error = tr("Diese Datenbank stammt von einer neueren VitaParms-Version (Datenbankformat %1, "
+                        "diese Version kennt nur bis %2).\n\nBitte VitaParms auf diesem Gerät aktualisieren – "
+                        "die Daten bleiben unverändert.").arg(version).arg(kSchemaVersion);
+        return false;
+    }
     if (version >= kSchemaVersion)
         return true;
 

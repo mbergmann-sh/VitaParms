@@ -9,8 +9,13 @@
 //        files = 1: Dokumentinhalte gehen getrennt über files.php (ab VitaParms 0.19)
 //   GET  sync.php?get=db       → Datenbank (application/octet-stream)
 //   GET  sync.php?get=keys     → Schlüsseldatei
-//   POST sync.php  base=<rev>, Dateien "db" und "keys"
+//   POST sync.php  base=<rev>, schema=<Datenbankformat>, Dateien "db" und "keys"
 //        → 200 {rev}  bzw. 409, wenn inzwischen ein anderes Gerät hochgeladen hat
+//        → 426, wenn das Gerät ein älteres Datenbankformat hat als der Server-Stand
+//
+// Versionsschutz: Der Server merkt sich das höchste Datenbankformat („schema“), das je
+// hochgeladen wurde. Uploads mit älterem Format – oder ohne Angabe (VitaParms vor 0.27) – lehnt er
+// ab: Ein älteres Programm kennt neuere Tabellen nicht und würde sie beim Hochladen entfernen.
 // Alle Aufrufe brauchen den Kopf "X-VitaParms-Key" (Upload-Schlüssel der Website).
 // SPDX-License-Identifier: MIT
 
@@ -23,11 +28,11 @@ const KEYS_FILE  = SYNC_DIR . '/keys.vpk';
 function syncState(): array
 {
     if (!is_file(STATE_FILE)) {
-        return ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null];
+        return ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null, 'schema' => 0];
     }
     $s = json_decode((string) file_get_contents(STATE_FILE), true);
-    return is_array($s) ? $s + ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null]
-                        : ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null];
+    return is_array($s) ? $s + ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null, 'schema' => 0]
+                        : ['rev' => 0, 'size' => 0, 'keysHash' => '', 'updated' => null, 'schema' => 0];
 }
 
 function ensureSyncDir(): void
@@ -98,6 +103,14 @@ ensureSyncDir();
 
 $state = syncState();
 $base = (int) ($_POST['base'] ?? -1);
+$schema = (int) ($_POST['schema'] ?? 0);
+if ($schema < (int) $state['schema']) {
+    reply(426, ['ok' => false, 'schema' => (int) $state['schema'],
+                'error' => t('Ein anderes Gerät verwendet eine neuere VitaParms-Version. Bitte VitaParms auf diesem Gerät '
+                             . 'aktualisieren – erst dann ist ein Abgleich möglich, ohne dass Daten verloren gehen.',
+                             'Another device uses a newer VitaParms version. Please update VitaParms on this device – '
+                             . 'only then can it synchronise without losing data.')]);
+}
 if ($base !== (int) $state['rev']) {
     reply(409, ['ok' => false, 'rev' => (int) $state['rev'],
                 'error' => t('Ein anderes Gerät hat inzwischen abgeglichen.', 'Another device has synchronised in the meantime.')]);
@@ -122,7 +135,7 @@ if (!rename(DB_FILE . '.tmp', DB_FILE) || !rename(KEYS_FILE . '.tmp', KEYS_FILE)
     fail(500, 'Die Dateien lassen sich nicht aktivieren.', 'The files cannot be activated.');
 }
 $new = ['rev' => (int) $state['rev'] + 1, 'size' => filesize(DB_FILE), 'keysHash' => $keysHash,
-        'updated' => gmdate('c')];
+        'updated' => gmdate('c'), 'schema' => max($schema, (int) $state['schema'])];
 file_put_contents(STATE_FILE . '.tmp', json_encode($new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 rename(STATE_FILE . '.tmp', STATE_FILE);
 flock($lock, LOCK_UN);

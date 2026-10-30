@@ -22,6 +22,7 @@ SOURCES += \
     $$PWD/src/formloader.cpp \
     $$PWD/src/journalmodel.cpp \
     $$PWD/src/reportprinter.cpp \
+    $$PWD/src/autobackup.cpp \
     $$PWD/src/vitaldefs.cpp \
     $$PWD/src/xlsxwriter.cpp \
     $$PWD/src/zipwriter.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     $$PWD/src/journalmodel.h \
     $$PWD/src/reportprinter.h \
     $$PWD/src/qtcompat.h \
+    $$PWD/src/autobackup.h \
     $$PWD/src/vitaldefs.h \
     $$PWD/src/xlsxwriter.h \
     $$PWD/src/zipwriter.h \

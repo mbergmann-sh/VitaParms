@@ -3668,3 +3668,47 @@ CONTEXT.update({
     ('Wounds', 'Zeitpunkt'): 'Date/time',
     ('WoundsDialog', 'Zeitpunkt'): 'Date/time',
 })
+
+# ---- v0.27.0: Automatische Sicherung, Versionsschutz
+EN.update({
+    'Keine Datenbank geöffnet.': 'No database is open.',
+    'Der Sicherungsordner %1 ist nicht erreichbar (USB-Stick oder Netzlaufwerk nicht verbunden?).':
+        'The backup folder %1 cannot be reached (USB stick or network drive not connected?).',
+    'Die Datenbank konnte nicht gesichert werden: %1': 'The database could not be backed up: %1',
+    'Die Schlüsseldatei konnte nicht nach %1 kopiert werden.': 'The key file could not be copied to %1.',
+    'Die Sicherung konnte nicht gespeichert werden (Ordner %1).': 'The backup could not be saved (folder %1).',
+    'Die letzte automatische Sicherung ist vom %1 – seit %2 Tagen konnte keine Sicherung erstellt werden.':
+        'The last automatic backup is from %1 – no backup could be created for %2 days.',
+    'Es gibt noch keine automatische Sicherung dieser Datenbank.': 'There is no automatic backup of this database yet.',
+    'Diese Datenbank stammt von einer neueren VitaParms-Version (Datenbankformat %1, diese Version kennt nur bis %2).\n\nBitte VitaParms auf diesem Gerät aktualisieren – die Daten bleiben unverändert.':
+        'This database comes from a newer VitaParms version (database format %1, this version only knows up to %2).\n\nPlease update VitaParms on this device – the data remain unchanged.',
+    'Das andere Gerät verwendet eine neuere VitaParms-Version (Datenbankformat %1, hier %2). Bitte VitaParms auf diesem Gerät aktualisieren – erst dann ist ein Abgleich möglich, ohne dass Daten verloren gehen.':
+        'The other device uses a newer VitaParms version (database format %1, here %2). Please update VitaParms on this device – only then can it synchronise without losing data.',
+    'Ein anderes Gerät verwendet eine neuere VitaParms-Version (Datenbankformat %1, hier %2). Bitte VitaParms auf diesem Gerät aktualisieren – erst dann ist ein Abgleich möglich, ohne dass Daten verloren gehen.':
+        'Another device uses a newer VitaParms version (database format %1, here %2). Please update VitaParms on this device – only then can it synchronise without losing data.',
+    'Automatische Sicherung erstellt: %1': 'Automatic backup created: %1',
+    'Automatische Sicherung fehlgeschlagen: %1': 'Automatic backup failed: %1',
+    'Automatische Sicherung': 'Automatic backup',
+    'Ordner und Einstellungen: Extras → Einstellungen → Automatische Sicherung.': 'Folder and settings: Tools → Settings → Automatic backup.',
+    'Automatische Sicherung …': 'Automatic backup …',
+    'Die automatische Sicherung ist fehlgeschlagen:\n%1\n\nTrotzdem beenden?': 'The automatic backup failed:\n%1\n\nQuit anyway?',
+    'Ein&stellen…': 'Con&figure…',
+    'Automatische Sicherung:': 'Automatic backup:',
+    'noch keine': 'none yet',
+    'ein – letzte: %1, %2 von %3 Ständen': 'on – last: %1, %2 of %3 versions',
+    'VitaParms sichert die Datenbank (verschlüsselt, mit den Anmeldekonten) beim Beenden, wenn sich etwas geändert hat, und beim Start, wenn die letzte Sicherung älter als einen Tag ist. Zurückholen: Datei → Sicherung wiederherstellen / importieren.':
+        'VitaParms backs up the database (encrypted, with the login accounts) when quitting if something has changed, and at start-up if the last backup is more than a day old. To get it back: File → Restore backup / import.',
+    'Automatisch &sichern': 'Back up &automatically',
+    '&Ändern…': '&Change…',
+    '&Ordner:': '&Folder:',
+    ' Stände': ' versions',
+    '&Aufbewahren:': '&Keep:',
+    '<b>Tipp:</b> Der Standardordner liegt auf derselben Festplatte wie die Datenbank. Als Schutz vor einem Festplattendefekt einen USB-Stick, eine externe Festplatte oder einen Cloud-Ordner wählen (die Sicherung ist verschlüsselt).':
+        '<b>Tip:</b> The default folder is on the same disk as the database. To protect against a disk failure, choose a USB stick, an external drive or a cloud folder (the backup is encrypted).',
+    'Noch keine automatische Sicherung in diesem Ordner.': 'No automatic backup in this folder yet.',
+    '%1 Sicherung(en), zusammen %2 MB; letzte: %3': '%1 backup(s), %2 MB in total; last: %3',
+    'Ordner für die automatische Sicherung': 'Folder for the automatic backup',
+    '&Jetzt sichern': 'Back up &now',
+    'Ordner ö&ffnen': '&Open folder',
+    'Sicherung erstellt:\n%1': 'Backup created:\n%1',
+})

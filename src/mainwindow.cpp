@@ -8,6 +8,7 @@
 #include "fluid.h"
 #include "stockdialog.h"
 #include "wounddialogs.h"
+#include "autobackup.h"
 #include "wounds.h"
 #include "careinfo.h"
 #include "dbsync.h"
@@ -144,6 +145,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QTimer::singleShot(4000, this, [] {
             const DbSync::Config c = DbSync::config();
             if (c.autoSync && DbSync::isReady(c)) DbSync::instance().sync();
+        });
+        // Automatische Sicherung: beim Start, wenn die letzte älter als einen Tag ist
+        QTimer::singleShot(8000, this, [this] {
+            if (!Session::isLoggedIn() || !AutoBackup::dueAtStart()) return;
+            QString path, err;
+            if (AutoBackup::run(&path, &err)) {
+                statusBar()->showMessage(tr("Automatische Sicherung erstellt: %1").arg(QDir::toNativeSeparators(path)), 8000);
+            } else {
+                statusBar()->showMessage(tr("Automatische Sicherung fehlgeschlagen: %1").arg(err), 30000);
+                const QString stale = AutoBackup::staleWarning();
+                if (!stale.isEmpty())
+                    QMessageBox::warning(this, tr("Automatische Sicherung"),
+                        stale + QStringLiteral("\n\n") + err + QStringLiteral("\n\n")
+                            + tr("Ordner und Einstellungen: Extras → Einstellungen → Automatische Sicherung."));
+            }
         });
     } else {
         m_actWebPublish->setEnabled(false);
@@ -1457,8 +1473,9 @@ void MainWindow::backupDatabase()
 void MainWindow::restoreDatabase()
 {
     if (!Session::isAdmin()) return;
+    // Vorschlag: Ordner der automatischen Sicherungen, falls es dort welche gibt
     const QString src = QFileDialog::getOpenFileName(this, tr("Sicherung wiederherstellen / Datenbank importieren"),
-        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+        !AutoBackup::list().isEmpty() ? AutoBackup::folder() : QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
         tr("VitaParms-Datenbank (*.vpdb *.sqlite *.db);;Alle Dateien (*)"));
     if (src.isEmpty()) return;
     const QString target = Database::instance().path();
@@ -1675,6 +1692,24 @@ void MainWindow::closeEvent(QCloseEvent *e)
                 e->ignore();
                 return;
             }
+        }
+    }
+    // Automatische Sicherung beim Beenden, wenn sich seit der letzten etwas geändert hat
+    if (Session::isLoggedIn() && AutoBackup::dueAtExit()) {
+        QProgressDialog progress(tr("Automatische Sicherung …"), QString(), 0, 0, this);
+        progress.setWindowTitle(tr("VitaParms"));
+        progress.setWindowModality(Qt::ApplicationModal);
+        progress.setMinimumDuration(0);
+        progress.show();
+        QApplication::processEvents();
+        QString err;
+        const bool ok = AutoBackup::run(nullptr, &err);
+        progress.close();
+        if (!ok && QMessageBox::warning(this, tr("Automatische Sicherung"),
+                tr("Die automatische Sicherung ist fehlgeschlagen:\n%1\n\nTrotzdem beenden?").arg(err),
+                QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
+            e->ignore();
+            return;
         }
     }
     AppSettings::setWindowState(QStringLiteral("main/geometry"), saveGeometry());

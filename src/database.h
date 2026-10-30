@@ -146,6 +146,9 @@ public:
     void notifyStockChanged(qint64 patientId) { emit stockChanged(patientId); }
     void notifyWoundsChanged(qint64 patientId) { emit woundsChanged(patientId); }                   // nach dem Zusammenführen: Ansichten neu laden
     SqlDb handleDb() { return db(); }
+    static constexpr int kSchemaVersion = 11;  // 9: vitals.stool; 10: inr, fluid_in/out, edema; 11: wounds
+    // Datenbankformat der geöffneten bzw. per ATTACH angehängten Datenbank ("r"); -1 = unbekannt
+    static int schemaVersionOf(SqlDb &d, const QString &schema = QStringLiteral("main"));
 
 signals:
     void patientsChanged();
@@ -180,5 +183,4 @@ private:
     QByteArray m_key;
     bool       m_wasOpen = false;
     QString    m_path;
-    static constexpr int kSchemaVersion = 11;  // 9: vitals.stool; 10: inr, fluid_in/out, edema; 11: wounds
 };

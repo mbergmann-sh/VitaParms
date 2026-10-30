@@ -63,6 +63,12 @@ nur über die Schnittstelle mit Upload-Schlüssel). Zusammengeführt wird auf de
 Server zählt nur eine Revision hoch und lehnt veraltete Uploads ab (HTTP 409). Die
 Website-Ansicht selbst ist davon unabhängig.
 
+Ab VitaParms 0.27 merkt sich `sync.php` das höchste Datenbankformat (`schema` in
+`sync/state.json`) und lehnt Uploads von Geräten mit älterem Format – auch von Versionen vor 0.27,
+die gar kein Format mitsenden – mit **HTTP 426** ab. Ein nicht aktualisiertes Gerät kann so keine
+Tabellen überschreiben, die es nicht kennt. **Nach dem Update auf 0.27 den Ordner `api/` auf dem
+Server ersetzen** und alle Geräte (Desktop und Tablet) aktualisieren, sonst ist kein Abgleich möglich.
+
 Ab VitaParms 0.19 gehen die **Inhalte der Krankenakte** (PDF) getrennt über `api/files.php`:
 einzeln, nur die fehlenden, auf dem Gerät mit AES-256 verschlüsselt, abgelegt in `sync/files/`
 unter einer Kennung, die nichts über das Dokument verrät. Nicht mehr gebrauchte Inhalte werden

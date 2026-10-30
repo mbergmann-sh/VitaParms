@@ -20,6 +20,15 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include "websitedialog.h"
+#include "autobackup.h"
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QLocale>
+#include <QSpinBox>
+#include <QUrl>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
@@ -27,6 +36,113 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QVBoxLayout>
+
+namespace {
+QString backupSummary()
+{
+    const AutoBackup::Config c = AutoBackup::config();
+    if (!c.enabled) return SettingsDialog::tr("aus");
+    const QList<AutoBackup::Entry> l = AutoBackup::list();
+    const QString last = l.isEmpty() ? SettingsDialog::tr("noch keine")
+                                     : QLocale().toString(l.first().when, QStringLiteral("dd.MM.yyyy HH:mm"));
+    return SettingsDialog::tr("ein – letzte: %1, %2 von %3 Ständen").arg(last).arg(l.size()).arg(c.keep);
+}
+
+// Automatische Sicherung einstellen (Ordner, Anzahl), jetzt sichern, Ordner öffnen
+void editAutoBackup(QWidget *parent)
+{
+    QDialog d(parent);
+    d.setWindowTitle(SettingsDialog::tr("Automatische Sicherung"));
+    const AutoBackup::Config c = AutoBackup::config();
+    auto *lay = new QVBoxLayout(&d);
+    auto *intro = new QLabel(SettingsDialog::tr("VitaParms sichert die Datenbank (verschlüsselt, mit den Anmeldekonten) beim Beenden, "
+                                "wenn sich etwas geändert hat, und beim Start, wenn die letzte Sicherung älter als einen "
+                                "Tag ist. Zurückholen: Datei → Sicherung wiederherstellen / importieren."), &d);
+    intro->setWordWrap(true);
+    lay->addWidget(intro);
+    auto *form = new QFormLayout;
+    auto *on = new QCheckBox(SettingsDialog::tr("Automatisch &sichern"), &d);
+    on->setObjectName(QStringLiteral("autoBackupEnabled"));
+    on->setChecked(c.enabled);
+    form->addRow(QString(), on);
+    auto *folder = new QLineEdit(c.folder.isEmpty() ? AutoBackup::defaultFolder() : c.folder, &d);
+    folder->setObjectName(QStringLiteral("autoBackupFolder"));
+    auto *choose = new QPushButton(SettingsDialog::tr("&Ändern…"), &d);
+    auto *row = new QHBoxLayout;
+    row->addWidget(folder, 1);
+    row->addWidget(choose);
+    auto *folderLabel = new QLabel(SettingsDialog::tr("&Ordner:"), &d);
+    folderLabel->setBuddy(folder);
+    form->addRow(folderLabel, row);
+    auto *keep = new QSpinBox(&d);
+    keep->setRange(2, 60);
+    keep->setValue(c.keep);
+    keep->setSuffix(SettingsDialog::tr(" Stände"));
+    form->addRow(SettingsDialog::tr("&Aufbewahren:"), keep);
+    lay->addLayout(form);
+    auto *tip = new QLabel(SettingsDialog::tr("<b>Tipp:</b> Der Standardordner liegt auf derselben Festplatte wie die Datenbank. "
+                              "Als Schutz vor einem Festplattendefekt einen USB-Stick, eine externe Festplatte oder "
+                              "einen Cloud-Ordner wählen (die Sicherung ist verschlüsselt)."), &d);
+    tip->setWordWrap(true);
+    lay->addWidget(tip);
+    auto *state = new QLabel(&d);
+    state->setObjectName(QStringLiteral("autoBackupState"));
+    state->setWordWrap(true);
+    lay->addWidget(state);
+    auto refresh = [state] {
+        const QList<AutoBackup::Entry> l = AutoBackup::list();
+        qint64 bytes = 0;
+        for (const auto &e : l) bytes += e.size;
+        state->setText(l.isEmpty() ? SettingsDialog::tr("Noch keine automatische Sicherung in diesem Ordner.")
+            : SettingsDialog::tr("%1 Sicherung(en), zusammen %2 MB; letzte: %3")
+                  .arg(l.size()).arg(QLocale().toString(bytes / 1048576.0, 'f', 1))
+                  .arg(QLocale().toString(l.first().when, QStringLiteral("dd.MM.yyyy HH:mm"))));
+    };
+    auto apply = [&] {
+        AutoBackup::Config n;
+        n.enabled = on->isChecked();
+        n.folder = QDir::cleanPath(folder->text().trimmed()) == QDir::cleanPath(AutoBackup::defaultFolder()) ? QString()
+                                                                                                         : folder->text().trimmed();
+        n.keep = keep->value();
+        AutoBackup::saveConfig(n);
+    };
+    QObject::connect(choose, &QPushButton::clicked, &d, [&] {
+        const QString dir = QFileDialog::getExistingDirectory(&d, SettingsDialog::tr("Ordner für die automatische Sicherung"), folder->text());
+        if (!dir.isEmpty()) { folder->setText(QDir::toNativeSeparators(dir)); apply(); refresh(); }
+    });
+    auto *now = new QPushButton(SettingsDialog::tr("&Jetzt sichern"), &d);
+    now->setObjectName(QStringLiteral("autoBackupNow"));
+    auto *open = new QPushButton(SettingsDialog::tr("Ordner ö&ffnen"), &d);
+    QObject::connect(now, &QPushButton::clicked, &d, [&] {
+        apply();
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QString path, err;
+        const bool ok = AutoBackup::run(&path, &err);
+        QApplication::restoreOverrideCursor();
+        refresh();
+        if (ok) QMessageBox::information(&d, d.windowTitle(), SettingsDialog::tr("Sicherung erstellt:\n%1").arg(QDir::toNativeSeparators(path)));
+        else QMessageBox::warning(&d, d.windowTitle(), err);
+    });
+    QObject::connect(open, &QPushButton::clicked, &d, [&] {
+        apply();
+        QDir().mkpath(AutoBackup::folder());
+        QDesktopServices::openUrl(QUrl::fromLocalFile(AutoBackup::folder()));
+    });
+    auto *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &d);
+    bb->button(QDialogButtonBox::Ok)->setText(SettingsDialog::tr("OK"));
+    bb->button(QDialogButtonBox::Cancel)->setText(SettingsDialog::tr("Abbrechen"));
+    bb->addButton(now, QDialogButtonBox::ActionRole);
+    bb->addButton(open, QDialogButtonBox::ActionRole);
+    QObject::connect(bb, &QDialogButtonBox::accepted, &d, &QDialog::accept);
+    QObject::connect(bb, &QDialogButtonBox::rejected, &d, &QDialog::reject);
+    lay->addWidget(bb);
+    refresh();
+    d.resize(620, d.sizeHint().height());
+    const AutoBackup::Config before = AutoBackup::config();
+    if (d.exec() == QDialog::Accepted) apply();
+    else AutoBackup::saveConfig(before);
+}
+} // namespace
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
@@ -102,6 +218,18 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
         web->setObjectName(QStringLiteral("websiteButton"));
         connect(web, &QPushButton::clicked, this, [this] { WebsiteDialog d(this); d.exec(); });
         sf->addRow(tr("Website:"), web);
+        auto *backupRow = new QHBoxLayout;
+        auto *backupState = new QLabel(backupSummary(), sec);
+        backupState->setObjectName(QStringLiteral("backupSummary"));
+        auto *backupBtn = new QPushButton(tr("Ein&stellen…"), sec);
+        backupBtn->setObjectName(QStringLiteral("backupSettings"));
+        backupRow->addWidget(backupState, 1);
+        backupRow->addWidget(backupBtn);
+        connect(backupBtn, &QPushButton::clicked, this, [this, backupState] {
+            editAutoBackup(this);
+            backupState->setText(backupSummary());
+        });
+        sf->addRow(tr("Automatische Sicherung:"), backupRow);
         m_upcomingOnStart = new QCheckBox(tr("Termine von heute und morgen beim Programmstart &anzeigen"), sec);
         m_upcomingOnStart->setObjectName(QStringLiteral("upcomingOnStartCheck"));
         m_upcomingOnStart->setChecked(Upcoming::showOnStart());
