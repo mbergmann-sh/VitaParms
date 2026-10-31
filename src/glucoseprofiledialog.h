@@ -1,4 +1,4 @@
-// VitaParms – Messwerte → BZ-Tagesprofil: Zeitpunkte wählen und Erinnerungen für einen Tag stellen
+// VitaParms – Messwerte → BZ- bzw. RR-Tagesprofil: Zeitpunkte wählen und Erinnerungen für einen Tag stellen
 // SPDX-License-Identifier: MIT
 #pragma once
 
@@ -15,7 +15,9 @@ class GlucoseProfileDialog : public QDialog
 {
     Q_OBJECT
 public:
-    GlucoseProfileDialog(const Patient &patient, QWidget *parent = nullptr);
+    GlucoseProfileDialog(const Patient &patient, QWidget *parent = nullptr,
+                         GlucoseProfile::Kind kind = GlucoseProfile::Kind::Glucose);
+    GlucoseProfile::Kind kind() const { return m_kind; }
     int created() const { return m_created; }
 
 public slots:
@@ -26,6 +28,7 @@ private:
     QList<GlucoseProfile::Point> collect() const;
 
     Patient m_patient;
+    GlucoseProfile::Kind m_kind;
     QList<GlucoseProfile::Point> m_points;
     QList<QCheckBox *> m_checks;
     QList<QTimeEdit *> m_times;

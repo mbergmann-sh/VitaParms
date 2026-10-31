@@ -105,13 +105,14 @@ struct VitalRecord {
     std::optional<int>    edema;        // Ödeme: Grad 0–4 (0 = keine)
     QString               edemaSite;    // Ort, z. B. "Knöchel/Füße"
     QString               edemaSide;    // "beidseits", "links", "rechts"
+    std::optional<int>    pain;         // Schmerzstärke, numerische Rating-Skala (NRS) 0–10
 
     QString     observations;
     QJsonObject extra;
 
     bool hasAnyValue() const {
         return pulse || systolic || diastolic || temperature || spo2 || peakFlow
-            || glucose || weight || height || stool || inr || fluidIn || fluidOut || edema || !observations.trimmed().isEmpty()
+            || glucose || weight || height || stool || inr || fluidIn || fluidOut || edema || pain || !observations.trimmed().isEmpty()
             || !extra.isEmpty();
     }
 };

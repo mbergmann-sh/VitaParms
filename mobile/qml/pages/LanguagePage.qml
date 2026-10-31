@@ -25,8 +25,8 @@ Page {
             spacing: Theme.gap
             RowLayout {
                 spacing: 14
-                Image { source: "qrc:/icons/vitaparms.png"; sourceSize.width: 56; sourceSize.height: 56 }
-                Label { text: "VitaParms"; font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
+                Image { source: app.light ? "qrc:/icons/vitaparms-light.png" : "qrc:/icons/vitaparms.png"; sourceSize.width: 56; sourceSize.height: 56 }
+                Label { text: app.appName; font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
             }
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink; font.pixelSize: Theme.fsL
                     text: "Willkommen! Bitte wählen Sie die Sprache.\nWelcome! Please choose your language." }

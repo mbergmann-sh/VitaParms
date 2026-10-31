@@ -124,6 +124,7 @@ bool run(QString *path, QString *error)
         QFile::remove(tmp);
         return fail(tr("Die Schlüsseldatei konnte nicht nach %1 kopiert werden.").arg(QDir::toNativeSeparators(dir)));
     }
+    QFile::remove(target);              // Sicherung derselben Sekunde ersetzen
     if (!QFile::rename(tmp, target)) {
         QFile::remove(tmp);
         QFile::remove(keysDst);

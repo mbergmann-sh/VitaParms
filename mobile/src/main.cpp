@@ -1,6 +1,7 @@
 // VitaParms Tablet – Startpunkt
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "edition.h"
 #include "chartitem.h"
 #include "database.h"
 #include "i18n.h"
@@ -32,10 +33,11 @@ int main(int argc, char *argv[])
     // QApplication (statt QGuiApplication): der gemeinsame Kern verwendet einzelne Widgets-Klassen
     QApplication app(argc, argv);
     QApplication::setOrganizationName(QStringLiteral("VitaParms"));
-    QApplication::setApplicationName(QStringLiteral("VitaParms"));
-    QApplication::setApplicationDisplayName(QStringLiteral("VitaParms"));
+    QApplication::setApplicationName(Edition::settingsName());       // VitaParms light: eigene Daten
+    QApplication::setApplicationDisplayName(Edition::appName());
     QApplication::setApplicationVersion(QStringLiteral(VITAPARMS_VERSION));
-    QApplication::setWindowIcon(QIcon(QStringLiteral(":/icons/vitaparms.png")));
+    QApplication::setWindowIcon(QIcon(Edition::light() ? QStringLiteral(":/icons/vitaparms-light.png")
+                                                       : QStringLiteral(":/icons/vitaparms.png")));
 #ifdef VP_AUTOPILOT
     AppSettings::setLanguage(qEnvironmentVariable("VP_AUTOPILOT_LANG", QStringLiteral("de")));
 #endif

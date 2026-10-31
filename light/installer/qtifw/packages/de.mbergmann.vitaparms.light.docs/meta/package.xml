@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERZEUGT von qmake aus package.xml.in – Änderungen bitte dort vornehmen -->
+<Package>
+    <DisplayName>User Guide and Getting Started (PDF; Windows: also Windows Help)</DisplayName>
+    <DisplayName xml:lang="de">Benutzerhandbuch und Erste Schritte (PDF; Windows: auch Windows-Hilfe)</DisplayName>
+    <Description>German and English user guide (F1 in VitaParms light) and quick guide “Getting Started” (Help menu)</Description>
+    <Description xml:lang="de">Deutsches und englisches Benutzerhandbuch (F1 in VitaParms light) und Kurzanleitung „Erste Schritte“ (Menü Hilfe)</Description>
+    <Version>0.28.1</Version>
+    <ReleaseDate>2026-10-29</ReleaseDate>
+    <Default>true</Default>
+    <SortingPriority>50</SortingPriority>
+    <Script>installscript.qs</Script>
+</Package>
+

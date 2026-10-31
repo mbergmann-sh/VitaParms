@@ -1,6 +1,7 @@
 // VitaParms – Messwerte → BZ-Tagesprofil (siehe glucoseprofile.h)
 // SPDX-License-Identifier: MIT
 #include "glucoseprofiledialog.h"
+#include "edition.h"
 
 #include <QCheckBox>
 #include <QDateEdit>
@@ -15,16 +16,27 @@
 #include <QTimeEdit>
 #include <QVBoxLayout>
 
-GlucoseProfileDialog::GlucoseProfileDialog(const Patient &patient, QWidget *parent)
-    : QDialog(parent), m_patient(patient), m_points(GlucoseProfile::points())
+GlucoseProfileDialog::GlucoseProfileDialog(const Patient &patient, QWidget *parent, GlucoseProfile::Kind kind)
+    : QDialog(parent), m_patient(patient), m_kind(kind), m_points(GlucoseProfile::points(kind))
 {
-    setObjectName(QStringLiteral("GlucoseProfileDialog"));
-    setWindowTitle(tr("BZ-Tagesprofil – %1").arg(patient.displayName()));
+    const bool rr = kind == GlucoseProfile::Kind::BloodPressure;
+    setObjectName(rr ? QStringLiteral("BpProfileDialog") : QStringLiteral("GlucoseProfileDialog"));
+    setWindowTitle(QStringLiteral("%1 – %2").arg(GlucoseProfile::subject(kind), patient.displayName()));
     auto *lay = new QVBoxLayout(this);
-    auto *intro = new QLabel(tr("VitaParms erinnert zu den gewählten Zeitpunkten an die Blutzuckermessung und öffnet auf "
-                                "Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Die Erinnerungen "
-                                "stehen als Termine im Terminplaner (und kommen mit dem Abgleich aufs Tablet)."), this);
+    auto *intro = new QLabel(rr
+        ? tr("%1 erinnert zu den gewählten Zeitpunkten an die Blutdruckmessung und öffnet auf "
+             "Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Messen Sie nach 5 Minuten "
+             "Ruhe im Sitzen und immer am selben Arm. Die Erinnerungen stehen als Termine im Terminplaner "
+             "(und kommen mit dem Abgleich aufs Tablet).").arg(Edition::appName())
+        : tr("%1 erinnert zu den gewählten Zeitpunkten an die Blutzuckermessung und öffnet auf "
+             "Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Die Erinnerungen "
+             "stehen als Termine im Terminplaner (und kommen mit dem Abgleich aufs Tablet).").arg(Edition::appName()), this);
     intro->setWordWrap(true);
+    // Für wen? Deutlich oben anzeigen, damit eine Verwechslung vor dem Start auffällt
+    auto *who = new QLabel(QStringLiteral("<span style=\"font-size:13pt;\"><b>%1</b></span>")
+                               .arg(tr("Für: %1").arg(patient.displayName()).toHtmlEscaped()), this);
+    who->setObjectName(QStringLiteral("profilePersonLabel"));
+    lay->addWidget(who);
     lay->addWidget(intro);
 
     auto *dayRow = new QHBoxLayout;
@@ -64,15 +76,15 @@ GlucoseProfileDialog::GlucoseProfileDialog(const Patient &patient, QWidget *pare
     }
     auto *reset = new QPushButton(tr("Standardzeiten"), box);
     connect(reset, &QPushButton::clicked, this, [this] {
-        const QTime std[] = { QTime(7, 0), QTime(9, 30), QTime(12, 0), QTime(14, 30), QTime(18, 0), QTime(20, 30), QTime(22, 0) };
-        for (int i = 0; i < m_times.size() && i < 7; ++i) { m_times[i]->setTime(std[i]); m_checks[i]->setChecked(true); }
+        const QList<GlucoseProfile::Point> std = GlucoseProfile::defaultPoints(m_kind);
+        for (int i = 0; i < m_times.size() && i < std.size(); ++i) { m_times[i]->setTime(std[i].time); m_checks[i]->setChecked(true); }
     });
     grid->addWidget(reset, int(m_points.size()), 0, 1, 2, Qt::AlignLeft);
     grid->setColumnStretch(0, 1);
     lay->addWidget(box);
 
     m_sound = new QCheckBox(tr("Erinnerung mit &Ton"), this);
-    m_sound->setChecked(QSettings().value(QStringLiteral("bzprofile/sound"), true).toBool());
+    m_sound->setChecked(QSettings().value(GlucoseProfile::settingsKey(kind) + QStringLiteral("/sound"), true).toBool());
     lay->addWidget(m_sound);
 
     m_info = new QLabel(this);
@@ -89,7 +101,7 @@ GlucoseProfileDialog::GlucoseProfileDialog(const Patient &patient, QWidget *pare
     connect(buttons, &QDialogButtonBox::accepted, this, &GlucoseProfileDialog::accept);
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
     connect(stop, &QPushButton::clicked, this, [this] {
-        const int n = GlucoseProfile::cancel(m_patient.id, m_date->date());
+        const int n = GlucoseProfile::cancel(m_patient.id, m_date->date(), m_kind);
         m_info->setText(tr("%1 offene Erinnerung(en) für diesen Tag gelöscht.").arg(n));
     });
     connect(m_date, &QDateEdit::dateChanged, this, &GlucoseProfileDialog::updateInfo);
@@ -109,7 +121,7 @@ QList<GlucoseProfile::Point> GlucoseProfileDialog::collect() const
 
 void GlucoseProfileDialog::updateInfo()
 {
-    const auto have = GlucoseProfile::existing(m_patient.id, m_date->date());
+    const auto have = GlucoseProfile::existing(m_patient.id, m_date->date(), m_kind);
     int open = 0;
     for (const Appointment &a : have) if (!a.done) ++open;
     QString t;
@@ -126,10 +138,10 @@ void GlucoseProfileDialog::updateInfo()
 void GlucoseProfileDialog::accept()
 {
     const QList<GlucoseProfile::Point> pts = collect();
-    GlucoseProfile::savePoints(pts);
-    QSettings().setValue(QStringLiteral("bzprofile/sound"), m_sound->isChecked());
+    GlucoseProfile::savePoints(pts, m_kind);
+    QSettings().setValue(GlucoseProfile::settingsKey(m_kind) + QStringLiteral("/sound"), m_sound->isChecked());
     QString err;
-    const int n = GlucoseProfile::create(m_patient.id, m_date->date(), pts, m_sound->isChecked(), &err);
+    const int n = GlucoseProfile::create(m_patient.id, m_date->date(), pts, m_sound->isChecked(), &err, m_kind);
     if (n < 0) {
         QMessageBox::critical(this, windowTitle(), tr("Speichern fehlgeschlagen:\n%1").arg(err));
         return;

@@ -57,11 +57,12 @@ Page {
                     anchors.centerIn: parent
                     width: parent.width - 48
                     spacing: 8
-                    Label { text: qsTr("Code für den Computer – nur für die erste Einrichtung nötig"); color: Theme.ink2; Layout.alignment: Qt.AlignHCenter }
+                    Label { text: qsTr("Code für den Computer – nur für die erste Einrichtung nötig"); color: Theme.ink2; Layout.alignment: Qt.AlignHCenter
+                            Layout.fillWidth: true; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter }
                     Label {
                         objectName: "usbCodeLabel"
                         text: app.usbActive ? app.usbCode : "– – –"
-                        font.pixelSize: Theme.fsXxl * 2
+                        font.pixelSize: Math.min(Theme.fsXxl * 2, codeCol.width / 6)   // Smartphone: kleiner
                         font.bold: true
                         font.letterSpacing: 6
                         color: Theme.ink
@@ -91,7 +92,7 @@ Page {
                 text: qsTr("Sie sind nicht angemeldet. Der Computer kann seine Datenbank auf dieses Tablet übertragen (erste Einrichtung). Zum Abgleichen bitte vorher anmelden.")
             }
 
-            CheckBox {
+            VCheck {
                 objectName: "usbAskExitCheck"
                 Layout.fillWidth: true
                 text: qsTr("Beim Beenden und Sperren fragen, ob abgeglichen werden soll")

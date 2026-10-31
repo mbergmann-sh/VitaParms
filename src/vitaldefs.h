@@ -11,7 +11,7 @@
 #include <optional>
 
 enum class VitalKey {
-    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool, Inr, FluidIn, FluidOut, Edema
+    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool, Inr, FluidIn, FluidOut, Edema, Pain
 };
 
 enum class MarkerShape { Circle, Square, Triangle, Diamond, Cross, TriangleDown };

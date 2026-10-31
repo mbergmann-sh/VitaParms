@@ -123,7 +123,7 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed("") }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed("") }
             Label { text: page.apptId ? qsTr("Termin bearbeiten") : qsTr("Neuer Termin"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink
                     Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
             VButton { visible: page.apptId; text: qsTr("Löschen"); kind: "flat"; onClicked: page.remove() }
@@ -145,7 +145,7 @@ Page {
                      placeholder: qsTr("z. B. Hausarzt – Blutabnahme") }
 
             // ---- Zeit
-            CheckBox { id: allDay; text: qsTr("ganztägig"); font.pixelSize: Theme.fsM }
+            VCheck { id: allDay; text: qsTr("ganztägig"); font.pixelSize: Theme.fsM }
             Flow {
                 Layout.fillWidth: true
                 spacing: Theme.gapS
@@ -252,15 +252,15 @@ Page {
                 Layout.fillWidth: true
                 spacing: Theme.gapS
                 VCombo { id: leadBox; objectName: "apptLead"; width: 280; model: page.leads; textRole: "text" }
-                CheckBox { id: remindVisual; text: qsTr("Benachrichtigung"); enabled: leadBox.currentIndex > 0; font.pixelSize: Theme.fsM }
-                CheckBox { id: remindSound; text: qsTr("Ton"); enabled: leadBox.currentIndex > 0; font.pixelSize: Theme.fsM }
+                VCheck { id: remindVisual; text: qsTr("Benachrichtigung"); enabled: leadBox.currentIndex > 0; font.pixelSize: Theme.fsM }
+                VCheck { id: remindSound; text: qsTr("Ton"); enabled: leadBox.currentIndex > 0; font.pixelSize: Theme.fsM }
             }
             Label {
                 Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted; font.pixelSize: Theme.fsS
                 text: page.rec.remindEmail ? qsTr("Die E-Mail-Erinnerung dieses Termins verschickt VitaParms am Computer.")
                                            : qsTr("Das Tablet erinnert mit einer Benachrichtigung – auch wenn VitaParms im Hintergrund ist.")
             }
-            CheckBox { id: doneCheck; text: qsTr("erledigt"); font.pixelSize: Theme.fsM; visible: page.apptId }
+            VCheck { id: doneCheck; text: qsTr("erledigt"); font.pixelSize: Theme.fsM; visible: page.apptId }
         }
     }
 }

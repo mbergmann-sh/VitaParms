@@ -10,6 +10,7 @@ Item {
     property var personId: 0
     signal edit(var id)
     signal glucoseProfile()
+    signal bpProfile()
     property var entries: []
     property int days: 0
     function reload() {
@@ -41,6 +42,7 @@ Item {
             }
             Label { text: qsTr("Messungen: %1").arg(page.entries.length); color: Theme.muted; height: Theme.touch; verticalAlignment: Text.AlignVCenter }
             VButton { objectName: "glucoseProfileButton"; text: qsTr("BZ-Tagesprofil"); onClicked: page.glucoseProfile() }
+            VButton { objectName: "bpProfileButton"; text: qsTr("RR-Tagesprofil"); onClicked: page.bpProfile() }
             VButton { text: qsTr("PDF"); onClicked: { const f = app.exportReport("journal", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VButton { text: qsTr("Excel"); onClicked: { const f = app.exportReport("journalXlsx", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             // Protokolle aus den erfassten Werten (Zeitraum wie oben gewählt; „Alle“ = gesamter Zeitraum)
@@ -63,6 +65,9 @@ Item {
                     MenuSeparator {}
                     MenuItem { text: qsTr("BZ-Tagesprofile (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucose") }
                     MenuItem { text: qsTr("BZ-Tagesprofile (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("glucoseXlsx") }
+                    MenuSeparator {}
+                    MenuItem { text: qsTr("RR-Tagesprofile (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("bpProfile") }
+                    MenuItem { text: qsTr("RR-Tagesprofile (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("bpProfileXlsx") }
                 }
             }
         }
@@ -95,7 +100,7 @@ Item {
                     anchors.leftMargin: 16; anchors.rightMargin: 16
                     spacing: Theme.gap
                     ColumnLayout {
-                        Layout.preferredWidth: 120; Layout.alignment: Qt.AlignTop
+                        Layout.preferredWidth: win.phone ? 76 : 120; Layout.alignment: Qt.AlignTop
                         spacing: 0
                         Label { text: modelData.time; font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink }
                         Label { text: modelData.context; color: Theme.muted; font.pixelSize: Theme.fsXs; wrapMode: Text.WordWrap; Layout.fillWidth: true }
@@ -104,6 +109,7 @@ Item {
                         Layout.fillWidth: true
                         spacing: 6
                         Flow {
+                            id: valFlow
                             Layout.fillWidth: true
                             spacing: 18
                             Repeater {
@@ -111,9 +117,13 @@ Item {
                                 delegate: Row {
                                     spacing: 6
                                     Rectangle { width: 4; height: 22; radius: 2; color: Theme.series(modelData.color); anchors.verticalCenter: parent.verticalCenter }
-                                    Label { text: modelData.label; color: Theme.muted; font.pixelSize: Theme.fsS; anchors.verticalCenter: parent.verticalCenter }
-                                    Label { text: modelData.text; color: modelData.alert || Theme.ink; font.pixelSize: Theme.fsL; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
-                                    Label { text: modelData.unit; color: Theme.muted; font.pixelSize: Theme.fsXs; anchors.verticalCenter: parent.verticalCenter }
+                                    Label { id: vl; text: modelData.label; color: Theme.muted; font.pixelSize: Theme.fsS; anchors.verticalCenter: parent.verticalCenter }
+                                    Label { id: vt; text: modelData.text; color: modelData.alert || Theme.ink; font.pixelSize: Theme.fsL; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                                    // Einheit samt Art (z. B. „ml · Suppe/flüssige Speisen“) bricht auf schmalen Bildschirmen um
+                                    Label { text: modelData.unit; color: Theme.muted; font.pixelSize: Theme.fsXs; anchors.verticalCenter: parent.verticalCenter
+                                            wrapMode: Text.WordWrap
+                                            width: Math.min(Math.ceil(um.advanceWidth) + 2, Math.max(60, valFlow.width - 4 - vl.implicitWidth - vt.implicitWidth - 18))
+                                            TextMetrics { id: um; font.family: Theme.family; font.pixelSize: Theme.fsXs; text: modelData.unit } }
                                 }
                             }
                         }

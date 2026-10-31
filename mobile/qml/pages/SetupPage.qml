@@ -27,7 +27,8 @@ Page {
             y: 48
             spacing: Theme.gap
 
-            Label { text: qsTr("VitaParms einrichten"); font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
+            Label { text: qsTr("%1 einrichten").arg(app.appName); font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink
+                    Layout.fillWidth: true; wrapMode: Text.WordWrap }
 
             // ---------- Auswahl
             ColumnLayout {
@@ -39,12 +40,13 @@ Page {
                 VButton { objectName: "gettingStartedButton"; text: qsTr("Erste Schritte – Kurzanleitung öffnen"); kind: "flat"
                           onClicked: if (!app.openGettingStarted()) win.toast(app.lastError, true) }
                 Repeater {
+                    // VitaParms light: kein Abgleich über die Website
                     model: [
                         { title: qsTr("Daten vom Computer übernehmen"), text: qsTr("VitaParms am Computer gleicht die verschlüsselte Datenbank über Ihre Website ab. Sie brauchen die Adresse der Website und den Upload-Schlüssel (am Computer unter Extras → Website…)."), m: 1 },
                         { title: qsTr("Über das USB-Kabel vom Computer übernehmen"), text: qsTr("Tablet per USB-Kabel an den Computer anschließen; VitaParms am Computer überträgt seine Datenbank direkt (Datei → Mit Tablet über USB abgleichen…). USB-Debugging muss eingeschaltet sein."), m: 4 },
                         { title: qsTr("Datenbank-Datei übernehmen"), text: qsTr("Eine Datei vom Computer übernehmen – ohne Website, z. B. per USB-Kabel oder eigenem Cloud-Speicher: am Computer „Datei → Datenbank exportieren…“ (*.vpdb) oder eine Sicherung (*.sqlite mit .keys-Datei)."), m: 3 },
                         { title: qsTr("Neu beginnen"), text: qsTr("Eine neue, leere Datenbank nur auf diesem Tablet anlegen. Den Abgleich können Sie später einrichten."), m: 2 }
-                    ]
+                    ].filter(o => !(app.light && o.m === 1))
                     delegate: AbstractButton {
                         Layout.fillWidth: true
                         padding: 20

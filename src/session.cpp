@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "session.h"
+#include "edition.h"
 #include <QPushButton>
 #include <QStandardPaths>
 #include <QFileDialog>
@@ -230,7 +231,11 @@ bool openInteractive(QWidget *parent, const QString &dbPath, bool createNew)
             return false;
         }
         if (!setupKeys(parent, dbPath, key,
-                tr("<p><b>Neue, verschlüsselte Datenbank</b></p>"
+                Edition::light()
+                    ? tr("<p><b>Neue, verschlüsselte Datenbank</b></p>"
+                         "<p>Ihre Daten werden verschlüsselt gespeichert. Wählen Sie einen Namen und ein Passwort – "
+                         "damit melden Sie sich bei jedem Start an.</p>")
+                    : tr("<p><b>Neue, verschlüsselte Datenbank</b></p>"
                    "<p>Legen Sie das erste <b>Administrator-Konto</b> an. Weitere Konten "
                    "(Administratoren oder Anwender) können Sie danach unter <i>Extras → "
                    "Anmeldekonten</i> hinzufügen.</p>"))) {

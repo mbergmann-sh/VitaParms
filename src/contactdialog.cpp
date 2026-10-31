@@ -32,7 +32,7 @@ ContactDialog::ContactDialog(const Contacts::Contact &c, QWidget *parent)
     };
     m_kind = new QComboBox(this);
     m_kind->setObjectName(QStringLiteral("contactKindCombo"));
-    for (int k = 0; k < Contacts::KindCount; ++k) m_kind->addItem(Contacts::kindName(k), k);
+    for (int k : Contacts::kindOrder()) m_kind->addItem(Contacts::kindName(k), k);
     m_kind->setCurrentIndex(std::max(0, m_kind->findData(c.kind)));
     form->addRow(tr("&Art"), m_kind);
 

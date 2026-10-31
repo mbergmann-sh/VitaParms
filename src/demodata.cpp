@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "demodata.h"
+#include "edition.h"
+#include "sqlquery.h"
 #include "fluid.h"
 #include "contacts.h"
 #include "appsettings.h"
@@ -110,7 +112,7 @@ void DemoData::setActive(bool on) { g_active = on; }
 void DemoData::enterDemoSettings()
 {
     QSettings own;                 // eigene Einstellungen (noch unter "VitaParms")
-    QCoreApplication::setApplicationName(QStringLiteral("VitaParms-Demo"));
+    QCoreApplication::setApplicationName(Edition::settingsName() + QStringLiteral("-Demo"));
     QSettings demo;
     demo.clear();
     // Sprache, Erscheinungsbild, Einheiten, Messzeitpunkte, Sprachausgabe … übernehmen;
@@ -425,6 +427,10 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
             e.peakFlow = int(std::lround(pfe / 10) * 10);
             if (sick && day - infection < 7) e.temperature = std::round((fever(day) + 0.3) * 10) / 10;
             if (day > infection && day - infection <= 5) e.stool = 6;   // Antibiotikum
+            // Schmerzstärke (ohne Zufall, damit die übrigen Werte gleich bleiben): Gliederschmerzen beim
+            // Infekt, sonst gelegentlich Knieschmerzen
+            if (sick && day - infection >= 0 && day - infection < 7) e.pain = 5 - (day - infection) / 2;
+            else if (day % 9 == 4) e.pain = 2 + (day / 9) % 2;
             if (day >= 74 && day <= 110) {           // Knöchelödeme unter Amlodipin (abends)
                 e.edema = day >= 82 && day <= 96 ? 2 : 1;
                 e.edemaSite = Fluid::edemaSites().value(0);
@@ -565,6 +571,33 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
         md.pages = 1;
         md.addedAt = QDateTime(md.docDate.addDays(2), QTime(17, 0));
         if (!db.addDocument(md, pdf, error)) return false;
+    }
+    if (Edition::light()) {
+        // VitaParms light: nur die Werte, die Light erfasst – ohne Peak Flow, INR, Ein-/Ausfuhr, Ödeme, Stuhlgang,
+        // Pflegegrad und Schwerbehindertenausweis
+        SqlQuery q(db.handleDb());
+        const QString pid = QString::number(p.id);
+        if (!q.exec(QStringLiteral("UPDATE vitals SET peak_flow = NULL, inr = NULL, fluid_in = NULL, fluid_out = NULL, edema = NULL,"
+                                   " balance_info = NULL, stool = NULL, stool_info = NULL WHERE patient_id = %1").arg(pid))
+            || !q.exec(QStringLiteral("UPDATE vitals SET extra = json_remove(extra, '$.\"Atemfrequenz\"')"
+                                      " WHERE patient_id = %1 AND extra LIKE '%Atemfrequenz%'").arg(pid))
+            || !q.exec(QStringLiteral("DELETE FROM vitals WHERE patient_id = %1 AND systolic IS NULL AND diastolic IS NULL"
+                                      " AND pulse IS NULL AND temperature IS NULL AND spo2 IS NULL AND glucose IS NULL"
+                                      " AND weight IS NULL AND height IS NULL AND pain IS NULL"
+                                      " AND (observations IS NULL OR trim(observations) = '')").arg(pid))) {
+            if (error) *error = q.lastError().text();
+            return false;
+        }
+        if (auto lp = db.patient(p.id)) {
+            lp->careLevel = 0;
+            lp->careReview = {};
+            lp->disabilityDegree = 0;
+            lp->disabilityMarks.clear();
+            lp->disabilityValidUntil = {};
+            Fluid::setLimits(*lp, 0, 0, 0);
+            if (!db.savePatient(*lp, error)) return false;
+        }
+        emit db.vitalsChanged(p.id);
     }
     report(100);
     return true;

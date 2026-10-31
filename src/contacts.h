@@ -19,7 +19,9 @@
 
 namespace Contacts {
 
-enum Kind { Insurance = 0, FamilyDoctor, Specialist, Clinic, CareService, Pharmacy, Emergency, Other, KindCount };
+// Neue Arten nur hinten anfügen – die Nummer wird gespeichert (Relative ab 0.28)
+enum Kind { Insurance = 0, FamilyDoctor, Specialist, Clinic, CareService, Pharmacy, Emergency, Other, Relative, KindCount };
+QList<int> kindOrder();                // Reihenfolge für Auswahllisten (Angehörige vor Notfallkontakt)
 
 QString kindName(int kind);             // „Krankenkasse“, „Hausarztpraxis“, …
 

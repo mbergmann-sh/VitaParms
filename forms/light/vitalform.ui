@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  VitaParms light – Messung: Blutdruck, Puls, Temperatur, SpO₂, Blutzucker, Gewicht, Größe, BMI, Schmerz.
+  Erzeugt mit tools/make_light_forms.py aus dem Standardformular – Änderungen dort vornehmen.
+-->
+<ui version="4.0">
+ <class>VitalForm</class>
+ <widget class="QWidget" name="VitalForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Vitalwerte</string>
+  </property>
+  <property name="formVersion" stdset="0">
+   <number>1</number>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="headerFrame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <layout class="QHBoxLayout" name="headerLayout">
+      <item>
+       <widget class="QLabel" name="headerNameLabel">
+        <property name="text">
+         <string>Name</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-weight: bold; font-size: 13pt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="headerFirstNameLabel">
+        <property name="text">
+         <string>Vorname</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 13pt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="headerSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="headerBirthDateLabel">
+        <property name="text">
+         <string>geb.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="whenGroup">
+     <property name="title">
+      <string>Zeitpunkt</string>
+     </property>
+     <layout class="QFormLayout" name="whenForm">
+      <item row="0" column="0">
+       <widget class="QLabel" name="dateTimeLabel">
+        <property name="text">
+         <string>&amp;Datum / Uhrzeit</string>
+        </property>
+        <property name="buddy">
+         <cstring>dateTimeEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="dateTimeRow">
+        <item>
+         <widget class="QDateTimeEdit" name="dateTimeEdit">
+          <property name="displayFormat">
+           <string>dd.MM.yyyy HH:mm</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="nowButton">
+          <property name="text">
+           <string>&amp;Jetzt</string>
+          </property>
+          <property name="toolTip">
+           <string>Aktuelles Datum und Uhrzeit übernehmen</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="dateTimeSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="contextLabel">
+        <property name="text">
+         <string>&amp;Messzeitpunkt</string>
+        </property>
+        <property name="buddy">
+         <cstring>contextCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="contextCombo">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>Für Tagesprofile (z. B. Blutzucker- oder Blutdruck-Tagesprofil). Freitext möglich.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="columnsRow">
+     <item>
+      <layout class="QVBoxLayout" name="leftColumn">
+       <item>
+        <widget class="QGroupBox" name="valuesGroup">
+         <property name="title">
+          <string>Vitalwerte</string>
+         </property>
+         <layout class="QFormLayout" name="valuesForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="bpLabel">
+            <property name="text">
+             <string>&amp;Blutdruck (sys / dia)</string>
+            </property>
+            <property name="buddy">
+             <cstring>systolicSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="bpRow">
+            <item>
+             <widget class="QSpinBox" name="systolicSpin">
+              <property name="specialValueText">
+               <string>—</string>
+              </property>
+              <property name="suffix">
+               <string> mmHg</string>
+              </property>
+              <property name="minimum">
+               <number>49</number>
+              </property>
+              <property name="maximum">
+               <number>300</number>
+              </property>
+              <property name="value">
+               <number>49</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="bpSlashLabel">
+              <property name="text">
+               <string>/</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="diastolicSpin">
+              <property name="specialValueText">
+               <string>—</string>
+              </property>
+              <property name="suffix">
+               <string> mmHg</string>
+              </property>
+              <property name="minimum">
+               <number>19</number>
+              </property>
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>19</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="bpSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="pulseLabel">
+            <property name="text">
+             <string>&amp;Puls</string>
+            </property>
+            <property name="buddy">
+             <cstring>pulseSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="pulseSpin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="suffix">
+             <string> /min</string>
+            </property>
+            <property name="minimum">
+             <number>19</number>
+            </property>
+            <property name="maximum">
+             <number>250</number>
+            </property>
+            <property name="value">
+             <number>19</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="temperatureLabel">
+            <property name="text">
+             <string>&amp;Körpertemperatur</string>
+            </property>
+            <property name="buddy">
+             <cstring>temperatureSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="temperatureSpin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="suffix">
+             <string> °C</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="minimum">
+             <double>33.899999999999999</double>
+            </property>
+            <property name="maximum">
+             <double>43.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>33.899999999999999</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="spo2Label">
+            <property name="text">
+             <string>&amp;Sauerstoffsättigung (SpO₂)</string>
+            </property>
+            <property name="buddy">
+             <cstring>spo2Spin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="spo2Spin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="suffix">
+             <string> %</string>
+            </property>
+            <property name="minimum">
+             <number>49</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>49</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="glucoseLabel">
+            <property name="text">
+             <string>Blut&amp;zucker</string>
+            </property>
+            <property name="buddy">
+             <cstring>glucoseSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="glucoseRow">
+            <item>
+             <widget class="QDoubleSpinBox" name="glucoseSpin">
+              <property name="minimumSize">
+               <size>
+                <width>140</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="specialValueText">
+               <string>—</string>
+              </property>
+              <property name="toolTip">
+               <string>Einheit (mg/dl oder mmol/l) unter Extras → Einstellungen</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="glucoseUnitLabel">
+              <property name="text">
+               <string>mg/dl</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="glucoseSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="weightLabel">
+            <property name="text">
+             <string>&amp;Gewicht</string>
+            </property>
+            <property name="buddy">
+             <cstring>weightSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="weightSpin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="suffix">
+             <string> kg</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>400.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="heightLabel">
+            <property name="text">
+             <string>Körper&amp;größe</string>
+            </property>
+            <property name="buddy">
+             <cstring>heightSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QDoubleSpinBox" name="heightSpin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="suffix">
+             <string> cm</string>
+            </property>
+            <property name="decimals">
+             <number>0</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>250.000000000000000</double>
+            </property>
+            <property name="toolTip">
+             <string>Leer lassen: für den BMI wird die zuletzt erfasste Größe verwendet.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="bmiLabel">
+            <property name="text">
+             <string>BMI (berechnet)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <layout class="QVBoxLayout" name="bmiColumn">
+            <item>
+             <widget class="QLabel" name="bmiValueLabel">
+              <property name="text">
+               <string>—</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font-weight: bold;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="bmiInfoLabel">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>52</height>
+               </size>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font-size: 8.5pt;</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="painLabel">
+            <property name="text">
+             <string>&amp;Schmerzstärke (0–10)</string>
+            </property>
+            <property name="buddy">
+             <cstring>painSpin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QSpinBox" name="painSpin">
+            <property name="specialValueText">
+             <string>—</string>
+            </property>
+            <property name="minimum">
+             <number>-1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>-1</number>
+            </property>
+            <property name="toolTip">
+             <string>Numerische Rating-Skala: 0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="leftStretch">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="observationsLabel">
+     <property name="text">
+      <string>&amp;Beobachtungen:</string>
+     </property>
+     <property name="buddy">
+      <cstring>observationsEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="observationsEdit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>70</height>
+      </size>
+     </property>
+     <property name="placeholderText">
+      <string>z. B. Befinden, Besonderheiten, Messbedingungen …</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>dateTimeEdit</tabstop>
+  <tabstop>contextCombo</tabstop>
+  <tabstop>systolicSpin</tabstop>
+  <tabstop>diastolicSpin</tabstop>
+  <tabstop>pulseSpin</tabstop>
+  <tabstop>temperatureSpin</tabstop>
+  <tabstop>spo2Spin</tabstop>
+  <tabstop>glucoseSpin</tabstop>
+  <tabstop>weightSpin</tabstop>
+  <tabstop>heightSpin</tabstop>
+  <tabstop>painSpin</tabstop>
+  <tabstop>observationsEdit</tabstop>
+ </tabstops>
+ <resources />
+ <connections />
+</ui>

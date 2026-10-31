@@ -60,72 +60,8 @@ INCLUDEPATH += src
 # Gemeinsamer Kern (auch für die Tablet-App unter mobile/)
 include(core.pri)
 
-SOURCES += \
-    src/main.cpp \
-    src/accountdialogs.cpp \
-    src/inactivity.cpp \
-    src/akteexport.cpp \
-    src/documentdialog.cpp \
-    src/documentspage.cpp \
-    src/mailer.cpp \
-    src/formcustomizedialog.cpp \
-    src/mainwindow.cpp \
-    src/medicationdialog.cpp \
-    src/patientdialog.cpp \
-    src/settingsdialog.cpp \
-    src/vitaldialog.cpp \
-    src/appointmentdialog.cpp \
-    src/appointmentspage.cpp \
-    src/reminderservice.cpp \
-    src/smtpclient.cpp \
-    src/smtpdialog.cpp \
-    src/medassistant.cpp \
-    src/icalexport.cpp \
-    src/medlogdialog.cpp \
-    src/protocoldialog.cpp \
-    src/stockdialog.cpp \
-    src/wounddialogs.cpp \
-    src/upcoming.cpp \
-    src/leaflet.cpp \
-    src/manual.cpp \
-    src/websitedialog.cpp \
-    src/usbsyncdialog.cpp \
-    src/glucoseprofiledialog.cpp \
-    src/medsearchdialog.cpp \
-    src/contactdialog.cpp
-
-HEADERS += \
-    src/accountdialogs.h \
-    src/inactivity.h \
-    src/akteexport.h \
-    src/documentdialog.h \
-    src/documentspage.h \
-    src/mailer.h \
-    src/formcustomizedialog.h \
-    src/mainwindow.h \
-    src/medicationdialog.h \
-    src/patientdialog.h \
-    src/settingsdialog.h \
-    src/vitaldialog.h \
-    src/appointmentdialog.h \
-    src/appointmentspage.h \
-    src/reminderservice.h \
-    src/smtpclient.h \
-    src/smtpdialog.h \
-    src/medassistant.h \
-    src/icalexport.h \
-    src/medlogdialog.h \
-    src/protocoldialog.h \
-    src/stockdialog.h \
-    src/wounddialogs.h \
-    src/upcoming.h \
-    src/leaflet.h \
-    src/manual.h \
-    src/websitedialog.h \
-    src/usbsyncdialog.h \
-    src/glucoseprofiledialog.h \
-    src/medsearchdialog.h \
-    src/contactdialog.h
+# Desktop-Oberfläche (auch für VitaParms light unter light/)
+include(desktop.pri)
 
 # Die Formulare werden NICHT mit uic übersetzt, sondern zur Laufzeit per
 # QUiLoader geladen. Die Standardversionen liegen als Ressource im Programm;
@@ -138,7 +74,8 @@ RESOURCES += resources/vitaparms.qrc
 TRANSLATIONS = translations/vitaparms_en.ts
 # Nur für lupdate: Texte der zur Laufzeit geladenen Formulare erfassen
 lupdate_only {
-    FORMS = forms/patientform.ui forms/vitalform.ui forms/medicationform.ui forms/documentform.ui forms/appointmentform.ui
+    FORMS = forms/patientform.ui forms/vitalform.ui forms/medicationform.ui forms/documentform.ui forms/appointmentform.ui \
+            forms/light/patientform.ui forms/light/vitalform.ui
 }
 CONFIG += lrelease embed_translations
 QM_FILES_RESOURCE_PREFIX = /i18n
@@ -152,8 +89,6 @@ OTHER_FILES += \
     README.md LICENSE
 
 win32: RC_ICONS = resources/icons/vitaparms.ico
-# E-Mail-Versand mit Anhang über Simple MAPI (Outlook, Thunderbird …)
-win32: SOURCES += src/mapi_win.cpp
 macx:  ICON     = resources/icons/vitaparms.icns
 
 # Handbücher: docs/ wird neben das Programm kopiert (Hilfe → Handbuch, F1).

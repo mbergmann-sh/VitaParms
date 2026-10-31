@@ -7,6 +7,7 @@ import ".."
 
 Flickable {
     id: page
+    objectName: "overviewPage"
     property var personId: 0
     signal openChart()
     signal openMeds()
@@ -89,7 +90,7 @@ Flickable {
                                     color: modelData.alert === true ? Theme.warn : Theme.ink }
                             Label { text: modelData.unit; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignBaseline }
                         }
-                        Label { text: modelData.when; color: Theme.muted; font.pixelSize: Theme.fsXs; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Label { text: modelData.when; color: Theme.muted; font.pixelSize: Theme.fsXs; elide: Text.ElideRight; Layout.fillWidth: true; Layout.minimumWidth: 0 }
                         Item { Layout.fillHeight: true }
                         Sparkline { series: modelData.series; Layout.fillWidth: true; Layout.preferredHeight: 34 }
                     }
@@ -117,11 +118,11 @@ Flickable {
                         RowLayout {
                             Layout.topMargin: 10; Layout.bottomMargin: 10
                             spacing: Theme.gap
-                            Label { text: modelData.when; color: Theme.ink2; Layout.preferredWidth: 150; font.bold: modelData.priority >= 2 }
+                            Label { text: modelData.when; color: Theme.ink2; Layout.preferredWidth: win.phone ? 92 : 150; Layout.minimumWidth: win.phone ? 92 : 150; Layout.maximumWidth: win.phone ? 92 : 150; wrapMode: Text.WordWrap; font.bold: modelData.priority >= 2 }
                             ColumnLayout {
                                 Layout.fillWidth: true; spacing: 2
                                 Label { text: modelData.title; color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                                Label { visible: !!modelData.location; text: modelData.location; color: Theme.muted; font.pixelSize: Theme.fsS }
+                                Label { visible: !!modelData.location; text: modelData.location; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                             }
                         }
                     }
@@ -141,11 +142,11 @@ Flickable {
                         RowLayout {
                             Layout.topMargin: 10; Layout.bottomMargin: 10
                             spacing: Theme.gap
-                            Label { text: modelData.scheme; font.bold: true; color: Theme.ink; Layout.preferredWidth: 110 }
+                            Label { text: modelData.scheme; font.bold: true; color: Theme.ink; Layout.preferredWidth: win.phone ? 84 : 110 }
                             ColumnLayout {
                                 Layout.fillWidth: true; spacing: 2
                                 Label { text: modelData.name + (modelData.strength ? " " + modelData.strength : ""); color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                                Label { visible: !!modelData.rhythm; text: modelData.rhythm; color: Theme.muted; font.pixelSize: Theme.fsS }
+                                Label { visible: !!modelData.rhythm; text: modelData.rhythm; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                             }
                         }
                     }

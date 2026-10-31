@@ -119,10 +119,10 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed(0, "") }
-            Label { text: page.personId ? qsTr("Stammblatt bearbeiten") : qsTr("Neue Person"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-            VButton { visible: page.personId && app.isAdmin; text: qsTr("Löschen"); kind: "flat"; onClicked: confirmDelete.open() }
-            VButton { text: qsTr("Speichern"); kind: "primary"; onClicked: page.save() }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed(0, "") }
+            Label { text: page.personId || app.light ? qsTr("Stammblatt") : qsTr("Neue Person"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; Layout.minimumWidth: 0; elide: Text.ElideRight; horizontalAlignment: Text.AlignHCenter }
+            VButton { visible: page.personId && app.isAdmin && !app.light; text: qsTr("Löschen"); kind: "flat"; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: confirmDelete.open() }
+            VButton { text: qsTr("Speichern"); kind: "primary"; leftPadding: win.phone ? 12 : 18; rightPadding: win.phone ? 12 : 18; onClicked: page.save() }
         }
     }
 
@@ -157,56 +157,63 @@ Page {
                 VField { id: mobile; label: qsTr("Mobiltelefon"); text: d.mobile; Layout.fillWidth: true; inputMethodHints: Qt.ImhDialableCharactersOnly }
             }
 
+            ColumnLayout {   // Pflegegrad und Ausweis: nicht in VitaParms light
+                visible: !app.light
+                Layout.fillWidth: true
+                spacing: Theme.gap
             SectionTitle { text: qsTr("Pflegegrad") }
-            GridLayout {
-                Layout.fillWidth: true
-                columns: page.width > 800 ? 2 : 1
-                columnSpacing: Theme.gap; rowSpacing: Theme.gap
-                VCombo { id: care; label: qsTr("Pflegegrad"); Layout.fillWidth: true; currentIndex: d.careLevel || 0
-                         model: [qsTr("kein Pflegegrad"), qsTr("Pflegegrad 1"), qsTr("Pflegegrad 2"), qsTr("Pflegegrad 3"), qsTr("Pflegegrad 4"), qsTr("Pflegegrad 5")] }
-                DateField { id: review; label: qsTr("Nächste Überprüfung"); isoDate: d.careReview; enabled: care.currentIndex > 0
-                            opacity: enabled ? 1 : 0.45; Layout.fillWidth: true }
-            }
+                GridLayout {
+                    Layout.fillWidth: true
+                    columns: page.width > 800 ? 2 : 1
+                    columnSpacing: Theme.gap; rowSpacing: Theme.gap
+                    VCombo { id: care; label: qsTr("Pflegegrad"); Layout.fillWidth: true; currentIndex: d.careLevel || 0
+                             model: [qsTr("kein Pflegegrad"), qsTr("Pflegegrad 1"), qsTr("Pflegegrad 2"), qsTr("Pflegegrad 3"), qsTr("Pflegegrad 4"), qsTr("Pflegegrad 5")] }
+                    DateField { id: review; label: qsTr("Nächste Überprüfung"); isoDate: d.careReview; enabled: care.currentIndex > 0
+                                opacity: enabled ? 1 : 0.45; Layout.fillWidth: true }
+                }
 
-            SectionTitle { text: qsTr("Schwerbehindertenausweis") }
-            RowLayout {
-                spacing: Theme.gapS
-                Label { text: qsTr("Grad der Behinderung"); color: Theme.ink2 }
-                VButton { text: "−"; width: Theme.touch; onClicked: gdb.value = Math.max(0, gdb.value - 10) }
-                Label { id: gdbLabel; text: gdb.value > 0 ? qsTr("GdB %1").arg(gdb.value) : qsTr("kein Ausweis")
-                        font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.preferredWidth: 150; horizontalAlignment: Text.AlignHCenter }
-                VButton { text: "+"; width: Theme.touch; onClicked: gdb.value = Math.min(100, gdb.value + 10) }
-                QtObject { id: gdb; property int value: d.disabilityDegree || 0 }
-            }
-            Flow {
-                Layout.fillWidth: true
-                spacing: Theme.gapS
-                enabled: gdb.value > 0
-                opacity: enabled ? 1 : 0.45
-                Repeater {
-                    model: page.marks
-                    VChip {
-                        text: modelData.code
-                        sub: modelData.meaning.length > 38 ? modelData.meaning.substring(0, 36) + "…" : modelData.meaning
-                        checked: page.selectedMarks.indexOf(modelData.code) >= 0
-                        onClicked: {
-                            const s = page.selectedMarks.slice(), i = s.indexOf(modelData.code)
-                            if (i >= 0) s.splice(i, 1); else s.push(modelData.code)
-                            page.selectedMarks = page.marks.map(m => m.code).filter(c => s.indexOf(c) >= 0)
+                SectionTitle { text: qsTr("Schwerbehindertenausweis") }
+                RowLayout {
+                    spacing: Theme.gapS
+                    Label { text: qsTr("Grad der Behinderung"); color: Theme.ink2; wrapMode: Text.WordWrap; Layout.fillWidth: win.phone; Layout.minimumWidth: 0 }
+                    VButton { text: "−"; width: Theme.touch; onClicked: gdb.value = Math.max(0, gdb.value - 10) }
+                    Label { id: gdbLabel; text: gdb.value > 0 ? qsTr("GdB %1").arg(gdb.value) : qsTr("kein Ausweis")
+                            font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.preferredWidth: win.phone ? 104 : 150; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap }
+                    VButton { text: "+"; width: Theme.touch; onClicked: gdb.value = Math.min(100, gdb.value + 10) }
+                    QtObject { id: gdb; property int value: d.disabilityDegree || 0 }
+                }
+                Flow {
+                    Layout.fillWidth: true
+                    spacing: Theme.gapS
+                    enabled: gdb.value > 0
+                    opacity: enabled ? 1 : 0.45
+                    Repeater {
+                        model: page.marks
+                        VChip {
+                            text: modelData.code
+                            sub: modelData.meaning.length > 38 ? modelData.meaning.substring(0, 36) + "…" : modelData.meaning
+                            checked: page.selectedMarks.indexOf(modelData.code) >= 0
+                            onClicked: {
+                                const s = page.selectedMarks.slice(), i = s.indexOf(modelData.code)
+                                if (i >= 0) s.splice(i, 1); else s.push(modelData.code)
+                                page.selectedMarks = page.marks.map(m => m.code).filter(c => s.indexOf(c) >= 0)
+                            }
                         }
                     }
                 }
-            }
-            RowLayout {
-                enabled: gdb.value > 0
-                opacity: enabled ? 1 : 0.45
-                spacing: Theme.gap
-                DateField { id: valid; label: qsTr("Gültig bis"); isoDate: d.disabilityValid; enabled: !unlimited.checked; Layout.preferredWidth: 260 }
-                CheckBox { id: unlimited; text: qsTr("unbefristet"); checked: (d.disabilityDegree || 0) > 0 && !d.disabilityValid
-                           font.pixelSize: Theme.fsM; Layout.alignment: Qt.AlignBottom }
+                RowLayout {
+                    enabled: gdb.value > 0
+                    opacity: enabled ? 1 : 0.45
+                    spacing: Theme.gap
+                    DateField { id: valid; label: qsTr("Gültig bis"); isoDate: d.disabilityValid; enabled: !unlimited.checked; Layout.preferredWidth: win.phone ? 170 : 260 }
+                    VCheck { id: unlimited; text: qsTr("unbefristet"); checked: (d.disabilityDegree || 0) > 0 && !d.disabilityValid
+                               font.pixelSize: Theme.fsM; Layout.alignment: Qt.AlignBottom }
+                }
+
+            
             }
 
-            SectionTitle { text: qsTr("Kontakte") }
+            SectionTitle { text: app.light ? qsTr("Ärzte, Angehörige und weitere Kontakte") : qsTr("Kontakte") }
             Label { visible: page.contacts.length === 0; text: qsTr("Noch keine Kontakte – z. B. Krankenkasse, Hausarzt, Fachärzte, Kliniken, Apotheke."); color: Theme.muted
                     Layout.fillWidth: true; wrapMode: Text.WordWrap }
             Repeater {
@@ -226,72 +233,86 @@ Page {
             VButton { objectName: "addContactButton"; text: qsTr("Kontakt hinzufügen"); iconText: "+"
                       onClicked: contactPopup.openWith(null, -1) }
 
+            ColumnLayout {   // Vorsorge: nicht in VitaParms light
+                visible: !app.light
+                Layout.fillWidth: true
+                spacing: Theme.gap
             SectionTitle { text: qsTr("Vorsorge") }
-            Repeater {
-                model: page.advance
-                delegate: ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: Theme.gapS
-                    CheckBox { id: advPresent; text: modelData.name + (modelData.hasPdf ? " " + qsTr("(PDF in der Krankenakte)") : "")
-                               checked: modelData.present === true; font.pixelSize: Theme.fsM
-                               onToggled: page.setAdvance(index, "present", checked) }
-                    GridLayout {
-                        visible: advPresent.checked
-                        Layout.fillWidth: true; Layout.leftMargin: 36
-                        columns: page.width > 900 ? 2 : 1
-                        columnSpacing: Theme.gap; rowSpacing: Theme.gapS
-                        VField { label: modelData.personLabel; text: modelData.person; Layout.fillWidth: true; Layout.preferredWidth: 10
-                                 field.onTextEdited: page.setAdvance(index, "person", text) }
-                        VField { label: qsTr("Telefon"); text: modelData.phone; Layout.fillWidth: true; Layout.preferredWidth: 10
-                                 inputMethodHints: Qt.ImhDialableCharactersOnly; field.onTextEdited: page.setAdvance(index, "phone", text) }
-                        VField { label: qsTr("Anschrift"); text: modelData.address; Layout.fillWidth: true; Layout.preferredWidth: 10
-                                 field.onTextEdited: page.setAdvance(index, "address", text) }
-                        DateField { label: qsTr("Gültig bis (leer = unbefristet)"); isoDate: modelData.validUntil || ""; Layout.fillWidth: true; Layout.preferredWidth: 10
-                                    onIsoDateChanged: page.setAdvance(index, "validUntil", isoDate) }
-                    }
-                    // hinterlegtes Dokument (PDF in der Krankenakte)
-                    RowLayout {
-                        visible: advPresent.checked
-                        Layout.fillWidth: true; Layout.leftMargin: 36
+                Repeater {
+                    model: page.advance
+                    delegate: ColumnLayout {
+                        Layout.fillWidth: true
                         spacing: Theme.gapS
-                        Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; font.pixelSize: Theme.fsS
-                                color: modelData.docId > 0 ? Theme.ink : Theme.muted
-                                text: modelData.docId > 0 ? qsTr("Dokument: %1").arg(modelData.docTitle || qsTr("PDF in der Krankenakte"))
-                                                          : page.personId ? qsTr("Kein Dokument hinterlegt.") : qsTr("Nach dem Speichern lässt sich ein Dokument aus der Krankenakte verknüpfen.") }
-                        VButton { visible: modelData.docId > 0; text: qsTr("Anzeigen"); kind: "flat"
-                                  onClicked: if (!app.openDocument(modelData.docId)) win.toast(app.lastError, true) }
-                        VButton { objectName: "advanceLinkButton"; visible: page.personId > 0
-                                  text: modelData.docId > 0 ? qsTr("Anderes Dokument") : qsTr("Aus der Krankenakte wählen"); kind: "flat"
-                                  onClicked: advPicker.openFor(index, modelData.name) }
-                        VButton { visible: modelData.docId > 0; text: qsTr("Verknüpfung lösen"); kind: "flat"
-                                  onClicked: page.linkAdvance(index, 0, "") }
+                        VCheck { id: advPresent; text: modelData.name + (modelData.hasPdf ? " " + qsTr("(PDF in der Krankenakte)") : "")
+                                   checked: modelData.present === true; font.pixelSize: Theme.fsM
+                                   onToggled: page.setAdvance(index, "present", checked) }
+                        GridLayout {
+                            visible: advPresent.checked
+                            Layout.fillWidth: true; Layout.leftMargin: 36
+                            columns: page.width > 900 ? 2 : 1
+                            columnSpacing: Theme.gap; rowSpacing: Theme.gapS
+                            VField { label: modelData.personLabel; text: modelData.person; Layout.fillWidth: true; Layout.preferredWidth: 10
+                                     field.onTextEdited: page.setAdvance(index, "person", text) }
+                            VField { label: qsTr("Telefon"); text: modelData.phone; Layout.fillWidth: true; Layout.preferredWidth: 10
+                                     inputMethodHints: Qt.ImhDialableCharactersOnly; field.onTextEdited: page.setAdvance(index, "phone", text) }
+                            VField { label: qsTr("Anschrift"); text: modelData.address; Layout.fillWidth: true; Layout.preferredWidth: 10
+                                     field.onTextEdited: page.setAdvance(index, "address", text) }
+                            DateField { label: qsTr("Gültig bis (leer = unbefristet)"); isoDate: modelData.validUntil || ""; Layout.fillWidth: true; Layout.preferredWidth: 10
+                                        onIsoDateChanged: page.setAdvance(index, "validUntil", isoDate) }
+                        }
+                        // hinterlegtes Dokument (PDF in der Krankenakte)
+                        RowLayout {
+                            visible: advPresent.checked
+                            Layout.fillWidth: true; Layout.leftMargin: 36
+                            spacing: Theme.gapS
+                            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; font.pixelSize: Theme.fsS
+                                    color: modelData.docId > 0 ? Theme.ink : Theme.muted
+                                    text: modelData.docId > 0 ? qsTr("Dokument: %1").arg(modelData.docTitle || qsTr("PDF in der Krankenakte"))
+                                                              : page.personId ? qsTr("Kein Dokument hinterlegt.") : qsTr("Nach dem Speichern lässt sich ein Dokument aus der Krankenakte verknüpfen.") }
+                            VButton { visible: modelData.docId > 0; text: qsTr("Anzeigen"); kind: "flat"
+                                      onClicked: if (!app.openDocument(modelData.docId)) win.toast(app.lastError, true) }
+                            VButton { objectName: "advanceLinkButton"; visible: page.personId > 0
+                                      text: modelData.docId > 0 ? qsTr("Anderes Dokument") : qsTr("Aus der Krankenakte wählen"); kind: "flat"
+                                      onClicked: advPicker.openFor(index, modelData.name) }
+                            VButton { visible: modelData.docId > 0; text: qsTr("Verknüpfung lösen"); kind: "flat"
+                                      onClicked: page.linkAdvance(index, 0, "") }
+                        }
                     }
                 }
+                Label { text: qsTr("Das unterschriebene Dokument nehmen Sie zuerst in die Krankenakte auf (fotografieren oder als PDF übernehmen, Art „Vorsorge“) und verknüpfen es dann hier."); color: Theme.muted
+                        font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+            
             }
-            Label { text: qsTr("Das unterschriebene Dokument nehmen Sie zuerst in die Krankenakte auf (fotografieren oder als PDF übernehmen, Art „Vorsorge“) und verknüpfen es dann hier."); color: Theme.muted
-                    font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
 
             SectionTitle { text: qsTr("Diagnosen und Bemerkungen") }
             VArea { id: diagnoses; label: qsTr("Diagnosen (eine pro Zeile)"); text: d.diagnoses; Layout.fillWidth: true }
             VArea { id: notes; label: qsTr("Bemerkungen"); text: d.notes; Layout.fillWidth: true; minHeight: 80 }
 
+            ColumnLayout {   // Wunden: nicht in VitaParms light
+                visible: !app.light
+                Layout.fillWidth: true
+                spacing: Theme.gap
             SectionTitle { text: qsTr("Wunden bei Aufnahme") }
-            Label { visible: !page.personId; text: qsTr("Wunden lassen sich erfassen, sobald das Stammblatt einmal gespeichert ist.")
-                    color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-            Label { visible: page.personId && page.admissionWounds.length === 0; text: qsTr("Keine Wunden bei Aufnahme erfasst."); color: Theme.muted }
-            Repeater {
-                model: page.admissionWounds
-                delegate: AbstractButton {
-                    Layout.fillWidth: true
-                    implicitHeight: wl.implicitHeight + 20
-                    onClicked: page.openWound(modelData.id)
-                    background: Rectangle { color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule; radius: 6 }
-                    contentItem: Label { id: wl; leftPadding: 14; rightPadding: 14; text: "• " + modelData.summary + (modelData.size ? " – " + modelData.size : "")
-                                         color: Theme.ink; wrapMode: Text.WordWrap }
+                Label { visible: !page.personId; text: qsTr("Wunden lassen sich erfassen, sobald das Stammblatt einmal gespeichert ist.")
+                        color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                Label { visible: page.personId && page.admissionWounds.length === 0; text: qsTr("Keine Wunden bei Aufnahme erfasst."); color: Theme.muted }
+                Repeater {
+                    model: page.admissionWounds
+                    delegate: AbstractButton {
+                        Layout.fillWidth: true
+                        implicitHeight: wl.implicitHeight + 20
+                        onClicked: page.openWound(modelData.id)
+                        background: Rectangle { color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule; radius: 6 }
+                        contentItem: Label { id: wl; leftPadding: 14; rightPadding: 14; text: "• " + modelData.summary + (modelData.size ? " – " + modelData.size : "")
+                                             color: Theme.ink; wrapMode: Text.WordWrap }
+                    }
                 }
+                VButton { objectName: "admissionWoundButton"; visible: !!page.personId; text: qsTr("Wunde bei Aufnahme erfassen"); iconText: "+"
+                          onClicked: page.addWound() }
+
+            
             }
-            VButton { objectName: "admissionWoundButton"; visible: !!page.personId; text: qsTr("Wunde bei Aufnahme erfassen"); iconText: "+"
-                      onClicked: page.addWound() }
 
             SectionTitle { text: qsTr("Weitere Angaben") }
             Repeater {
@@ -306,41 +327,48 @@ Page {
                 }
             }
 
-            SectionTitle { text: qsTr("Biologisches Geschlecht") }
-            VCombo { id: bioSex; objectName: "bioSexCombo"; label: qsTr("Für Normwerte")
-                     model: [qsTr("— bitte wählen —"), qsTr("männlich"), qsTr("weiblich")]
-                     currentIndex: Math.max(0, ["", "m", "w"].indexOf(d.bioSex || ""))
-                     onActivated: page.bioTouched = true
-                     Layout.preferredWidth: 360 }
-            Label { text: page.bioSexHint; color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-
-            SectionTitle { text: qsTr("Peak Flow (Asthma, COPD)") }
-            VField { id: pfBestField; objectName: "peakFlowBestField"; label: qsTr("Persönlicher Bestwert (l/min)")
-                     text: d.peakFlowBest ? String(d.peakFlowBest) : ""; placeholder: qsTr("mit dem Arzt festgelegt")
-                     inputMethodHints: Qt.ImhDigitsOnly; Layout.preferredWidth: 360 }
-            Label { objectName: "peakFlowInfo"; text: page.pfInfo; color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-
-            SectionTitle { text: qsTr("Gerinnung (INR)") }
-            RowLayout {
-                spacing: Theme.gap
-                VField { id: inrLow; objectName: "inrLowField"; label: qsTr("Zielbereich von"); text: d.inrLow || ""
-                         placeholder: "2,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: 170 }
-                VField { id: inrHigh; objectName: "inrHighField"; label: qsTr("bis"); text: d.inrHigh || ""
-                         placeholder: "3,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: 170 }
-            }
-            Label { text: qsTr("Ärztlich festgelegt (z. B. 2,0–3,0, bei künstlichen Herzklappen oft 2,5–3,5). Leer: Standard 2,0–3,0.")
-                    color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-
-            SectionTitle { text: qsTr("Trinkmenge und Gewicht") }
-            Flow {
+            ColumnLayout {   // Normwerte, Peak Flow, INR, Trinkmenge: nicht in VitaParms light
+                visible: !app.light
                 Layout.fillWidth: true
                 spacing: Theme.gap
-                VField { id: fluidMin; objectName: "fluidMinField"; label: qsTr("Trinkmenge mindestens (ml/Tag)"); text: d.fluidMin || ""
-                         inputMethodHints: Qt.ImhDigitsOnly; width: 300 }
-                VField { id: fluidMax; objectName: "fluidMaxField"; label: qsTr("Trinkmenge höchstens (ml/Tag)"); text: d.fluidMax || ""
-                         inputMethodHints: Qt.ImhDigitsOnly; width: 300; placeholder: qsTr("nur bei ärztlicher Begrenzung") }
-                VField { id: weightWatch; objectName: "weightWatchField"; label: qsTr("Gewichtszunahme melden ab (kg in 3 Tagen)"); text: d.weightWatch || ""
-                         inputMethodHints: Qt.ImhFormattedNumbersOnly; width: 300; placeholder: qsTr("z. B. 2 bei Herzschwäche") }
+            SectionTitle { text: qsTr("Biologisches Geschlecht") }
+                VCombo { id: bioSex; objectName: "bioSexCombo"; label: qsTr("Für Normwerte")
+                         model: [qsTr("— bitte wählen —"), qsTr("männlich"), qsTr("weiblich")]
+                         currentIndex: Math.max(0, ["", "m", "w"].indexOf(d.bioSex || ""))
+                         onActivated: page.bioTouched = true
+                         Layout.preferredWidth: Math.min(360, page.width - 2 * Theme.gapL) }
+                Label { text: page.bioSexHint; color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+                SectionTitle { text: qsTr("Peak Flow (Asthma, COPD)") }
+                VField { id: pfBestField; objectName: "peakFlowBestField"; label: qsTr("Persönlicher Bestwert (l/min)")
+                         text: d.peakFlowBest ? String(d.peakFlowBest) : ""; placeholder: qsTr("mit dem Arzt festgelegt")
+                         inputMethodHints: Qt.ImhDigitsOnly; Layout.preferredWidth: Math.min(360, page.width - 2 * Theme.gapL) }
+                Label { objectName: "peakFlowInfo"; text: page.pfInfo; color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+                SectionTitle { text: qsTr("Gerinnung (INR)") }
+                RowLayout {
+                    spacing: Theme.gap
+                    VField { id: inrLow; objectName: "inrLowField"; label: qsTr("Zielbereich von"); text: d.inrLow || ""
+                             placeholder: "2,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: win.phone ? 140 : 170 }
+                    VField { id: inrHigh; objectName: "inrHighField"; label: qsTr("bis"); text: d.inrHigh || ""
+                             placeholder: "3,0"; inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.preferredWidth: win.phone ? 140 : 170 }
+                }
+                Label { text: qsTr("Ärztlich festgelegt (z. B. 2,0–3,0, bei künstlichen Herzklappen oft 2,5–3,5). Leer: Standard 2,0–3,0.")
+                        color: Theme.ink2; font.pixelSize: Theme.fsS; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+
+                SectionTitle { text: qsTr("Trinkmenge und Gewicht") }
+                Flow {
+                    Layout.fillWidth: true
+                    spacing: Theme.gap
+                    VField { id: fluidMin; objectName: "fluidMinField"; label: qsTr("Trinkmenge mindestens (ml/Tag)"); text: d.fluidMin || ""
+                             inputMethodHints: Qt.ImhDigitsOnly; width: 300 }
+                    VField { id: fluidMax; objectName: "fluidMaxField"; label: qsTr("Trinkmenge höchstens (ml/Tag)"); text: d.fluidMax || ""
+                             inputMethodHints: Qt.ImhDigitsOnly; width: 300; placeholder: qsTr("nur bei ärztlicher Begrenzung") }
+                    VField { id: weightWatch; objectName: "weightWatchField"; label: qsTr("Gewichtszunahme melden ab (kg in 3 Tagen)"); text: d.weightWatch || ""
+                             inputMethodHints: Qt.ImhFormattedNumbersOnly; width: 300; placeholder: qsTr("z. B. 2 bei Herzschwäche") }
+                }
+
+            
             }
 
             SectionTitle { text: qsTr("Fehlende Gliedmaßen (für den BMI)") }

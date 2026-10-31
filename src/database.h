@@ -146,9 +146,11 @@ public:
     void notifyStockChanged(qint64 patientId) { emit stockChanged(patientId); }
     void notifyWoundsChanged(qint64 patientId) { emit woundsChanged(patientId); }                   // nach dem Zusammenführen: Ansichten neu laden
     SqlDb handleDb() { return db(); }
-    static constexpr int kSchemaVersion = 11;  // 9: vitals.stool; 10: inr, fluid_in/out, edema; 11: wounds
+    static constexpr int kSchemaVersion = 12;  // 9: vitals.stool; 10: inr, fluid_in/out, edema; 11: wounds; 12: vitals.pain
     // Datenbankformat der geöffneten bzw. per ATTACH angehängten Datenbank ("r"); -1 = unbekannt
     static int schemaVersionOf(SqlDb &d, const QString &schema = QStringLiteral("main"));
+    // Eigenes Formularfeld, das die Schmerzstärke enthielt (bis Version 0.27): "Schmerz (NRS)"
+    static bool isPainFieldKey(const QString &key);
 
 signals:
     void patientsChanged();
@@ -166,6 +168,7 @@ private:
     bool ensureColumn(const QString &table, const QString &column, const QString &decl, QString *error);
     // Schema 6: frühere Zusatzfelder "Peak-Flow" (Formular-Eigenschaft vpField) in die Spalte übernehmen
     bool migratePeakFlow(int fromVersion, QString *error);
+    bool migratePain(int fromVersion, QString *error);
     // Schema 7: Abgleich zwischen Geräten (uid, sync_at, Löschvermerke, Änderungszähler)
     bool ensureSyncSchema(QString *error);
     bool writeAppointment(Appointment &a, QString *error);

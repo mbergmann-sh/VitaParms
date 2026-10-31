@@ -39,7 +39,7 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed("", 0) }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed("", 0) }
             Label { text: page.woundId ? qsTr("Wunde bearbeiten") : page.admission ? qsTr("Wunde bei Aufnahme") : qsTr("Neue Wunde")
                     font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
             VButton { visible: page.woundId; text: qsTr("Löschen"); kind: "flat"; onClicked: confirmDelete.open() }
@@ -89,7 +89,7 @@ Page {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Theme.gap
-                CheckBox { id: onAdm; objectName: "woundOnAdmission"; text: qsTr("bei Aufnahme bereits vorhanden"); checked: page.w.onAdmission; font.pixelSize: Theme.fsM }
+                VCheck { id: onAdm; objectName: "woundOnAdmission"; text: qsTr("bei Aufnahme bereits vorhanden"); checked: page.w.onAdmission; font.pixelSize: Theme.fsM }
                 DateField { id: admDate; visible: onAdm.checked; label: qsTr("Aufnahme am"); isoDate: page.w.admissionDate; allowEmpty: false; Layout.preferredWidth: 260 }
                 Item { Layout.fillWidth: true }
             }
@@ -109,7 +109,7 @@ Page {
             VArea { id: selfMgmt; label: qsTr("Selbstmanagement"); text: page.w.selfManagement; minHeight: 90
                     placeholder: qsTr("Wissen und Fähigkeiten zum Umgang mit der Wunde, Unterstützung durch Angehörige …"); Layout.fillWidth: true }
             VCombo { id: goal; label: qsTr("Therapieziel"); model: page.c.goals; currentIndex: page.w.goal; Layout.fillWidth: true }
-            CheckBox { id: consent; objectName: "woundConsent"; text: qsTr("Einwilligung zur Fotodokumentation liegt vor"); checked: page.w.photoConsent; font.pixelSize: Theme.fsM }
+            VCheck { id: consent; objectName: "woundConsent"; text: qsTr("Einwilligung zur Fotodokumentation liegt vor"); checked: page.w.photoConsent; font.pixelSize: Theme.fsM }
 
             SectionTitle { text: qsTr("Status") }
             GridLayout {

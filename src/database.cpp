@@ -6,6 +6,7 @@
 #include "sqlquery.h"
 #include "sqlite3mc.h"
 
+#include <algorithm>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
@@ -95,6 +96,7 @@ VitalRecord vitalFrom(const SqlQuery &q)
     r.fluidIn      = optInt(q.value(QStringLiteral("fluid_in")));
     r.fluidOut     = optInt(q.value(QStringLiteral("fluid_out")));
     r.edema        = optInt(q.value(QStringLiteral("edema")));
+    r.pain         = optInt(q.value(QStringLiteral("pain")));
     {
         const QJsonObject bi = jsonObj(q.value(QStringLiteral("balance_info")));
         r.fluidInKind  = bi.value(QStringLiteral("inKind")).toString();
@@ -452,12 +454,14 @@ bool Database::createSchema(QString *error)
         || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("fluid_out"), QStringLiteral("INTEGER"), error)
         || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("edema"), QStringLiteral("INTEGER"), error)
         || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("balance_info"), QStringLiteral("TEXT"), error)
+        || !ensureColumn(QStringLiteral("vitals"), QStringLiteral("pain"), QStringLiteral("INTEGER"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("care_level"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("care_review"), QStringLiteral("TEXT"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("disability_degree"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("disability_marks"), QStringLiteral("TEXT"), error)
         || !ensureColumn(QStringLiteral("patients"), QStringLiteral("disability_valid"), QStringLiteral("TEXT"), error)
         || !migratePeakFlow(version, error)
+        || !migratePain(version, error)
         || !q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_appt_series ON appointments(series_id, series_orig)"))
         || !ensureSyncSchema(error)) {
         db().rollback();
@@ -481,6 +485,48 @@ bool Database::ensureColumn(const QString &table, const QString &column, const Q
     q.finish();
     if (!q.exec(QStringLiteral("ALTER TABLE %1 ADD COLUMN %2 %3").arg(table, column, decl))) return fail(q, error);
     return true;
+}
+
+// Bis Version 11 war die Schmerzstärke ein eigenes Formularfeld „Schmerz (NRS)“ (in vitals.extra);
+// ab 12 ist sie ein fester Messwert (vitals.pain) – vorhandene Einträge übernehmen
+bool Database::migratePain(int fromVersion, QString *error)
+{
+    if (fromVersion >= 12) return true;
+    struct Row { qint64 id; QJsonObject extra; int value; };
+    QList<Row> rows;
+    {
+        SqlQuery q(db());
+        if (!q.exec(QStringLiteral("SELECT id, extra FROM vitals WHERE pain IS NULL AND extra LIKE '%chmerz%'")))
+            return fail(q, error);
+        while (q.next()) {
+            QJsonObject e = jsonObj(q.value(1));
+            for (auto it = e.begin(); it != e.end(); ++it) {
+                if (!isPainFieldKey(it.key())) continue;
+                const int v = it.value().isDouble() ? qRound(it.value().toDouble()) : it.value().toString().trimmed().toInt();
+                if (v >= 0 && v <= 10) {
+                    e.erase(it);
+                    rows << Row{ q.value(0).toLongLong(), e, v };
+                }
+                break;
+            }
+        }
+    }
+    for (const Row &r : rows) {
+        SqlQuery u(db());
+        u.prepare(QStringLiteral("UPDATE vitals SET pain=?, extra=? WHERE id=?"));
+        u.addBindValue(r.value);
+        u.addBindValue(jsonStr(r.extra));
+        u.addBindValue(r.id);
+        if (!u.exec()) return fail(u, error);
+    }
+    return true;
+}
+
+bool Database::isPainFieldKey(const QString &key)
+{
+    static const QRegularExpression rx(QStringLiteral("^\\s*(schmerz|pain)(\\s*\\((nrs|0[-–]10)\\))?\\s*$"),
+                                       QRegularExpression::CaseInsensitiveOption);
+    return rx.match(key).hasMatch();
 }
 
 bool Database::migratePeakFlow(int fromVersion, QString *error)
@@ -937,14 +983,14 @@ bool Database::saveVital(VitalRecord &r, QString *error)
         q.prepare(QStringLiteral(
             "INSERT INTO vitals (patient_id, measured_at, context, is_admission, pulse, systolic,"
             " diastolic, temperature, spo2, glucose, weight, height, bmi, observations, extra, peak_flow,"
-            " stool, stool_info, inr, fluid_in, fluid_out, edema, balance_info, modified_at)"
-            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, datetime('now','localtime'))"));
+            " stool, stool_info, inr, fluid_in, fluid_out, edema, balance_info, pain, modified_at)"
+            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, datetime('now','localtime'))"));
         q.addBindValue(r.patientId);
     } else {
         q.prepare(QStringLiteral(
             "UPDATE vitals SET measured_at=?, context=?, is_admission=?, pulse=?, systolic=?,"
             " diastolic=?, temperature=?, spo2=?, glucose=?, weight=?, height=?, bmi=?,"
-            " observations=?, extra=?, peak_flow=?, stool=?, stool_info=?, inr=?, fluid_in=?, fluid_out=?, edema=?, balance_info=?, modified_at=datetime('now','localtime') WHERE id=?"));
+            " observations=?, extra=?, peak_flow=?, stool=?, stool_info=?, inr=?, fluid_in=?, fluid_out=?, edema=?, balance_info=?, pain=?, modified_at=datetime('now','localtime') WHERE id=?"));
     }
     q.addBindValue(r.measuredAt.toString(kDtFmt));
     q.addBindValue(r.context);
@@ -983,6 +1029,7 @@ bool Database::saveVital(VitalRecord &r, QString *error)
         if (r.edema && *r.edema > 0 && !r.edemaSide.trimmed().isEmpty()) bi.insert(QStringLiteral("side"), r.edemaSide.trimmed());
         q.addBindValue(bi.isEmpty() ? QVariant() : QVariant(jsonStr(bi)));
     }
+    q.addBindValue(r.pain ? QVariant(std::clamp(*r.pain, 0, 10)) : QVariant());
     if (r.id != 0)
         q.addBindValue(r.id);
     if (!q.exec())

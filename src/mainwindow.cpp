@@ -34,6 +34,9 @@
 #include "usbsyncdialog.h"
 #include "glucoseprofiledialog.h"
 #include "glucoseprofile.h"
+#include "edition.h"
+#include "lightimport.h"
+#include "keystore.h"
 #include "websync.h"
 #include "manual.h"
 #include "reportprinter.h"
@@ -42,6 +45,10 @@
 #include "vitaldialog.h"
 
 #include <QAction>
+#include <QDialogButtonBox>
+#include <QLineEdit>
+#include <QFormLayout>
+#include <QTemporaryDir>
 #include <QApplication>
 #include <QCheckBox>
 #include <QCloseEvent>
@@ -79,7 +86,7 @@ enum TabIndex { TabJournal = 0, TabChart = 1, TabDocs = 2, TabAppts = 3 };
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setWindowTitle(appTitle());
-    setWindowIcon(QIcon(QStringLiteral(":/icons/vitaparms.png")));
+    setWindowIcon(QApplication::windowIcon());
     buildUi();
     buildMenus();
 
@@ -110,6 +117,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     else if (m_userCombo->count() > 0) onUserComboChanged(m_userCombo->currentIndex());
 
     statusBar()->showMessage(tr("Datenbank: %1").arg(QDir::toNativeSeparators(db.path())));
+    // VitaParms light: beim ersten Start gleich das Stammblatt anlegen lassen
+    if (Edition::light() && !DemoData::isActive() && db.patients().isEmpty())
+        QTimer::singleShot(600, this, [this] {
+            if (!Database::instance().patients().isEmpty() || !isVisible()) return;
+            QMessageBox::information(this, tr("Stammblatt anlegen"),
+                tr("<p>Willkommen! Bitte legen Sie zuerst Ihr <b>Stammblatt</b> an: Name, Geburtsdatum und – wenn Sie "
+                   "möchten – Adresse, Ärzte, Angehörige, Diagnosen und Medikamente.</p>"
+                   "<p>Sie können alles später unter <i>Person → Stammblatt</i> ergänzen.</p>"));
+            newPatient();
+        });
     m_sessionLabel = new QLabel(this);
     statusBar()->addPermanentWidget(m_sessionLabel);
     updateSessionInfo();
@@ -416,6 +433,11 @@ void MainWindow::buildMenus()
     m_actRestore = file->addAction(tr("Sicherung &wiederherstellen / importieren…"), this, &MainWindow::restoreDatabase);
     m_actExportDb = file->addAction(tr("Datenbank e&xportieren (für ein anderes Gerät)…"), this, &MainWindow::exportDatabase);
     m_actExportDb->setStatusTip(tr("Datenbank und Anmeldekonten als eine Datei (*.vpdb) – z. B. per USB auf das Tablet"));
+    if (!Edition::light()) {
+        m_actImportLight = file->addAction(tr("Datenbank der &Light-Version importieren…"), this, &MainWindow::importLightDatabase);
+        m_actImportLight->setObjectName(QStringLiteral("actImportLight"));
+        m_actImportLight->setStatusTip(tr("Übernimmt die Person aus VitaParms light mit allen Daten als weitere Person in diese Datenbank"));
+    }
     file->addSeparator();
     m_actWebPublish = file->addAction(tr("&Website aktualisieren"), this, [this] {
         QString why;
@@ -458,6 +480,7 @@ void MainWindow::buildMenus()
     QAction *np = users->addAction(QIcon::fromTheme(QStringLiteral("contact-new")), tr("&Neuer Benutzer…"),
                                    this, &MainWindow::newPatient);
     np->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_N));
+    np->setObjectName(QStringLiteral("actNewPatient"));
     m_actEditPatient = users->addAction(QIcon::fromTheme(QStringLiteral("document-properties")),
                                         tr("&Stammblatt…"), this, &MainWindow::editPatient);
     m_actEditPatient->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
@@ -525,6 +548,9 @@ void MainWindow::buildMenus()
     m_actDeleteVital->setShortcut(QKeySequence::Delete);
     vit->addSeparator();
     m_actGlucoseProfile = vit->addAction(tr("&BZ-Tagesprofil…"), this, &MainWindow::startGlucoseProfile);
+    m_actBpProfile = vit->addAction(tr("&RR-Tagesprofil…"), this, &MainWindow::startBpProfile);
+    m_actBpProfile->setObjectName(QStringLiteral("actBpProfile"));
+    m_actBpProfile->setStatusTip(tr("Blutdruck und Puls zu sechs Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster"));
     m_actGlucoseProfile->setObjectName(QStringLiteral("actGlucoseProfile"));
     m_actGlucoseProfile->setStatusTip(tr("Blutzucker zu sieben Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster"));
 
@@ -588,18 +614,24 @@ void MainWindow::buildMenus()
     m_actUserPrint << out->addAction(tr("BZ-&Tagesprofile…"), this, [this] { showProtocol(Protocols::Kind::Glucose); });
     m_actUserPrint.last()->setObjectName(QStringLiteral("actGlucoseProtocol"));
     m_actUserPrint.last()->setStatusTip(tr("Blutzuckerwerte je Tag nach Profilzeitpunkten, aus den erfassten Messungen zusammengestellt"));
+    m_actUserPrint << out->addAction(tr("RR-Tages&profile…"), this, [this] { showProtocol(Protocols::Kind::BloodPressure); });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actBpProtocol"));
+    m_actUserPrint.last()->setStatusTip(tr("Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten je Zeitpunkt"));
+    QAction *stoolProto = m_actUserPrint[m_actUserPrint.size() - 3];
     m_actUserPrint << out->addAction(tr("Ein- und Ausfuhr (&Bilanz)…"), this, [this] { showProtocol(Protocols::Kind::Fluid); });
     m_actUserPrint.last()->setObjectName(QStringLiteral("actFluidProtocol"));
     m_actUserPrint.last()->setStatusTip(tr("Einfuhr und Ausfuhr je Eintrag, Tagessummen und Bilanz"));
+    QAction *fluidProto = m_actUserPrint.last();
     m_actUserPrint << out->addAction(tr("&Wunddokumentation…"), this, [this] { showWounds(); });
     m_actUserPrint.last()->setObjectName(QStringLiteral("actWoundReport"));
     m_actUserPrint.last()->setStatusTip(tr("Wunde wählen und Dokumentation mit Chronik, Fotos und Flächenverlauf drucken, als PDF oder Excel ausgeben"));
+    QAction *woundReport = m_actUserPrint.last();
 
     // ---- Extras
     QMenu *extras = menuBar()->addMenu(tr("E&xtras"));
     extras->addAction(tr("&Einstellungen…"), this, &MainWindow::showSettings)->setShortcut(QKeySequence::Preferences);
     m_actForms = extras->addAction(tr("&Formulare anpassen…"), this, &MainWindow::customizeForms);
-    extras->addAction(tr("&Anmeldekonten…"), this, &MainWindow::manageAccounts);
+    QAction *accounts = extras->addAction(tr("&Anmeldekonten…"), this, &MainWindow::manageAccounts);
     m_actWebSettings = extras->addAction(tr("&Website…"), this, &MainWindow::showWebsiteSettings);
 
     // ---- Hilfe
@@ -621,7 +653,7 @@ void MainWindow::buildMenus()
     }
     help->addSeparator();
     help->addAction(tr("&Haftungshinweis…"), this, &MainWindow::showDisclaimer);
-    help->addAction(tr("Ü&ber VitaParms…"), this, &MainWindow::about);
+    help->addAction(tr("Ü&ber %1…").arg(Edition::appName()), this, &MainWindow::about);
     help->addAction(tr("Über &Qt…"), qApp, &QApplication::aboutQt);
 
     // ---- Schaltflächen unter dem Journal
@@ -643,16 +675,23 @@ void MainWindow::buildMenus()
     QToolBar *tb = addToolBar(tr("Werkzeugleiste"));
     tb->setObjectName(QStringLiteral("mainToolBar"));
     tb->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    tb->addWidget(new QLabel(tr(" Benutzer: "), tb));
     m_userCombo = new QComboBox(tb);
     m_userCombo->setMinimumContentsLength(24);
     m_userCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    connect(m_userCombo, qOverload<int>(&QComboBox::activated), this, &MainWindow::onUserComboChanged);
-    tb->addWidget(m_userCombo);
-    tb->addAction(m_actPrimary[0]);
-    tb->addAction(m_actPrimary[1]);
-    tb->addSeparator();
-    tb->addAction(np);
+    // Jede Änderung der sichtbaren Auswahl (Maus, Tastatur, Mausrad, Programm) übernimmt die Person –
+    // nicht nur „activated“: sonst konnte die Anzeige eine andere Person zeigen als die intern gewählte
+    connect(m_userCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::onUserComboChanged);
+    if (!Edition::light()) {      // VitaParms light: eine Person – keine Auswahl, keine Hauptbenutzer
+        tb->addWidget(new QLabel(tr(" Benutzer: "), tb));
+        tb->addWidget(m_userCombo);
+        tb->addAction(m_actPrimary[0]);
+        tb->addAction(m_actPrimary[1]);
+        tb->addSeparator();
+        tb->addAction(np);
+    } else {
+        m_userCombo->hide();
+        tb->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    }
     tb->addAction(m_actEditPatient);
     tb->addSeparator();
     tb->addAction(m_actNewVital);
@@ -660,6 +699,20 @@ void MainWindow::buildMenus()
     tb->addAction(m_actNewAppt);
     tb->addSeparator();
     tb->addAction(m_actPrint);
+
+    if (Edition::light()) {
+        // VitaParms light: nur eine Person, keine Website, keine Stuhl-/Bilanz-/Wundprotokolle,
+        // keine Formularanpassung, ein Anmeldekonto ohne Rollen
+        users->setTitle(tr("&Person"));
+        for (QAction *a : { np, m_actDeletePatient, m_actPrimary[0], m_actPrimary[1], m_actAssign[0], m_actAssign[1],
+                            m_actNewDb, m_actOpenDb, m_actWebPublish, m_actDbSync, stoolProto, fluidProto, woundReport,
+                            m_actForms, m_actWebSettings, m_actWounds })
+            if (a) a->setVisible(false);
+        m_actManual->setText(tr("&Benutzerhandbuch"));
+        accounts->setText(tr("&Passwort und Wiederherstellungsschlüssel…"));
+        m_actEditPatient->setIcon(QIcon::fromTheme(QStringLiteral("document-properties")));
+        m_actNewVital->setText(tr("&Neue Messung…"));
+    }
 }
 
 // ================================================================= Benutzer
@@ -680,7 +733,10 @@ void MainWindow::reloadPatients()
 
     int idx = m_userCombo->findData(keep);
     if (idx < 0 && m_userCombo->count() > 0) idx = 0;
-    m_userCombo->setCurrentIndex(idx);
+    {
+        const QSignalBlocker block(m_userCombo);     // die Aktualisierung folgt unten
+        m_userCombo->setCurrentIndex(idx);
+    }
     m_patientId = idx >= 0 ? m_userCombo->itemData(idx).toLongLong() : 0;
     updatePrimaryActions();
     updateHeader();
@@ -695,8 +751,8 @@ void MainWindow::selectPatient(qint64 id)
 {
     const int idx = m_userCombo->findData(id);
     if (idx < 0) return;
-    m_userCombo->setCurrentIndex(idx);
-    onUserComboChanged(idx);
+    if (m_userCombo->currentIndex() != idx) m_userCombo->setCurrentIndex(idx);   // ruft onUserComboChanged
+    else if (m_patientId != id) onUserComboChanged(idx);
 }
 
 void MainWindow::onUserComboChanged(int index)
@@ -713,6 +769,15 @@ void MainWindow::onUserComboChanged(int index)
 
 std::optional<Patient> MainWindow::currentPatient() const
 {
+    // Sicherheitsnetz: maßgeblich ist die sichtbare Auswahl in der Werkzeugleiste
+    if (!Edition::light() && m_userCombo && m_userCombo->currentIndex() >= 0) {
+        const qint64 shown = m_userCombo->currentData().toLongLong();
+        if (shown && shown != m_patientId) {
+            qWarning("Personenauswahl: angezeigt %lld, intern %lld – angezeigte Person verwendet",
+                     static_cast<long long>(shown), static_cast<long long>(m_patientId));
+            return Database::instance().patient(shown);
+        }
+    }
     if (!m_patientId) return std::nullopt;
     return Database::instance().patient(m_patientId);
 }
@@ -721,7 +786,10 @@ void MainWindow::updateHeader()
 {
     const auto p = currentPatient();
     if (!p) {
-        m_header->setText(tr("<b>Kein Benutzer ausgewählt.</b> Legen Sie über "
+        m_header->setText(Edition::light()
+                              ? tr("<b>Noch kein Stammblatt.</b> Legen Sie über <i>Person → Stammblatt</i> Ihre "
+                                   "persönlichen Daten an.")
+                              : tr("<b>Kein Benutzer ausgewählt.</b> Legen Sie über "
                              "<i>Benutzer → Neuer Benutzer</i> ein Stammblatt an."));
         setWindowTitle(appTitle());
         return;
@@ -756,7 +824,7 @@ void MainWindow::updateHeader()
         if (CareInfo::advanceExpiresSoon(*p)) c = QStringLiteral("<span style=\"color:#B35C00;\">%1</span>").arg(c);
         care << c;
     }
-    if (!care.isEmpty())
+    if (!care.isEmpty() && !Edition::light())
         t += QStringLiteral("<br><small>%1</small>").arg(care.join(QStringLiteral(" &nbsp;·&nbsp; ")));
     QStringList emergency;
     for (const Medication &m : Database::instance().medications(p->id, false))
@@ -784,7 +852,8 @@ void MainWindow::updateHeader()
                      .arg(tr("Bestand:"), s.join(QStringLiteral(" · ")).toHtmlEscaped());
     }
     // Stuhlgang: seit mindestens drei Tagen nichts eingetragen (nur wenn Stuhlgang erfasst wird)
-    {
+    // (VitaParms light erfasst weder INR, Ein-/Ausfuhr, Stuhlgang noch Wunden)
+    if (!Edition::light()) {
         const QList<VitalRecord> recent = Database::instance().vitals(p->id, QDateTime(QDate::currentDate().addDays(-40), QTime(0, 0)), {});
         QStringList care;
         // INR: letzter Wert (höchstens 14 Tage alt) außerhalb des Zielbereichs
@@ -814,7 +883,7 @@ void MainWindow::updateHeader()
         }
     }
     // Wunden: Beurteilung fällig, Infektionszeichen, Verschlechterung, Verbandwechsel fällig
-    {
+    if (!Edition::light()) {
         QStringList w;
         for (const Wounds::Notice &n : Wounds::patientNotices(p->id))
             w << QStringLiteral("<span style=\"color:%1;\">%2</span>")
@@ -859,6 +928,8 @@ void MainWindow::assignPrimary(int slot)
 
 void MainWindow::newPatient()
 {
+    // VitaParms light verwaltet genau eine Person
+    if (Edition::light() && !Database::instance().patients().isEmpty()) { editPatient(); return; }
     PatientDialog d(Patient{}, this);
     if (d.exec() == QDialog::Accepted) {
         const qint64 id = d.patient().id;
@@ -933,7 +1004,16 @@ void MainWindow::startGlucoseProfile()
     if (!p) return;
     GlucoseProfileDialog d(*p, this);
     if (d.exec() == QDialog::Accepted)
-        statusBar()->showMessage(tr("BZ-Tagesprofil: %1 Erinnerung(en) gestellt.").arg(d.created()), 10000);
+        statusBar()->showMessage(tr("BZ-Tagesprofil für %1: %2 Erinnerung(en) gestellt.").arg(p->displayName()).arg(d.created()), 10000);
+}
+
+void MainWindow::startBpProfile()
+{
+    const auto p = currentPatient();
+    if (!p) return;
+    GlucoseProfileDialog d(*p, this, GlucoseProfile::Kind::BloodPressure);
+    if (d.exec() == QDialog::Accepted)
+        statusBar()->showMessage(tr("RR-Tagesprofil für %1: %2 Erinnerung(en) gestellt.").arg(p->displayName()).arg(d.created()), 10000);
 }
 
 // Erinnerung eines BZ-Tagesprofils: Erfassungsfenster mit Betreff, Uhrzeit und Messzeitpunkt öffnen
@@ -951,11 +1031,11 @@ void MainWindow::measureForAppointment(qint64 apptId)
     r.patientId = p->id;
     r.measuredAt = QDateTime::currentDateTime();
     r.context = GlucoseProfile::contextOf(*a);
-    const QString subject = QStringLiteral("%1 %2").arg(GlucoseProfile::subject(), a->start.time().toString(QStringLiteral("HH:mm")));
+    const QString subject = GlucoseProfile::subjectOf(*a);
     r.observations = subject;
     VitalDialog d(*p, r, VitalDialog::Mode::Journal, this);
     d.setWindowTitle(subject + QStringLiteral(" – ") + GlucoseProfile::labelOf(*a) + QStringLiteral(" – ") + p->displayName());
-    if (QWidget *g = d.findChild<QWidget *>(QStringLiteral("glucoseSpin"))) g->setFocus();
+    if (QWidget *g = d.findChild<QWidget *>(GlucoseProfile::focusField(GlucoseProfile::kindOf(*a)))) g->setFocus();
     d.exec();
     if (d.savedCount() > 0) Database::instance().setAppointmentDone(apptId, true);
 }
@@ -1153,12 +1233,14 @@ void MainWindow::updateActions()
     const bool hasSel = selectedVitalId() != 0;
     if (m_actEditPatient) {
         const bool admin = Session::isAdmin();
-        for (QAction *a : { m_actNewDb, m_actOpenDb, m_actBackup, m_actRestore, m_actExportDb, m_actForms, m_actWebSettings })
-            if (a) a->setVisible(admin);
+        for (QAction *a : { m_actNewDb, m_actOpenDb, m_actBackup, m_actRestore, m_actExportDb, m_actImportLight, m_actForms, m_actWebSettings })
+            if (a) a->setVisible(admin && !(Edition::light() && (a == m_actNewDb || a == m_actOpenDb || a == m_actForms
+                                                                || a == m_actWebSettings)));
         m_actEditPatient->setEnabled(hasPatient);
         m_actDeletePatient->setEnabled(hasPatient && admin);
         m_actNewVital->setEnabled(hasPatient);
         if (m_actGlucoseProfile) m_actGlucoseProfile->setEnabled(hasPatient);
+        if (m_actBpProfile) m_actBpProfile->setEnabled(hasPatient);
         m_actEditVital->setEnabled(hasPatient && hasSel && m_tabs->currentIndex() == TabJournal);
         m_actDeleteVital->setEnabled(hasPatient && hasSel && m_tabs->currentIndex() == TabJournal);
         for (QAction *a : { m_actPrint, m_actPreview, m_actPdf, m_actExcel, m_actSheet, m_actMedPlan, m_actPharmacy })
@@ -1374,7 +1456,8 @@ void MainWindow::updateSessionInfo()
 {
     if (!m_sessionLabel) return;
     m_sessionLabel->setText(Session::isLoggedIn()
-        ? tr("🔒 %1 (%2)").arg(Session::user(), roleName(Session::role()))
+        ? (Edition::light() ? QStringLiteral("🔒 %1").arg(Session::user())
+                            : tr("🔒 %1 (%2)").arg(Session::user(), roleName(Session::role())))
         : QString());
     m_sessionLabel->setToolTip(tr("Angemeldet als %1 – Datenbank verschlüsselt").arg(Session::user()));
 }
@@ -1528,6 +1611,107 @@ void MainWindow::showUsbSync(bool autoMerge)
     QFile::remove(bundle);
 }
 
+// Datei → Datenbank der Light-Version importieren: Person(en) aus VitaParms light mit allen Daten übernehmen
+void MainWindow::importLightDatabase()
+{
+    const QString title = tr("Datenbank der Light-Version importieren");
+    const QString start = QFile::exists(LightImport::lightDatabasePath()) ? LightImport::lightDatabasePath()
+                                                                          : LightImport::lightDataDir();
+    QString src = QFileDialog::getOpenFileName(this, title, start,
+                                               tr("Datenbank von VitaParms light (*.sqlite *.vpdb);;Alle Dateien (*)"));
+    if (src.isEmpty()) return;
+    QString err;
+    QTemporaryDir tmp;
+    if (DbTransfer::isBundle(src)) {          // Übertragungsdatei: Datenbank und Schlüsseldatei auspacken
+        QString safety;
+        bool hasKeys = false;
+        const QString target = tmp.filePath(QStringLiteral("light.sqlite"));
+        if (!tmp.isValid() || !DbTransfer::importDatabase(src, {}, target, &safety, &hasKeys, &err)) {
+            QMessageBox::critical(this, title, tr("Die Datei lässt sich nicht lesen:\n%1").arg(err));
+            return;
+        }
+        src = target;
+    }
+    if (QFileInfo(src).canonicalFilePath() == QFileInfo(Database::instance().path()).canonicalFilePath()) {
+        QMessageBox::information(this, title, tr("Das ist die geöffnete Datenbank selbst."));
+        return;
+    }
+
+    // Light-Datenbank entsperren: mit ihrem Anmeldekonto oder dem Wiederherstellungsschlüssel
+    QByteArray key;
+    KeyStore ks;
+    const QString keysPath = KeyStore::pathFor(src);
+    if (QFile::exists(keysPath) && ks.load(keysPath, &err) && !ks.accounts().isEmpty()) {
+        QDialog d(this);
+        d.setObjectName(QStringLiteral("lightLoginDialog"));
+        d.setWindowTitle(title);
+        auto *lay = new QVBoxLayout(&d);
+        auto *intro = new QLabel(tr("Melden Sie sich mit dem Konto von <b>VitaParms light</b> an, um die Datenbank<br>%1<br>zu entsperren.")
+                                     .arg(QDir::toNativeSeparators(src).toHtmlEscaped()), &d);
+        intro->setWordWrap(true);
+        lay->addWidget(intro);
+        auto *form = new QFormLayout;
+        auto *name = new QLineEdit(&d);
+        name->setObjectName(QStringLiteral("lightName"));
+        if (ks.accounts().size() == 1) name->setText(ks.accounts().first().name);
+        auto *pw = new QLineEdit(&d);
+        pw->setObjectName(QStringLiteral("lightPassword"));
+        pw->setEchoMode(QLineEdit::Password);
+        form->addRow(tr("&Name:"), name);
+        form->addRow(tr("&Passwort:"), pw);
+        lay->addLayout(form);
+        auto *msg = new QLabel(&d);
+        msg->setStyleSheet(QStringLiteral("color: #B35C00;"));
+        lay->addWidget(msg);
+        auto *bb = new QDialogButtonBox(&d);
+        bb->addButton(tr("&Entsperren"), QDialogButtonBox::AcceptRole)->setDefault(true);
+        auto *rec = bb->addButton(tr("&Wiederherstellungsschlüssel…"), QDialogButtonBox::ActionRole);
+        bb->addButton(QDialogButtonBox::Cancel);
+        lay->addWidget(bb);
+        bool useRecovery = false;
+        connect(rec, &QPushButton::clicked, &d, [&] { useRecovery = true; d.reject(); });
+        connect(bb, &QDialogButtonBox::rejected, &d, &QDialog::reject);
+        connect(bb, &QDialogButtonBox::accepted, &d, [&] {
+            Role role = Role::User;
+            if (ks.unlock(name->text(), pw->text(), &key, &role)) { d.accept(); return; }
+            pw->clear();
+            msg->setText(tr("Konto oder Passwort ist falsch."));
+            pw->setFocus();
+        });
+        (name->text().isEmpty() ? name : pw)->setFocus();
+        if (d.exec() != QDialog::Accepted) {
+            if (!useRecovery) return;
+            key = askRecoveryKey(this, tr("Datenbank von VitaParms light entsperren"));
+        }
+    } else {
+        key = askRecoveryKey(this, tr("Zur Datenbank\n%1\nfehlt die Schlüsseldatei (%2). Sie lässt sich nur mit dem "
+                                      "Wiederherstellungsschlüssel von VitaParms light öffnen.")
+                                       .arg(QDir::toNativeSeparators(src), QFileInfo(keysPath).fileName()));
+    }
+    if (key.isEmpty()) return;
+
+    if (QMessageBox::question(this, title,
+            tr("<p>Die Person aus VitaParms light wird mit Stammblatt, Messungen, Medikamenten, Terminen, Kontakten und "
+               "Dokumenten als <b>weitere Person</b> in diese Datenbank übernommen. Vorhandene Personen bleiben unverändert.</p>"
+               "<p>Vorher legt VitaParms eine Sicherung dieser Datenbank an. Jetzt importieren?</p>")) != QMessageBox::Yes)
+        return;
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    LightImport::Result res;
+    const bool ok = LightImport::importFrom(src, key, &res, &err);
+    QApplication::restoreOverrideCursor();
+    if (!ok) {
+        QMessageBox::critical(this, title, err);
+        return;
+    }
+    reloadPatients();
+    if (!res.personIds.isEmpty()) selectPatient(res.personIds.first());
+    QString text = res.persons.isEmpty()
+        ? tr("Die Daten waren schon übernommen – %1 Eintrag/Einträge aktualisiert, %2 neu.").arg(res.updated).arg(res.inserted)
+        : tr("Übernommen: %1 (%2 Einträge).").arg(res.persons.join(QStringLiteral(", "))).arg(res.inserted + res.updated);
+    text += QStringLiteral("\n\n") + tr("Sicherung vor dem Import: %1").arg(QDir::toNativeSeparators(res.backup));
+    QMessageBox::information(this, title, text);
+}
+
 void MainWindow::exportDatabase()
 {
     if (!Session::isAdmin()) return;
@@ -1577,18 +1761,18 @@ void MainWindow::customizeForms()
 void MainWindow::showDisclaimer()
 {
     QMessageBox::information(this, tr("Haftungshinweis"),
-        tr("<p><b>VitaParms ist ein persönliches Tagebuch für gesundheitsbezogene Messwerte – "
+        tr("<p><b>%1 ist ein persönliches Tagebuch für gesundheitsbezogene Messwerte – "
            "kein Medizinprodukt.</b></p>"
            "<p>Das Programm stellt keine Diagnosen, gibt keine Therapieempfehlungen und ersetzt "
            "keine ärztliche Beratung. Berechnete Werte (z.&nbsp;B. BMI) und Grafiken dienen nur "
            "der Übersicht. Die Verwendung erfolgt auf eigene Gefahr.</p>"
            "<p>Bei Beschwerden oder auffälligen Werten wenden Sie sich bitte an Ihre Ärztin "
-           "oder Ihren Arzt, im Notfall an den Notruf 112.</p>"));
+           "oder Ihren Arzt, im Notfall an den Notruf 112.</p>").arg(Edition::appName()));
 }
 
 QString MainWindow::appTitle()
 {
-    return DemoData::isActive() ? tr("VitaParms – Demo") : QStringLiteral("VitaParms");
+    return DemoData::isActive() ? tr("%1 – Demo").arg(Edition::appName()) : Edition::appName();
 }
 
 void MainWindow::startDemo()
@@ -1617,14 +1801,14 @@ void MainWindow::startDemo()
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("Über VitaParms"),
-        tr("<h3>VitaParms %1</h3>"
+    QMessageBox::about(this, tr("Über %1").arg(Edition::appName()),
+        tr("<h3>%3 %1</h3>"
            "<p>Tagebuch für Vitalwerte mit Verlauf, Grafiken, Druck, PDF- und Excel-Export.</p>"
            "<p>Copyright © 2026 Michael Bergmann<br>"
            "Freie Software unter der <b>MIT-Lizenz</b>.</p>"
            "<p>Erstellt mit Qt %2 (LGPLv3).</p>"
            "<p><small>Kein Medizinprodukt – Verwendung auf eigene Gefahr.</small></p>")
-            .arg(QStringLiteral(VITAPARMS_VERSION), QString::fromLatin1(qVersion())));
+            .arg(QStringLiteral(VITAPARMS_VERSION), QString::fromLatin1(qVersion()), Edition::appName()));
 }
 
 void MainWindow::showWebsiteSettings()

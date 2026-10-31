@@ -141,7 +141,11 @@ Flickable {
                 Label { text: page.selected.length ? qsTr("%1 Bericht(e) ausgewählt").arg(page.selected.length)
                                                     : qsTr("Mehrere Berichte zusammen teilen: oben „PDF“ bzw. „Excel“ antippen.")
                         font.bold: page.selected.length > 0; color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                CheckBox { id: zipCheck; objectName: "reportsZip"; text: qsTr("als ZIP-Archiv mit Passwort (AES-256)"); font.pixelSize: Theme.fsM }
+                VCheck { id: zipCheck; objectName: "reportsZip"; text: qsTr("als ZIP-Archiv mit Passwort (AES-256)"); font.pixelSize: Theme.fsM
+                           Layout.fillWidth: true
+                           // Text umbrechen (Smartphone)
+                           contentItem: Label { text: zipCheck.text; font: zipCheck.font; color: Theme.ink; wrapMode: Text.WordWrap
+                                                verticalAlignment: Text.AlignVCenter; leftPadding: zipCheck.indicator.width + zipCheck.spacing } }
                 VField { id: password; objectName: "reportsPassword"; visible: zipCheck.checked; label: qsTr("Passwort (mindestens 8 Zeichen)")
                          echoMode: TextInput.Password; Layout.fillWidth: true; Layout.maximumWidth: 480 }
                 Label { visible: zipCheck.checked; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2; font.pixelSize: Theme.fsS

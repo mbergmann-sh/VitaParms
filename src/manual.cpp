@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "manual.h"
 #include "i18n.h"
+#include "edition.h"
 
 #include <QCoreApplication>
 #include <QDesktopServices>
@@ -15,6 +16,12 @@ namespace Manual {
 QString fileName(const QString &lang, Format format, Doc doc)
 {
     const bool de = lang == QLatin1String("de");
+    if (Edition::light()) {       // VitaParms light: eigene, einfache Handbücher
+        const QString base = doc == Doc::GettingStarted
+            ? (de ? QStringLiteral("VitaParms-light-ErsteSchritte") : QStringLiteral("VitaParms-light-GettingStarted"))
+            : (de ? QStringLiteral("VitaParms-light-Benutzerhandbuch") : QStringLiteral("VitaParms-light-UserGuide"));
+        return base + (format == Format::Chm ? QStringLiteral(".chm") : QStringLiteral(".pdf"));
+    }
     const QString base = doc == Doc::GettingStarted
         ? (de ? QStringLiteral("VitaParms-ErsteSchritte") : QStringLiteral("VitaParms-GettingStarted"))
         : (de ? QStringLiteral("VitaParms-Handbuch") : QStringLiteral("VitaParms-Manual"));
@@ -23,8 +30,9 @@ QString fileName(const QString &lang, Format format, Doc doc)
 
 QString title(Doc doc)
 {
-    return doc == Doc::GettingStarted ? QCoreApplication::translate("Manual", "Erste Schritte")
-                                      : QCoreApplication::translate("Manual", "Handbuch");
+    if (doc == Doc::GettingStarted) return QCoreApplication::translate("Manual", "Erste Schritte");
+    return Edition::light() ? QCoreApplication::translate("Manual", "Benutzerhandbuch")
+                            : QCoreApplication::translate("Manual", "Handbuch");
 }
 
 QStringList searchDirs()
@@ -35,6 +43,7 @@ QStringList searchDirs()
         app.filePath(QStringLiteral("../docs")),                  // Build-Unterordner release/debug
         app.filePath(QStringLiteral("../Resources/docs")),        // macOS-Bundle
         app.filePath(QStringLiteral("../share/vitaparms/docs")),  // Linux: /usr/local/bin → share
+        app.filePath(QStringLiteral("../share/vitaparms-light/docs")),
     };
     for (QString &d : dirs) d = QDir::cleanPath(d);
     dirs.removeDuplicates();

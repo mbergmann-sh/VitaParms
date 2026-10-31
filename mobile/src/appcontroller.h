@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
+#include "edition.h"
+
 #include <QHash>
 #include <QImage>
 #include <QList>
@@ -17,6 +19,8 @@ class AppController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString version READ version CONSTANT)
+    Q_PROPERTY(bool light READ light CONSTANT)                 // VitaParms light (eine Person, vereinfacht)
+    Q_PROPERTY(QString appName READ appName CONSTANT)          // "VitaParms" bzw. "VitaParms light"
     Q_PROPERTY(bool hasDatabase READ hasDatabase NOTIFY sessionChanged)
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY sessionChanged)
     Q_PROPERTY(bool isAdmin READ isAdmin NOTIFY sessionChanged)
@@ -42,6 +46,8 @@ class AppController : public QObject
 public:
     explicit AppController(QObject *parent = nullptr);
 
+    bool light() const { return Edition::light(); }
+    QString appName() const { return Edition::appName(); }
     QString version() const;
     bool hasDatabase() const;
     bool loggedIn() const;
@@ -147,10 +153,11 @@ public:
     Q_INVOKABLE int plannedReminders() const;
 
     // ---- BZ-Tagesprofil und Quartalswechsel (gleiche Logik wie am Computer)
-    Q_INVOKABLE QVariantList glucoseProfilePoints() const;
-    Q_INVOKABLE int startGlucoseProfile(qint64 pid, const QString &isoDay, const QVariantList &points, bool sound);
-    Q_INVOKABLE int stopGlucoseProfile(qint64 pid, const QString &isoDay);
-    Q_INVOKABLE int glucoseProfileOpen(qint64 pid, const QString &isoDay);
+    // Tagesprofile: bp = false → BZ-Tagesprofil, true → RR-Tagesprofil
+    Q_INVOKABLE QVariantList glucoseProfilePoints(bool bp = false) const;
+    Q_INVOKABLE int startGlucoseProfile(qint64 pid, const QString &isoDay, const QVariantList &points, bool sound, bool bp = false);
+    Q_INVOKABLE int stopGlucoseProfile(qint64 pid, const QString &isoDay, bool bp = false);
+    Q_INVOKABLE int glucoseProfileOpen(qint64 pid, const QString &isoDay, bool bp = false);
     Q_INVOKABLE QVariantMap dueProfileMeasurement();   // offener Profil-Termin (jetzt fällig) oder leer
     Q_INVOKABLE QVariantMap quarterDue();               // Erinnerung jetzt zeigen? (title, message) oder leer
     Q_INVOKABLE QVariantMap quarterBanner();            // Hinweis im Terminplaner (bis bestätigt)

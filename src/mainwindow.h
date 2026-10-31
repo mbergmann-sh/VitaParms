@@ -85,6 +85,7 @@ private slots:
     void medicationAssistant();
     void medicationStock();
     void showWounds(qint64 woundId = 0);
+    void importLightDatabase();
     void exportDatabase();
 
     // Datei / Extras
@@ -95,6 +96,7 @@ private slots:
     void replaceDatabaseFrom(const QString &src);   // ersetzen und neu anmelden
     void showUsbSync(bool autoMerge = false);
     void startGlucoseProfile();
+    void startBpProfile();
     void measureForAppointment(qint64 apptId);
     void showSettings();
     void customizeForms();
@@ -155,6 +157,8 @@ private:
     QAction *m_actEditPatient = nullptr, *m_actDeletePatient = nullptr;
     QAction *m_actNewVital = nullptr, *m_actEditVital = nullptr, *m_actDeleteVital = nullptr;
     QAction *m_actGlucoseProfile = nullptr;
+    QAction *m_actBpProfile = nullptr;
+    QAction *m_actImportLight = nullptr;
     QAction *m_actPrimary[2] = { nullptr, nullptr };
     QAction *m_actAssign[2] = { nullptr, nullptr };
     QAction *m_actPrint = nullptr, *m_actPreview = nullptr, *m_actPdf = nullptr, *m_actExcel = nullptr;

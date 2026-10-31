@@ -34,8 +34,10 @@ Page {
             VButton { objectName: "stockCloseButton"; text: qsTr("Schließen"); kind: "flat"; onClicked: page.closed("") }
             ColumnLayout {
                 Layout.fillWidth: true; spacing: 0
-                Label { text: qsTr("Medikamentenbestand"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.alignment: Qt.AlignHCenter }
-                Label { text: page.summary.name || ""; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignHCenter }
+                Label { text: qsTr("Medikamentenbestand"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+                Label { text: page.summary.name || ""; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             }
             VChip { objectName: "stockTab"; checkable: false; text: qsTr("Bestand"); checked: page.tab === 0; onClicked: page.tab = 0 }
             VChip { objectName: "ordersTab"; checkable: false; text: qsTr("Bestellungen") + ((page.d.anyOpen) ? " ⚠" : ""); checked: page.tab === 1; onClicked: page.tab = 1 }
@@ -265,7 +267,7 @@ Page {
             Label { text: qtyPopup.name; color: Theme.ink2; Layout.fillWidth: true; wrapMode: Text.WordWrap }
             VField { id: qtyField; objectName: "qtyField"; label: qtyPopup.mode === "correct" ? qsTr("Gezählte Menge (Stück)") : qtyPopup.mode === "deliver" ? qsTr("Gelieferte Menge (Stück)") : qsTr("Menge (Stück)")
                      inputMethodHints: Qt.ImhFormattedNumbersOnly; Layout.fillWidth: true }
-            CheckBox { id: hasExpiry; text: qsTr("Verfällt am"); font.pixelSize: Theme.fsM }
+            VCheck { id: hasExpiry; text: qsTr("Verfällt am"); font.pixelSize: Theme.fsM }
             DateField { id: expiryField; enabled: hasExpiry.checked; allowEmpty: false; Layout.fillWidth: true }
             Label { visible: hasExpiry.checked && expiryField.isoDate !== "" && expiryField.isoDate < page.inYears(0)
                     text: qsTr("Das Verfallsdatum liegt in der Vergangenheit – die Packung zählt nicht zum Bestand.")

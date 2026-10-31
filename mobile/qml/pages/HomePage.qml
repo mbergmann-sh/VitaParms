@@ -75,7 +75,7 @@ Page {
 
         // ---------------- Personen
         Rectangle {
-            visible: win.wide
+            visible: win.wide && !app.light          // VitaParms light: eine Person, keine Liste
             Layout.preferredWidth: Theme.railWidth
             Layout.fillHeight: true
             color: Theme.surface
@@ -135,16 +135,19 @@ Page {
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 12
                     spacing: 8
-                    Image { visible: !win.wide; source: "qrc:/icons/vitaparms.png"; sourceSize.width: 32; sourceSize.height: 32 }
+                    Image { visible: !win.wide || app.light; source: app.light ? "qrc:/icons/vitaparms-light.png" : "qrc:/icons/vitaparms.png"
+                            sourceSize.width: 32; sourceSize.height: 32 }
+                    Label { visible: app.light; text: app.appName; font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink
+                            Layout.fillWidth: true; elide: Text.ElideRight }
                     VCombo {
-                        visible: !win.wide
+                        visible: !win.wide && !app.light
                         Layout.fillWidth: true
                         model: home.persons
                         textRole: "name"
                         currentIndex: home.persons.findIndex(p => p.id === home.personId)
                         onActivated: (i) => home.select(home.persons[i].id)
                     }
-                    Item { Layout.fillWidth: win.wide }
+                    Item { Layout.fillWidth: win.wide && !app.light }
                     // Demo: deutlich kennzeichnen, Beenden mit einem Tipp
                     Badge { visible: app.demo; text: qsTr("Demo – erfundene Daten"); warn: true }
                     VButton { objectName: "stopDemoButton"; visible: app.demo; text: qsTr("Demo beenden"); kind: "flat"
@@ -164,10 +167,32 @@ Page {
                                     color: Theme.ink2; font.pixelSize: Theme.fsS; anchors.verticalCenter: parent.verticalCenter }
                         }
                     }
-                    VButton { text: qsTr("Einstellungen"); kind: "flat"; onClicked: home.openSettings() }
-                    VButton { objectName: "lockButton"; text: qsTr("Sperren"); kind: "flat"
+                    // Schmale Bildschirme (Smartphone) und VitaParms light: ein Menü statt drei Knöpfen
+                    readonly property bool menuOnly: app.light || home.width < 700
+                    VButton { visible: !parent.menuOnly; text: qsTr("Einstellungen"); kind: "flat"; onClicked: home.openSettings() }
+                    VButton { objectName: "lockButton"; visible: !parent.menuOnly; text: qsTr("Sperren"); kind: "flat"
                               onClicked: win.askUsbThen(function() { app.lock(); win.goStart() }, qsTr("Ohne Abgleich sperren")) }
-                    VButton { objectName: "quitButton"; text: qsTr("Beenden"); kind: "flat"; onClicked: win.quitApp() }
+                    VButton { objectName: "quitButton"; visible: !parent.menuOnly; text: qsTr("Beenden"); kind: "flat"; onClicked: win.quitApp() }
+                    VButton {
+                        id: menuBtn
+                        objectName: "menuButton"
+                        visible: parent.menuOnly
+                        text: "☰"; kind: "flat"; Layout.preferredWidth: Theme.touch + 8
+                        Accessible.name: qsTr("Menü")
+                        onClicked: mainMenu.popup(menuBtn, menuBtn.width - Math.min(360, home.width - 24), menuBtn.height)
+                        Menu {
+                            id: mainMenu
+                            width: Math.min(360, home.width - 24)
+                            MenuItem { text: qsTr("Mit dem Computer abgleichen (USB)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: win.openUsbSync() }
+                            MenuItem { text: qsTr("Einstellungen"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: home.openSettings() }
+                            MenuItem { text: qsTr("Erste Schritte"); font.pixelSize: Theme.fsM; height: Theme.touch
+                                       onTriggered: if (!app.openGettingStarted()) win.toast(app.lastError, true) }
+                            MenuSeparator {}
+                            MenuItem { objectName: "lockMenuItem"; text: qsTr("Sperren"); font.pixelSize: Theme.fsM; height: Theme.touch
+                                       onTriggered: win.askUsbThen(function() { app.lock(); win.goStart() }, qsTr("Ohne Abgleich sperren")) }
+                            MenuItem { text: qsTr("Beenden"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: win.quitApp() }
+                        }
+                    }
                 }
             }
 
@@ -177,9 +202,12 @@ Page {
                 Layout.fillWidth: true; Layout.fillHeight: true
                 Layout.margins: 40
                 spacing: Theme.gap
-                Label { text: qsTr("Noch keine Person angelegt"); font.pixelSize: Theme.fsXl; font.bold: true; color: Theme.ink }
-                Label { text: qsTr("Legen Sie ein Stammblatt an, um Messwerte zu erfassen."); color: Theme.ink2 }
-                VButton { text: qsTr("Neue Person anlegen"); kind: "primary"; onClicked: home.editPerson(true) }
+                Label { text: app.light ? qsTr("Willkommen!") : qsTr("Noch keine Person angelegt"); font.pixelSize: Theme.fsXl; font.bold: true; color: Theme.ink
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                Label { text: app.light ? qsTr("Legen Sie zuerst Ihr Stammblatt an: Name, Geburtsdatum und – wenn Sie möchten – Ärzte, Angehörige, Diagnosen und Medikamente.")
+                                        : qsTr("Legen Sie ein Stammblatt an, um Messwerte zu erfassen."); color: Theme.ink2
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                VButton { objectName: "createPersonButton"; text: app.light ? qsTr("Stammblatt anlegen") : qsTr("Neue Person anlegen"); kind: "primary"; onClicked: home.editPerson(true) }
                 Item { Layout.fillHeight: true }
             }
 
@@ -191,8 +219,13 @@ Page {
                 Layout.fillWidth: true
                 Layout.leftMargin: Theme.gapL; Layout.rightMargin: Theme.gapL; Layout.topMargin: Theme.gap
                 spacing: 8
-                RowLayout {
-                    spacing: Theme.gap
+                GridLayout {
+                    // Smartphone: Name und Knopf untereinander
+                    columns: home.width < 600 ? 1 : 2
+                    columnSpacing: Theme.gap; rowSpacing: 8
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    Layout.preferredWidth: 0
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 2
@@ -200,14 +233,15 @@ Page {
                                 elide: Text.ElideRight; Layout.fillWidth: true }
                         Label {
                             visible: !personHead.compact
+                            Layout.fillWidth: true; wrapMode: Text.WordWrap
                             color: Theme.ink2
                             text: [home.summary.birthText ? qsTr("geb. %1").arg(home.summary.birthText) : "",
                                    home.summary.age >= 0 ? qsTr("%1 Jahre").arg(home.summary.age) : "",
                                    home.summary.sexText || ""].filter(s => s).join(", ")
                         }
                     }
-                    VButton { text: qsTr("Messung erfassen"); iconText: "+"; kind: "primary"; onClicked: home.measure(0)
-                              Layout.preferredHeight: Theme.touch + 4 }
+                    VButton { objectName: "measureButton"; text: qsTr("Messung erfassen"); iconText: "+"; kind: "primary"; onClicked: home.measure(0)
+                              Layout.preferredHeight: Theme.touch + 4; Layout.fillWidth: home.width < 600 }
                 }
                 // Pflegegrad und Ausweis
                 Flow {
@@ -232,33 +266,36 @@ Page {
                 }
             }
 
-            // Reiter
+            // Reiter: brechen bei wenig Platz in eine zweite Zeile um – alle bleiben sichtbar
             Item {
+                id: tabStrip
                 visible: home.persons.length > 0
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 Layout.leftMargin: Theme.gapL; Layout.rightMargin: Theme.gapL; Layout.topMargin: 6
-                implicitHeight: 52
+                implicitHeight: tabRow.implicitHeight
                 Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.rule }
-                Flickable {
-                    anchors.fill: parent
-                    contentWidth: tabRow.implicitWidth
-                    flickableDirection: Flickable.HorizontalFlick
-                    clip: true
-                    Row {
-                        id: tabRow
-                        height: parent.height
-                        Repeater {
-                            model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Wunden"), qsTr("Krankenakte"), qsTr("Berichte")]
-                            delegate: AbstractButton {
-                                height: tabRow.height
-                                width: tl.implicitWidth + 36
-                                onClicked: home.tab = index
-                                contentItem: Label { id: tl; text: modelData; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
-                                                     font.bold: home.tab === index; color: home.tab === index ? Theme.ink : Theme.ink2 }
-                                background: Rectangle {
-                                    color: parent.down ? Theme.brandWash : "transparent"
-                                    Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 3; color: Theme.brand; visible: home.tab === index }
-                                }
+                Flow {
+                    id: tabRow
+                    objectName: "tabRow"
+                    width: parent.width
+                    Repeater {
+                        model: [qsTr("Übersicht"), qsTr("Messwerte"), qsTr("Verlaufskurven"), qsTr("Stammblatt"), qsTr("Medikamente"), qsTr("Termine"), qsTr("Wunden"), qsTr("Krankenakte"), qsTr("Berichte")]
+                        delegate: AbstractButton {
+                            // VitaParms light: keine Wunddokumentation
+                            readonly property bool hidden: app.light && index === 6
+                            visible: !hidden
+                            height: 48
+                            // Breite fest nach der fetten Schrift: der gewählte Reiter verschiebt den Umbruch nicht
+                            width: hidden ? 0 : Math.min(Math.ceil(tm.advanceWidth) + (win.wide ? 36 : 24), tabStrip.width)
+                            TextMetrics { id: tm; font.family: tl.font.family; font.pixelSize: tl.font.pixelSize; font.bold: true; text: modelData }
+                            onClicked: home.tab = index
+                            contentItem: Label { id: tl; text: modelData; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+                                                 elide: Text.ElideRight
+                                                 font.bold: home.tab === index; color: home.tab === index ? Theme.ink : Theme.ink2 }
+                            background: Rectangle {
+                                color: parent.down ? Theme.brandWash : "transparent"
+                                Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 3; color: Theme.brand; visible: home.tab === index }
                             }
                         }
                     }
@@ -269,10 +306,14 @@ Page {
                 visible: home.persons.length > 0
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                // nie breiter als der Bildschirm (Smartphone): die Mindestbreiten der Seiten nicht übernehmen
+                Layout.minimumWidth: 0
+                Layout.preferredWidth: 0
                 currentIndex: home.tab
                 OverviewPage { personId: home.personId; active: home.tab === 0; onOpenChart: home.tab = 2; onOpenMeds: home.tab = 4; onOpenAppointments: home.tab = 5; onOpenWounds: home.tab = 6 }
                 JournalPage { personId: home.personId; active: home.tab === 1; onEdit: (id) => home.measure(id)
-                              onGlucoseProfile: stackView.push(glucoseComp, { personId: home.personId }) }
+                              onGlucoseProfile: stackView.push(glucoseComp, { personId: home.personId })
+                              onBpProfile: stackView.push(glucoseComp, { personId: home.personId, bp: true }) }
                 ChartPage { personId: home.personId; active: home.tab === 2 }
                 PersonPage { personId: home.personId; active: home.tab === 3; onEditRequested: home.editPerson(false) }
                 MedsPage { personId: home.personId; active: home.tab === 4

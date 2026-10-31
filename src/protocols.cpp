@@ -24,6 +24,7 @@ QString title(Kind k)
     case Kind::Stool: return tr("Stuhlprotokoll");
     case Kind::Glucose: return tr("BZ-Tagesprofile");
     case Kind::Fluid: return tr("Ein- und Ausfuhr (Bilanz)");
+    case Kind::BloodPressure: return tr("RR-Tagesprofile");
     }
     return {};
 }
@@ -243,6 +244,124 @@ Table glucoseProfiles(const QList<VitalRecord> &records, const Options &o)
     return t;
 }
 
+// ------------------------------------------------------------------ RR-Tagesprofile
+
+Table bpProfiles(const QList<VitalRecord> &records, const Options &o)
+{
+    const QLocale loc;
+    const QList<GlucoseProfile::Point> pts = GlucoseProfile::points(GlucoseProfile::Kind::BloodPressure);
+    Table t;
+    t.title = title(Protocols::Kind::BloodPressure);
+    t.heads << tr("Datum");
+    for (const auto &p : pts) t.heads << p.context + QStringLiteral("\n(") + p.time.toString(QStringLiteral("HH:mm")) + QLatin1Char(')');
+    t.heads << tr("weitere Werte") << tr("Ø Tag");
+    t.widths << 10;
+
+    QMap<QDate, QList<const VitalRecord *>> byDay;
+    for (const VitalRecord &r : records)
+        if (r.systolic && r.diastolic && inRange(o, r.measuredAt.date())) byDay[r.measuredAt.date()] << &r;
+
+    auto column = [&](const VitalRecord *r, const QList<QStringList> &cells) -> int {
+        const QString c = r->context.trimmed();
+        if (!c.isEmpty()) {
+            for (int i = 0; i < pts.size(); ++i)
+                if (c.compare(pts[i].context, Qt::CaseInsensitive) == 0) return i;
+        }
+        // ohne (oder mit anderem) Messzeitpunkt: nächstgelegener Profilzeitpunkt (±75 min), wenn dort noch nichts steht
+        int best = -1;
+        int bestDiff = 75 * 60 + 1;
+        for (int i = 0; i < pts.size(); ++i) {
+            const int diff = std::abs(pts[i].time.secsTo(r->measuredAt.time()));
+            if (diff < bestDiff && cells.value(i).isEmpty()) { best = i; bestDiff = diff; }
+        }
+        return best;
+    };
+    // Grenzen für die Hervorhebung (Selbstmessung): ab 135/85 erhöht, ab 160/100 deutlich, unter 100 systolisch niedrig
+    auto isHigh = [](const VitalRecord *r) { return *r->systolic >= 135 || *r->diastolic >= 85; };
+    auto isAlert = [](const VitalRecord *r) { return *r->systolic >= 160 || *r->diastolic >= 100 || *r->systolic < 100; };
+    auto fmt = [](const VitalRecord *r) {
+        QString s = QStringLiteral("%1/%2").arg(*r->systolic).arg(*r->diastolic);
+        if (r->pulse) s += QStringLiteral(" P %1").arg(*r->pulse);
+        return s;
+    };
+    struct Acc { double sys = 0, dia = 0, pulse = 0; int n = 0, np = 0;
+                 void add(const VitalRecord *r) { sys += *r->systolic; dia += *r->diastolic; ++n; if (r->pulse) { pulse += *r->pulse; ++np; } }
+                 QString text() const {
+                     if (!n) return {};
+                     QString s = QStringLiteral("%1/%2").arg(qRound(sys / n)).arg(qRound(dia / n));
+                     if (np) s += QStringLiteral(" P %1").arg(qRound(pulse / np));
+                     return s;
+                 } };
+    QList<Acc> col = vpFilledList<Acc>(pts.size() + 1);
+    Acc all;
+    int high = 0, alerts = 0;
+    for (auto it = byDay.constBegin(); it != byDay.constEnd(); ++it) {
+        QList<const VitalRecord *> list = it.value();
+        if (list.size() < std::max(1, o.minValues)) continue;
+        std::sort(list.begin(), list.end(), [](const VitalRecord *a, const VitalRecord *b) { return a->measuredAt < b->measuredAt; });
+        QList<QStringList> cells = vpFilledList<QStringList>(pts.size());
+        QStringList more;
+        QList<int> alertCols;
+        bool moreAlert = false;
+        Acc day;
+        for (const VitalRecord *r : std::as_const(list)) {
+            const int c = column(r, cells);
+            const QString v = fmt(r) + QStringLiteral(" (") + r->measuredAt.toString(QStringLiteral("HH:mm")) + QLatin1Char(')');
+            if (c >= 0) {
+                cells[c] << v;
+                col[c].add(r);
+                if (isAlert(r)) alertCols << c + 1;
+            } else {
+                more << v + (r->context.isEmpty() ? QString() : QStringLiteral(" ") + r->context);
+                col[pts.size()].add(r);
+                moreAlert |= isAlert(r);
+            }
+            if (isAlert(r)) ++alerts;
+            if (isHigh(r)) ++high;
+            day.add(r);
+            all.add(r);
+            ++t.entries;
+        }
+        Table::Row row;
+        row.when = QDateTime(it.key(), list.first()->measuredAt.time());
+        row.cells << loc.toString(it.key(), QStringLiteral("ddd dd.MM.yyyy"));
+        for (const QStringList &c : std::as_const(cells)) row.cells << c.join(QLatin1Char('\n'));
+        row.cells << more.join(QLatin1Char('\n')) << day.text();
+        row.alertCells = alertCols;
+        if (moreAlert) row.alertCells << pts.size() + 1;
+        t.rows << row;
+    }
+    if (!t.rows.isEmpty()) {
+        Table::Row mean, count;
+        mean.flag = count.flag = Table::Summary;
+        mean.cells << tr("Mittelwert");
+        count.cells << tr("Anzahl");
+        for (int i = 0; i <= pts.size(); ++i) {
+            mean.cells << col[i].text();
+            count.cells << (col[i].n ? QString::number(col[i].n) : QString());
+        }
+        mean.cells << all.text();
+        count.cells << QString::number(all.n);
+        t.footer << mean << count;
+    }
+    t.summary = t.rows.isEmpty()
+        ? (o.minValues > 1 ? tr("Im Zeitraum gibt es keinen Tag mit mindestens %1 Blutdruckwerten.").arg(o.minValues)
+                           : tr("Im Zeitraum sind keine Blutdruckwerte eingetragen."))
+        : tr("Tage: %1, Blutdruckwerte: %2, Mittelwert %3 mmHg").arg(t.rows.size()).arg(t.entries)
+              .arg(QStringLiteral("%1/%2").arg(qRound(all.sys / std::max(1, all.n))).arg(qRound(all.dia / std::max(1, all.n))))
+              + (all.np ? QStringLiteral(", ") + tr("Puls %1/min").arg(qRound(all.pulse / all.np)) : QString())
+              + (high ? QStringLiteral(" · ") + tr("%1 Wert(e) ab 135/85 mmHg").arg(high) : QString())
+              + (o.minValues > 1 ? QStringLiteral(" · ") + tr("nur Tage mit mindestens %1 Werten").arg(o.minValues) : QString());
+    t.notes << tr("Angaben: systolisch/diastolisch in mmHg, P = Puls je Minute, in Klammern die Uhrzeit. Zuordnung nach dem "
+                  "Messzeitpunkt der Messung, sonst zum nächstgelegenen Profilzeitpunkt (bis 75 Minuten Abstand), sonst "
+                  "unter „weitere Werte“.");
+    t.notes << tr("Zur Orientierung: Bei der Selbstmessung gelten Mittelwerte ab 135/85 mmHg als erhöht. Die Beurteilung ist "
+                  "Sache der Ärztin bzw. des Arztes.");
+    if (alerts)
+        t.notes << tr("Hervorgehoben: Werte ab 160 systolisch oder 100 diastolisch sowie unter 100 systolisch.");
+    return t;
+}
+
 Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Patient &p)
 {
     const QLocale loc;
@@ -316,6 +435,7 @@ Table build(Kind k, const QList<VitalRecord> &records, const Options &o, const P
     case Kind::Stool: return stoolProtocol(records, o);
     case Kind::Glucose: return glucoseProfiles(records, o);
     case Kind::Fluid: return fluidBalance(records, o, p);
+    case Kind::BloodPressure: return bpProfiles(records, o);
     }
     return {};
 }

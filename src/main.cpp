@@ -5,6 +5,7 @@
 #include "appsettings.h"
 #include "database.h"
 #include "demodata.h"
+#include "edition.h"
 #include "mainwindow.h"
 #include "session.h"
 #include "i18n.h"
@@ -31,13 +32,13 @@ static bool confirmDisclaimer()
 {
     if (AppSettings::disclaimerAccepted())
         return true;
-    QMessageBox box(QMessageBox::Information, QStringLiteral("VitaParms"),
-        QObject::tr("<p><b>Willkommen bei VitaParms!</b></p>"
-                    "<p>VitaParms ist ein <b>persönliches Tagebuch</b> für gesundheitsbezogene "
+    QMessageBox box(QMessageBox::Information, Edition::appName(),
+        QObject::tr("<p><b>Willkommen bei %1!</b></p>"
+                    "<p>%1 ist ein <b>persönliches Tagebuch</b> für gesundheitsbezogene "
                     "Messwerte – <b>kein Medizinprodukt</b>. Es stellt keine Diagnosen und "
                     "ersetzt keine ärztliche Beratung. Die Verwendung erfolgt auf eigene Gefahr.</p>"
                     "<p>Die Daten werden verschlüsselt gespeichert. Bewahren Sie den "
-                    "Wiederherstellungsschlüssel sicher auf und legen Sie regelmäßig Sicherungen an.</p>"));
+                    "Wiederherstellungsschlüssel sicher auf und legen Sie regelmäßig Sicherungen an.</p>").arg(Edition::appName()));
     QPushButton *ok = box.addButton(QObject::tr("Verstanden"), QMessageBox::AcceptRole);
     box.addButton(QObject::tr("Beenden"), QMessageBox::RejectRole);
     auto *dontShow = new QCheckBox(QObject::tr("Diesen Hinweis nicht mehr anzeigen"), &box);
@@ -79,10 +80,12 @@ int main(int argc, char *argv[])
 #endif
     QApplication app(argc, argv);
     QApplication::setOrganizationName(QStringLiteral("VitaParms"));
-    QApplication::setApplicationName(QStringLiteral("VitaParms"));
-    QApplication::setApplicationDisplayName(QStringLiteral("VitaParms"));
+    // VitaParms light: eigene Einstellungen und eigener Datenordner (beide Ausgaben laufen nebeneinander)
+    QApplication::setApplicationName(Edition::settingsName());
+    QApplication::setApplicationDisplayName(Edition::appName());
     QApplication::setApplicationVersion(QStringLiteral(VITAPARMS_VERSION));
-    QApplication::setWindowIcon(QIcon(QStringLiteral(":/icons/vitaparms.png")));
+    QApplication::setWindowIcon(QIcon(Edition::light() ? QStringLiteral(":/icons/vitaparms-light.png")
+                                                       : QStringLiteral(":/icons/vitaparms.png")));
 
     // Sprache (beim allerersten Start wählen lassen, sonst Einstellung bzw. Systemsprache) und Erscheinungsbild
     chooseLanguageOnFirstStart();
@@ -106,9 +109,9 @@ int main(int argc, char *argv[])
     if (parser.isSet(demoOpt)) {
         // Demo: eigene Einstellungen und eigene Datenbank, wird jedes Mal neu erzeugt
         DemoData::enterDemoSettings();
-        QApplication::setApplicationDisplayName(QObject::tr("VitaParms – Demo"));
+        QApplication::setApplicationDisplayName(QObject::tr("%1 – Demo").arg(Edition::appName()));
         QProgressDialog progress(QObject::tr("Demo-Datenbank wird erstellt …"), QString(), 0, 100);
-        progress.setWindowTitle(QObject::tr("VitaParms – Demo"));
+        progress.setWindowTitle(QObject::tr("%1 – Demo").arg(Edition::appName()));
         progress.setWindowModality(Qt::ApplicationModal);
         progress.setMinimumDuration(0);
         progress.setValue(0);
@@ -120,7 +123,7 @@ int main(int argc, char *argv[])
         });
         progress.close();
         if (!ok) {
-            QMessageBox::critical(nullptr, QObject::tr("VitaParms – Demo"),
+            QMessageBox::critical(nullptr, QObject::tr("%1 – Demo").arg(Edition::appName()),
                                   QObject::tr("Die Demo-Datenbank konnte nicht erstellt werden:\n%1").arg(err));
             return 1;
         }

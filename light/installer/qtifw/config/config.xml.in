@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERZEUGT von qmake aus config.xml.in – Änderungen bitte dort vornehmen -->
+<Installer>
+    <Name>VitaParms light</Name>
+    <Version>@VP_VERSION@</Version>
+    <Title>VitaParms light @VP_VERSION@</Title>
+    <Publisher>Michael Bergmann</Publisher>
+    <StartMenuDir>VitaParms light</StartMenuDir>
+    <!-- Zielordner je System im Steuerskript: Windows C:\VPlight, macOS /Applications/VPlight, Linux ~/VPlight -->
+    <TargetDir>@HomeDir@/VPlight</TargetDir>
+    <AllowSpaceInPath>true</AllowSpaceInPath>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <RemoveTargetDir>true</RemoveTargetDir>
+    <MaintenanceToolName>VitaParmsLight-Wartung</MaintenanceToolName>
+    <InstallerApplicationIcon>vitaparms-light</InstallerApplicationIcon>
+    <InstallerWindowIcon>vitaparms-light.png</InstallerWindowIcon>
+    <Logo>logo.png</Logo>
+    <Banner>banner.png</Banner>
+    <Watermark>watermark.png</Watermark>
+    <WizardStyle>Modern</WizardStyle>
+    <WizardDefaultWidth>720</WizardDefaultWidth>
+    <WizardDefaultHeight>520</WizardDefaultHeight>
+    <RunProgramDescription>VitaParms light starten / Start VitaParms light</RunProgramDescription>
+    <ControlScript>controlscript.qs</ControlScript>
+</Installer>

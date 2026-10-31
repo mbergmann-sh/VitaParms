@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "patientdialog.h"
+#include "edition.h"
 #include "contactdialog.h"
 #include <QBoxLayout>
 #include <QFile>
@@ -915,7 +916,7 @@ void PatientDialog::updateAdmissionLabel()
             vals << tr("RR %1/%2 mmHg").arg(r.systolic ? QString::number(*r.systolic) : QStringLiteral("–"),
                                             r.diastolic ? QString::number(*r.diastolic) : QStringLiteral("–"));
         for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
-                            VitalKey::Weight, VitalKey::Height, VitalKey::Bmi }) {
+                            VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::Pain }) {
             const QString s = VitalDefs::formatted(r, k, true);
             if (!s.isEmpty()) vals << VitalDefs::shortLabel(k) + QLatin1Char(' ') + s;
         }
@@ -933,6 +934,7 @@ void PatientDialog::setupWoundWidgets()
 {
     // Abschnitt direkt unter „Vitalwerte bei Aufnahme“ einfügen (auch bei angepassten Formularen,
     // solange die Gruppe „admissionGroup“ in einem Box-Layout steht)
+    if (Edition::light()) return;    // VitaParms light: keine Wunddokumentation
     auto *adm = m_form->findChild<QWidget *>(QStringLiteral("admissionGroup"));
     auto *box = adm && adm->parentWidget() ? qobject_cast<QBoxLayout *>(adm->parentWidget()->layout()) : nullptr;
     if (!box) return;

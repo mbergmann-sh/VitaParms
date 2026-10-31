@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "edition.h"
 #include "wounds.h"
 
 #include "appsettings.h"
@@ -64,7 +65,6 @@ QString dmy(const QDate &d) { return d.isValid() ? QLocale().toString(d, QString
 struct ExtraField { const char *key; const char *label; const char *unit; int min, max; };
 const ExtraField kExtraFields[] = {
     { "Atemfrequenz", QT_TRANSLATE_NOOP("AppController", "Atemfrequenz"), "/min", 3, 80 },
-    { "Schmerz (NRS)", QT_TRANSLATE_NOOP("AppController", "Schmerz (NRS 0–10)"), "", 0, 10 },
 };
 
 std::optional<double> optNum(const QVariant &v)
@@ -165,8 +165,9 @@ void AppController::setLanguage(const QString &lang)
 bool AppController::openGettingStarted()
 {
     const bool de = language() == QLatin1String("de");
-    const QStringList names = de ? QStringList{ QStringLiteral("VitaParms-ErsteSchritte.pdf"), QStringLiteral("VitaParms-GettingStarted.pdf") }
-                                 : QStringList{ QStringLiteral("VitaParms-GettingStarted.pdf"), QStringLiteral("VitaParms-ErsteSchritte.pdf") };
+    const QString pre = Edition::light() ? QStringLiteral("VitaParms-light-") : QStringLiteral("VitaParms-");
+    const QStringList names = de ? QStringList{ pre + QStringLiteral("ErsteSchritte.pdf"), pre + QStringLiteral("GettingStarted.pdf") }
+                                 : QStringList{ pre + QStringLiteral("GettingStarted.pdf"), pre + QStringLiteral("ErsteSchritte.pdf") };
     const QDir app(QCoreApplication::applicationDirPath());
     QStringList dirs{ QStringLiteral("assets:/docs"),                 // Android: im Paket
                       app.filePath(QStringLiteral("docs")), app.filePath(QStringLiteral("../docs")) };
@@ -853,12 +854,15 @@ QVariantList AppController::vitalFields() const
         { VitalKey::Weight, 1, 400, 0.1 }, { VitalKey::Height, 30, 250, 1 }, { VitalKey::PeakFlow, 30, 1000, 10 },
         { VitalKey::Inr, 0.5, 12, 0.1 },
     };
-    for (const F &f : fields)
+    for (const F &f : fields) {
+        if (Edition::light() && (f.k == VitalKey::PeakFlow || f.k == VitalKey::Inr)) continue;   // nicht in VitaParms light
         l << QVariantMap{ { QStringLiteral("key"), VitalDefs::key(f.k) }, { QStringLiteral("label"), VitalDefs::label(f.k) },
                           { QStringLiteral("short"), VitalDefs::shortLabel(f.k) }, { QStringLiteral("unit"), VitalDefs::unit(f.k) },
                           { QStringLiteral("decimals"), VitalDefs::decimals(f.k) }, { QStringLiteral("color"), VitalDefs::color(f.k).name() },
                           { QStringLiteral("min"), f.min }, { QStringLiteral("max"), f.max }, { QStringLiteral("step"), f.step },
                           { QStringLiteral("extra"), false } };
+    }
+    if (Edition::light()) return l;      // keine Zusatzfelder (Atemfrequenz)
     for (const ExtraField &e : kExtraFields)
         l << QVariantMap{ { QStringLiteral("key"), QString::fromUtf8(e.key) },
                           { QStringLiteral("label"), QCoreApplication::translate("AppController", e.label) },
@@ -909,11 +913,12 @@ QVariantList AppController::journal(qint64 pid, const QString &query, int days)
                                    { QStringLiteral("color"), VitalDefs::color(VitalKey::Systolic).name() } };
         for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::Glucose, VitalKey::Weight,
                             VitalKey::Height, VitalKey::Bmi, VitalKey::PeakFlow, VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut,
-                            VitalKey::Edema }) {
+                            VitalKey::Edema, VitalKey::Pain }) {
             const QString t = VitalDefs::formatted(r, k);
             if (t.isEmpty()) continue;
             QVariantMap v{ { QStringLiteral("label"), VitalDefs::shortLabel(k) }, { QStringLiteral("text"), t },
                            { QStringLiteral("unit"), VitalDefs::unit(k) }, { QStringLiteral("color"), VitalDefs::color(k).name() } };
+            if (k == VitalKey::Pain) { v.insert(QStringLiteral("text"), VitalDefs::formatted(r, k, true)); v.insert(QStringLiteral("unit"), QString()); }
             if (k == VitalKey::FluidIn && !r.fluidInKind.isEmpty()) v.insert(QStringLiteral("unit"), QStringLiteral("ml · ") + r.fluidInKind);
             if (k == VitalKey::FluidOut && !r.fluidOutKind.isEmpty()) v.insert(QStringLiteral("unit"), QStringLiteral("ml · ") + r.fluidOutKind);
             if (k == VitalKey::Edema) {
@@ -1041,6 +1046,10 @@ static VitalRecord mapToVital(qint64 pid, const QVariantMap &m, const VitalRecor
     if (r.fluidOut && *r.fluidOut <= 0) r.fluidOut.reset();
     r.fluidInKind = r.fluidIn ? m.value(QStringLiteral("fluidInKind")).toString().trimmed() : QString();
     r.fluidOutKind = r.fluidOut ? m.value(QStringLiteral("fluidOutKind")).toString().trimmed() : QString();
+    r.pain = optInt(val(VitalKey::Pain));
+    if (r.pain && (*r.pain < 0 || *r.pain > 10)) r.pain.reset();
+    for (auto it = r.extra.begin(); it != r.extra.end();)     // früher eigenes Feld „Schmerz (NRS)“
+        it = Database::isPainFieldKey(it.key()) ? r.extra.erase(it) : std::next(it);
     r.edema = optInt(val(VitalKey::Edema));
     if (r.edema && (*r.edema < 0 || *r.edema > Fluid::kEdemaMax)) r.edema.reset();
     r.edemaSite = r.edema && *r.edema > 0 ? m.value(QStringLiteral("edemaSite")).toString().trimmed() : QString();
@@ -1142,9 +1151,11 @@ QVariantList AppController::latest(qint64 pid)
         { { VitalKey::Weight }, VitalDefs::label(VitalKey::Weight) },
         { { VitalKey::Temperature }, VitalDefs::label(VitalKey::Temperature) },
         { { VitalKey::SpO2 }, VitalDefs::label(VitalKey::SpO2) },
+        { { VitalKey::Pain }, VitalDefs::label(VitalKey::Pain) },
         { { VitalKey::PeakFlow }, VitalDefs::label(VitalKey::PeakFlow) },
     };
     for (const auto &[keys, label] : tiles) {
+        if (Edition::light() && keys.first() == VitalKey::PeakFlow) continue;
         const VitalRecord *last = nullptr;
         for (auto it = recs.crbegin(); it != recs.crend(); ++it)
             if (VitalDefs::value(*it, keys.first())) { last = &*it; break; }
@@ -1173,6 +1184,7 @@ QVariantList AppController::latest(qint64 pid)
                           { QStringLiteral("when"), when(*last) }, { QStringLiteral("colors"), swatches },
                           { QStringLiteral("series"), series } };
     }
+    if (Edition::light()) return l;      // VitaParms light: kein INR, keine Ein-/Ausfuhr, Ödeme, Stuhlgang
     const auto pat = Database::instance().patient(pid);
     {   // INR: letzter Wert, farbig außerhalb des Zielbereichs
         const VitalRecord *last = nullptr;
@@ -1753,11 +1765,14 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
             QString err;
             ok = ReportPrinter::journalToXlsx(path, *p, model, period, &err);
         }
-    } else if (kind.startsWith(QLatin1String("stool")) || kind.startsWith(QLatin1String("glucose")) || kind.startsWith(QLatin1String("fluid"))) {
+    } else if (kind.startsWith(QLatin1String("stool")) || kind.startsWith(QLatin1String("glucose")) || kind.startsWith(QLatin1String("fluid"))
+               || kind.startsWith(QLatin1String("bpProfile"))) {
         // Stuhlprotokoll / BZ-Tagesprofile / Ein- und Ausfuhr aus den erfassten Werten
         const bool stool = kind.startsWith(QLatin1String("stool"));
-        const Protocols::Kind pk = stool ? Protocols::Kind::Stool : kind.startsWith(QLatin1String("glucose")) ? Protocols::Kind::Glucose
-                                                                                                                : Protocols::Kind::Fluid;
+        const Protocols::Kind pk = stool ? Protocols::Kind::Stool
+                                 : kind.startsWith(QLatin1String("glucose")) ? Protocols::Kind::Glucose
+                                 : kind.startsWith(QLatin1String("bpProfile")) ? Protocols::Kind::BloodPressure
+                                                                                : Protocols::Kind::Fluid;
         const bool xlsx = kind.endsWith(QLatin1String("Xlsx"));
         const int days = options.value(QStringLiteral("days")).toInt();
         Protocols::Options o;
@@ -1767,7 +1782,8 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         const QDateTime from = o.from.isValid() ? QDateTime(o.from.addDays(-31), QTime(0, 0)) : QDateTime();
         const Protocols::Table t = Protocols::build(pk, db.vitals(pid, from, {}), o, *p);
         const QString name = pk == Protocols::Kind::Stool ? QStringLiteral("Stuhlprotokoll")
-                           : pk == Protocols::Kind::Glucose ? QStringLiteral("BZ-Tagesprofile") : QStringLiteral("Bilanz");
+                           : pk == Protocols::Kind::Glucose ? QStringLiteral("BZ-Tagesprofile")
+                           : pk == Protocols::Kind::BloodPressure ? QStringLiteral("RR-Tagesprofile") : QStringLiteral("Bilanz");
         path = QStringLiteral("%1/%2_%3_%4.%5").arg(dir, name, base, stamp, xlsx ? QStringLiteral("xlsx") : QStringLiteral("pdf"));
         QString err;
         ok = xlsx ? Protocols::toXlsx(t, *p, Protocols::periodText(o), path, &err)

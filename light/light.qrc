@@ -1,0 +1,10 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/forms/light">
+        <file alias="patientform.ui">../forms/light/patientform.ui</file>
+        <file alias="vitalform.ui">../forms/light/vitalform.ui</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="vitaparms-light.png">resources/vitaparms-light.png</file>
+    </qresource>
+</RCC>

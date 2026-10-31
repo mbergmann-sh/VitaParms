@@ -13,6 +13,7 @@ Page {
     property string presetContext: ""
     property string presetObservation: ""
     property var profileApptId: 0
+    property bool presetBp: false        // RR-Tagesprofil: gleich zum Blutdruck
     signal closed(string message)
     property var rec: vitalId ? app.vital(vitalId) : app.newVital(personId)
     property var summary: app.personSummary(personId)
@@ -45,7 +46,7 @@ Page {
         if (sys.text.trim() !== "") values.systolic = parseInt(sys.text)
         if (dia.text.trim() !== "") values.diastolic = parseInt(dia.text)
         if (resp.text.trim() !== "") values["Atemfrequenz"] = parseInt(resp.text)
-        if (pain.value >= 0) values["Schmerz (NRS)"] = pain.value
+        if (pain.value >= 0) values.pain = pain.value
         if (fluidIn.text.trim() !== "") values.fluidIn = parseInt(fluidIn.text)
         if (fluidOut.text.trim() !== "") values.fluidOut = parseInt(fluidOut.text)
         if (page.edemaGrade >= 0) values.edema = page.edemaGrade
@@ -153,7 +154,7 @@ Page {
         const v = rec.values || {}
         sys.text = fmtNum(v.systolic); dia.text = fmtNum(v.diastolic)
         resp.text = fmtNum(v["Atemfrequenz"])
-        pain.value = v["Schmerz (NRS)"] !== undefined ? v["Schmerz (NRS)"] : -1
+        pain.value = v.pain !== undefined ? v.pain : -1
         fluidIn.text = fmtNum(v.fluidIn); fluidOut.text = fmtNum(v.fluidOut)
         if (rec.fluidInKind) page.fluidInKind = rec.fluidInKind
         if (rec.fluidOutKind) page.fluidOutKind = rec.fluidOutKind
@@ -173,7 +174,7 @@ Page {
         updatePeakFlow()
         updateCare()
         if (!vitalId) {
-            const g = presetContext !== "" ? cards.byKey("glucose") : null      // BZ-Tagesprofil: gleich zum Blutzucker
+            const g = presetContext !== "" && !presetBp ? cards.byKey("glucose") : null      // BZ-Tagesprofil: gleich zum Blutzucker
             if (g) g.field.forceActiveFocus(); else sys.field.forceActiveFocus()
         }
     }
@@ -184,13 +185,14 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed("") }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed("") }
             ColumnLayout {
-                Layout.fillWidth: true; spacing: 0
+                Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 0
                 Label { text: page.vitalId ? qsTr("Messung bearbeiten") : page.presetObservation !== "" ? page.presetObservation : qsTr("Neue Messung"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink
-                        Layout.alignment: Qt.AlignHCenter }
+                        Layout.fillWidth: true; Layout.minimumWidth: 0; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
                 Label { text: page.summary.name + (page.summary.birthText ? " · " + qsTr("geb. %1").arg(page.summary.birthText) : "")
-                        color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignHCenter }
+                        color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             }
             VButton { visible: page.vitalId; text: qsTr("Löschen"); kind: "flat"; onClicked: confirmDelete.open() }
             VButton { visible: !page.vitalId && win.wide; text: qsTr("Speichern und weitere"); onClicked: page.save(true) }
@@ -256,12 +258,12 @@ Page {
                     RowLayout {
                         anchors.fill: parent; spacing: 0
                         ValueCard { id: sys; Layout.fillWidth: true; Layout.fillHeight: true; border.width: 0; color: "transparent"
-                                    label: page.field("systolic").label; unit: "mmHg"; accent: page.field("systolic").color
+                                    label: page.width < 520 ? page.field("systolic").short : page.field("systolic").label; unit: "mmHg"; accent: page.field("systolic").color
                                     minValue: page.field("systolic").min; maxValue: page.field("systolic").max
                                     field.onTextEdited: if (sys.text.length >= 3) dia.field.forceActiveFocus() }
                         Label { text: "/"; font.pixelSize: Theme.fsXxl; color: Theme.muted }
                         ValueCard { id: dia; Layout.fillWidth: true; Layout.fillHeight: true; border.width: 0; color: "transparent"
-                                    label: page.field("diastolic").label; unit: "mmHg"; accent: page.field("diastolic").color
+                                    label: page.width < 520 ? page.field("diastolic").short : page.field("diastolic").label; unit: "mmHg"; accent: page.field("diastolic").color
                                     minValue: page.field("diastolic").min; maxValue: page.field("diastolic").max }
                     }
                 }
@@ -285,8 +287,9 @@ Page {
                 // Atemfrequenz mit Minutenuhr
                 ValueCard {
                     id: resp
+                    visible: !app.light                // nicht in VitaParms light
                     Layout.fillWidth: true
-                    label: page.field("Atemfrequenz").label; unit: "/min"; accent: Theme.muted
+                    label: page.field("Atemfrequenz").label || ""; unit: "/min"; accent: Theme.muted
                     minValue: 3; maxValue: 80
                     VButton {
                         id: countBtn
@@ -329,9 +332,11 @@ Page {
 
             // Schmerz 0–10
             ColumnLayout {
+                objectName: "painScaleRow"
                 Layout.fillWidth: true
                 spacing: 6
-                Label { text: page.field("Schmerz (NRS)").label; color: Theme.ink2; font.pixelSize: Theme.fsS }
+                Label { text: qsTr("Schmerzstärke (0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz)"); color: Theme.ink2; font.pixelSize: Theme.fsS
+                        Layout.fillWidth: true; wrapMode: Text.WordWrap }
                 QtObject { id: pain; property int value: -1 }
                 Flow {
                     Layout.fillWidth: true
@@ -360,6 +365,7 @@ Page {
             // Ein- und Ausfuhr
             Frame {
                 objectName: "fluidSection"
+                visible: !app.light            // nicht in VitaParms light
                 Layout.fillWidth: true
                 padding: 14
                 contentWidth: 300
@@ -367,7 +373,7 @@ Page {
                 ColumnLayout {
                     width: parent.width
                     spacing: 10
-                    Label { text: qsTr("Ein- und Ausfuhr"); font.pixelSize: Theme.fsL; color: Theme.ink }
+                    Label { text: qsTr("Ein- und Ausfuhr"); font.pixelSize: Theme.fsL; color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                     GridLayout {
                         Layout.fillWidth: true
                         columns: page.width > 900 ? 2 : 1
@@ -425,6 +431,7 @@ Page {
             // Ödeme
             Frame {
                 objectName: "edemaSection"
+                visible: !app.light            // nicht in VitaParms light
                 Layout.fillWidth: true
                 padding: 14
                 contentWidth: 300
@@ -432,7 +439,7 @@ Page {
                 ColumnLayout {
                     width: parent.width
                     spacing: 10
-                    Label { text: qsTr("Ödeme (Dellentiefe nach Fingerdruck)"); font.pixelSize: Theme.fsL; color: Theme.ink }
+                    Label { text: qsTr("Ödeme (Dellentiefe nach Fingerdruck)"); font.pixelSize: Theme.fsL; color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                     Flow {
                         Layout.fillWidth: true; Layout.preferredWidth: 200; Layout.preferredHeight: implicitHeight
                         spacing: 6
@@ -471,6 +478,7 @@ Page {
             // Stuhlgang: Häkchen schaltet die Auswahl nach der Bristol-Skala frei
             Frame {
                 objectName: "stoolSection"
+                visible: !app.light            // nicht in VitaParms light
                 Layout.fillWidth: true
                 padding: 14
                 contentWidth: 300                // Breite kommt vom Layout (fillWidth)
@@ -482,7 +490,7 @@ Page {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: Theme.gap
-                        CheckBox {
+                        VCheck {
                             id: stoolCheck
                             objectName: "stoolCheck"
                             text: qsTr("Stuhlgang")

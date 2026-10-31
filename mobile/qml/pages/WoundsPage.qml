@@ -157,7 +157,7 @@ Flickable {
                     anchors.leftMargin: 16; anchors.rightMargin: 16
                     spacing: Theme.gap
                     ColumnLayout {
-                        Layout.preferredWidth: 170; Layout.alignment: Qt.AlignTop; spacing: 2
+                        Layout.preferredWidth: win.phone ? 110 : 170; Layout.minimumWidth: win.phone ? 110 : 170; Layout.maximumWidth: win.phone ? 110 : 170; Layout.alignment: Qt.AlignTop; spacing: 2
                         Label { text: modelData.at; font.bold: true; color: Theme.ink }
                         Label { text: modelData.kindText; color: modelData.kind === 0 ? Theme.brand : Theme.ink2; font.bold: modelData.kind === 0; font.pixelSize: Theme.fsS }
                         Label { text: qsTr("Hz. %1").arg(modelData.by); color: Theme.muted; font.pixelSize: Theme.fsXs }

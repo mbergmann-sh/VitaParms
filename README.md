@@ -11,6 +11,9 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 
 *Hauptfenster mit Journal und dem Hinweis auf die Termine von heute und morgen (Demo-Modus mit erfundenen Daten).*
 
+> **Neu: VitaParms light** – eine vereinfachte Ausgabe für eine einzelne Person, gebaut aus demselben
+> Quelltext (Unterprojekt `light/`, Desktop und Tablet/Smartphone). Siehe [VitaParms light](#vitaparms-light).
+
 ## Funktionen
 
 | Bereich | Umsetzung |
@@ -21,11 +24,12 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 | **Beipackzettel** | je Medikament im Internet nachschlagen (Apotheken Umschau per PZN, Gelbe Liste, Websuche, EMA, openFDA) und anzeigen; Original-PDF per Link oder Datei laden und **verschlüsselt in der Krankenakte** speichern |
 | **Benutzer** | beliebig viele, Auswahl über die Werkzeugleiste; **Hauptbenutzer 1 und 2** per `Strg+1` / `Strg+2`; *Benutzer → Drucken*: Stammblatt, Medikamentenliste, Erinnerungen (anstehende Termine) |
 | **Messung erfassen** | Kopfzeile mit Name/Vorname/Geburtsdatum aus dem Stammblatt; Datum/Uhrzeit vorbelegt und änderbar; Messzeitpunkt für **Tagesprofile** (nüchtern, 2 h nach dem Frühstück …, Liste editierbar); „Speichern & weitere Messung“ für Serien; **Minutenuhr** neben „Atemfrequenz“ (Start- und Endton) zum Zählen der Atemzüge |
-| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), Beobachtungen; Beispiel-Zusatzfelder Atemfrequenz und Schmerz (NRS); **Peak-Flow-Warnhinweise** (grün/gelb/rot) bezogen auf den persönlichen Bestwert oder den Sollwert nach ERS 1994 (biologisches Geschlecht, Alter, Größe); **Stuhlgang** (Häkchen + Art nach der **Bristol-Stuhlformen-Skala**, Menge, Farbe, Beimengungen/Geruch, Begleitsymptome) mit **Hinweis nach drei Tagen ohne Stuhlgang** und bei schwarzem/blutigem Stuhl; **INR** mit ärztlichem Zielbereich (Hinweise unter/über dem Bereich, ab 5,0 deutlich); **Ein- und Ausfuhr** in ml mit Art und Tagesbilanz, Trinkmenge mindestens/höchstens und **Gewichtskontrolle** (z. B. > 2 kg in 3 Tagen bei Herzschwäche); **Ödeme** Grad 0–4 mit Ort und Seite (Hinweis bei einseitiger Beinschwellung, Gesicht, Grad 3–4) |
+| **Vitalwerte** | Puls, Blutdruck sys/dia, Körpertemperatur, SpO₂, **Peak Flow** (l/min), Blutzucker (mg/dl oder mmol/l), Gewicht, Körpergröße (bei neuen Messungen mit der bekannten Größe vorbelegt), **BMI automatisch** – bei fehlenden Gliedmaßen korrigiert (Osterkamp 1995), **Schmerzstärke** 0–10 (NRS, eigene Spalte und Kurve; ab 0.28), Beobachtungen; Beispiel-Zusatzfeld Atemfrequenz; **Peak-Flow-Warnhinweise** (grün/gelb/rot) bezogen auf den persönlichen Bestwert oder den Sollwert nach ERS 1994 (biologisches Geschlecht, Alter, Größe); **Stuhlgang** (Häkchen + Art nach der **Bristol-Stuhlformen-Skala**, Menge, Farbe, Beimengungen/Geruch, Begleitsymptome) mit **Hinweis nach drei Tagen ohne Stuhlgang** und bei schwarzem/blutigem Stuhl; **INR** mit ärztlichem Zielbereich (Hinweise unter/über dem Bereich, ab 5,0 deutlich); **Ein- und Ausfuhr** in ml mit Art und Tagesbilanz, Trinkmenge mindestens/höchstens und **Gewichtskontrolle** (z. B. > 2 kg in 3 Tagen bei Herzschwäche); **Ödeme** Grad 0–4 mit Ort und Seite (Hinweis bei einseitiger Beinschwellung, Gesicht, Grad 3–4) |
 | **BZ-Tagesprofil** | *Messwerte → BZ-Tagesprofil…*: sieben Zeitpunkte (nüchtern vor dem Frühstück … vor dem Zubettgehen) mit einstellbaren Uhrzeiten; je Zeitpunkt ein Termin mit Erinnerung, „Messung erfassen…“ öffnet das Erfassungsfenster mit Betreff, Uhrzeit und Messzeitpunkt |
+| **RR-Tagesprofil** | *Messwerte → RR-Tagesprofil…* (ab 0.28): sechs Zeitpunkte (morgens vor den Tabletten … vor dem Zubettgehen) für Blutdruck und Puls, sonst wie das BZ-Tagesprofil; Auswertung *Ausgabe → RR-Tagesprofile…* mit Tagesmittelwerten |
 | **Journal / Verlauf** | alle Werte, nach Datum absteigend (aktuellste zuerst), mehrere Messungen pro Tag, Zeitraumfilter |
 | **Grafik** | Tages-, Wochen-, Monats-, **Jahresverlauf** und freier Zeitraum (Wahl wird gespeichert); ab gut zwei Monaten **Tageswerte** (Mittelwert, Strich = Min–Max); Bereiche wählbar, **jede Kurve einzeln ein-/ausblendbar** (Klick auf die Legende oder Menü *Kurven*); Druck/PDF wahlweise **je Bereich eine Seite**; **Stuhlgang-Häufigkeit** als Tagesbalken (nach Bristol-Typ gefärbt, Zeitspannen ohne Stuhlgang hinterlegt); **INR** mit Zielbereich als Band; **Tagesbilanz** (Ein-/Ausfuhr als Balken, Bilanz, Trinkmengen als Linien; Tagesansicht aufsummiert); **Ödeme** Grad 0–4; farblich unterscheidbar **und** mit unterschiedlichen Markerformen (auch bei Farbfehlsichtigkeit lesbar), Legende, Tooltips |
-| **Ausgabe** | Druck und Druckvorschau auf **DIN A4**, **PDF**, **Excel (.xlsx)** mit eingebetteter Grafik, Kennwerten (Min/Max/Mittel) und Rohdaten; **Stuhlprotokoll** (Datum & Uhrzeit, Menge, Konsistenz Typ 1–7, Farbe, Beimengungen/Geruch, Begleitsymptome; Tage ohne Stuhlgang) , **BZ-Tagesprofile** (aus den Messungen zusammengestellt, je Tag nach Profilzeitpunkten) und **Ein- und Ausfuhr (Bilanz)** mit Tagessummen für die aktive Person |
+| **Ausgabe** | Druck und Druckvorschau auf **DIN A4**, **PDF**, **Excel (.xlsx)** mit eingebetteter Grafik, Kennwerten (Min/Max/Mittel) und Rohdaten; **Stuhlprotokoll** (Datum & Uhrzeit, Menge, Konsistenz Typ 1–7, Farbe, Beimengungen/Geruch, Begleitsymptome; Tage ohne Stuhlgang), **BZ- und RR-Tagesprofile** (aus den Messungen zusammengestellt, je Tag nach Profilzeitpunkten) und **Ein- und Ausfuhr (Bilanz)** mit Tagessummen für die aktive Person |
 | **Krankenakte** | PDF-Dokumente (Befunde, Laborwerte, Entlassbriefe …) je Benutzer nach Datum archivieren; Fotos/Scans (JPG, PNG, TIFF) werden beim Import in PDF umgewandelt; Drag & Drop; Vorschläge für Datum, Art und Titel; Dubletten-Erkennung; **Volltextsuche** im PDF-Inhalt; Vorschau; **selektiver Druck**; Inhaltsverzeichnis drucken; **auf dem Tablet**: ansehen, suchen, mit der Kamera fotografieren (mehrere Seiten → ein PDF), Dateien übernehmen, teilen; beim Abgleich gehen die Inhalte **getrennt und nur bei Bedarf** |
 | **Akte versenden** | ausgewählte/gefilterte/alle Dokumente plus Stammblatt, Medikamentenplan, Verlauf und Grafik als **ZIP mit Inhaltsverzeichnis**; optional **AES-256-verschlüsselt**; E-Mail mit Anhang im Standard-Mailprogramm |
 | **Datenschutz** | Datenbank **vollständig verschlüsselt** (SQLite3 Multiple Ciphers, ChaCha20-Poly1305) inkl. aller Dokumente; Sicherungen ebenfalls verschlüsselt |
@@ -39,10 +43,10 @@ Qt 6 / C++17 / qmake – MIT-Lizenz.
 | **Daten** | Sicherung/Wiederherstellung, **automatische Sicherung** (beim Beenden bzw. täglich, die letzten n Stände, Ordner wählbar), mehrere Datenbanken möglich |
 | **Demo** | *Hilfe → Demo-Datenbank starten*: zweites Fenster mit einer erfundenen Person und **365 Tagen** Messwerten bis heute, Medikamentenplan, Terminen und Befunden; eigene verschlüsselte Datenbank und eigene Einstellungen, bei jedem Start neu erzeugt (auch `VitaParms --demo`) |
 | **Website** | *Extras → Website…*: die Daten **aller Personen** (gesamter Messwert-Verlauf mit Verlaufskurven, Medikamente, Termine, Berichte als PDF/Excel – **ohne Krankenakte**) auf der eigenen Website, geschützt durch ein Master-Passwort; Ende-zu-Ende-verschlüsselt (AES-256, Entschlüsselung erst im Browser), automatisch aktualisiert (*Datei → Website aktualisieren*, `Strg+Umschalt+U`). Siehe `website/README.md` |
-| **Übertragen** | *Datei → Datenbank exportieren* (eine `.vpdb`-Datei mit Datenbank und Anmeldekonten) und **Import bei der Anmeldung** (*Datenbank importieren…*, auch beim ersten Start, am Computer und auf dem Tablet) – ohne Website, z. B. per USB-Kabel |
+| **Übertragen** | *Datei → Datenbank exportieren* (eine `.vpdb`-Datei mit Datenbank und Anmeldekonten) und **Import bei der Anmeldung** (*Datenbank importieren…*, auch beim ersten Start, am Computer und auf dem Tablet) – ohne Website, z. B. per USB-Kabel; **Datei → Datenbank der Light-Version importieren…** übernimmt die Person aus VitaParms light als weitere Person (vorher automatische Sicherung, erneuter Import ohne Dubletten) |
 | **Tablet** | **Tablet-App für Android** (Qt Quick, `mobile/`): Messungen erfassen (Messzeitpunkt auch als Freitext), Verläufe, Kurven, Stammblatt, Medikamentenplan, Kontakte und Vorsorge bearbeiten (Vorsorge-PDF aus der Krankenakte verknüpfen), **Medikamente stellen** mit Vorlesen, **Bestand und Bestellungen**, **Wunddokumentation** mit Kamerafoto, **Berichte** öffnen/teilen (auch als verschlüsseltes ZIP), **Website aktualisieren**, **Terminplaner** mit Serien, **BZ-Tagesprofil**, Quartalswechsel-Erinnerung und **Erinnerungen als Android-Benachrichtigung** – mit derselben verschlüsselten Datenbank; **Abgleich** über die eigene Website (*Datei → Datenbank abgleichen*, `Strg+Umschalt+A`) oder direkt **über das USB-Kabel** (*Datei → Mit Tablet über USB abgleichen…*, per `adb`; auch Computer → Tablet bzw. Tablet → Computer ersetzen), zeilenweises Zusammenführen. Siehe `mobile/README.md` |
 | **Bestand** | *Benutzer → Medikamentenbestand und Bestellungen*: Packungen mit Stückzahl und **Verfallsdatum**, Abbuchung beim **Stellen** (zuerst ablaufende Packung), Reichweite nach Dosierschema und Rhythmus, **Bestellen bis** = Reichweite − Vorlauf (Standard 7 Tage, Wochenende → Freitag), Warnung „ist fast aufgebraucht – bitte Verordnung besorgen und bestellen!“, gespeicherte **Bestelllisten** (Druck/PDF), Erinnerung bis zur Bestätigung „bestellt“, Lieferung bucht ein |
-| **Kontakte** | Im Stammblatt (*Weitere Angaben: Kontakte*): beliebig viele Kontakte – **Krankenkasse mit Versichertennummer**, Hausarztpraxis, Fachärzte, Kliniken, Pflegedienst, Apotheke, Notfallkontakt, Sonstige –, je mit Anschrift, Telefon, Mobil, E-Mail und Website; **scrollbare Liste mit Suchfeld**, *Hinzufügen / Bearbeiten / Entfernen*. Die früheren Zusatzfelder (Krankenkasse, Hausarztpraxis, Praxis-Telefon, Notfallkontakt) werden automatisch übernommen und für ältere Versionen weiter mitgeschrieben. Anzeige im Stammblatt-Ausdruck, auf Apotheken- und Bestellliste, auf der Website und im Tablet |
+| **Kontakte** | Im Stammblatt (*Weitere Angaben: Kontakte*): beliebig viele Kontakte – **Krankenkasse mit Versichertennummer**, Hausarztpraxis, Fachärzte, Kliniken, Pflegedienst, Apotheke, Notfallkontakt, **Angehörige**, Sonstige –, je mit Anschrift, Telefon, Mobil, E-Mail und Website; **scrollbare Liste mit Suchfeld**, *Hinzufügen / Bearbeiten / Entfernen*. Die früheren Zusatzfelder (Krankenkasse, Hausarztpraxis, Praxis-Telefon, Notfallkontakt) werden automatisch übernommen und für ältere Versionen weiter mitgeschrieben. Anzeige im Stammblatt-Ausdruck, auf Apotheken- und Bestellliste, auf der Website und im Tablet |
 | **Wunddokumentation** | *Benutzer → Wunddokumentation…* (`Strg+Umschalt+W`), nach dem Expertenstandard „Pflege von Menschen mit chronischen Wunden“: **Wunde** mit Wundanamnese (Wundart mit Klassifikation – Dekubitus-Kategorie EPUAP/NPIAP, Wagner-Grad, Verbrennungsgrad –, Diagnose, Lokalisation, Entstehung, **bei Aufnahme vorhanden**, Rezidive, Einschränkungen, Selbstmanagement, Therapieziel, Einwilligung zur Fotodokumentation), **Chronik** aus Wundbeurteilungen (Größe L×B×T, Taschen, Wundgrund in %, Exsudat, Geruch, Wundrand, Umgebung, Infektionszeichen, Schmerz, Phase, Versorgung, **Foto**) und Verbandwechseln (Handzeichen, Beschreibung, Tendenz), **Flächenverlauf**, Hinweise (Beurteilung nach 4 Wochen fällig, Infektionszeichen, Verschlechterung, Verbandwechsel fällig), Druck/PDF/Excel; **Wunden bei Aufnahme** im Stammblatt; auch auf dem Tablet (Reiter „Wunden“, Foto mit der Kamera) |
 | **Vorsorge** | Im Stammblatt (*Pflege, Ausweis und Vorsorge*): **Patientenverfügung, Vorsorgevollmacht, Betreuungsvollmacht** – je vorhanden ja/nein, eingetragene Person mit Anschrift und Telefon, gültig bis; jeweils **PDF hinterlegbar** (verschlüsselt in der Krankenakte); Anzeige im Kopf, im Stammblatt-Ausdruck, auf der Website und im Tablet |
 | **Apotheke** | *Medikationsliste für die Apotheke*: alle aktuellen Medikamente mit Wirkstoff und PZN, dazu Gewicht, Allergien, Diagnosen, Ankreuzliste für frei verkäufliche Mittel und Platz für Notizen – damit die Apotheke Wechselwirkungen prüft (VitaParms selbst prüft bewusst nicht; Hinweis auf die Medikationsberatung bei Polymedikation). Desktop, Website und Tablet |
@@ -421,6 +425,13 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.28.1:** Personenauswahl am Computer: Die intern gewählte Person folgt jetzt jeder Änderung der
+  Auswahlliste (vorher nur „activated“) – BZ-/RR-Tagesprofile und andere Aktionen gelten sicher für
+  die angezeigte Person; der Tagesprofil-Dialog nennt die Person deutlich. Tablet: Reiterleiste bricht
+  um, alle Seiten auch auf dem Smartphone lesbar.
+* **Datenbankformat 12** (ab 0.28): neue Spalte `vitals.pain` (Schmerzstärke 0–10); Einträge aus dem
+  alten Zusatzfeld „Schmerz (NRS)“ werden beim ersten Öffnen übernommen. **Alle Geräte (Computer,
+  Tablet, Website-`api/`) auf 0.28 aktualisieren** – ältere Versionen öffnen die Datenbank nicht mehr.
 
 **Grenzen (ehrlich benannt):** Die Rollen sind eine Regel innerhalb von VitaParms. Wer mit einem
 Anwenderkonto die Datenbank entsperren kann, könnte sie mit eigenen Werkzeugen auch vollständig
@@ -543,6 +554,32 @@ Ist bei einer Messung keine Größe eingetragen, wird die zuletzt erfasste Grö�
 Der BMI wird mit der Messung gespeichert; ändern sich die Gliedmaßen-Angaben, fragt das
 Programm, ob ältere Messungen neu berechnet werden sollen.
 
+## VitaParms light
+
+Vereinfachte Ausgabe für **eine Person** (die zugleich das einzige Anmeldekonto ist, ohne Rollen),
+gebaut aus denselben Quellen mit `DEFINES += VP_LIGHT` (`src/edition.h`: `Edition::light()`,
+Programmname, eigener Einstellungs- und Datenbereich `VitaParmsLight`).
+
+| Bereich | VitaParms light |
+|---|---|
+| **Stammblatt** | Person, Ärzte & Angehörige, Diagnosen, Medikamentenplan, Aufnahme (eigene Formulare `forms/light/*.ui`, erzeugt mit `tools/make_light_forms.py`) |
+| **Messwerte** | RR, Puls, Temperatur, BZ, SpO₂, Gewicht, Größe, BMI (berechnet), **Schmerzskala** 0–10 als farbige Knöpfe |
+| **Assistenten** | BZ-Tagesprofil, RR-Tagesprofil, Medikamente stellen |
+| **wie VitaParms** | Termine und Erinnerungen, Medikamentenverwaltung mit Warnhinweisen, Bestand und Bestellungen, Apothekenliste, Krankenakte, Grafik, Verlauf, Druck/PDF/Excel, verschlüsselte Datenbank mit Anmeldung, automatische Sicherung, Demo (angepasst) |
+| **entfällt** | mehrere Personen, Rollen, Website, Peak Flow, INR, Ein-/Ausfuhr, Ödeme, Stuhlgang, Wunddokumentation, Pflege-/Vorsorgeangaben |
+| **Abgleich** | nur Computer ↔ Tablet/Smartphone über USB (eigener Port 47812, läuft neben VitaParms) |
+| **Umstieg** | gleiches Datenbankformat; in VitaParms *Datei → Datenbank der Light-Version importieren…* |
+| **Handbücher** | *Benutzerhandbuch* / *User Guide* und *Erste Schritte* / *Getting Started* (PDF, CHM) in `light/docs` |
+
+```sh
+qmake6 light/VitaParmsLight.pro && make -j                 # Desktop (Programm „VitaParmsLight“)
+qmake6 light/mobile/VitaParmsLightMobile.pro && make -j    # Android (Paket de.mbergmann.vitaparms.light)
+```
+
+Installer (Qt Installer Framework, Windows `C:\VPlight`, macOS `/Applications/VPlight`, Linux
+`~/VPlight`): siehe `light/installer/README.md`. Die Tablet-App ist für Tablet **und** Smartphone
+ausgelegt (schmale Ansicht mit ☰-Menü).
+
 ## Projektaufbau
 
 ```
@@ -590,13 +627,15 @@ src/
   usbsync.*              Abgleich über das USB-Kabel: Protokoll, Tablet-Seite (wartet), Computer-Seite
   usbsyncdialog.*        Datei → Mit Tablet über USB abgleichen… (adb suchen, Port weiterleiten)
   quarterreminder.*      Erinnerung an den Quartalswechsel (Zeitraum, Bestätigung)
-  glucoseprofile.*       BZ-Tagesprofil: Zeitpunkte, Termine anlegen (Dialog: glucoseprofiledialog.*)
+  glucoseprofile.*       BZ- und RR-Tagesprofil: Zeitpunkte, Termine anlegen (Dialog: glucoseprofiledialog.*)
+  lightimport.*          Datenbank aus VitaParms light übernehmen (prüfen, sichern, zusammenführen)
+  edition.h              Ausgabe (VitaParms / VitaParms light, Schalter VP_LIGHT)
   stool.*                Stuhlgang: Bristol-Skala, Häufigkeit, Hinweis nach drei Tagen ohne
   inr.*                  INR: Zielbereich (Stammblatt), Bewertung und Hinweise
   fluid.*                Ein-/Ausfuhr, Tagesbilanz, Trinkmengen, Gewichtskontrolle, Ödeme (Grad, Ort, Hinweise)
   wounds.*               Wunddokumentation: Wunde, Chronik, Hinweise, Fotos, Flächenverlauf, PDF/Excel (Desktop und Tablet)
   wounddialogs.*         Fenster Wunddokumentation, Formulare „Wunde“ und Wundbeurteilung/Verbandwechsel
-  protocols.*            Stuhlprotokoll, BZ-Tagesprofile und Bilanz aus den Messwerten (HTML/PDF/Excel; Dialog: protocoldialog.*)
+  protocols.*            Stuhlprotokoll, BZ- und RR-Tagesprofile und Bilanz aus den Messwerten (HTML/PDF/Excel; Dialog: protocoldialog.*)
   apptcore.*             Termine: Texte, Wiederholungsauswahl, Speichern/Löschen mit Serien-Umfang (Desktop und Tablet)
   careinfo.*             Pflegegrad, Schwerbehindertenausweis (Merkzeichen, Anzeigetexte)
   websync.*              Website: Paket bauen (Hintergrund-Thread), verschlüsseln (VPW1), hochladen
@@ -609,6 +648,10 @@ src/
   mailer.*, mapi_win.cpp E-Mail mit Anhang (MAPI / Apple Mail / xdg-email)
   settingsdialog.*, formcustomizedialog.*, appsettings.*
 core.pri                 gemeinsamer Kern für Desktop und Tablet; version.pri: Versionsnummer
+desktop.pri              Quellen des Desktop-Programms (VitaParms und VitaParms light)
+light/                   VitaParms light: VitaParmsLight.pro, light.qrc, resources/, docs/,
+                         installer/ (Qt Installer Framework, Deploy), mobile/ (Tablet-App)
+forms/light/             vereinfachte Formulare der Light-Ausgabe
 mobile/                  Tablet-App (Qt Quick): src/, qml/, android/, translations/
 website/                 Website (index.html, assets/, api/upload.php, data/) – auf den Webspace hochladen
 docs/                    Handbücher (PDF, CHM) – werden neben das Programm kopiert
@@ -617,6 +660,8 @@ installer/               Windows: windows_deploy.pri (Build-Schritt), VitaParms.
 tools/
   make_chm.py            Windows-Hilfe (.chm) aus dem LaTeX-Handbuch erzeugen
   apply_translations.py  Übersetzungen aus translations/en_dict.py übernehmen
+  make_light_forms.py    Light-Formulare aus den Standardformularen erzeugen
+  make_light_android.py  Android-Dateien der Light-App (Paketname, Symbol) erzeugen
 ```
 
 ## Lizenzhinweise

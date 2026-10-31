@@ -3,6 +3,7 @@
 // ZIP-Archiv), dazu die Website mit den aktuellen Daten aktualisieren (Teil von AppController).
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "edition.h"
 
 #include "database.h"
 #include "dbsync.h"
@@ -71,10 +72,11 @@ QVariantList AppController::reportCatalog(qint64 pid)
     if (!loggedIn() || !pid) return l;
     Database &db = Database::instance();
     const QList<VitalRecord> recs = db.vitals(pid, {}, {});
-    bool stool = false, glucose = false, fluid = false;
+    bool stool = false, glucose = false, fluid = false, bp = false;
     for (const VitalRecord &r : recs) {
         stool = stool || r.stool;
         glucose = glucose || r.glucose;
+        bp = bp || (r.systolic && r.diastolic);
         fluid = fluid || r.fluidIn || r.fluidOut;
     }
     const QList<MedStock::Order> orders = MedStock::orders(pid);
@@ -98,11 +100,14 @@ QVariantList AppController::reportCatalog(qint64 pid)
     add(QStringLiteral("journal"), gValues, tr("Verlauf (alle Messwerte)"), tr("Tabelle mit allen Werten, neueste zuerst"), true, true, !recs.isEmpty());
     add(QStringLiteral("chart"), gValues, tr("Verlaufskurven"), tr("Kurven mit Legende und Kennwerten (DIN A4)"), true, true, !recs.isEmpty());
     add(QStringLiteral("glucose"), gProt, tr("BZ-Tagesprofile"), tr("Blutzuckerwerte je Tag, nach Uhrzeit geordnet"), true, true, glucose);
-    add(QStringLiteral("stool"), gProt, tr("Stuhlprotokoll"), tr("Stuhlgänge mit Bristol-Typ und Angaben, Tage ohne Stuhlgang"), true, true, stool);
-    add(QStringLiteral("fluid"), gProt, tr("Ein- und Ausfuhr (Bilanz)"), tr("Einträge mit Tagessummen und Bilanz"), true, true, fluid);
+    add(QStringLiteral("bpProfile"), gProt, tr("RR-Tagesprofile"), tr("Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten"), true, true, bp);
+    if (!Edition::light()) {             // VitaParms light: kein Stuhlprotokoll, keine Bilanz, keine Wunddokumentation
+        add(QStringLiteral("stool"), gProt, tr("Stuhlprotokoll"), tr("Stuhlgänge mit Bristol-Typ und Angaben, Tage ohne Stuhlgang"), true, true, stool);
+        add(QStringLiteral("fluid"), gProt, tr("Ein- und Ausfuhr (Bilanz)"), tr("Einträge mit Tagessummen und Bilanz"), true, true, fluid);
+    }
     add(QStringLiteral("preplog"), gProt, tr("Protokoll Medikamente stellen"), tr("wann von wem was gestellt wurde"), false, true, preps);
     // Wunddokumentation: je Wunde (offene zuerst)
-    for (const Wounds::Wound &w : Wounds::wounds(pid))
+    for (const Wounds::Wound &w : Edition::light() ? QList<Wounds::Wound>() : Wounds::wounds(pid))
         add(QStringLiteral("wound-%1").arg(w.id), tr("Wunddokumentation"), w.title(),
             w.status == Wounds::Open ? tr("Wundanamnese, Chronik mit Fotos und Flächenverlauf")
                                      : tr("%1 am %2").arg(Wounds::statusNames().value(w.status), QLocale().toString(w.closedAt, QStringLiteral("dd.MM.yyyy"))),
@@ -116,7 +121,8 @@ static QVariantMap optionsFor(const QString &kind, int days, const QVariantMap &
     QVariantMap o = base;
     if (kind.startsWith(QLatin1String("chart"))) {
         o.insert(QStringLiteral("scale"), days > 0 && days <= 1 ? 0 : days > 0 && days <= 7 ? 1 : days > 0 && days <= 31 ? 2 : 3);
-    } else if (kind == QLatin1String("glucose") || kind == QLatin1String("glucoseXlsx")) {
+    } else if (kind == QLatin1String("glucose") || kind == QLatin1String("glucoseXlsx")
+               || kind == QLatin1String("bpProfile") || kind == QLatin1String("bpProfileXlsx")) {
         o.insert(QStringLiteral("days"), days);
         if (!o.contains(QStringLiteral("minValues"))) o.insert(QStringLiteral("minValues"), 1);
     } else {

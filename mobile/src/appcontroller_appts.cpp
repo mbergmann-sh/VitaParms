@@ -308,43 +308,46 @@ bool AppController::setAppointmentDone(qint64 id, bool done)
 // ---------------------------------------------------------------- BZ-Tagesprofil, Quartalswechsel
 
 
-QVariantList AppController::glucoseProfilePoints() const
+static GlucoseProfile::Kind profileKind(bool bp) { return bp ? GlucoseProfile::Kind::BloodPressure : GlucoseProfile::Kind::Glucose; }
+
+QVariantList AppController::glucoseProfilePoints(bool bp) const
 {
     QVariantList l;
-    for (const GlucoseProfile::Point &p : GlucoseProfile::points())
+    for (const GlucoseProfile::Point &p : GlucoseProfile::points(profileKind(bp)))
         l << QVariantMap{ { QStringLiteral("label"), p.label }, { QStringLiteral("context"), p.context },
                           { QStringLiteral("time"), hhmm(p.time) }, { QStringLiteral("active"), p.active } };
     return l;
 }
 
-int AppController::startGlucoseProfile(qint64 pid, const QString &isoDay, const QVariantList &points, bool sound)
+int AppController::startGlucoseProfile(qint64 pid, const QString &isoDay, const QVariantList &points, bool sound, bool bp)
 {
-    QList<GlucoseProfile::Point> pts = GlucoseProfile::points();
+    const GlucoseProfile::Kind k = profileKind(bp);
+    QList<GlucoseProfile::Point> pts = GlucoseProfile::points(k);
     for (int i = 0; i < pts.size() && i < points.size(); ++i) {
         const QVariantMap m = points.at(i).toMap();
         pts[i].active = m.value(QStringLiteral("active")).toBool();
         const QTime t = fromHhmm(m.value(QStringLiteral("time")));
         if (t.isValid()) pts[i].time = t;
     }
-    GlucoseProfile::savePoints(pts);
+    GlucoseProfile::savePoints(pts, k);
     QString err;
-    const int n = GlucoseProfile::create(pid, QDate::fromString(isoDay, Qt::ISODate), pts, sound, &err);
+    const int n = GlucoseProfile::create(pid, QDate::fromString(isoDay, Qt::ISODate), pts, sound, &err, k);
     if (n < 0) setError(err);
     bump();
     return n;
 }
 
-int AppController::stopGlucoseProfile(qint64 pid, const QString &isoDay)
+int AppController::stopGlucoseProfile(qint64 pid, const QString &isoDay, bool bp)
 {
-    const int n = GlucoseProfile::cancel(pid, QDate::fromString(isoDay, Qt::ISODate));
+    const int n = GlucoseProfile::cancel(pid, QDate::fromString(isoDay, Qt::ISODate), profileKind(bp));
     bump();
     return n;
 }
 
-int AppController::glucoseProfileOpen(qint64 pid, const QString &isoDay)
+int AppController::glucoseProfileOpen(qint64 pid, const QString &isoDay, bool bp)
 {
     int n = 0;
-    for (const Appointment &a : GlucoseProfile::existing(pid, QDate::fromString(isoDay, Qt::ISODate)))
+    for (const Appointment &a : GlucoseProfile::existing(pid, QDate::fromString(isoDay, Qt::ISODate), profileKind(bp)))
         if (!a.done) ++n;
     return n;
 }
@@ -359,7 +362,8 @@ QVariantMap AppController::dueProfileMeasurement()
         if (!p) continue;
         return { { QStringLiteral("id"), a.id }, { QStringLiteral("patientId"), a.patientId },
                  { QStringLiteral("context"), GlucoseProfile::contextOf(a) }, { QStringLiteral("label"), GlucoseProfile::labelOf(a) },
-                 { QStringLiteral("subject"), QStringLiteral("%1 %2").arg(GlucoseProfile::subject(), hhmm(a.start.time())) },
+                 { QStringLiteral("subject"), GlucoseProfile::subjectOf(a) },
+                 { QStringLiteral("bp"), GlucoseProfile::kindOf(a) == GlucoseProfile::Kind::BloodPressure },
                  { QStringLiteral("person"), p->displayName() } };
     }
     return {};

@@ -20,7 +20,8 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
     : QDialog(parent), m_kind(kind), m_patient(p)
 {
     setObjectName(kind == Protocols::Kind::Stool ? QStringLiteral("stoolProtocolDialog")
-                  : kind == Protocols::Kind::Glucose ? QStringLiteral("glucoseProtocolDialog") : QStringLiteral("fluidProtocolDialog"));
+                  : kind == Protocols::Kind::Glucose ? QStringLiteral("glucoseProtocolDialog")
+                  : kind == Protocols::Kind::BloodPressure ? QStringLiteral("bpProtocolDialog") : QStringLiteral("fluidProtocolDialog"));
     setWindowTitle(QStringLiteral("%1 – %2").arg(Protocols::title(kind), p.displayName()));
     auto *lay = new QVBoxLayout(this);
     auto *top = new QHBoxLayout;
@@ -51,14 +52,17 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
         m_emptyDays->setChecked(true);
         connect(m_emptyDays, &QCheckBox::toggled, this, &ProtocolDialog::reload);
         top->addWidget(m_emptyDays);
-    } else if (kind == Protocols::Kind::Glucose) {
+    } else if (kind == Protocols::Kind::Glucose || kind == Protocols::Kind::BloodPressure) {
         top->addWidget(new QLabel(tr("Tage mit mindestens"), this));
         m_minValues = new QSpinBox(this);
         m_minValues->setObjectName(QStringLiteral("minValuesSpin"));
         m_minValues->setRange(1, 12);
         m_minValues->setValue(4);
         m_minValues->setSuffix(tr(" Werten"));
-        m_minValues->setToolTip(tr("1 = jeder Tag mit einem Blutzuckerwert; ab 4 Werten: Tagesprofile"));
+        m_minValues->setValue(kind == Protocols::Kind::BloodPressure ? 3 : 4);
+        m_minValues->setToolTip(kind == Protocols::Kind::BloodPressure
+                                    ? tr("1 = jeder Tag mit einem Blutdruckwert; ab 3 Werten: Tagesprofile")
+                                    : tr("1 = jeder Tag mit einem Blutzuckerwert; ab 4 Werten: Tagesprofile"));
         connect(m_minValues, qOverload<int>(&QSpinBox::valueChanged), this, &ProtocolDialog::reload);
         top->addWidget(m_minValues);
     }
@@ -97,6 +101,7 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
         const QString path = ReportPrinter::askExportFile(this, tr("%1 nach Excel exportieren").arg(m_table.title),
                                                           m_kind == Protocols::Kind::Stool ? QStringLiteral("Stuhlprotokoll")
                                                           : m_kind == Protocols::Kind::Glucose ? QStringLiteral("BZ-Tagesprofile")
+                                                          : m_kind == Protocols::Kind::BloodPressure ? QStringLiteral("RR-Tagesprofile")
                                                                                                : QStringLiteral("Bilanz"),
                                                           m_patient, QStringLiteral("xlsx"), tr("Excel-Arbeitsmappe (*.xlsx)"));
         if (path.isEmpty()) return;
@@ -107,7 +112,7 @@ ProtocolDialog::ProtocolDialog(Protocols::Kind kind, const Patient &p, QWidget *
     lay->addWidget(bb);
 
     connect(&Database::instance(), &Database::vitalsChanged, this, [this](qint64 pid) { if (pid == m_patient.id) reload(); });
-    m_period->setCurrentIndex(kind == Protocols::Kind::Glucose ? 2 : kind == Protocols::Kind::Stool ? 1 : 0);
+    m_period->setCurrentIndex(kind == Protocols::Kind::Glucose || kind == Protocols::Kind::BloodPressure ? 2 : kind == Protocols::Kind::Stool ? 1 : 0);
     m_from->setEnabled(false);
     m_to->setEnabled(false);
     dash->setEnabled(false);

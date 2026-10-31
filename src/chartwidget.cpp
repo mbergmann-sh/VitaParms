@@ -967,11 +967,12 @@ void ChartRenderer::paint(QPainter &p, const QRectF &rect, const ChartSpec &spec
         const bool inrBand = panel.id == QLatin1String("inr") && spec.inrHigh > spec.inrLow;
         if (inrBand) { lo = std::min(lo, spec.inrLow); hi = std::max(hi, spec.inrHigh); }
         if (panel.id == QLatin1String("edema")) { lo = 0; hi = Fluid::kEdemaMax; }
+        if (panel.id == QLatin1String("pain")) { lo = 0; hi = 10; }
 
         // y-Achse
         double ylo, yhi;
         const int targetTicks = std::clamp(int(plot.height() / (fmAxis.height() * 1.6)), 3, 7);
-        const double pad = panel.id == QLatin1String("edema") ? 0.0 : (hi - lo) * 0.08;
+        const double pad = (panel.id == QLatin1String("edema") || panel.id == QLatin1String("pain")) ? 0.0 : (hi - lo) * 0.08;
         const QList<double> yt = niceTicks(lo - pad, hi + pad, targetTicks, ylo, yhi);
         auto yOf = [&](double v) { return plot.bottom() - plot.height() * (v - ylo) / (yhi - ylo); };
         int ydec = 0;

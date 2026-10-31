@@ -11,6 +11,9 @@ AbstractButton {
     property color dotColor: "transparent"       // farbiger Punkt vor dem Text (z. B. Priorität)
     implicitHeight: Math.max(Theme.touch - 6, row.implicitHeight + 12)
     implicitWidth: row.implicitWidth + 28
+    // höchstens so breit wie der umgebende Bereich (Smartphone); lange Texte werden dann gekürzt
+    readonly property real textRoom: Math.max(60, (c.parent ? c.parent.width : 4000) - 28 - row.spacing * 2
+                                                  - (c.dotColor.a > 0 ? 20 : 0) - c.colors.length * 18)
     font.family: Theme.family
     font.pixelSize: Theme.fsM
     contentItem: Item {
@@ -25,8 +28,10 @@ AbstractButton {
             }
             Column {
                 anchors.verticalCenter: parent.verticalCenter
-                Text { text: c.text; font.family: c.font.family; font.pixelSize: c.font.pixelSize; color: c.checked ? Theme.ink : Theme.ink2; font.bold: c.checked }
-                Text { visible: c.sub !== ""; text: c.sub; font.family: Theme.family; font.pixelSize: Theme.fsXs; color: Theme.muted }
+                Text { text: c.text; font.family: c.font.family; font.pixelSize: c.font.pixelSize; color: c.checked ? Theme.ink : Theme.ink2; font.bold: c.checked
+                       width: Math.min(implicitWidth, c.textRoom); elide: Text.ElideRight }
+                Text { visible: c.sub !== ""; text: c.sub; font.family: Theme.family; font.pixelSize: Theme.fsXs; color: Theme.muted
+                       width: Math.min(implicitWidth, c.textRoom); elide: Text.ElideRight }
             }
         }
     }

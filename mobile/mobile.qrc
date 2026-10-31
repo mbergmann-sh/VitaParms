@@ -16,6 +16,7 @@
         <file>qml/components/VArea.qml</file>
         <file>qml/components/VButton.qml</file>
         <file>qml/components/VChip.qml</file>
+        <file>qml/components/VCheck.qml</file>
         <file>qml/components/VCombo.qml</file>
         <file>qml/components/VField.qml</file>
         <file>qml/components/VStepper.qml</file>

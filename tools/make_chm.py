@@ -13,6 +13,11 @@ Aufruf:
     python3 tools/make_chm.py ../VitaParms-Manual              → docs/VitaParms-Manual.chm
     python3 tools/make_chm.py ../VitaParms-ErsteSchritte       → docs/VitaParms-ErsteSchritte.chm
     python3 tools/make_chm.py ../VitaParms-GettingStarted      → docs/VitaParms-GettingStarted.chm
+    VitaParms light (\\Ausgabe{light} in der Präambel; Ausgabe nach light/docs):
+    python3 tools/make_chm.py ../VitaParms-light-Benutzerhandbuch  → light/docs/VitaParms-light-Benutzerhandbuch.chm
+    python3 tools/make_chm.py ../VitaParms-light-UserGuide         → light/docs/VitaParms-light-UserGuide.chm
+    python3 tools/make_chm.py ../VitaParms-light-ErsteSchritte     → light/docs/VitaParms-light-ErsteSchritte.chm
+    python3 tools/make_chm.py ../VitaParms-light-GettingStarted    → light/docs/VitaParms-light-GettingStarted.chm
     python3 tools/make_chm.py <Handbuchordner> -o <Datei.chm> [--keep]
 
 Benötigt:
@@ -575,6 +580,26 @@ def sitemap_obj(name, local=None, see=None):
     return '<LI><OBJECT type="text/sitemap">' + ''.join(p) + '</OBJECT>\n'
 
 
+# VitaParms light: Benutzerhandbuch / User Guide und Kurzanleitung
+LIGHT = {
+    ('de', False): dict(name='VitaParms-light-Benutzerhandbuch', title='VitaParms light – Benutzerhandbuch',
+                        hint='Drücken Sie in VitaParms light jederzeit <kbd>F1</kbd>, um diese Hilfe zu öffnen.'),
+    ('en', False): dict(name='VitaParms-light-UserGuide', title='VitaParms light – User Guide', intro='User guide',
+                        hint='Press <kbd>F1</kbd> in VitaParms light at any time to open this help.'),
+    ('de', True): dict(name='VitaParms-light-ErsteSchritte', title='VitaParms light – Erste Schritte',
+                       intro='Kurzanleitung',
+                       hint='In VitaParms light öffnen Sie diese Kurzanleitung unter <i>Hilfe → Erste Schritte</i>, '
+                            'das Benutzerhandbuch mit <kbd>F1</kbd>.'),
+    ('en', True): dict(name='VitaParms-light-GettingStarted', title='VitaParms light – Getting Started',
+                       intro='Quick guide',
+                       hint='In VitaParms light, open this quick guide via <i>Help → Getting Started</i>, '
+                            'and the user guide with <kbd>F1</kbd>.'),
+}
+
+MAIN_FILES = ('handbuch.tex', 'manual.tex', 'benutzerhandbuch.tex', 'user-guide.tex',
+              'erste-schritte.tex', 'getting-started.tex')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('source', help='Ordner des LaTeX-Handbuchs bzw. der Kurzanleitung (handbuch.tex, manual.tex, '
@@ -584,21 +609,25 @@ def main():
     a = ap.parse_args()
 
     src = Path(a.source).resolve()
-    main_tex = next((src / n for n in ('handbuch.tex', 'manual.tex', 'erste-schritte.tex', 'getting-started.tex')
-                     if (src / n).exists()), None)
+    main_tex = next((src / n for n in MAIN_FILES if (src / n).exists()), None)
     if not main_tex:
-        die(f'{src}: weder handbuch.tex, manual.tex, erste-schritte.tex noch getting-started.tex gefunden')
+        die(f'{src}: keine der Hauptdateien {", ".join(MAIN_FILES)} gefunden')
     pre_name = re.search(r'\\input\{(praeambel|preamble)\}', main_tex.read_text(encoding='utf-8')).group(1)
     preamble = strip_comments((src / (pre_name + '.tex')).read_text(encoding='utf-8'))
     babel = re.search(r'\\usepackage\[([^\]]+)\]\{babel\}', preamble).group(1)
     lang = 'de' if 'german' in babel else 'en'
     L = dict(LANG[lang], code=lang)
-    if main_tex.name in ('erste-schritte.tex', 'getting-started.tex'):   # Kurzanleitung
+    guide = main_tex.name in ('erste-schritte.tex', 'getting-started.tex')
+    if guide:                                                            # Kurzanleitung
         L.update(GUIDE[lang])
+    light = re.search(r'\\newcommand\*?\{\\Ausgabe\}\{light\}', preamble) is not None
+    if light:                                                            # VitaParms light
+        L.update(LIGHT[(lang, guide)])
     version = re.search(r'\\newcommand\*?\{\\Version\}\{([^}]+)\}', preamble).group(1)
     L['version_str'] = version
     gpath = re.search(r'\\graphicspath\{\{([^}]+)\}\}', preamble).group(1).rstrip('/')
-    out = Path(a.output) if a.output else Path(__file__).resolve().parent.parent / 'docs' / (L['name'] + '.chm')
+    root = Path(__file__).resolve().parent.parent
+    out = Path(a.output) if a.output else (root / 'light' / 'docs' if light else root / 'docs') / (L['name'] + '.chm')
 
     for tool in ('pandoc', 'pdflatex', 'pdftoppm'):
         if not shutil.which(tool):
@@ -710,12 +739,16 @@ def main():
             tl.append('<ul>' + ''.join(f'<li><a href="{fname}#{i}">{html.escape(t)}</a></li>' for i, t in secs) + '</ul>')
         tl.append('</li>')
     tl.append('</ul></div>')
-    shutil.copy(Path(__file__).resolve().parent.parent / 'resources' / 'icons' / 'vitaparms.png', proj / 'img' / 'logo.png')
-    start = (f'<div class="start"><img src="img/logo.png" width="96" height="96" alt=""><h1>VitaParms</h1>'
+    logo = root / 'light' / 'resources' / 'vitaparms-light.png' if light else root / 'resources' / 'icons' / 'vitaparms.png'
+    shutil.copy(logo, proj / 'img' / 'logo.png')
+    start = (f'<div class="start"><img src="img/logo.png" width="96" height="96" alt="">'
+             f'<h1>{"VitaParms light" if light else "VitaParms"}</h1>'
              f'<p class="sub">{L["intro"]} · {L["version"]} {html.escape(version)}</p><p>{L["hint"]}</p></div>'
              f'<h2>{L["contents"]}</h2>' + ''.join(tl))
     (proj / 'index.htm').write_text(page(L['title'], start, L), encoding='utf-8')
-    (proj / 'vitaparms.css').write_text(CSS, encoding='utf-8')
+    # light: Grün (vpblau der Light-Präambel) statt Blau
+    (proj / 'vitaparms.css').write_text(CSS.replace('#1F78B9', '#00785A').replace('#eaf3fa', '#e6f4ef')
+                                        .replace('#b9d4ea', '#a9d9c8') if light else CSS, encoding='utf-8')
 
     # Inhaltsverzeichnis (.hhc)
     hhc = ['<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">\n<HTML><HEAD></HEAD><BODY>\n'

@@ -53,9 +53,9 @@ Popup {
             Layout.fillWidth: true
             Layout.leftMargin: 32
             spacing: 2
-            CheckBox { id: sheet; text: qsTr("Stammblatt"); checked: true; font.pixelSize: Theme.fsM }
-            CheckBox { id: medPlan; text: qsTr("Medikamentenplan"); checked: true; font.pixelSize: Theme.fsM }
-            CheckBox { id: vitals; text: qsTr("Verlauf und Kurven (90 Tage)"); checked: false; font.pixelSize: Theme.fsM }
+            VCheck { id: sheet; text: qsTr("Stammblatt"); checked: true; font.pixelSize: Theme.fsM }
+            VCheck { id: medPlan; text: qsTr("Medikamentenplan"); checked: true; font.pixelSize: Theme.fsM }
+            VCheck { id: vitals; text: qsTr("Verlauf und Kurven (90 Tage)"); checked: false; font.pixelSize: Theme.fsM }
             VField { id: password; objectName: "sharePassword"; Layout.fillWidth: true; label: qsTr("Passwort (empfohlen)")
                      echoMode: TextInput.Password; placeholder: qsTr("mindestens 8 Zeichen")
                      hint: qsTr("AES-256-verschlüsselt; zu öffnen z. B. mit 7-Zip. Das Passwort nicht in dieselbe Nachricht schreiben.") }

@@ -3,6 +3,7 @@
 #include "appsettings.h"
 #include "bmi.h"
 #include "database.h"
+#include "edition.h"
 #include "formloader.h"
 #include "peakflow.h"
 #include "stool.h"
@@ -98,6 +99,7 @@ VitalDialog::VitalDialog(const Patient &patient, const VitalRecord &record, Mode
 
     configureGlucose();
     setupBreathCounter();
+    setupPainScale();
     setupPeakFlow();
     setupStool();
     setupCareValues();
@@ -207,6 +209,7 @@ void VitalDialog::loadRecord(const VitalRecord &r)
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("edemaSideCombo")))
         c->setCurrentIndex(std::max(0, c->findText(r.edemaSide)));
     FormIO::applyExtra(m_form, r.extra);
+    FormIO::write(m_form, QStringLiteral("painSpin"), iv(r.pain));   // nach applyExtra (ältere Formulare: Zusatzfeld)
     updateBmi();
     updateCareInfo();
     updatePeakFlow();
@@ -253,6 +256,8 @@ bool VitalDialog::collect(VitalRecord &r, bool interactive)
     r.observations = FormIO::readString(m_form, QStringLiteral("observationsEdit"), r.observations);
     if (const auto v = FormIO::read(m_form, QStringLiteral("inrSpin")))
         r.inr = (v->isValid() && !v->isNull()) ? std::optional<double>(std::round(v->toDouble() * 10) / 10) : std::nullopt;
+    r.pain         = readInt(m_form, QStringLiteral("painSpin"), r.pain);
+    if (r.pain && (*r.pain < 0 || *r.pain > 10)) r.pain.reset();
     r.fluidIn      = readInt(m_form, QStringLiteral("fluidInSpin"), r.fluidIn);
     r.fluidOut     = readInt(m_form, QStringLiteral("fluidOutSpin"), r.fluidOut);
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("fluidInKindCombo")))
@@ -282,6 +287,12 @@ bool VitalDialog::collect(VitalRecord &r, bool interactive)
     // Ältere angepasste Formulare mit eigenem Feld "Peak-Flow": Wert in den festen Messwert übernehmen
     static const QRegularExpression peakKey(QStringLiteral("^\\s*(peak[- ]?flow|pef)\\s*$"), QRegularExpression::CaseInsensitiveOption);
     for (auto it = r.extra.begin(); it != r.extra.end();) {
+        if (Database::isPainFieldKey(it.key())) {   // ältere Formulare: eigenes Feld „Schmerz (NRS)“
+            const int v = it.value().isDouble() ? qRound(it.value().toDouble()) : it.value().toString().trimmed().toInt();
+            if (!r.pain && v >= 0 && v <= 10 && (it.value().isDouble() || !it.value().toString().trimmed().isEmpty())) r.pain = v;
+            it = r.extra.erase(it);
+            continue;
+        }
         if (!peakKey.match(it.key()).hasMatch()) { ++it; continue; }
         const int v = it.value().isDouble() ? qRound(it.value().toDouble()) : it.value().toString().toInt();
         if (!r.peakFlow && v > 0) r.peakFlow = v;
@@ -448,6 +459,11 @@ void VitalDialog::setupStool()
 {
     m_stoolCheck = m_form->findChild<QCheckBox *>(QStringLiteral("stoolCheck"));
     m_stoolCombo = m_form->findChild<QComboBox *>(QStringLiteral("stoolCombo"));
+    if ((!m_stoolCheck || !m_stoolCombo) && Edition::light()) {   // VitaParms light erfasst keinen Stuhlgang
+        m_stoolCheck = nullptr;
+        m_stoolCombo = nullptr;
+        return;
+    }
     if (!m_stoolCheck || !m_stoolCombo) {
         QWidget *anchor = m_form->findChild<QWidget *>(QStringLiteral("heightSpin"));
         if (!anchor) anchor = m_form->findChild<QWidget *>(QStringLiteral("weightSpin"));
@@ -735,6 +751,64 @@ static QLayout *layoutContaining(QLayout *l, QWidget *w)
         if (QLayout *sub = l->itemAt(i)->layout())
             if (QLayout *found = layoutContaining(sub, w)) return found;
     return nullptr;
+}
+
+// VitaParms light: Schmerzstärke mit elf Tasten 0–10 statt Drehfeld (große Ziele, Farbe von grün nach rot).
+// Das Drehfeld bleibt verborgen als Datenfeld erhalten; nochmaliges Klicken auf die gewählte Zahl leert den Wert.
+void VitalDialog::setupPainScale()
+{
+    if (!Edition::light()) return;
+    auto *spin = m_form->findChild<QSpinBox *>(QStringLiteral("painSpin"));
+    auto *form = spin && spin->parentWidget() ? qobject_cast<QFormLayout *>(spin->parentWidget()->layout()) : nullptr;
+    if (!form) return;
+    int row = -1;
+    QFormLayout::ItemRole role;
+    form->getWidgetPosition(spin, &row, &role);
+    if (row < 0) return;
+    auto *box = new QWidget(spin->parentWidget());
+    box->setObjectName(QStringLiteral("painScale"));
+    auto *v = new QVBoxLayout(box);
+    v->setContentsMargins(0, 0, 0, 0);
+    v->setSpacing(2);
+    auto *h = new QHBoxLayout;
+    h->setSpacing(3);
+    QList<QPushButton *> buttons;
+    for (int i = 0; i <= 10; ++i) {
+        auto *b = new QPushButton(QString::number(i), box);
+        b->setObjectName(QStringLiteral("pain%1").arg(i));
+        b->setCheckable(true);
+        b->setFocusPolicy(Qt::TabFocus);
+        b->setFixedSize(30, 28);
+        const QColor c = QColor::fromHslF((1.0 - i / 10.0) * 0.33, 0.62, 0.40);
+        b->setStyleSheet(QStringLiteral("QPushButton:checked { background: %1; color: white; font-weight: bold;"
+                                        " border: 1px solid %1; border-radius: 3px; }").arg(c.name()));
+        h->addWidget(b);
+        buttons << b;
+    }
+    h->addStretch();
+    v->addLayout(h);
+    auto *hint = new QLabel(box);
+    hint->setObjectName(QStringLiteral("painHint"));
+    hint->setStyleSheet(QStringLiteral("font-size: 8.5pt;"));
+    v->addWidget(hint);
+    form->removeWidget(spin);
+    spin->setParent(box);
+    spin->hide();
+    form->setWidget(row, QFormLayout::FieldRole, box);
+    if (auto *lbl = qobject_cast<QLabel *>(form->labelForField(box))) lbl->setBuddy(buttons.first());
+    auto sync = [spin, buttons, hint] {
+        const int val = spin->value();
+        for (int i = 0; i < buttons.size(); ++i) buttons[i]->setChecked(i == val);
+        hint->setText(val < 0 ? tr("nicht erfasst – Zahl anklicken (0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz)")
+                      : val == 0 ? tr("kein Schmerz")
+                      : val <= 3 ? tr("leichte Schmerzen")
+                      : val <= 6 ? tr("mäßige Schmerzen")
+                      : tr("starke Schmerzen"));
+    };
+    for (int i = 0; i < buttons.size(); ++i)
+        connect(buttons[i], &QPushButton::clicked, this, [spin, i] { spin->setValue(spin->value() == i ? spin->minimum() : i); });
+    connect(spin, qOverload<int>(&QSpinBox::valueChanged), this, sync);
+    sync();
 }
 
 void VitalDialog::setupBreathCounter()

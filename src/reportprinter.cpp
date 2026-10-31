@@ -2,6 +2,7 @@
 #include "reportprinter.h"
 #include "wounds.h"
 #include "peakflow.h"
+#include "edition.h"
 #include "inr.h"
 #include "fluid.h"
 #include "contacts.h"
@@ -465,8 +466,9 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
     QStringList heads = { tr("Datum/Uhrzeit"), tr("Messzeitpunkt"), tr("Aufnahme") };
     QList<VitalKey> keys = { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse, VitalKey::Temperature,
                              VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose, VitalKey::Weight, VitalKey::Height, VitalKey::Bmi };
-    for (VitalKey k : { VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut, VitalKey::Edema, VitalKey::Stool })
-        if (std::any_of(records.cbegin(), records.cend(), [k](const VitalRecord &r) { return VitalDefs::value(r, k).has_value(); }))
+    if (Edition::light()) keys.removeAll(VitalKey::PeakFlow);
+    for (VitalKey k : { VitalKey::Pain, VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut, VitalKey::Edema, VitalKey::Stool })
+        if ((k == VitalKey::Pain || !Edition::light()) && std::any_of(records.cbegin(), records.cend(), [k](const VitalRecord &r) { return VitalDefs::value(r, k).has_value(); }))
             keys << k;
     for (VitalKey k : keys)
         heads << VitalDefs::header(k);
@@ -842,7 +844,7 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                                                         admission->diastolic ? QString::number(*admission->diastolic) : QStringLiteral("–"));
                 }
                 for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
-                                    VitalKey::Weight, VitalKey::Height, VitalKey::Bmi }) {
+                                    VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::Pain }) {
                     const QString s = VitalDefs::formatted(*admission, k);
                     if (s.isEmpty()) continue;
                     h += th(VitalDefs::header(k));

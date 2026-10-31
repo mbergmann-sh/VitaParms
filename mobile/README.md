@@ -12,7 +12,31 @@ Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesp
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
 mehrere Seiten werden ein PDF –, Dateien übernehmen, teilen als PDF oder verschlüsseltes ZIP),
 Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biologisches Geschlecht im Stammblatt), Stuhlgang nach der Bristol-Skala (Hinweis nach drei Tagen ohne), INR mit Zielbereich, Ein- und Ausfuhr mit Tagesbilanz, Ödeme, PDF/Excel-Ausgaben inkl. Stuhlprotokoll und BZ-Tagesprofilen, Assistent „Medikamente stellen“ mit Vorlesen (Tages- und Wochendosierer, Protokoll), Medikamentenbestand mit Packungen und Verfallsdatum, Bestelllisten (offen → bestellt → geliefert, PDF), Reiter „Berichte“ (alle Ausgaben als PDF/Excel öffnen oder über das Android-Teilen-Menü weitergeben, mehrere zusammen auch als AES-256-verschlüsseltes ZIP), Website vom Tablet aus aktualisieren, Verwaltung (eigenes Passwort, Anmeldekonten, Wiederherstellungsschlüssel, Sicherung als .vpdb teilen/wiederherstellen, „Passwort vergessen?“, Demo-Datenbank), Wunddokumentation (Reiter „Wunden“: Wunde mit Wundanamnese, auch bei Aufnahme, Wundbeurteilung und Verbandwechsel mit Kamerafoto, Flächenverlauf, Hinweise in der Übersicht, PDF/Excel), Abgleich über Website und USB.
+**Neu in 0.28:** Schmerzstärke als eigener Messwert (Datenbankformat 12), RR-Tagesprofil
+(*Messwerte → RR-Tagesprofil*, Auswertung in den Berichten), Kontaktart „Angehörige/r“; auf dem
+Smartphone (Breite unter 600 px) knappere Kopfzeilen (✕ statt „Abbrechen“).
+**0.28.1:** Die Reiterleiste bricht bei wenig Platz in weitere Zeilen um – vorher waren „Krankenakte“
+und „Berichte“ im Hochformat (und je nach Schrift auch quer) nur durch Wischen erreichbar, ohne
+Hinweis. Ankreuzfelder mit langem Text brechen um (`components/VCheck.qml`), lange Chips werden
+gekürzt; alle Seiten passen auch auf 390 px Breite. Der Autopilot prüft Quer-, Hochformat und
+Smartphone auf zu breite Elemente und auf verdeckte, nur wischbare Leisten.
 **Folgt:** iOS.
+
+## VitaParms light (Tablet und Smartphone)
+
+Dieselben Quellen bauen auch die App **VitaParms light** (`../light/mobile/VitaParmsLightMobile.pro`,
+Schalter `VP_LIGHT`, Paket `de.mbergmann.vitaparms.light`, grünes Symbol, eigene Daten). Gemeinsam
+genutzt wird alles über `mobile.pri`; die Light-App setzt nur `ANDROID_PACKAGE_SOURCE_DIR`,
+`VP_MOBILE_DOCS` und `VP_SOURCE_DOCS_DIR`. Unterschiede: eine Person ohne Personenauswahl, keine
+Konten/Rollen, kein Website-Abgleich (nur USB, Port 47812), vereinfachte Messung mit Schmerzskala
+als Zahlenknöpfen, ohne Peak Flow, INR, Bilanz, Ödeme, Stuhlgang und Wunden. Die Oberfläche ist für
+Tablet **und** Smartphone ausgelegt: unter 700 px Breite ☰-Menü statt Seitenleiste, umbrechende
+Überschriften, gekürzte Kopfzeilen. Geprüft mit dem Autopiloten in 1280×800 und 390×844 (Prüfung
+auf zu breite Elemente).
+
+```sh
+qmake6 ../light/mobile/VitaParmsLightMobile.pro && make -j        # bzw. Qt Creator mit Android-Kit
+```
 
 ## Voraussetzungen
 

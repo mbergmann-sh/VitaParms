@@ -100,8 +100,10 @@ Page {
             VButton { objectName: "prepCloseButton"; text: qsTr("Beenden"); kind: "flat"; onClicked: page.close() }
             ColumnLayout {
                 Layout.fillWidth: true; spacing: 0
-                Label { text: qsTr("Medikamente stellen"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.alignment: Qt.AlignHCenter }
-                Label { text: page.summary.name || ""; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignHCenter }
+                Label { text: qsTr("Medikamente stellen"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+                Label { text: page.summary.name || ""; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             }
             VButton { text: qsTr("Protokoll"); kind: "flat"; onClicked: { page.saveNote(); logPopup.open() } }
         }
@@ -114,12 +116,12 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: Theme.gapL; anchors.rightMargin: Theme.gapL
             spacing: Theme.gap
-            VButton { objectName: "prepPrevButton"; text: qsTr("◀ Zurück"); implicitHeight: 60
+            VButton { objectName: "prepPrevButton"; text: win.wide ? qsTr("◀ Zurück") : "◀"; implicitHeight: 60
                       enabled: page.items.length > 0 && (page.finished || page.index > 0); onClicked: page.previous() }
             Item { Layout.fillWidth: true }
-            VButton { objectName: "prepRepeatButton"; text: qsTr("↻ Wiederholen"); implicitHeight: 60
+            VButton { objectName: "prepRepeatButton"; text: win.wide ? qsTr("↻ Wiederholen") : "↻"; implicitHeight: 60
                       enabled: page.items.length > 0; onClicked: page.repeat() }
-            VButton { objectName: "prepNextButton"; kind: "primary"; implicitHeight: 60; leftPadding: 56; rightPadding: 56
+            VButton { objectName: "prepNextButton"; kind: "primary"; implicitHeight: 60; leftPadding: win.wide ? 56 : 20; rightPadding: win.wide ? 56 : 20
                       enabled: page.items.length > 0
                       text: page.finished ? qsTr("Von vorn") : page.index + 1 < page.items.length ? qsTr("Weiter ▶") : qsTr("Fertig ✔")
                       onClicked: page.next() }
@@ -162,7 +164,7 @@ Page {
                          Layout.fillWidth: true; Layout.preferredWidth: 10
                          currentIndex: Math.max(0, (page.voice.voices || []).findIndex(v => v.key === page.voice.voice))
                          onActivated: (i) => { app.setVoice(page.voice.voices[i].key); page.voice = app.speechInfo(); page.repeat() } }
-                CheckBox { id: autoRead; text: qsTr("automatisch vorlesen"); checked: page.voice.available === true
+                VCheck { id: autoRead; text: qsTr("automatisch vorlesen"); checked: page.voice.available === true
                            enabled: page.voice.available === true; font.pixelSize: Theme.fsM }
             }
             Label { visible: page.days > 1; text: qsTr("Wochendosierer: %1").arg(page.session.range || ""); color: Theme.ink2
@@ -295,7 +297,8 @@ Page {
                         Label { text: qsTr("%1 Medikament(e) für %2").arg(page.items.length).arg(page.summary.name || "")
                                         + (page.days > 1 ? "\n" + qsTr("Wochendosierer %1").arg(page.session.range || "") : "")
                                 color: Theme.ink2; horizontalAlignment: Text.AlignHCenter; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                        Label { text: page.logged; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.alignment: Qt.AlignHCenter }
+                        Label { text: page.logged; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
                         VField { id: note; objectName: "prepNoteField"; label: qsTr("Bemerkung"); placeholder: qsTr("optional, z. B. „Wochendosierer KW 43“")
                                  Layout.fillWidth: true; field.onEditingFinished: page.saveNote() }
                         Rectangle {

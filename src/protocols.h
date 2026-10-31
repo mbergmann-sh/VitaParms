@@ -1,4 +1,4 @@
-// VitaParms – Protokolle aus den erfassten Messwerten: Stuhlprotokoll und BZ-Tagesprofile
+// VitaParms – Protokolle aus den erfassten Messwerten: Stuhlprotokoll, BZ- und RR-Tagesprofile, Bilanz
 //
 // Beide Protokolle werden nicht eigens geführt, sondern aus dem Journal zusammengestellt
 // (gefiltert, nach Datum und Uhrzeit sortiert, tabellarisch). Ausgabe als Druck/PDF (HTML)
@@ -15,7 +15,7 @@
 
 namespace Protocols {
 
-enum class Kind { Stool, Glucose, Fluid };
+enum class Kind { Stool, Glucose, Fluid, BloodPressure };
 
 struct Table {
     enum RowFlag { Normal = 0, Muted = 1, Alert = 2, Summary = 3 };
@@ -39,12 +39,14 @@ struct Table {
 struct Options {
     QDate from, to;                  // einschließlich
     bool  showEmptyDays = true;      // Stuhlprotokoll: Tage ohne Stuhlgang aufführen
-    int   minValues = 4;             // BZ: nur Tage mit mindestens so vielen Werten (1 = alle Tage mit BZ)
+    int   minValues = 4;             // BZ/RR: nur Tage mit mindestens so vielen Werten (1 = alle Tage mit Werten)
 };
 
 QString title(Kind k);
 Table stoolProtocol(const QList<VitalRecord> &records, const Options &o);
 Table glucoseProfiles(const QList<VitalRecord> &records, const Options &o);
+// RR-Tagesprofile: je Tag und Zeitpunkt Blutdruck und Puls, Mittelwerte je Zeitpunkt (Morgen-/Abendwerte)
+Table bpProfiles(const QList<VitalRecord> &records, const Options &o);
 // Ein- und Ausfuhr: Einträge chronologisch, je Tag eine Summenzeile mit Bilanz; Trinkmengen aus dem Stammblatt
 Table fluidBalance(const QList<VitalRecord> &records, const Options &o, const Patient &p = {});
 Table build(Kind k, const QList<VitalRecord> &records, const Options &o, const Patient &p = {});

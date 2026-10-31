@@ -78,7 +78,7 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed("") }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed("") }
             Label { text: (page.entryId ? qsTr("Eintrag bearbeiten") : page.full ? qsTr("Wundbeurteilung") : qsTr("Verbandwechsel"))
                     font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             VButton { visible: page.entryId; text: qsTr("Löschen"); kind: "flat"; onClicked: confirmDelete.open() }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "vitaldefs.h"
 #include "appsettings.h"
+#include "edition.h"
 #include "stool.h"
 #include "fluid.h"
 
@@ -14,7 +15,7 @@ static QString tr(const char *s) { return QCoreApplication::translate("VitalDefs
 QList<VitalKey> all()
 {
     return { VitalKey::Pulse, VitalKey::Systolic, VitalKey::Diastolic,
-             VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
+             VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose, VitalKey::Pain,
              VitalKey::Inr, VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::FluidIn, VitalKey::FluidOut,
              VitalKey::Edema, VitalKey::Stool };
 }
@@ -37,6 +38,7 @@ QString key(VitalKey k)
     case VitalKey::FluidIn:     return QStringLiteral("fluidIn");
     case VitalKey::FluidOut:    return QStringLiteral("fluidOut");
     case VitalKey::Edema:       return QStringLiteral("edema");
+    case VitalKey::Pain:        return QStringLiteral("pain");
     }
     return {};
 }
@@ -59,6 +61,7 @@ QString label(VitalKey k)
     case VitalKey::FluidIn:     return tr("Einfuhr");
     case VitalKey::FluidOut:    return tr("Ausfuhr");
     case VitalKey::Edema:       return tr("Ödeme");
+    case VitalKey::Pain:        return tr("Schmerzstärke");
     }
     return {};
 }
@@ -81,6 +84,7 @@ QString shortLabel(VitalKey k)
     case VitalKey::FluidIn:     return tr("Einfuhr");
     case VitalKey::FluidOut:    return tr("Ausfuhr");
     case VitalKey::Edema:       return tr("Ödeme");
+    case VitalKey::Pain:        return tr("Schmerz");
     }
     return {};
 }
@@ -105,6 +109,7 @@ QString unit(VitalKey k)
     case VitalKey::FluidIn:
     case VitalKey::FluidOut:    return tr("ml");
     case VitalKey::Edema:       return tr("Grad");
+    case VitalKey::Pain:        return tr("0–10");
     }
     return {};
 }
@@ -148,6 +153,7 @@ QColor color(VitalKey k)
     case VitalKey::FluidIn:     return QColor(0x00, 0x72, 0xB2); // Blau
     case VitalKey::FluidOut:    return QColor(0xE6, 0x9F, 0x00); // Orange
     case VitalKey::Edema:       return QColor(0x6A, 0x3D, 0x9A); // Violett
+    case VitalKey::Pain:        return QColor(0xB2, 0x22, 0x22); // Ziegelrot
     }
     return Qt::black;
 }
@@ -170,6 +176,7 @@ MarkerShape marker(VitalKey k)
     case VitalKey::FluidIn:     return MarkerShape::Square;
     case VitalKey::FluidOut:    return MarkerShape::Square;
     case VitalKey::Edema:       return MarkerShape::Triangle;
+    case VitalKey::Pain:        return MarkerShape::Circle;
     }
     return MarkerShape::Circle;
 }
@@ -208,6 +215,7 @@ std::optional<double> value(const VitalRecord &r, VitalKey k)
     case VitalKey::FluidIn:     return i(r.fluidIn);
     case VitalKey::FluidOut:    return i(r.fluidOut);
     case VitalKey::Edema:       return i(r.edema);
+    case VitalKey::Pain:        return i(r.pain);
     }
     return std::nullopt;
 }
@@ -218,6 +226,8 @@ QString formatted(const VitalRecord &r, VitalKey k, bool withUnit)
         return r.stool ? Stool::shortText(*r.stool) : QString();
     if (k == VitalKey::Edema)
         return r.edema ? Fluid::edemaShort(*r.edema) : QString();
+    if (k == VitalKey::Pain)                                    // „3/10“ statt „3 0–10“
+        return r.pain ? (withUnit ? QStringLiteral("%1/10").arg(*r.pain) : QString::number(*r.pain)) : QString();
     const auto v = value(r, k);
     if (!v) return {};
     QString s = QLocale().toString(*v, 'f', decimals(k));
@@ -227,6 +237,17 @@ QString formatted(const VitalRecord &r, VitalKey k, bool withUnit)
 
 QList<Panel> panels()
 {
+    if (Edition::light())       // VitaParms light: nur die erfassten Werte
+        return {
+            { QStringLiteral("bp"),      tr("Blutdruck & Puls"),
+              { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse } },
+            { QStringLiteral("temp"),    tr("Körpertemperatur"), { VitalKey::Temperature } },
+            { QStringLiteral("spo2"),    tr("Sauerstoffsättigung"), { VitalKey::SpO2 } },
+            { QStringLiteral("glucose"), tr("Blutzucker"), { VitalKey::Glucose } },
+            { QStringLiteral("pain"),    tr("Schmerzstärke (0–10)"), { VitalKey::Pain } },
+            { QStringLiteral("weight"),  tr("Gewicht"), { VitalKey::Weight } },
+            { QStringLiteral("bmi"),     tr("BMI"), { VitalKey::Bmi } },
+        };
     return {
         { QStringLiteral("bp"),      tr("Blutdruck & Puls"),
           { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse } },
@@ -234,6 +255,7 @@ QList<Panel> panels()
         { QStringLiteral("spo2"),    tr("Sauerstoffsättigung"), { VitalKey::SpO2 } },
         { QStringLiteral("peakflow"), tr("Peak Flow"), { VitalKey::PeakFlow } },
         { QStringLiteral("glucose"), tr("Blutzucker"), { VitalKey::Glucose } },
+        { QStringLiteral("pain"),    tr("Schmerzstärke (0–10)"), { VitalKey::Pain } },
         { QStringLiteral("inr"),     tr("Gerinnung (INR)"), { VitalKey::Inr } },
         { QStringLiteral("weight"),  tr("Gewicht"), { VitalKey::Weight } },
         { QStringLiteral("bmi"),     tr("BMI"), { VitalKey::Bmi } },

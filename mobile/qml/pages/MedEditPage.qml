@@ -62,7 +62,7 @@ Page {
         RowLayout {
             anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
             spacing: Theme.gapS
-            VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: page.closed("") }
+            VButton { text: win.phone ? "✕" : qsTr("Abbrechen"); Accessible.name: qsTr("Abbrechen"); kind: "flat"; font.pixelSize: win.phone ? Theme.fsL + 6 : Theme.fsM; leftPadding: win.phone ? 8 : 18; rightPadding: win.phone ? 8 : 18; onClicked: page.closed("") }
             Label { text: page.medId ? qsTr("Medikament bearbeiten") : qsTr("Neues Medikament"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink
                     Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
             VButton { visible: page.medId; text: qsTr("Löschen"); kind: "flat"; onClicked: confirmDelete.open() }
@@ -145,7 +145,7 @@ Page {
                       + "\n" + qsTr("„Medikamente stellen“ nennt das Medikament nur an diesen Tagen.")
             }
             SectionTitle { text: qsTr("Erinnerung"); visible: page.canRemind }
-            CheckBox { id: remind; objectName: "remindCheck"; visible: page.canRemind; checked: page.m.remind === true
+            VCheck { id: remind; objectName: "remindCheck"; visible: page.canRemind; checked: page.m.remind === true
                        text: qsTr("An Einnahme erinnern (in die Terminliste übernehmen)"); font.pixelSize: Theme.fsM }
             ColumnLayout {
                 visible: page.canRemind && remind.checked
@@ -198,7 +198,7 @@ Page {
             Repeater {
                 id: classRep
                 model: page.m.classes
-                delegate: CheckBox {
+                delegate: VCheck {
                     readonly property var pv: (page.preview.classes || [])[index] || ({})
                     readonly property bool overridden: modelData.on !== modelData.auto
                     Layout.fillWidth: true
@@ -207,7 +207,7 @@ Page {
                     text: modelData.name + (pv.auto && pv.reason ? "  (" + (pv.uncertain ? qsTr("ggf. ") : "") + pv.reason + ")" : "")
                 }
             }
-            CheckBox { id: archived; objectName: "archivedCheck"; text: qsTr("Abgesetzt (nicht mehr eingenommen, ins Archiv)"); checked: page.m.archived === true; font.pixelSize: Theme.fsM }
+            VCheck { id: archived; objectName: "archivedCheck"; text: qsTr("Abgesetzt (nicht mehr eingenommen, ins Archiv)"); checked: page.m.archived === true; font.pixelSize: Theme.fsM }
             VField { id: stopReason; visible: archived.checked; label: qsTr("Grund des Absetzens"); text: page.m.stopReason || ""
                      placeholder: qsTr("z. B. Nebenwirkung, Therapie beendet, ersetzt durch …"); Layout.fillWidth: true
                      hint: !end.isoDate ? qsTr("Als Ende wird heute eingetragen.") : "" }

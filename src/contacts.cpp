@@ -127,6 +127,11 @@ QString Contact::summary() const
     return nonEmpty(l).join(QStringLiteral(", "));
 }
 
+QList<int> kindOrder()
+{
+    return { Insurance, FamilyDoctor, Specialist, Clinic, CareService, Pharmacy, Relative, Emergency, Other };
+}
+
 QString kindName(int kind)
 {
     switch (kind) {
@@ -137,6 +142,7 @@ QString kindName(int kind)
     case CareService:  return tr("Pflegedienst");
     case Pharmacy:     return tr("Apotheke");
     case Emergency:    return tr("Notfallkontakt");
+    case Relative:     return tr("Angehörige/r");
     default:           return tr("Sonstiger Kontakt");
     }
 }
@@ -153,7 +159,7 @@ QString newUid() { return QUuid::createUuid().toString(QUuid::WithoutBraces); }
 void sort(QList<Contact> &contacts)
 {
     std::stable_sort(contacts.begin(), contacts.end(), [](const Contact &a, const Contact &b) {
-        if (a.kind != b.kind) return a.kind < b.kind;
+        if (a.kind != b.kind) return kindOrder().indexOf(a.kind) < kindOrder().indexOf(b.kind);
         return QString::localeAwareCompare(a.name, b.name) < 0;
     });
 }

@@ -5,7 +5,7 @@
     <DisplayName xml:lang="de">Handbücher und Erste Schritte (PDF, Windows-Hilfe)</DisplayName>
     <Description>German and English user manual (F1 in VitaParms) and quick guide “Getting Started” (Help menu)</Description>
     <Description xml:lang="de">Deutsches und englisches Handbuch (F1 in VitaParms) und Kurzanleitung „Erste Schritte“ (Menü Hilfe)</Description>
-    <Version>0.27.0</Version>
+    <Version>0.28.1</Version>
     <ReleaseDate>2026-10-29</ReleaseDate>
     <Default>true</Default>
     <SortingPriority>50</SortingPriority>

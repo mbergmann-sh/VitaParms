@@ -33,8 +33,8 @@ Page {
             spacing: Theme.gap
             RowLayout {
                 spacing: 14
-                Image { source: "qrc:/icons/vitaparms.png"; sourceSize.width: 56; sourceSize.height: 56 }
-                Label { text: "VitaParms"; font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
+                Image { source: app.light ? "qrc:/icons/vitaparms-light.png" : "qrc:/icons/vitaparms.png"; sourceSize.width: 56; sourceSize.height: 56 }
+                Label { text: app.appName; font.pixelSize: Theme.fsXxl; font.bold: true; color: Theme.ink }
             }
             VCombo { id: user; label: qsTr("Konto"); model: page.accounts; Layout.fillWidth: true
                      Component.onCompleted: currentIndex = page.accounts.length ? 0 : -1 }
@@ -88,7 +88,7 @@ Page {
 
     Label {
         anchors.bottom: parent.bottom; anchors.horizontalCenter: parent.horizontalCenter; anchors.bottomMargin: 20
-        text: qsTr("VitaParms %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt").arg(app.version)
+        text: qsTr("%2 %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt").arg(app.version).arg(app.appName)
         color: Theme.muted; font.pixelSize: Theme.fsXs
     }
 }

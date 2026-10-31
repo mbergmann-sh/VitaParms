@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERZEUGT von qmake aus package.xml.in – Änderungen bitte dort vornehmen -->
+<Package>
+    <DisplayName>VitaParms light</DisplayName>
+    <DisplayName xml:lang="de">VitaParms light</DisplayName>
+    <Description>The simple vital signs diary for one person: readings, charts, medication, documents and appointments</Description>
+    <Description xml:lang="de">Das einfache Vitalwerte-Tagebuch für eine Person: Messwerte, Grafiken, Medikamente, Dokumente und Termine</Description>
+    <Version>0.28.1</Version>
+    <ReleaseDate>2026-10-29</ReleaseDate>
+    <Default>true</Default>
+    <ForcedInstallation>true</ForcedInstallation>
+    <SortingPriority>100</SortingPriority>
+    <Licenses>
+        <License name="Lizenz und Haftungshinweis / Licence and disclaimer" file="license.txt"/>
+    </Licenses>
+    <Script>installscript.qs</Script>
+</Package>
+

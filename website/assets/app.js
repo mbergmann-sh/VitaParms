@@ -514,7 +514,7 @@
     if (!p.rs.length) { view.append(h('p', { class: 'empty', text: L.noReadings })); }
     else {
       const strip = h('div', { class: 'strip' });
-      const order = ['systolic', 'pulse', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow', 'inr', 'edema'];
+      const order = ['systolic', 'pulse', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow', 'pain', 'inr', 'edema'];
       for (const key of order) {
         const def = state.vitals[key];
         if (!def) continue;
@@ -1028,7 +1028,8 @@
     const band = pd.id === 'inr' && p.inr ? p.inr : null;     // INR-Zielbereich
     if (band) { lo = Math.min(lo, band[0]); hi = Math.max(hi, band[1]); }
     if (pd.id === 'edema') { lo = 0; hi = 4; }
-    const pad = pd.id === 'edema' ? 0 : (hi - lo) * 0.08;
+    if (pd.id === 'pain') { lo = 0; hi = 10; }
+    const pad = pd.id === 'edema' || pd.id === 'pain' ? 0 : (hi - lo) * 0.08;
     const yt = niceTicks(lo - pad, hi + pad, Math.max(3, Math.min(6, Math.floor(ph / 34))));
     const yOf = (v) => top + ph - ((v - yt.lo) / (yt.hi - yt.lo)) * ph;
     if (band) {

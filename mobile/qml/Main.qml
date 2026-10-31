@@ -10,12 +10,13 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 800
-    title: "VitaParms"
+    title: app.appName
     color: Theme.paper
     font.family: Theme.family
     font.pixelSize: Theme.fsM
 
     readonly property bool wide: width >= 900
+    readonly property bool phone: width < 600     // Smartphone hochkant: knappere Kopfzeilen
     function toast(msg, error) { toastItem.show(msg, error) }
 
     onActiveFocusItemChanged: app.userActivity()
@@ -74,7 +75,7 @@ ApplicationWindow {
     }
     function measureProfile(m) {
         stack.push(profileMeasureComp, { personId: m.patientId, presetContext: m.context,
-                                         presetObservation: m.subject, profileApptId: m.id })
+                                         presetObservation: m.subject, profileApptId: m.id, presetBp: !!m.bp })
     }
     Timer { interval: 60000; repeat: true; running: app.loggedIn; triggeredOnStart: true; onTriggered: win.checkDue() }
     Component { id: profileMeasureComp; MeasurePage { onClosed: (msg) => { stack.pop(); if (msg) win.toast(msg) } } }

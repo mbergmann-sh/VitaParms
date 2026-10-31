@@ -69,6 +69,11 @@ die gar kein Format mitsenden – mit **HTTP 426** ab. Ein nicht aktualisiertes 
 Tabellen überschreiben, die es nicht kennt. **Nach dem Update auf 0.27 den Ordner `api/` auf dem
 Server ersetzen** und alle Geräte (Desktop und Tablet) aktualisieren, sonst ist kein Abgleich möglich.
 
+**0.28 (Datenbankformat 12):** neue Spalte `vitals.pain` (Schmerzstärke). Die Website-Ansicht
+zeigt sie als eigene Kurve und im Verlauf; `api/` ist unverändert, der Versionsschutz verlangt aber,
+dass **alle Geräte auf 0.28** aktualisiert werden. `assets/app.js` bitte mit hochladen.
+VitaParms light hat keinen Website-Abgleich.
+
 Ab VitaParms 0.19 gehen die **Inhalte der Krankenakte** (PDF) getrennt über `api/files.php`:
 einzeln, nur die fehlenden, auf dem Gerät mit AES-256 verschlüsselt, abgelegt in `sync/files/`
 unter einer Kennung, die nichts über das Dokument verrät. Nicht mehr gebrauchte Inhalte werden

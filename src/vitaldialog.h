@@ -54,6 +54,7 @@ private:
     void warnCareValues(const VitalRecord &r);   // nach dem Speichern: INR, Ödeme, Gewicht, Trinkmenge
     void setupStool();                 // Stuhlgang: Häkchen + Bristol-Auswahl (auch in älteren Formularen)
     void setupBreathCounter();         // 1-Minuten-Zähluhr neben "Atemfrequenz"
+    void setupPainScale();             // VitaParms light: Schmerzstärke 0–10 als Tasten (grün → rot)
     void startBreathCount();
     void stopBreathCount(bool finished);
     void updateBreathCount();

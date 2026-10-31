@@ -57,11 +57,11 @@ Page {
                       onClicked: { if (app.changeOwnPassword(oldPw.text, newPw.text, newPw2.text)) { oldPw.text = ""; newPw.text = ""; newPw2.text = ""; win.toast(qsTr("Passwort geändert.")) } else win.toast(app.lastError, true) } }
 
             // ---- Konten (Administrator)
-            SectionTitle { visible: app.isAdmin; text: qsTr("Anmeldekonten") }
-            Label { visible: app.isAdmin; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+            SectionTitle { visible: app.isAdmin && !app.light; text: qsTr("Anmeldekonten") }
+            Label { visible: app.isAdmin && !app.light; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
                     text: qsTr("Administratoren verwalten Konten, Sicherungen und die Website; Anwender erfassen und sehen Daten. Die Konten gelten für diese Datenbank – nach dem nächsten Abgleich bzw. Kopieren der Datenbank auch am Computer (Schlüsseldatei).") }
             Repeater {
-                model: app.isAdmin ? page.accounts : []
+                model: app.isAdmin && !app.light ? page.accounts : []      // VitaParms light: ein Konto, keine Rollen
                 delegate: Rectangle {
                     objectName: "accountRow"
                     Layout.fillWidth: true
@@ -85,7 +85,7 @@ Page {
                 }
             }
             Rectangle {
-                visible: app.isAdmin
+                visible: app.isAdmin && !app.light
                 Layout.fillWidth: true
                 implicitHeight: addCol.implicitHeight + 28
                 radius: Theme.radius; color: Theme.brandWash
@@ -103,7 +103,7 @@ Page {
                         VField { id: accPw; label: qsTr("Passwort"); echoMode: TextInput.Password; Layout.fillWidth: true }
                         VField { id: accPw2; label: qsTr("Passwort wiederholen"); echoMode: TextInput.Password; Layout.fillWidth: true }
                     }
-                    CheckBox { id: accAdmin; text: qsTr("Administrator"); font.pixelSize: Theme.fsM }
+                    VCheck { id: accAdmin; text: qsTr("Administrator"); font.pixelSize: Theme.fsM }
                     VButton { objectName: "addAccountButton"; text: qsTr("Konto anlegen"); iconText: "+"; enabled: accName.text !== "" && accPw.text !== ""
                               onClicked: { if (app.addAccount(accName.text, accPw.text, accPw2.text, accAdmin.checked)) { win.toast(qsTr("Konto „%1“ angelegt.").arg(accName.text)); accName.text = ""; accPw.text = ""; accPw2.text = ""; accAdmin.checked = false } else win.toast(app.lastError, true) } }
                 }

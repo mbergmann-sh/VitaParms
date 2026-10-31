@@ -3712,3 +3712,144 @@ EN.update({
     'Ordner ö&ffnen': '&Open folder',
     'Sicherung erstellt:\n%1': 'Backup created:\n%1',
 })
+
+# ---- v0.28.0: VitaParms light, Schmerzskala, RR-Tagesprofil, Import aus VitaParms light
+EN.update({
+    'Anmeldung einrichten': 'Set up sign-in',
+    '&Ihr Name:': '&Your name:',
+    'Anmeldung und Passwort': 'Sign-in and password',
+    'Angemeldet als <b>%1</b>. Das Passwort schützt die verschlüsselte Datenbank. Bewahren Sie den Wiederherstellungsschlüssel sicher auf – er öffnet die Datenbank, falls Sie das Passwort vergessen.':
+        'Signed in as <b>%1</b>. The password protects the encrypted database. Keep the recovery key in a safe place – it opens the database if you forget the password.',
+    'Angehörige/r': 'Relative',
+    '%1 einrichten': 'Set up %1',
+    'Morgens nach dem Aufstehen (vor den Tabletten)': 'In the morning after getting up (before tablets)',
+    'Vormittags': 'Late morning',
+    'vormittags': 'late morning',
+    'Mittags': 'Midday',
+    'Nachmittags': 'Afternoon',
+    'nachmittags': 'afternoon',
+    'Abends': 'Evening',
+    'RR-Tagesprofil': 'BP day profile',
+    'Blutdruck und Puls messen: %1 – nach 5 Minuten Ruhe im Sitzen, immer am selben Arm':
+        'Measure blood pressure and pulse: %1 – after resting seated for 5 minutes, always on the same arm',
+    'VitaParms erinnert zu den gewählten Zeitpunkten an die Blutdruckmessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Messen Sie nach 5 Minuten Ruhe im Sitzen und immer am selben Arm. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich aufs Tablet).':
+        'VitaParms reminds you to measure your blood pressure at the chosen times and, if you like, opens the entry window with the matching time point right away. Measure after resting seated for 5 minutes and always on the same arm. The reminders are appointments in the planner (and reach the tablet with the synchronisation).',
+    'VitaParms erinnert zu den gewählten Zeitpunkten an die Blutdruckmessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Messen Sie nach 5 Minuten Ruhe im Sitzen und immer am selben Arm. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich auf den Computer).':
+        'VitaParms reminds you to measure your blood pressure at the chosen times and, if you like, opens the entry form with the matching time point right away. Measure after resting seated for 5 minutes and always on the same arm. The reminders are appointments in the planner (and reach the computer with the synchronisation).',
+    'Das ist die geöffnete Datenbank selbst.': 'This is the open database itself.',
+    'Die Datenbank lässt sich mit diesem Konto bzw. Schlüssel nicht öffnen.': 'The database cannot be opened with this account or key.',
+    'Vor dem Import konnte keine Sicherung angelegt werden – der Import wurde nicht ausgeführt.\n%1':
+        'No backup could be created before the import – the import was not carried out.\n%1',
+    'Stammblatt anlegen': 'Create master record',
+    '<p>Willkommen! Bitte legen Sie zuerst Ihr <b>Stammblatt</b> an: Name, Geburtsdatum und – wenn Sie möchten – Adresse, Ärzte, Angehörige, Diagnosen und Medikamente.</p><p>Sie können alles später unter <i>Person → Stammblatt</i> ergänzen.</p>':
+        '<p>Welcome! Please create your <b>master record</b> first: name, date of birth and – if you like – address, doctors, relatives, diagnoses and medication.</p><p>You can add everything later under <i>Person → Master record</i>.</p>',
+    'Datenbank der &Light-Version importieren…': 'Import database of the &light edition…',
+    'Übernimmt die Person aus VitaParms light mit allen Daten als weitere Person in diese Datenbank':
+        'Adds the person from VitaParms light with all data as a further person to this database',
+    '&RR-Tagesprofil…': 'B&P day profile…',
+    'Blutdruck und Puls zu sechs Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster':
+        'Measure blood pressure and pulse at six times of a day – with reminders and entry window',
+    'RR-Tages&profile…': 'BP day &profiles…',
+    'Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten je Zeitpunkt':
+        'Blood pressure and pulse per day by profile time, with averages per time',
+    '&Passwort und Wiederherstellungsschlüssel…': '&Password and recovery key…',
+    '<b>Noch kein Stammblatt.</b> Legen Sie über <i>Person → Stammblatt</i> Ihre persönlichen Daten an.':
+        '<b>No master record yet.</b> Enter your personal details via <i>Person → Master record</i>.',
+    'RR-Tagesprofil: %1 Erinnerung(en) gestellt.': 'BP day profile: %1 reminder(s) set.',
+    'Datenbank der Light-Version importieren': 'Import database of the light edition',
+    'Datenbank von VitaParms light (*.sqlite *.vpdb);;Alle Dateien (*)': 'VitaParms light database (*.sqlite *.vpdb);;All files (*)',
+    'Die Datei lässt sich nicht lesen:\n%1': 'The file cannot be read:\n%1',
+    'Melden Sie sich mit dem Konto von <b>VitaParms light</b> an, um die Datenbank<br>%1<br>zu entsperren.':
+        'Sign in with the <b>VitaParms light</b> account to unlock the database<br>%1',
+    '&Name:': '&Name:',
+    '&Entsperren': '&Unlock',
+    'Datenbank von VitaParms light entsperren': 'Unlock VitaParms light database',
+    'Zur Datenbank\n%1\nfehlt die Schlüsseldatei (%2). Sie lässt sich nur mit dem Wiederherstellungsschlüssel von VitaParms light öffnen.':
+        'The key file (%2) of the database\n%1\nis missing. It can only be opened with the VitaParms light recovery key.',
+    '<p>Die Person aus VitaParms light wird mit Stammblatt, Messungen, Medikamenten, Terminen, Kontakten und Dokumenten als <b>weitere Person</b> in diese Datenbank übernommen. Vorhandene Personen bleiben unverändert.</p><p>Vorher legt VitaParms eine Sicherung dieser Datenbank an. Jetzt importieren?</p>':
+        '<p>The person from VitaParms light is added to this database as a <b>further person</b>, with master record, readings, medication, appointments, contacts and documents. Existing persons remain unchanged.</p><p>VitaParms first creates a backup of this database. Import now?</p>',
+    'Die Daten waren schon übernommen – %1 Eintrag/Einträge aktualisiert, %2 neu.': 'The data had already been imported – %1 entry/entries updated, %2 new.',
+    'Übernommen: %1 (%2 Einträge).': 'Imported: %1 (%2 entries).',
+    'Sicherung vor dem Import: %1': 'Backup before the import: %1',
+    '<p><b>%1 ist ein persönliches Tagebuch für gesundheitsbezogene Messwerte – kein Medizinprodukt.</b></p><p>Das Programm stellt keine Diagnosen, gibt keine Therapieempfehlungen und ersetzt keine ärztliche Beratung. Berechnete Werte (z.&nbsp;B. BMI) und Grafiken dienen nur der Übersicht. Die Verwendung erfolgt auf eigene Gefahr.</p><p>Bei Beschwerden oder auffälligen Werten wenden Sie sich bitte an Ihre Ärztin oder Ihren Arzt, im Notfall an den Notruf 112.</p>':
+        '<p><b>%1 is a personal diary for health-related readings – not a medical device.</b></p><p>The program makes no diagnoses, gives no treatment recommendations and does not replace medical advice. Calculated values (e.g. BMI) and charts are for overview only. Use at your own risk.</p><p>If you have complaints or unusual readings, please contact your doctor; in an emergency call 112 (UK: 999).</p>',
+    '%1 – Demo': '%1 – Demo',
+    'Über %1': 'About %1',
+    '<h3>%3 %1</h3><p>Tagebuch für Vitalwerte mit Verlauf, Grafiken, Druck, PDF- und Excel-Export.</p><p>Copyright © 2026 Michael Bergmann<br>Freie Software unter der <b>MIT-Lizenz</b>.</p><p>Erstellt mit Qt %2 (LGPLv3).</p><p><small>Kein Medizinprodukt – Verwendung auf eigene Gefahr.</small></p>':
+        '<h3>%3 %1</h3><p>Vital signs diary with history, charts, printing, PDF and Excel export.</p><p>Copyright © 2026 Michael Bergmann<br>Free software under the <b>MIT licence</b>.</p><p>Built with Qt %2 (LGPLv3).</p><p><small>Not a medical device – use at your own risk.</small></p>',
+    'Ü&ber %1…': '&About %1…',
+    'Benutzerhandbuch': 'User Guide',
+    'Ärzte && Angehörige': 'Doctors && relatives',
+    'Ärzte, Angehörige und weitere Kontakte': 'Doctors, relatives and further contacts',
+    '1 = jeder Tag mit einem Blutdruckwert; ab 3 Werten: Tagesprofile': '1 = every day with a blood pressure reading; 3 or more: day profiles',
+    'RR-Tagesprofile': 'BP day profiles',
+    'Im Zeitraum gibt es keinen Tag mit mindestens %1 Blutdruckwerten.': 'There is no day with at least %1 blood pressure readings in the period.',
+    'Im Zeitraum sind keine Blutdruckwerte eingetragen.': 'No blood pressure readings in the period.',
+    'Tage: %1, Blutdruckwerte: %2, Mittelwert %3 mmHg': 'Days: %1, blood pressure readings: %2, average %3 mmHg',
+    'Puls %1/min': 'pulse %1/min',
+    '%1 Wert(e) ab 135/85 mmHg': '%1 reading(s) of 135/85 mmHg or more',
+    'Angaben: systolisch/diastolisch in mmHg, P = Puls je Minute, in Klammern die Uhrzeit. Zuordnung nach dem Messzeitpunkt der Messung, sonst zum nächstgelegenen Profilzeitpunkt (bis 75 Minuten Abstand), sonst unter „weitere Werte“.':
+        'Values: systolic/diastolic in mmHg, P = pulse per minute, time in brackets. Assigned by the time point of the reading, otherwise to the nearest profile time (up to 75 minutes apart), otherwise under “further readings”.',
+    'Zur Orientierung: Bei der Selbstmessung gelten Mittelwerte ab 135/85 mmHg als erhöht. Die Beurteilung ist Sache der Ärztin bzw. des Arztes.':
+        'For orientation: in home measurement, averages of 135/85 mmHg or more count as raised. The assessment is up to your doctor.',
+    'Hervorgehoben: Werte ab 160 systolisch oder 100 diastolisch sowie unter 100 systolisch.':
+        'Highlighted: readings of 160 systolic or 100 diastolic and above, and below 100 systolic.',
+    '<p><b>Willkommen bei %1!</b></p><p>%1 ist ein <b>persönliches Tagebuch</b> für gesundheitsbezogene Messwerte – <b>kein Medizinprodukt</b>. Es stellt keine Diagnosen und ersetzt keine ärztliche Beratung. Die Verwendung erfolgt auf eigene Gefahr.</p><p>Die Daten werden verschlüsselt gespeichert. Bewahren Sie den Wiederherstellungsschlüssel sicher auf und legen Sie regelmäßig Sicherungen an.</p>':
+        '<p><b>Welcome to %1!</b></p><p>%1 is a <b>personal diary</b> for health-related readings – <b>not a medical device</b>. It makes no diagnoses and does not replace medical advice. Use at your own risk.</p><p>The data are stored encrypted. Keep the recovery key in a safe place and make regular backups.</p>',
+    '<p><b>Neue, verschlüsselte Datenbank</b></p><p>Ihre Daten werden verschlüsselt gespeichert. Wählen Sie einen Namen und ein Passwort – damit melden Sie sich bei jedem Start an.</p>':
+        '<p><b>New, encrypted database</b></p><p>Your data are stored encrypted. Choose a name and a password – you sign in with them every time you start.</p>',
+    'Schmerzstärke': 'Pain intensity',
+    '0–10': '0–10',
+    'Schmerzstärke (0–10)': 'Pain intensity (0–10)',
+    'nicht erfasst – Zahl anklicken (0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz)': 'not recorded – click a number (0 = no pain, 10 = worst pain imaginable)',
+    'leichte Schmerzen': 'mild pain',
+    'mäßige Schmerzen': 'moderate pain',
+    'starke Schmerzen': 'severe pain',
+    '&Schmerzstärke (0–10)': '&Pain intensity (0–10)',
+    'Numerische Rating-Skala: 0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz': 'Numeric rating scale: 0 = no pain, 10 = worst pain imaginable',
+})
+CONTEXT.update({
+    ('VitalDefs', 'Schmerz'): 'Pain',
+})
+EN.update({
+    'Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten': 'Blood pressure and pulse per day by profile time, with averages',
+    'Willkommen bei %1': 'Welcome to %1',
+    '%1 ist ein <b>persönliches Tagebuch</b> für gesundheitsbezogene Messwerte – <b>kein Medizinprodukt</b>. Es stellt keine Diagnosen und ersetzt keine ärztliche Beratung. Die Verwendung erfolgt auf eigene Gefahr.':
+        '%1 is a <b>personal diary</b> for health-related readings – <b>not a medical device</b>. It makes no diagnoses and does not replace medical advice. Use at your own risk.',
+    'Die Daten werden auf diesem Gerät verschlüsselt gespeichert und – wenn Sie möchten – über das USB-Kabel mit VitaParms light am Computer abgeglichen.':
+        'The data are stored encrypted on this device and – if you like – synchronised with VitaParms light on the computer via the USB cable.',
+    'Starten': 'Start',
+    'Menü': 'Menu',
+    'Mit dem Computer abgleichen (USB)': 'Synchronise with the computer (USB)',
+    'Willkommen!': 'Welcome!',
+    'Legen Sie zuerst Ihr Stammblatt an: Name, Geburtsdatum und – wenn Sie möchten – Ärzte, Angehörige, Diagnosen und Medikamente.':
+        'First create your master record: name, date of birth and – if you like – doctors, relatives, diagnoses and medication.',
+    'RR-Tagesprofile (PDF)': 'BP day profiles (PDF)',
+    'RR-Tagesprofile (Excel)': 'BP day profiles (Excel)',
+    '%2 %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt': '%2 %1 – personal health diary, not a medical device',
+    'Schmerzstärke (0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz)': 'Pain intensity (0 = no pain, 10 = worst pain imaginable)',
+    'Passwort ändern, Wiederherstellungsschlüssel, Sicherung und Demo-Datenbank.': 'Change password, recovery key, backup and demo database.',
+    'Abgleich mit dem Computer (USB-Kabel)': 'Synchronisation with the computer (USB cable)',
+    'Tablet oder Smartphone per USB-Kabel an den Computer mit VitaParms light anschließen und die Daten abgleichen.':
+        'Connect the tablet or smartphone to the computer running VitaParms light with a USB cable and synchronise the data.',
+    'An den Quartalswechsel erinnern': 'Remind me of the new quarter',
+    'Zu Beginn jedes Quartals: KV-Karte in den Praxen einlesen lassen.': 'At the start of each quarter: have the health insurance card read at the practices.',
+    '%3 %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt. Open Source (MIT-Lizenz). Angemeldet als %2.':
+        '%3 %1 – personal health diary, not a medical device. Open source (MIT licence). Signed in as %2.',
+})
+EN.update({
+    '&Benutzerhandbuch': '&User Guide',
+    # 0.28: Programmname als Platzhalter (VitaParms / VitaParms light)
+    '%1 erinnert zu den gewählten Zeitpunkten an die Blutzuckermessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich aufs Tablet).':
+        '%1 reminds you to measure your blood glucose at the selected times and, if you like, opens the entry window with the matching time point right away. The reminders appear as appointments in the planner (and reach the tablet when synchronising).',
+    '%1 erinnert zu den gewählten Zeitpunkten an die Blutzuckermessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich auf den Computer).':
+        '%1 reminds you to measure your blood glucose at the selected times and, if you like, opens the entry form with the matching time point right away. The reminders appear as appointments in the planner (and reach the computer when synchronising).',
+    '%1 erinnert zu den gewählten Zeitpunkten an die Blutdruckmessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Messen Sie nach 5 Minuten Ruhe im Sitzen und immer am selben Arm. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich aufs Tablet).':
+        '%1 reminds you to measure your blood pressure at the chosen times and, if you like, opens the entry window with the matching time point right away. Measure after resting seated for 5 minutes and always on the same arm. The reminders are appointments in the planner (and reach the tablet with the synchronisation).',
+    '%1 erinnert zu den gewählten Zeitpunkten an die Blutdruckmessung und öffnet auf Wunsch gleich das Erfassungsfenster mit dem passenden Messzeitpunkt. Messen Sie nach 5 Minuten Ruhe im Sitzen und immer am selben Arm. Die Erinnerungen stehen als Termine im Terminplaner (und kommen mit dem Abgleich auf den Computer).':
+        '%1 reminds you to measure your blood pressure at the chosen times and, if you like, opens the entry form with the matching time point right away. Measure after resting seated for 5 minutes and always on the same arm. The reminders are appointments in the planner (and reach the computer with the synchronisation).',
+    # 0.28.1: Tagesprofil für die gewählte Person
+    'Für: %1': 'For: %1',
+    'BZ-Tagesprofil für %1: %2 Erinnerung(en) gestellt.': 'BG day profile for %1: %2 reminder(s) set.',
+    'RR-Tagesprofil für %1: %2 Erinnerung(en) gestellt.': 'BP day profile for %1: %2 reminder(s) set.',
+})

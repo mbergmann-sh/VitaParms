@@ -32,6 +32,9 @@
 #include <QTimer>
 #include <QDate>
 #include <functional>
+#include <algorithm>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 static void wait(int ms)
 {
@@ -39,6 +42,227 @@ static void wait(int ms)
     QTimer::singleShot(ms, &l, &QEventLoop::quit);
     l.exec();
 }
+
+// Breitenprüfung: Elemente mit Text, die über den rechten Rand ragen, sowie waagerecht blätterbare
+// Leisten, deren Inhalt nicht ganz zu sehen ist (versteckte Einträge ohne Hinweis)
+static QStringList widthProblems(QQuickWindow *win, QStringList *hidden = nullptr)
+{
+    QStringList bad;
+    std::function<void(QQuickItem *)> walk = [&](QQuickItem *it) {
+        if (!it->isVisible() || it->opacity() == 0) return;
+        if (it->inherits("QQuickPopupItem")) return;
+        if (it->inherits("QQuickFlickable") && it->property("contentWidth").toDouble() > it->width() + 1) {
+            // senkrechte Listen mit breiterem Inhalt sind ein eigener Fall; hier nur waagerechte Leisten
+            if (hidden && it->height() < 120 && it->property("flickableDirection").toInt() != 2)
+                *hidden << QStringLiteral("%1 (%2 von %3 px sichtbar)").arg(it->objectName().isEmpty() ? QStringLiteral("Leiste") : it->objectName())
+                               .arg(int(it->width())).arg(int(it->property("contentWidth").toDouble()));
+            return;
+        }
+        const double right = it->mapToScene(QPointF(it->width(), 0)).x();
+        const QString txt = it->property("text").toString();
+        if (right > win->width() + 1 && !txt.isEmpty() && it->width() > 0 && it->clip() == false)
+            bad << QStringLiteral("%1 \"%2\" (%3)").arg(QString::fromLatin1(it->metaObject()->className()).section(QLatin1Char('_'), 0, 0),
+                                                         txt.left(40)).arg(int(right));
+        for (QQuickItem *c : it->childItems()) walk(c);
+    };
+    walk(win->contentItem());
+    bad.removeDuplicates();
+    if (hidden) hidden->removeDuplicates();
+    if (!bad.isEmpty() && qEnvironmentVariableIsSet("VP_AUTOPILOT_WIDTHDEBUG")) {
+        // Ursache: innerste Zeilen/Raster, deren natürliche Breite nicht auf den Bildschirm passt
+        QStringList roots;
+        std::function<QString(QQuickItem *, int)> texts = [&](QQuickItem *it, int depth) -> QString {
+            const QString t = it->property("text").toString();
+            if (!t.isEmpty()) return t.left(28);
+            QStringList l;
+            if (depth < 4) for (QQuickItem *c : it->childItems()) { const QString x = texts(c, depth + 1); if (!x.isEmpty()) l << x; }
+            return l.mid(0, 4).join(QStringLiteral(" / "));
+        };
+        std::function<bool(QQuickItem *)> find = [&](QQuickItem *it) -> bool {
+            if (!it->isVisible() || it->inherits("QQuickPopupItem")) return false;
+            if (it->inherits("QQuickFlickable") && it->property("contentWidth").toDouble() > it->width() + 1) return false;
+            bool inner = false;
+            for (QQuickItem *c : it->childItems()) inner = find(c) || inner;
+            const QByteArray cls = it->metaObject()->className();
+            const bool isRow = cls.contains("RowLayout") || cls.contains("GridLayout") || cls.startsWith("QQuickRow") || cls.contains("CheckBox") || cls.contains("VField") || cls.contains("Button");
+            const double avail = win->width() - it->mapToScene(QPointF()).x() - 16;
+            if (isRow && it->implicitWidth() > avail + 1) {
+                if (!inner) {
+                    QQmlContext *ctx = QQmlEngine::contextForObject(it);
+                    roots << QStringLiteral("%1 %2 implW=%3 [%4]").arg(QString::fromLatin1(cls).section(QLatin1Char('_'), 0, 0),
+                                 ctx ? ctx->baseUrl().fileName() + QLatin1Char(':') + ctx->nameForObject(it) : QString())
+                             .arg(int(it->implicitWidth())).arg(texts(it, 0));
+                }
+                return true;
+            }
+            return inner;
+        };
+        find(win->contentItem());
+        roots.removeDuplicates();
+        qWarning("URSACHE: %s", qPrintable(roots.mid(0, 10).join(QStringLiteral(" | "))));
+    }
+    return bad;
+}
+
+#ifdef VP_LIGHT
+// VitaParms light: Rundgang auf dem Tablet (quer) und dem Smartphone (hoch) – Bildschirmfotos lt_… und lp_…
+static int runLightTour(QQuickWindow *win, AppController &app, const QString &out, int fails)
+{
+    auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
+    // Smartphone: Elemente, die über den rechten Rand hinausragen (ohne waagerecht blätterbare Bereiche und Menüs)
+    auto overflow = [&](const QString &name) {
+        const QStringList bad = widthProblems(win);
+        if (!bad.isEmpty()) {
+            qWarning("BREITE %s: %s", qPrintable(name), qPrintable(bad.mid(0, 6).join(QStringLiteral("; "))));
+            ++fails;
+        }
+    };
+    auto shot = [&](const QString &name) {
+        wait(450);
+        const QImage img = win->grabWindow();
+        if (img.isNull()) { ++fails; qWarning("Bild leer: %s", qPrintable(name)); return; }
+        img.save(out + QLatin1Char('/') + name + QStringLiteral(".png"));
+        if (win->width() < 500) overflow(name);
+    };
+    auto home = [&]() { return win->findChild<QObject *>(QStringLiteral("home")); };
+    auto pop = [&]() { QMetaObject::invokeMethod(win, "popPage"); wait(300); };
+    auto scrollTo = [&](const QString &objectName, double above) {
+        auto *it = qobject_cast<QQuickItem *>(win->findChild<QObject *>(objectName));
+        if (!it) return false;
+        for (QQuickItem *p = it->parentItem(); p; p = p->parentItem())
+            if (p->inherits("QQuickFlickable")) {
+                QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, it->mapToItem(p->childItems().value(0), QPointF()).y() - above));
+                return true;
+            }
+        return false;
+    };
+    // ---- Prüfungen
+    check(app.light(), "Light-Ausgabe");
+    check(app.appName() == QStringLiteral("VitaParms light"), "Programmname");
+    const QVariantList ps = app.persons();
+    check(ps.size() == 1, "eine Person");
+    const qint64 pid = ps.value(0).toMap().value(QStringLiteral("id")).toLongLong();
+    QStringList keys;
+    for (const QVariant &f : app.vitalFields()) keys << f.toMap().value(QStringLiteral("key")).toString();
+    check(!keys.contains(QStringLiteral("peakflow")) && !keys.contains(QStringLiteral("inr")) && !keys.contains(QStringLiteral("Atemfrequenz")),
+          "Messung ohne Peak Flow, INR, Atemfrequenz");
+    QStringList kinds;
+    for (const QVariant &r : app.reportCatalog(pid)) kinds << r.toMap().value(QStringLiteral("kind")).toString();
+    check(kinds.contains(QStringLiteral("bpProfile")) && kinds.contains(QStringLiteral("glucose")) && !kinds.contains(QStringLiteral("stool"))
+          && !kinds.contains(QStringLiteral("fluid")), "Berichte der Light-Ausgabe");
+    QStringList tiles;
+    for (const QVariant &t : app.latest(pid)) tiles << t.toMap().value(QStringLiteral("key")).toString();
+    check(tiles.contains(QStringLiteral("pain")) && !tiles.contains(QStringLiteral("peakflow")), "Übersicht mit Schmerz");
+    {   // Messung mit Schmerz speichern und zurücklesen
+        QVariantMap m = app.newVital(pid);
+        m.insert(QStringLiteral("values"), QVariantMap{ { QStringLiteral("systolic"), 128 }, { QStringLiteral("diastolic"), 79 },
+                                                        { QStringLiteral("pulse"), 66 }, { QStringLiteral("pain"), 5 } });
+        const qint64 id = app.saveVital(pid, m);
+        check(id > 0 && app.vital(id).value(QStringLiteral("values")).toMap().value(QStringLiteral("pain")).toInt() == 5, "Schmerz speichern");
+        app.deleteVital(id);
+    }
+    {   // RR-Tagesprofil
+        const QString tomorrow = QDate::currentDate().addDays(1).toString(Qt::ISODate);
+        const QVariantList pts = app.glucoseProfilePoints(true);
+        check(pts.size() == 6, "RR-Profil: sechs Zeitpunkte");
+        check(app.startGlucoseProfile(pid, tomorrow, pts, false, true) == 6 && app.glucoseProfileOpen(pid, tomorrow, true) == 6
+              && app.glucoseProfileOpen(pid, tomorrow, false) == 0, "RR-Profil: gestartet");
+        check(app.stopGlucoseProfile(pid, tomorrow, true) == 6, "RR-Profil: beendet");
+        const QString f = app.exportReport(QStringLiteral("bpProfile"), pid, { { QStringLiteral("days"), 30 }, { QStringLiteral("minValues"), 1 } });
+        check(!f.isEmpty() && QFileInfo(f).size() > 1000, "RR-Tagesprofile als PDF");
+    }
+    qInfo("Light geprüft: %d Fehler", fails);
+
+    QObject *h = home();
+    if (!h) { qWarning("HomePage nicht gefunden"); return fails + 1; }
+    struct Size { const char *prefix; int w, h; };
+    for (const Size sz : { Size{ "lt", 1280, 800 }, Size{ "lp", 390, 844 } }) {
+        win->resize(sz.w, sz.h);
+        wait(400);
+        const QString pre = QString::fromLatin1(sz.prefix) + QLatin1Char('_');
+        const char *tabNames[] = { "01_uebersicht", "02_messwerte", "03_kurven", "04_stammblatt", "05_medikamente", "06_termine",
+                                   nullptr, "07_krankenakte", "08_berichte" };
+        if (auto *ov = qobject_cast<QQuickItem *>(win->findChild<QObject *>(QStringLiteral("overviewPage"))))
+            qInfo("Breiten: Fenster %d, home %.0f, Übersicht %.0f", win->width(), qobject_cast<QQuickItem *>(h)->width(), ov->width());
+        for (int i = 0; i < 9; ++i) {
+            if (!tabNames[i]) continue;
+            QQmlProperty::write(h, QStringLiteral("tab"), i);
+            shot(pre + QString::fromLatin1(tabNames[i]));
+        }
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+        QMetaObject::invokeMethod(h, "measure", Q_ARG(QVariant, 0));
+        check(win->findChild<QObject *>(QStringLiteral("fluidSection"))
+              && !QQmlProperty::read(win->findChild<QObject *>(QStringLiteral("fluidSection")), QStringLiteral("visible")).toBool(),
+              "Messung ohne Ein-/Ausfuhr");
+        shot(pre + QStringLiteral("10_messung"));
+        // Schmerzskala sichtbar machen
+        if (scrollTo(QStringLiteral("painScaleRow"), 120)) shot(pre + QStringLiteral("11_messung_schmerz"));
+        pop();
+        QMetaObject::invokeMethod(h, "editPerson", Q_ARG(QVariant, false));
+        if (auto *pf = qobject_cast<QQuickItem *>(win->findChild<QObject *>(QStringLiteral("personFlick")))) {
+            // nichts darf breiter als der Bildschirm werden (Smartphone)
+            double widest = 0;
+            std::function<void(QQuickItem *, int)> walk = [&](QQuickItem *it, int depth) {
+                if (depth > 8 || !it->isVisible()) return;
+                if (depth > 1) widest = std::max(widest, it->mapToItem(pf, QPointF(it->width(), 0)).x());
+                for (QQuickItem *c : it->childItems()) walk(c, depth + 1);
+            };
+            walk(pf, 0);
+            check(widest <= win->width() + 0.5, "Stammblatt passt in die Bildschirmbreite");
+        }
+        shot(pre + QStringLiteral("12_stammblatt_bearbeiten"));
+        if (scrollTo(QStringLiteral("addContactButton"), 300)) shot(pre + QStringLiteral("13_stammblatt_kontakte"));
+        pop();
+        // Tagesprofile
+        QQmlProperty::write(h, QStringLiteral("tab"), 1);
+        wait(200);
+        if (QObject *b = win->findChild<QObject *>(QStringLiteral("bpProfileButton"))) QMetaObject::invokeMethod(b, "clicked");
+        else check(false, "RR-Profil-Knopf");
+        wait(300);
+        check(win->findChild<QObject *>(QStringLiteral("bpProfilePage")) != nullptr, "RR-Profil-Seite");
+        shot(pre + QStringLiteral("14_rr_tagesprofil"));
+        pop();
+        if (QObject *b = win->findChild<QObject *>(QStringLiteral("glucoseProfileButton"))) QMetaObject::invokeMethod(b, "clicked");
+        wait(300);
+        shot(pre + QStringLiteral("15_bz_tagesprofil"));
+        pop();
+        // Medikamente stellen
+        QQmlProperty::write(h, QStringLiteral("tab"), 4);
+        QMetaObject::invokeMethod(h, "openPrep");
+        shot(pre + QStringLiteral("16_medikamente_stellen"));
+        pop();
+        QMetaObject::invokeMethod(h, "editAppointment", Q_ARG(QVariant, 0));
+        shot(pre + QStringLiteral("17_termin_neu"));
+        pop();
+        QMetaObject::invokeMethod(h, "openSettings");
+        shot(pre + QStringLiteral("18_einstellungen"));
+        pop();
+        QMetaObject::invokeMethod(win, "openUsbSync");
+        shot(pre + QStringLiteral("19_usb"));
+        pop();
+        // Menü (☰)
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+        if (QObject *b = win->findChild<QObject *>(QStringLiteral("menuButton"))) {
+            QMetaObject::invokeMethod(b, "clicked");
+            shot(pre + QStringLiteral("20_menue"));
+            for (QObject *m : win->findChildren<QObject *>())
+                if (m->inherits("QQuickMenu")) QMetaObject::invokeMethod(m, "close");
+            wait(200);
+        } else check(false, "Menü-Knopf");
+    }
+    // Dunkel (Smartphone)
+    app.setTheme(QStringLiteral("dark"));
+    QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    shot(QStringLiteral("lp_30_dunkel_uebersicht"));
+    app.setTheme(QStringLiteral("light"));
+    win->resize(1280, 800);
+    // Anmeldung
+    app.lock();
+    QMetaObject::invokeMethod(win, "goStart");
+    shot(QStringLiteral("lt_40_anmeldung"));
+    return fails;
+}
+#endif
 
 int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
 {
@@ -70,6 +294,9 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         shot(QStringLiteral("m50_einrichtung"));
         return fails;
     }
+#ifdef VP_LIGHT
+    return runLightTour(win, app, out, fails);
+#endif
     // ---- Funktionsprüfung der Brücke (auf der Kopie der Demo-Datenbank)
     auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
     const QVariantList ps = app.persons();
@@ -79,7 +306,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         QVariantMap v = app.newVital(pid);
         QVariantMap vals{ { QStringLiteral("systolic"), 128 }, { QStringLiteral("diastolic"), 82 }, { QStringLiteral("pulse"), 71 },
                           { QStringLiteral("glucose"), QStringLiteral("104") }, { QStringLiteral("weight"), QStringLiteral("77,5") },
-                          { QStringLiteral("Atemfrequenz"), 16 }, { QStringLiteral("Schmerz (NRS)"), 2 } };
+                          { QStringLiteral("Atemfrequenz"), 16 }, { QStringLiteral("pain"), 2 } };
         v.insert(QStringLiteral("values"), vals);
         v.insert(QStringLiteral("context"), QStringLiteral("nüchtern"));
         v.insert(QStringLiteral("observations"), QStringLiteral("Tablet-Test"));
@@ -89,7 +316,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         const QVariantMap back = app.vital(id);
         const QVariantMap bv = back.value(QStringLiteral("values")).toMap();
         check(bv.value(QStringLiteral("weight")).toDouble() == 77.5 && bv.value(QStringLiteral("Atemfrequenz")).toInt() == 16
-              && bv.value(QStringLiteral("Schmerz (NRS)")).toInt() == 2, "Messung zurücklesen");
+              && bv.value(QStringLiteral("pain")).toInt() == 2, "Messung zurücklesen");
         QVariantMap bad = v; bad.insert(QStringLiteral("values"), QVariantMap{ { QStringLiteral("systolic"), 70 }, { QStringLiteral("diastolic"), 90 } });
         check(!app.checkVital(bad).isEmpty(), "Plausibilität vertauscht");
         check(app.journal(pid, QStringLiteral("Tablet-Test")).size() == 1, "Suche im Journal");
@@ -429,6 +656,37 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         check(win->findChild<QObject *>(QStringLiteral("glucoseProfilePage")) != nullptr, "BZ-Profil-Seite");
         shot(QStringLiteral("m49_bz_tagesprofil"));
         stackPop();
+        // Fehler 0.28: Tagesprofil für die *gewählte* Person anlegen, nicht für die erste/Hauptperson
+        {
+            qint64 other = 0;
+            for (const QVariant &v : app.persons())
+                if (const qint64 id = v.toMap().value(QStringLiteral("id")).toLongLong(); id != pid) { other = id; break; }
+            check(other != 0, "BZ-Profil: zweite Person vorhanden");
+            if (other) {
+                call(h, "select", other);
+                wait(200);
+                QQmlProperty::write(h, QStringLiteral("tab"), 1);
+                wait(200);
+                if (QObject *b = win->findChild<QObject *>(QStringLiteral("glucoseProfileButton"))) QMetaObject::invokeMethod(b, "clicked");
+                wait(300);
+                QObject *gp = win->findChild<QObject *>(QStringLiteral("glucoseProfilePage"));
+                check(gp && QQmlProperty::read(gp, QStringLiteral("personId")).toLongLong() == other, "BZ-Profil: Seite für gewählte Person");
+                if (QObject *sb = win->findChild<QObject *>(QStringLiteral("profileStartButton"))) QMetaObject::invokeMethod(sb, "clicked");
+                wait(300);
+                int mine = 0, first = 0;
+                for (int d = 0; d < 2; ++d) {
+                    const QString iso = QDate::currentDate().addDays(d).toString(Qt::ISODate);
+                    mine += app.glucoseProfileOpen(other, iso, false);
+                    first += app.glucoseProfileOpen(pid, iso, false);
+                    app.stopGlucoseProfile(other, iso, false);
+                }
+                qInfo() << "BZ-Profil über die Oberfläche: gewählte Person" << mine << "erste Person" << first;
+                check(mine > 0 && first == 0, "BZ-Profil: Erinnerungen bei der gewählten Person");
+                if (win->findChild<QObject *>(QStringLiteral("glucoseProfilePage"))) stackPop();
+                call(h, "select", pid);
+                wait(200);
+            }
+        }
         QVariantList pts = app.glucoseProfilePoints();
         const QTime soon = QTime::currentTime().addSecs(180);
         for (int i = 0; i < pts.size(); ++i) {
@@ -1433,6 +1691,41 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
     call(h, "measure", 0);
     shot(QStringLiteral("m22_hoch_messung"));
     stackPop();
+
+    // Lesbarkeit in schmalen Fenstern: alle Reiter und die wichtigsten Eingabeseiten
+    {
+        struct Sz { const char *tag; int w, h; };
+        for (const Sz sz : { Sz{ "quer", 1280, 800 }, Sz{ "hoch", 800, 1280 }, Sz{ "handy", 390, 844 } }) {
+            win->resize(sz.w, sz.h);
+            wait(300);
+            auto test = [&](const QString &name) {
+                wait(350);
+                QStringList hidden;
+                const QStringList bad = widthProblems(win, &hidden);
+                if (!bad.isEmpty()) { ++fails; qWarning("BREITE %s %s: %s", sz.tag, qPrintable(name), qPrintable(bad.mid(0, 12).join(QStringLiteral("; ")))); }
+                if (!hidden.isEmpty()) { ++fails; qWarning("VERDECKT %s %s: %s", sz.tag, qPrintable(name), qPrintable(hidden.mid(0, 4).join(QStringLiteral("; ")))); }
+            };
+            for (int t = 0; t < 9; ++t) {
+                QQmlProperty::write(h, QStringLiteral("tab"), t);
+                test(QStringLiteral("Reiter %1").arg(t));
+            }
+            QQmlProperty::write(h, QStringLiteral("tab"), 0);
+            if (QString::fromLatin1(sz.tag) == QLatin1String("handy")) {
+                QQmlProperty::write(h, QStringLiteral("tab"), 1);
+                win->grabWindow().save(out + QStringLiteral("/m23_handy_messwerte.png"));
+                QQmlProperty::write(h, QStringLiteral("tab"), 0);
+                win->grabWindow().save(out + QStringLiteral("/m24_handy_uebersicht.png"));
+            }
+            call(h, "measure", 0);                test(QStringLiteral("Messung"));            stackPop();
+            call(h, "editPerson", false);         test(QStringLiteral("Stammblatt"));         stackPop();
+            call(h, "editMed", 0);                test(QStringLiteral("Medikament"));         stackPop();
+            call(h, "editAppointment", 0);        test(QStringLiteral("Termin"));             stackPop();
+            call(h, "openSettings");              test(QStringLiteral("Einstellungen"));      stackPop();
+            call(h, "openPrep");                  test(QStringLiteral("Medikamente stellen")); stackPop();
+            call(h, "openStock", 0);              test(QStringLiteral("Bestand"));            stackPop();
+        }
+        QQmlProperty::write(h, QStringLiteral("tab"), 0);
+    }
 
     // Dunkel
     win->resize(1280, 800);

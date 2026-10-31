@@ -26,6 +26,8 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
+#include "edition.h"
+
 #include <QDateTime>
 #include <QJsonObject>
 #include <QMap>
@@ -42,7 +44,9 @@ class QTemporaryDir;
 
 namespace UsbSync {
 
-constexpr quint16 kDevicePort = 47811;   // Port der App auf dem Tablet (nur 127.0.0.1)
+// Port der App auf dem Tablet (nur 127.0.0.1); VitaParms light hat einen eigenen, damit sich die beiden Apps
+// auf einem Gerät nicht in die Quere kommen und jedes Desktop-Programm „seine“ App findet
+constexpr quint16 kDevicePort = Edition::light() ? 47812 : 47811;
 constexpr int kProtocol = 2;   // 2: Anmeldung auch über den Datenbankschlüssel (ohne Code)
 
 // Nachweis "gleiche Datenbank": HMAC-SHA256(Schlüssel, Zufallswert)

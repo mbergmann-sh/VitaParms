@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "accountdialogs.h"
+#include "edition.h"
 #include "demodata.h"
 #include "manual.h"
 #include "session.h"
@@ -127,7 +128,7 @@ void LoginDialog::accept()
 AccountEditDialog::AccountEditDialog(Mode mode, const QString &intro, const QString &presetName, QWidget *parent)
     : QDialog(parent), m_mode(mode)
 {
-    setWindowTitle(mode == Mode::FirstAdmin ? tr("Administrator-Konto einrichten")
+    setWindowTitle(mode == Mode::FirstAdmin ? (Edition::light() ? tr("Anmeldung einrichten") : tr("Administrator-Konto einrichten"))
                    : mode == Mode::NewAccount ? tr("Neues Anmeldekonto")
                    : mode == Mode::ResetPassword ? tr("Passwort neu setzen")
                                                  : tr("Eigenes Passwort ändern"));
@@ -140,7 +141,7 @@ AccountEditDialog::AccountEditDialog(Mode mode, const QString &intro, const QStr
     auto *form = new QFormLayout;
     m_name = new QLineEdit(presetName, this);
     m_name->setReadOnly(mode == Mode::ResetPassword || mode == Mode::ChangeOwnPassword);
-    form->addRow(tr("&Kontoname:"), m_name);
+    form->addRow(Edition::light() ? tr("&Ihr Name:") : tr("&Kontoname:"), m_name);
     if (mode == Mode::NewAccount) {
         m_role = new QComboBox(this);
         m_role->addItem(roleName(Role::User), int(Role::User));
@@ -372,6 +373,15 @@ AccountsDialog::AccountsDialog(QWidget *parent) : QDialog(parent)
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
     lay->addWidget(buttons);
     for (QWidget *w : m_adminOnly) w->setVisible(Session::isAdmin());
+    if (Edition::light()) {
+        // VitaParms light: ein Konto ohne Rollen – nur Passwort ändern und Wiederherstellungsschlüssel
+        setWindowTitle(tr("Anmeldung und Passwort"));
+        info->setText(tr("Angemeldet als <b>%1</b>. Das Passwort schützt die verschlüsselte Datenbank. Bewahren Sie "
+                         "den Wiederherstellungsschlüssel sicher auf – er öffnet die Datenbank, falls Sie das Passwort "
+                         "vergessen.").arg(Session::user().toHtmlEscaped()));
+        m_table->hide();
+        for (QWidget *w : m_adminOnly) w->setVisible(w == rec);
+    }
     refresh();
     resize(620, 380);
 }
@@ -537,7 +547,7 @@ LanguageDialog::LanguageDialog(QWidget *parent) : QDialog(parent)
 }
 
 FirstStartBox::FirstStartBox(QWidget *parent)
-    : QMessageBox(QMessageBox::Question, tr("VitaParms einrichten"),
+    : QMessageBox(QMessageBox::Question, tr("%1 einrichten").arg(Edition::appName()),
                   tr("<p>Es gibt noch keine Datenbank.</p><p>Eine <b>neue Datenbank</b> anlegen oder eine "
                      "vorhandene – von einem anderen Gerät (*.vpdb) oder aus einer Sicherung (*.sqlite) – "
                      "<b>importieren</b>?</p>"
