@@ -3852,4 +3852,14 @@ EN.update({
     'Für: %1': 'For: %1',
     'BZ-Tagesprofil für %1: %2 Erinnerung(en) gestellt.': 'BG day profile for %1: %2 reminder(s) set.',
     'RR-Tagesprofil für %1: %2 Erinnerung(en) gestellt.': 'BP day profile for %1: %2 reminder(s) set.',
+    # 0.28.2: Tagesprofil – direkt zur Messung, Nachholen
+    '&Offene Tagesprofil-Messung erfassen…': 'Record &open day profile measurement…',
+    'Messung zum fälligen Zeitpunkt eines heutigen BZ- oder RR-Tagesprofils eintragen': 'Enter the measurement for the due time of today’s BG or BP day profile',
+    '%1 %2: noch nicht eingetragen – nachholen mit Messwerte → Offene Tagesprofil-Messung erfassen (Strg+Umschalt+G) oder Doppelklick auf den Termin.':
+        '%1 %2: not entered yet – catch up with Readings → Record open day profile measurement (Ctrl+Shift+G) or by double-clicking the appointment.',
+    'Tagesprofil': 'Day profile',
+    'Für %1 ist heute keine Messung eines Tagesprofils offen.': 'There is no open day profile measurement for %1 today.',
+    'Offene Tagesprofil-Messung': 'Open day profile measurement',
+    'Welche Messung möchten Sie eintragen?': 'Which measurement would you like to enter?',
+    'Messung zu diesem Zeitpunkt des BZ- oder RR-Tagesprofils eintragen': 'Enter the measurement for this time of the BG or BP day profile',
 })

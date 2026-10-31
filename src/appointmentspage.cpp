@@ -3,6 +3,7 @@
 #include "appointmentdialog.h"
 #include "quarterreminder.h"
 #include "database.h"
+#include "glucoseprofile.h"
 #include "icalexport.h"
 #include "session.h"
 
@@ -225,6 +226,10 @@ AppointmentsPage::AppointmentsPage(QWidget *parent) : QWidget(parent)
     m_needSel << button(tr("&Bearbeiten…"), &AppointmentsPage::editAppointment);
     m_needSel << button(tr("&Löschen…"), &AppointmentsPage::deleteAppointment);
     m_needSel << button(tr("E&rledigt / offen"), &AppointmentsPage::toggleDone);
+    m_measureBtn = button(tr("&Messung erfassen…"), &AppointmentsPage::measureSelected);
+    m_measureBtn->setObjectName(QStringLiteral("apptMeasureButton"));
+    m_measureBtn->setToolTip(tr("Messung zu diesem Zeitpunkt des BZ- oder RR-Tagesprofils eintragen"));
+    m_measureBtn->setVisible(false);
     row->addStretch();
     button(tr("iCal-E&xport…"), &AppointmentsPage::exportICal)
         ->setToolTip(tr("Termine als .ics-Datei für Kalender-Programme und Smartphones exportieren"));
@@ -242,7 +247,12 @@ AppointmentsPage::AppointmentsPage(QWidget *parent) : QWidget(parent)
     });
     connect(m_cal, &QCalendarWidget::activated, this, [this] { newAppointment(); });
     connect(m_cal, &QCalendarWidget::currentPageChanged, this, [this] { markCalendar(); });
-    connect(m_table, &QTableView::doubleClicked, this, &AppointmentsPage::editAppointment);
+    // Doppelklick: offener Tagesprofil-Termin → gleich die Messung, sonst bearbeiten
+    connect(m_table, &QTableView::doubleClicked, this, [this] {
+        const Appointment *a = selected();
+        if (a && GlucoseProfile::isProfileAppointment(*a) && !a->done) measureSelected();
+        else editAppointment();
+    });
     connect(m_table->selectionModel(), &QItemSelectionModel::selectionChanged, this, &AppointmentsPage::updateButtons);
     connect(&Database::instance(), &Database::appointmentsChanged, this, &AppointmentsPage::reload);
     connect(&Database::instance(), &Database::patientsChanged, this, &AppointmentsPage::reload);
@@ -360,8 +370,10 @@ const Appointment *AppointmentsPage::selected() const
 
 void AppointmentsPage::updateButtons()
 {
-    const bool sel = selected() != nullptr;
+    const Appointment *a = selected();
+    const bool sel = a != nullptr;
     for (QWidget *w : m_needSel) w->setEnabled(sel);
+    if (m_measureBtn) m_measureBtn->setVisible(a && GlucoseProfile::isProfileAppointment(*a) && !a->done);
 }
 
 void AppointmentsPage::newAppointment()
@@ -377,6 +389,11 @@ void AppointmentsPage::newAppointment()
     a.remindMinutes = 60;
     AppointmentDialog dlg(a, this);
     if (dlg.exec() == QDialog::Accepted) emit changed();
+}
+
+void AppointmentsPage::measureSelected()
+{
+    if (const Appointment *a = selected(); a && GlucoseProfile::isProfileAppointment(*a)) emit measureRequested(a->id);
 }
 
 void AppointmentsPage::editAppointment()

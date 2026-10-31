@@ -49,8 +49,11 @@ public slots:
     void toggleDone();
     void exportICal();
 
+    void measureSelected();              // offener Tagesprofil-Termin: Messung erfassen
+
 signals:
     void changed();
+    void measureRequested(qint64 appointmentId);
 
 private:
     void updateQuarterBar();
@@ -69,5 +72,6 @@ private:
     class QFrame *m_quarterBar = nullptr;
     QLabel *m_quarterText = nullptr;
     QList<QWidget *> m_needSel;
+    class QPushButton *m_measureBtn = nullptr;
     QList<QDate> m_marked;
 };

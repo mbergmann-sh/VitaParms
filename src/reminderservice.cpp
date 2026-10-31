@@ -230,6 +230,26 @@ QuarterPopup::QuarterPopup(const QDate &q, QWidget *parent)
     }
 }
 
+// Erfassungsfenster öffnen, sobald kein anderes modales Fenster offen ist (z. B. die vorige Messung)
+void ReminderService::deliverMeasure()
+{
+    if (m_pendingMeasure.isEmpty()) { m_measureTimer.stop(); return; }
+    if (QApplication::activeModalWidget()) {
+        if (!m_measureTimer.isActive()) {
+            m_measureTimer.setInterval(2000);
+            connect(&m_measureTimer, &QTimer::timeout, this, &ReminderService::deliverMeasure, Qt::UniqueConnection);
+            m_measureTimer.start();
+        }
+        return;
+    }
+    m_measureTimer.stop();
+    const qint64 id = m_pendingMeasure.takeFirst();
+    QTimer::singleShot(0, this, [this, id] {
+        emit measureRequested(id);
+        if (!m_pendingMeasure.isEmpty()) deliverMeasure();
+    });
+}
+
 QString ReminderService::mailSubject(const Appointment &a)
 {
     const QString prio = a.priority >= Appointment::High ? QStringLiteral(" [") + ApptUi::priorityName(a.priority) + QLatin1Char(']')
@@ -260,6 +280,14 @@ void ReminderService::fire(const Appointment &a)
 {
     // Sofort als erinnert markieren – verhindert Doppelungen
     Database::instance().markReminded(a.id, QDateTime::currentDateTime());
+
+    // BZ-/RR-Tagesprofil: ohne Zwischenfenster gleich das Erfassungsfenster öffnen (wie auf dem Tablet)
+    if (GlucoseProfile::isProfileAppointment(a) && !a.done) {
+        if (a.remindSound) Sounds::play(Sounds::Kind::Reminder);
+        if (!m_pendingMeasure.contains(a.id)) m_pendingMeasure << a.id;
+        deliverMeasure();
+        return;
+    }
 
     if (a.remindVisual || (!a.remindSound && !a.remindEmail)) {
         if (m_popups.value(a.id)) m_popups.value(a.id)->close();

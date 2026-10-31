@@ -45,6 +45,8 @@
 #include "vitaldialog.h"
 
 #include <QAction>
+#include <QInputDialog>
+#include <algorithm>
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QFormLayout>
@@ -417,6 +419,7 @@ void MainWindow::buildUi()
 
     // ---------------------------------------------------------- Termine
     m_appts = new AppointmentsPage(m_tabs);
+    connect(m_appts, &AppointmentsPage::measureRequested, this, &MainWindow::measureForAppointment);
     m_tabs->addTab(m_appts, tr("&Termine"));
     setCentralWidget(central);
     onPeriodChanged();
@@ -553,6 +556,10 @@ void MainWindow::buildMenus()
     m_actBpProfile->setStatusTip(tr("Blutdruck und Puls zu sechs Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster"));
     m_actGlucoseProfile->setObjectName(QStringLiteral("actGlucoseProfile"));
     m_actGlucoseProfile->setStatusTip(tr("Blutzucker zu sieben Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster"));
+    m_actProfileMeasure = vit->addAction(tr("&Offene Tagesprofil-Messung erfassen…"), this, &MainWindow::measureOpenProfilePoint);
+    m_actProfileMeasure->setObjectName(QStringLiteral("actProfileMeasure"));
+    m_actProfileMeasure->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_G));
+    m_actProfileMeasure->setStatusTip(tr("Messung zum fälligen Zeitpunkt eines heutigen BZ- oder RR-Tagesprofils eintragen"));
 
     // ---- Krankenakte
     QMenu *akte = menuBar()->addMenu(tr("&Krankenakte"));
@@ -1038,6 +1045,45 @@ void MainWindow::measureForAppointment(qint64 apptId)
     if (QWidget *g = d.findChild<QWidget *>(GlucoseProfile::focusField(GlucoseProfile::kindOf(*a)))) g->setFocus();
     d.exec();
     if (d.savedCount() > 0) Database::instance().setAppointmentDone(apptId, true);
+    else statusBar()->showMessage(tr("%1 %2: noch nicht eingetragen – nachholen mit Messwerte → Offene Tagesprofil-Messung "
+                                     "erfassen (Strg+Umschalt+G) oder Doppelklick auf den Termin.")
+                                      .arg(subject, GlucoseProfile::labelOf(*a)), 20000);
+}
+
+// Offene Messung eines heutigen Tagesprofils der gewählten Person: zuletzt fälliger Zeitpunkt,
+// sonst der nächste; mehrere fällige – Auswahl
+void MainWindow::measureOpenProfilePoint()
+{
+    const auto p = currentPatient();
+    if (!p) return;
+    const QDate today = QDate::currentDate();
+    const QDateTime soon = QDateTime::currentDateTime().addSecs(30 * 60);
+    QList<Appointment> open;
+    for (const auto k : { GlucoseProfile::Kind::Glucose, GlucoseProfile::Kind::BloodPressure })
+        for (const Appointment &a : GlucoseProfile::existing(p->id, today, k))
+            if (!a.done) open << a;
+    std::sort(open.begin(), open.end(), [](const Appointment &x, const Appointment &y) { return x.start < y.start; });
+    QList<Appointment> due;
+    for (const Appointment &a : open) if (a.start <= soon) due << a;
+    if (open.isEmpty()) {
+        QMessageBox::information(this, tr("Tagesprofil"), tr("Für %1 ist heute keine Messung eines Tagesprofils offen.").arg(p->displayName()));
+        return;
+    }
+    qint64 id = 0;
+    if (due.size() == 1) id = due.first().id;
+    else if (due.isEmpty()) id = open.first().id;           // noch nichts fällig: den nächsten Zeitpunkt
+    else {
+        QStringList items;
+        for (const Appointment &a : due)
+            items << QStringLiteral("%1  %2 – %3").arg(QLocale().toString(a.start.time(), QStringLiteral("HH:mm")),
+                                                        GlucoseProfile::subjectOf(a), GlucoseProfile::labelOf(a));
+        bool ok = false;
+        const QString pick = QInputDialog::getItem(this, tr("Offene Tagesprofil-Messung"),
+                                                   tr("Welche Messung möchten Sie eintragen?"), items, items.size() - 1, false, &ok);
+        if (!ok) return;
+        id = due.value(items.indexOf(pick)).id;
+    }
+    if (id) measureForAppointment(id);
 }
 
 void MainWindow::editVital()
@@ -1241,6 +1287,7 @@ void MainWindow::updateActions()
         m_actNewVital->setEnabled(hasPatient);
         if (m_actGlucoseProfile) m_actGlucoseProfile->setEnabled(hasPatient);
         if (m_actBpProfile) m_actBpProfile->setEnabled(hasPatient);
+        if (m_actProfileMeasure) m_actProfileMeasure->setEnabled(hasPatient);
         m_actEditVital->setEnabled(hasPatient && hasSel && m_tabs->currentIndex() == TabJournal);
         m_actDeleteVital->setEnabled(hasPatient && hasSel && m_tabs->currentIndex() == TabJournal);
         for (QAction *a : { m_actPrint, m_actPreview, m_actPdf, m_actExcel, m_actSheet, m_actMedPlan, m_actPharmacy })

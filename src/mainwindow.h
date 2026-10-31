@@ -98,6 +98,7 @@ private slots:
     void startGlucoseProfile();
     void startBpProfile();
     void measureForAppointment(qint64 apptId);
+    void measureOpenProfilePoint();          // offene Messung eines heutigen Tagesprofils nachholen
     void showSettings();
     void customizeForms();
     void manageAccounts();
@@ -158,6 +159,7 @@ private:
     QAction *m_actNewVital = nullptr, *m_actEditVital = nullptr, *m_actDeleteVital = nullptr;
     QAction *m_actGlucoseProfile = nullptr;
     QAction *m_actBpProfile = nullptr;
+    QAction *m_actProfileMeasure = nullptr;
     QAction *m_actImportLight = nullptr;
     QAction *m_actPrimary[2] = { nullptr, nullptr };
     QAction *m_actAssign[2] = { nullptr, nullptr };

@@ -61,6 +61,9 @@ private:
     QTimer m_timer;
     QDateTime m_lastExtend;
     QHash<qint64, QPointer<ReminderPopup>> m_popups;
+    QList<qint64> m_pendingMeasure;      // fällige Tagesprofil-Messungen, solange ein anderes Fenster offen ist
+    QTimer m_measureTimer;
+    void deliverMeasure();
     QPointer<QuarterPopup> m_quarter;
     QString m_quarterShown;              // in dieser Sitzung schon gezeigt (Schlüssel + Tag)
 };
