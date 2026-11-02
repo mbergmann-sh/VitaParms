@@ -313,6 +313,127 @@ QString journalHtml(QPaintDevice *dev, const JournalModel &m, const QString &per
     return h;
 }
 
+// ---------------------------------------------------------------- Verlauf nach Wertegruppen
+struct HistCol {
+    QString head;
+    std::function<QString(const VitalRecord &)> text;
+    QList<VitalKey> stat;            // Kennwerte: ein Schlüssel, bei RR zwei (sys/dia)
+};
+
+QList<VitalKey> groupKeys(const QString &id)
+{
+    for (const auto &pd : VitalDefs::panels())
+        if (pd.id == id) return pd.keys;
+    return {};
+}
+
+QList<HistCol> historyColumns(const QString &id)
+{
+    QList<HistCol> c;
+    auto vital = [](VitalKey k) {
+        return HistCol{ VitalDefs::header(k), [k](const VitalRecord &r) { return VitalDefs::formatted(r, k); }, { k } };
+    };
+    if (id == QLatin1String("bp")) {
+        c << HistCol{ tr("RR [mmHg]"), [](const VitalRecord &r) {
+                         if (!r.systolic && !r.diastolic) return QString();
+                         return QStringLiteral("%1/%2").arg(r.systolic ? QString::number(*r.systolic) : QStringLiteral("–"),
+                                                            r.diastolic ? QString::number(*r.diastolic) : QStringLiteral("–"));
+                     }, { VitalKey::Systolic, VitalKey::Diastolic } };
+        c << vital(VitalKey::Pulse) << vital(VitalKey::PulsePressure);
+    } else if (id == QLatin1String("fluid")) {
+        c << vital(VitalKey::FluidIn)
+          << HistCol{ tr("Art (Einfuhr)"), [](const VitalRecord &r) { return r.fluidIn ? r.fluidInKind : QString(); }, {} }
+          << vital(VitalKey::FluidOut)
+          << HistCol{ tr("Art (Ausfuhr)"), [](const VitalRecord &r) { return r.fluidOut ? r.fluidOutKind : QString(); }, {} };
+    } else if (id == QLatin1String("edema")) {
+        c << HistCol{ VitalDefs::label(VitalKey::Edema), [](const VitalRecord &r) { return r.edema ? Fluid::edemaText(r) : QString(); }, {} };
+    } else if (id == QLatin1String("stool")) {
+        c << HistCol{ VitalDefs::label(VitalKey::Stool), [](const VitalRecord &r) { return VitalDefs::formatted(r, VitalKey::Stool); }, {} };
+    } else if (id == QLatin1String("obs")) {
+        c << HistCol{ tr("Beobachtungen"), [](const VitalRecord &r) { return r.observations; }, {} };
+    } else {
+        for (VitalKey k : groupKeys(id)) c << vital(k);
+    }
+    return c;
+}
+
+QString historyHtml(QPaintDevice *dev, QList<VitalRecord> recs, const QStringList &groups, const QString &periodText)
+{
+    std::sort(recs.begin(), recs.end(), [](const VitalRecord &a, const VitalRecord &b) { return a.measuredAt < b.measuredAt; });
+    const QLocale loc;
+    QStringList titles;
+    for (const auto &g : historyGroups()) if (groups.contains(g.id)) titles << g.title;
+    QString h = QStringLiteral("<p><b>%1</b> %2<br><b>%3</b> %4<br><i>%5</i></p>")
+                    .arg(tr("Zeitraum:"), periodText.toHtmlEscaped(), tr("Werte:"),
+                         titles.isEmpty() ? tr("keine gewählt") : titles.join(QStringLiteral(", ")).toHtmlEscaped(),
+                         tr("Je Wertegruppe chronologisch – älteste Messung zuerst."));
+    for (const auto &g : historyGroups()) {
+        if (!groups.contains(g.id)) continue;
+        const QList<HistCol> cols = historyColumns(g.id);
+        QList<const VitalRecord *> rows;
+        for (const VitalRecord &r : recs) {
+            bool any = false;
+            for (const HistCol &c : cols) if (!c.text(r).trimmed().isEmpty() && !c.head.startsWith(tr("Art"))) { any = true; break; }
+            if (any) rows << &r;
+        }
+        h += QStringLiteral("<h3 style=\"margin-top:14px;\">%1</h3>").arg(g.title.toHtmlEscaped());
+        if (rows.isEmpty()) {
+            h += QStringLiteral("<p><i>%1</i></p>").arg(tr("Keine Werte im gewählten Zeitraum."));
+            continue;
+        }
+        const bool wide = g.id == QLatin1String("obs") || g.id == QLatin1String("edema") || g.id == QLatin1String("fluid");
+        h += tableOpen(dev);
+        h += QStringLiteral("<thead><tr>") + th(tr("Datum / Uhrzeit"), QStringLiteral("width=\"23%\""))
+             + th(tr("Messzeitpunkt"), QStringLiteral("width=\"17%\""));
+        for (const HistCol &c : cols)
+            h += th(c.head, wide ? QString() : QStringLiteral("width=\"%1%\"").arg(int(60 / cols.size())));
+        h += QStringLiteral("</tr></thead>");
+        int n = 0;
+        for (const VitalRecord *r : rows) {
+            h += n++ % 2 ? QStringLiteral("<tr bgcolor=\"#f6f8fa\">") : QStringLiteral("<tr>");
+            h += td(loc.toString(r->measuredAt, QStringLiteral("ddd dd.MM.yyyy HH:mm")));
+            h += td(r->isAdmission ? tr("Aufnahme") : r->context);
+            for (const HistCol &c : cols) h += td(c.text(*r), c.stat.isEmpty() ? QStringLiteral("left") : QStringLiteral("right"));
+            h += QStringLiteral("</tr>");
+        }
+        // Kennwerte je Spalte: Anzahl, Mittelwert, Minimum, Maximum
+        bool anyStat = false;
+        for (const HistCol &c : cols) if (!c.stat.isEmpty()) anyStat = true;
+        if (anyStat) {
+            struct Agg { int n = 0; double sum = 0, lo = 0, hi = 0; };
+            auto agg = [&](VitalKey k) {
+                Agg a;
+                for (const VitalRecord *r : rows)
+                    if (const auto v = VitalDefs::value(*r, k)) {
+                        if (!a.n) { a.lo = a.hi = *v; }
+                        a.lo = std::min(a.lo, *v); a.hi = std::max(a.hi, *v); a.sum += *v; ++a.n;
+                    }
+                return a;
+            };
+            auto num = [&](double v, VitalKey k) { return loc.toString(v, 'f', VitalDefs::decimals(k)); };
+            const QStringList labels = { tr("Anzahl"), tr("Mittelwert"), tr("Minimum"), tr("Maximum") };
+            for (int line = 0; line < labels.size(); ++line) {
+                h += QStringLiteral("<tr bgcolor=\"#e8eef4\">") + QStringLiteral("<td colspan=\"2\"><b>%1</b></td>").arg(labels[line]);
+                for (const HistCol &c : cols) {
+                    QStringList parts;
+                    for (VitalKey k : c.stat) {
+                        const Agg a = agg(k);
+                        if (!a.n) { parts << QStringLiteral("–"); continue; }
+                        const double mean = a.sum / a.n;
+                        parts << (line == 0 ? QString::number(a.n)
+                                  : line == 1 ? loc.toString(mean, 'f', std::max(1, VitalDefs::decimals(k)))
+                                  : line == 2 ? num(a.lo, k) : num(a.hi, k));
+                    }
+                    h += td(parts.join(QLatin1Char('/')), QStringLiteral("right"));
+                }
+                h += QStringLiteral("</tr>");
+            }
+        }
+        h += QStringLiteral("</table>");
+    }
+    return h;
+}
+
 // Eine Seite Verlaufsgrafik: Kopf, Diagramm(e), Kennwerte
 void renderChartPage(QPainter &pa, QPagedPaintDevice *dev, const Patient &p, const ChartSpec &spec,
                      int page, int pages)
@@ -464,7 +585,7 @@ void writeMeasurements(XlsxWriter &x, int sh, int row, const QList<VitalRecord> 
                        const QStringList &extraKeys)
 {
     QStringList heads = { tr("Datum/Uhrzeit"), tr("Messzeitpunkt"), tr("Aufnahme") };
-    QList<VitalKey> keys = { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse, VitalKey::Temperature,
+    QList<VitalKey> keys = { VitalKey::Systolic, VitalKey::Diastolic, VitalKey::Pulse, VitalKey::PulsePressure, VitalKey::Temperature,
                              VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose, VitalKey::Weight, VitalKey::Height, VitalKey::Bmi };
     if (Edition::light()) keys.removeAll(VitalKey::PeakFlow);
     for (VitalKey k : { VitalKey::Pain, VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut, VitalKey::Edema, VitalKey::Stool })
@@ -527,6 +648,45 @@ void journal(QWidget *parent, const Patient &p, const JournalModel &model,
 {
     run(parent, t, tr("Verlauf"), QStringLiteral("Verlauf"), p, QPageLayout::Landscape,
         [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Verlauf der Vitalwerte"), p, journalHtml(dev, model, periodText), 7.5); });
+}
+
+QList<HistoryGroup> historyGroups()
+{
+    QList<HistoryGroup> l;
+    for (const auto &pd : VitalDefs::panels()) l << HistoryGroup{ pd.id, pd.title };
+    l << HistoryGroup{ QStringLiteral("obs"), tr("Beobachtungen") };
+    return l;
+}
+
+QStringList historyGroupsWithData(const QList<VitalRecord> &records)
+{
+    QStringList l;
+    for (const auto &g : historyGroups()) {
+        const QList<HistCol> cols = historyColumns(g.id);
+        const bool has = std::any_of(records.cbegin(), records.cend(), [&](const VitalRecord &r) {
+            return std::any_of(cols.cbegin(), cols.cend(), [&](const HistCol &c) { return !c.text(r).trimmed().isEmpty(); });
+        });
+        if (has) l << g.id;
+    }
+    return l;
+}
+
+void history(QWidget *parent, const Patient &p, const QList<VitalRecord> &records, const QStringList &groups,
+             const QString &periodText, Target t)
+{
+    run(parent, t, tr("Verlauf"), QStringLiteral("Verlauf"), p, QPageLayout::Portrait,
+        [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Verlauf der Vitalwerte"), p, historyHtml(dev, records, groups, periodText), 9); });
+}
+
+bool historyToPdf(const QString &path, const Patient &p, const QList<VitalRecord> &records,
+                  const QStringList &groups, const QString &periodText)
+{
+    QPdfWriter w(path);
+    w.setResolution(300);
+    w.setCreator(QStringLiteral("VitaParms"));
+    configure(&w, QPageLayout::Portrait);
+    printHtml(&w, tr("Verlauf der Vitalwerte"), p, historyHtml(&w, records, groups, periodText), 9);
+    return true;
 }
 
 bool journalToPdf(const QString &path, const Patient &p, const JournalModel &model, const QString &periodText)
@@ -843,7 +1003,7 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                     vals << QStringLiteral("%1/%2").arg(admission->systolic ? QString::number(*admission->systolic) : QStringLiteral("–"),
                                                         admission->diastolic ? QString::number(*admission->diastolic) : QStringLiteral("–"));
                 }
-                for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
+                for (VitalKey k : { VitalKey::Pulse, VitalKey::PulsePressure, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
                                     VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::Pain }) {
                     const QString s = VitalDefs::formatted(*admission, k);
                     if (s.isEmpty()) continue;

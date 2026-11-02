@@ -1,13 +1,34 @@
-# VitaParms light – Installer (Qt Installer Framework)
+# VitaParms light – Installer (Inno Setup und Qt Installer Framework)
 
-Ein **Release-Build** von `light/VitaParmsLight.pro` bereitet alles automatisch vor – gesteuert von
-`light_deploy.pri`:
+Ein Build von `light/VitaParmsLight.pro` bereitet alles automatisch vor – gesteuert von
+`light_deploy.pri` (unter Windows genauso wie bei VitaParms, siehe `installer/README.md`):
 
 | Schritt | Windows | Linux | macOS |
 |---|---|---|---|
-| Programm + Qt-Bibliotheken ins Paket `qtifw/packages/de.mbergmann.vitaparms.light/data` | `windeployqt` | `linux_deploy.sh` (per `ldd`: `lib/`, `plugins/`, `qt.conf`, Startskript `VitaParmsLight.sh`) | `macdeployqt` (`VitaParmsLight.app`) |
+| nach **jedem** Build (auch Debug) | `windeployqt` neben `VitaParmsLight.exe` – das Programm startet direkt aus dem Build-Ordner | – | – |
+| Installationsverzeichnis (nur Release) | `light/installer/install_src`: Programm, DLLs, `docs/` (PDF + CHM), Lizenz, README | – | – |
+| Programm + Qt-Bibliotheken ins IFW-Paket `qtifw/packages/de.mbergmann.vitaparms.light/data` | `windeployqt` | `linux_deploy.sh` (per `ldd`: `lib/`, `plugins/`, `qt.conf`, Startskript `VitaParmsLight.sh`) | `macdeployqt` (`VitaParmsLight.app`) |
 | Handbücher ins Paket `…light.docs/data/docs` | PDF + CHM | PDF | PDF |
-| Installer (falls `binarycreator` gefunden) | `Output/VitaParms-light-<Version>-Setup.exe` | `Output/VitaParms-light-<Version>-Setup.run` | `Output/VitaParms-light-<Version>-Setup.dmg` |
+| **Inno Setup** (falls `ISCC.exe` gefunden) | `Output/VitaParms-light-<Version>-Setup.exe` | – | – |
+| **Qt Installer Framework** (falls `binarycreator` gefunden) | `Output/VitaParms-light-<Version>-Setup-IFW.exe` | `Output/VitaParms-light-<Version>-Setup.run` | `Output/VitaParms-light-<Version>-Setup.dmg` |
+
+Installationsverzeichnis und Installer entstehen **nur beim Release-Build** (Qt Creator: Build-Konfiguration
+„Release“). Beim qmake-Lauf meldet das Projekt, welche Werkzeuge es gefunden hat
+(„Inno Setup gefunden …“, „Qt Installer Framework gefunden …“) – in Qt Creator unter *Allgemeine Ausgaben*.
+
+### Inno Setup (`VitaParmsLight.iss`)
+
+Wie bei VitaParms: Sprachauswahl Deutsch/Englisch, Lizenz und Haftungshinweis, Zielordner wählbar
+(Vorgabe **`C:\VPlight`**), Komponenten Programm/Handbücher, Startmenü (VitaParms light, Demo,
+Benutzerhandbuch, Erste Schritte, Deinstallieren), Desktop-Verknüpfung, Aktualisieren an Ort und Stelle
+oder Deinstallieren beim erneuten Start. Eigene AppId – VitaParms und VitaParms light lassen sich
+nebeneinander installieren und unabhängig entfernen. Daten und Einstellungen bleiben bei der
+Deinstallation erhalten; nur die Demo-Datenbank wird entfernt. Grüne Assistentenbilder:
+`wizard_image*.bmp`, `wizard_small*.bmp`; Lizenztexte `license_de.txt`, `license_en.txt`.
+
+`VitaParmsLight.iss` wird von qmake aus `VitaParmsLight.iss.in` erzeugt (Versionsnummer) –
+Änderungen bitte in der `.in`-Datei. Von Hand übersetzen: `ISCC.exe VitaParmsLight.iss` (nach einem
+Release-Build, der `install_src` befüllt hat).
 
 Installationsordner (änderbar im Installer):
 
@@ -21,6 +42,9 @@ von VitaParms im Benutzerprofil (`VitaParmsLight`) und bleiben bei Deinstallatio
 
 ## Werkzeuge
 
+* **Inno Setup 6.3 oder neuer** – https://jrsoftware.org/isinfo.php. Gesucht in
+  `C:\Program Files (x86)\Inno Setup 6`, `C:\Program Files\Inno Setup 6` und
+  `%LOCALAPPDATA%\Programs\Inno Setup 6`; sonst Umgebungsvariable `VP_ISCC` auf `ISCC.exe` setzen.
 * **Qt Installer Framework 4.x** – im Qt Maintenance Tool unter *Developer and Designer Tools*.
   Gesucht über `VP_BINARYCREATOR` (Pfad zur Datei), `QTIFWDIR` und
   `<Qt>/Tools/QtInstallerFramework/<Version>/bin`. Werkzeuge werden beim **qmake-Lauf** gesucht.
@@ -28,7 +52,8 @@ von VitaParms im Benutzerprofil (`VitaParmsLight`) und bleiben bei Deinstallatio
   `LD_LIBRARY_PATH` im Startskript.
 * macOS: `hdiutil` (gehört zum System) für das Disk-Image.
 
-Installer nicht bei jedem Release-Build erzeugen: `qmake CONFIG+=vp_no_installer`. Von Hand:
+Installer nicht bei jedem Release-Build erzeugen: `qmake CONFIG+=vp_no_installer`. Alle Qt-Teile
+mitliefern (ohne die schlanke Auswahl): `qmake CONFIG+=vp_full_deploy`. IFW von Hand:
 
 ```sh
 binarycreator --offline-only -c qtifw/config/config.xml -p qtifw/packages Output/VitaParms-light-Setup.run
@@ -46,6 +71,8 @@ Passwörter gehören **nicht** ins Projekt.
 
 ## Getestet
 
-Der Linux-Installer wurde mit IFW 4.8.1 erzeugt und installiert (Programm, Handbücher, Menüeintrag,
-Deinstallation). Windows- und macOS-Installer sowie die Android-App sind vorbereitet, aber noch nicht
-auf echten Systemen geprüft.
+* Linux: IFW-Installer mit IFW 4.8.1 erzeugt und installiert (Programm, Handbücher, Menüeintrag, Deinstallation).
+* Windows: `VitaParmsLight.iss` mit Inno Setup 6.3.1 übersetzt (Ergebnis `VitaParms-light-<Version>-Setup.exe`);
+  die von qmake erzeugten Windows-Makefiles enthalten alle Schritte (windeployqt, `install_src`, ISCC, binarycreator).
+  Ein echter Windows-Build samt Installation steht noch aus.
+* macOS: vorbereitet, nicht geprüft.

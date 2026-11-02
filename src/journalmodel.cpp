@@ -26,7 +26,7 @@ void JournalModel::rebuildColumns()
     m_cols.append({ ColKind::DateTime, VitalKey::Pulse, {}, tr("Datum / Uhrzeit") });
     m_cols.append({ ColKind::Context, VitalKey::Pulse, {}, tr("Messzeitpunkt") });
     m_cols.append({ ColKind::BloodPressure, VitalKey::Systolic, {}, tr("RR\n[mmHg]") });
-    for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
+    for (VitalKey k : { VitalKey::Pulse, VitalKey::PulsePressure, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
                         VitalKey::Weight, VitalKey::Height, VitalKey::Bmi })
         if (!(Edition::light() && k == VitalKey::PeakFlow))   // VitaParms light erfasst keinen Peak Flow
         m_cols.append({ ColKind::Vital, k, {},

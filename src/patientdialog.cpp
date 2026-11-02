@@ -915,7 +915,7 @@ void PatientDialog::updateAdmissionLabel()
         if (r.systolic || r.diastolic)
             vals << tr("RR %1/%2 mmHg").arg(r.systolic ? QString::number(*r.systolic) : QStringLiteral("–"),
                                             r.diastolic ? QString::number(*r.diastolic) : QStringLiteral("–"));
-        for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
+        for (VitalKey k : { VitalKey::Pulse, VitalKey::PulsePressure, VitalKey::Temperature, VitalKey::SpO2, VitalKey::PeakFlow, VitalKey::Glucose,
                             VitalKey::Weight, VitalKey::Height, VitalKey::Bmi, VitalKey::Pain }) {
             const QString s = VitalDefs::formatted(r, k, true);
             if (!s.isEmpty()) vals << VitalDefs::shortLabel(k) + QLatin1Char(' ') + s;

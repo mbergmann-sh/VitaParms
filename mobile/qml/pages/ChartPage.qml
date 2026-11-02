@@ -31,9 +31,10 @@ Item {
             Row {
                 spacing: 0
                 Repeater {
-                    model: [qsTr("Tag"), qsTr("Woche"), qsTr("Monat"), qsTr("Jahr")]
+                    model: [qsTr("Tag"), qsTr("Woche"), qsTr("Monat"), qsTr("Jahr"), qsTr("Zeitraum")]
                     delegate: AbstractButton {
-                        width: Math.max(84, lbl.implicitWidth + 28); height: Theme.touch
+                        objectName: "scale_" + index
+                        width: Math.max(win.phone ? 50 : 84, lbl.implicitWidth + (win.phone ? 14 : 28)); height: Theme.touch
                         onClicked: chart.scale = index
                         readonly property bool on: chart.scale === index
                         contentItem: Label { id: lbl; text: modelData; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
@@ -41,8 +42,8 @@ Item {
                         background: Rectangle {
                             color: on ? Theme.brand : parent.down ? Theme.brandWash : Theme.surface
                             border.color: Theme.ruleStrong
-                            radius: index === 0 || index === 3 ? Theme.radius : 0
-                            Rectangle { visible: index > 0 && index < 3; anchors.fill: parent; color: "transparent"; border.color: Theme.ruleStrong }
+                            radius: index === 0 || index === 4 ? Theme.radius : 0
+                            Rectangle { visible: index > 0 && index < 4; anchors.fill: parent; color: "transparent"; border.color: Theme.ruleStrong }
                         }
                     }
                 }
@@ -53,6 +54,18 @@ Item {
             VButton { text: "▶"; width: Theme.touch; onClicked: chart.step(1) }
             VButton { text: qsTr("Heute"); onClicked: chart.today() }
         }
+        // Zeitraum von–bis (einschließlich); Felder folgen auch ◀ ▶ und „Heute“
+        Connections { target: chart; function onSpecChanged() { rangeFrom.isoDate = chart.fromDate; rangeTo.isoDate = chart.toDate } }
+        Flow {
+            visible: chart.scale === 4
+            Layout.fillWidth: true
+            Layout.preferredWidth: 1
+            spacing: Theme.gapS
+            DateField { id: rangeFrom; objectName: "chartFrom"; label: qsTr("Von"); allowEmpty: false; width: win.phone ? 150 : 170
+                        isoDate: chart.fromDate; onIsoDateChanged: if (valid && isoDate) chart.fromDate = isoDate }
+            DateField { id: rangeTo; objectName: "chartTo"; label: qsTr("Bis"); allowEmpty: false; width: win.phone ? 150 : 170
+                        isoDate: chart.toDate; onIsoDateChanged: if (valid && isoDate) chart.toDate = isoDate }
+        }
         Flow {
             Layout.fillWidth: true
             spacing: Theme.gapS
@@ -62,7 +75,8 @@ Item {
                         onClicked: page.togglePanel(modelData.id) }
             }
             VButton { text: qsTr("Als PDF"); onClicked: {
-                const f = app.exportReport("chart", page.personId, { scale: chart.scale, ref: chart.refDate, panels: page.selected, hidden: chart.hiddenKeys })
+                const f = app.exportReport("chart", page.personId, { scale: chart.scale, ref: chart.refDate, from: chart.fromDate, to: chart.toDate,
+                                                                    panels: page.selected, hidden: chart.hiddenKeys })
                 if (f) app.openFile(f); else win.toast(app.lastError, true) } }
         }
         Label { text: qsTr("Tipp: Auf einen Legendeneintrag tippen blendet die Kurve aus oder ein; auf einen Messpunkt tippen zeigt den Wert.")

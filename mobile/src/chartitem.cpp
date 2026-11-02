@@ -24,7 +24,7 @@ void ChartItem::setPatientId(qint64 id)
 
 void ChartItem::setScale(int s)
 {
-    s = qBound(0, s, 3);
+    s = qBound(0, s, 4);
     if (s == int(m_spec.scale)) return;
     m_spec.scale = ChartSpec::Scale(s);
     reload();
@@ -36,6 +36,24 @@ void ChartItem::setRefDate(const QString &d)
     if (!x.isValid() || x == m_ref) return;
     m_ref = x;
     reload();
+}
+
+void ChartItem::setFromDate(const QString &d)
+{
+    const QDate x = QDate::fromString(d, Qt::ISODate);
+    if (!x.isValid() || x == m_from) return;
+    m_from = x;
+    if (m_to < m_from) m_to = m_from;
+    if (m_spec.scale == ChartSpec::Scale::Custom) reload(); else emit specChanged();
+}
+
+void ChartItem::setToDate(const QString &d)
+{
+    const QDate x = QDate::fromString(d, Qt::ISODate);
+    if (!x.isValid() || x == m_to) return;
+    m_to = x;
+    if (m_from > m_to) m_from = m_to;
+    if (m_spec.scale == ChartSpec::Scale::Custom) reload(); else emit specChanged();
 }
 
 void ChartItem::setPanels(const QStringList &p)
@@ -65,7 +83,12 @@ void ChartItem::setRevision(int r)
 
 void ChartItem::reload()
 {
-    ChartSpec::rangeFor(m_spec.scale, m_ref, m_spec.from, m_spec.to);
+    if (m_spec.scale == ChartSpec::Scale::Custom) {          // Zeitraum: von 0:00 bis Ende des letzten Tages
+        m_spec.from = QDateTime(m_from, QTime(0, 0));
+        m_spec.to = QDateTime(m_to.addDays(1), QTime(0, 0));
+    } else {
+        ChartSpec::rangeFor(m_spec.scale, m_ref, m_spec.from, m_spec.to);
+    }
     Database &db = Database::instance();
     m_all = (m_pid && db.isOpen()) ? db.vitals(m_pid) : QList<VitalRecord>();
     if (m_pid && db.isOpen())
@@ -104,7 +127,12 @@ void ChartItem::step(int dir)
     case ChartSpec::Scale::Week:  m_ref = m_ref.addDays(7 * dir); break;
     case ChartSpec::Scale::Month: m_ref = m_ref.addMonths(dir); break;
     case ChartSpec::Scale::Year:  m_ref = m_ref.addYears(dir); break;
-    case ChartSpec::Scale::Custom: break;
+    case ChartSpec::Scale::Custom: {                          // um die eigene Länge verschieben
+        const qint64 n = m_from.daysTo(m_to) + 1;
+        m_from = m_from.addDays(n * dir);
+        m_to = m_to.addDays(n * dir);
+        break;
+    }
     }
     reload();
 }
@@ -112,6 +140,11 @@ void ChartItem::step(int dir)
 void ChartItem::today()
 {
     m_ref = QDate::currentDate();
+    if (m_spec.scale == ChartSpec::Scale::Custom) {          // Zeitraum gleicher Länge bis heute
+        const qint64 n = m_from.daysTo(m_to);
+        m_to = QDate::currentDate();
+        m_from = m_to.addDays(-n);
+    }
     reload();
 }
 

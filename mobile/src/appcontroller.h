@@ -103,7 +103,10 @@ public:
     // ---- Messwerte
     Q_INVOKABLE QVariantList vitalFields() const;    // Eingabefelder (inkl. Zusatzfelder Atemfrequenz, Schmerz)
     Q_INVOKABLE QStringList contexts() const;
-    Q_INVOKABLE QVariantList journal(qint64 pid, const QString &query = {}, int days = 0);
+    // Verlauf drucken: Wertegruppen [{id, title, hasData}] für den Zeitraum (from/to bzw. days)
+    Q_INVOKABLE QVariantList historyGroups(qint64 pid, const QVariantMap &options);
+    Q_INVOKABLE QVariantList journal(qint64 pid, const QString &query = {}, int days = 0,
+                                     const QString &fromDay = {}, const QString &toDay = {});
     Q_INVOKABLE QVariantMap vital(qint64 id);
     Q_INVOKABLE QVariantMap newVital(qint64 pid);
     Q_INVOKABLE QStringList checkVital(const QVariantMap &m) const;   // Hinweise vor dem Speichern
@@ -315,6 +318,7 @@ signals:
     void websiteFinished(bool ok, const QString &message);                              // Datenbank vom Computer übernommen → anmelden
 
 private:
+    static void historyRange(const QVariantMap &options, QDateTime *from, QDateTime *to, QString *period);
     class QQmlEngine *m_engine = nullptr;
     void setError(const QString &e);
     void afterLogin();

@@ -12,20 +12,84 @@ Item {
     signal glucoseProfile()
     signal bpProfile()
     property var entries: []
-    property int days: 0
+    property int days: 0                 // 0 alle, n letzte n Tage, -1 Zeitraum von–bis
+    property string fromDay: { const d = new Date(); d.setDate(d.getDate() - 29); return Qt.formatDate(d, "yyyy-MM-dd") }
+    property string toDay: Qt.formatDate(new Date(), "yyyy-MM-dd")
+    // Optionen für PDF, Excel und Protokolle: gleicher Zeitraum wie die Liste
+    function rangeOptions(extra) {
+        const o = extra || {}
+        if (days === -1) { o.from = fromDay; o.to = toDay } else o.days = days
+        return o
+    }
     function reload() {
-        const l = app.journal(personId, search.text, days)
+        const l = days === -1 ? app.journal(personId, search.text, 0, fromDay, toDay) : app.journal(personId, search.text, days)
         for (let i = 0; i < l.length; ++i) l[i].showDay = i === 0 || l[i].day !== l[i - 1].day
         entries = l
     }
     onPersonIdChanged: reload()
     onDaysChanged: reload()
+    onFromDayChanged: if (days === -1) reload()
+    onToDayChanged: if (days === -1) reload()
     // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
     property bool active: true
     property bool stale: false
     onActiveChanged: if (active && stale) { stale = false; page.reload() }
     Connections { target: app; function onDataChanged() { if (page.active) page.reload(); else page.stale = true } }
     Component.onCompleted: reload()
+
+    // Verlauf als PDF: Wertegruppen wählen – je Gruppe chronologisch, Zeitraum wie die Liste
+    property var printGroups: []           // zuletzt gewählt (leer: alle mit Werten)
+    Popup {
+        id: printSheet
+        objectName: "historyPrintSheet"
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: Math.min(520, page.width - 24)
+        padding: 20
+        property var groups: []
+        onAboutToShow: {
+            groups = app.historyGroups(page.personId, page.rangeOptions())
+            const pre = page.printGroups
+            checked = groups.map(g => g.hasData && (pre.length === 0 || pre.indexOf(g.id) >= 0))
+        }
+        property var checked: []
+        background: Rectangle { color: Theme.surface; radius: Theme.radius; border.color: Theme.rule }
+        contentItem: ColumnLayout {
+            spacing: Theme.gapS
+            Label { text: qsTr("Verlauf als PDF"); font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink }
+            Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2; font.pixelSize: Theme.fsS
+                    text: qsTr("Jede gewählte Wertegruppe erscheint für sich, chronologisch, mit Mittelwert, Minimum und Maximum. Zeitraum wie in der Liste gewählt.") }
+            Repeater {
+                id: groupRep
+                model: printSheet.groups
+                VCheck {
+                    objectName: "historyGroup_" + modelData.id
+                    text: modelData.title + (modelData.hasData ? "" : "  " + qsTr("(keine Werte)"))
+                    enabled: modelData.hasData
+                    checked: printSheet.checked[index] === true
+                    onToggled: { const c = printSheet.checked.slice(); c[index] = checked; printSheet.checked = c }
+                }
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Theme.gapS
+                Item { Layout.fillWidth: true }
+                VButton { text: qsTr("Abbrechen"); kind: "flat"; onClicked: printSheet.close() }
+                VButton {
+                    objectName: "historyPdfButton"
+                    text: qsTr("PDF erstellen"); kind: "primary"
+                    onClicked: {
+                        const ids = printSheet.groups.filter((g, i) => printSheet.checked[i] === true).map(g => g.id)
+                        if (ids.length === 0) { win.toast(qsTr("Bitte mindestens eine Wertegruppe wählen."), true); return }
+                        page.printGroups = ids
+                        printSheet.close()
+                        const f = app.exportReport("journal", page.personId, page.rangeOptions({ groups: ids }))
+                        if (f) app.openFile(f); else win.toast(app.lastError, true)
+                    }
+                }
+            }
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -37,14 +101,15 @@ Item {
             VField { id: search; width: Math.min(300, page.width - 2 * Theme.gapL); placeholder: qsTr("Suchen in Beobachtungen …")
                      field.onTextChanged: searchTimer.restart() }
             Repeater {
-                model: [{ t: qsTr("Alle"), d: 0 }, { t: qsTr("30 Tage"), d: 30 }, { t: qsTr("90 Tage"), d: 90 }, { t: qsTr("1 Jahr"), d: 365 }]
-                VChip { text: modelData.t; checked: page.days === modelData.d; onClicked: page.days = modelData.d; autoExclusive: false }
+                model: [{ t: qsTr("Alle"), d: 0 }, { t: qsTr("30 Tage"), d: 30 }, { t: qsTr("90 Tage"), d: 90 }, { t: qsTr("1 Jahr"), d: 365 },
+                        { t: qsTr("Zeitraum"), d: -1 }]
+                VChip { objectName: "range_" + modelData.d; text: modelData.t; checked: page.days === modelData.d; onClicked: page.days = modelData.d; autoExclusive: false }
             }
             Label { text: qsTr("Messungen: %1").arg(page.entries.length); color: Theme.muted; height: Theme.touch; verticalAlignment: Text.AlignVCenter }
             VButton { objectName: "glucoseProfileButton"; text: qsTr("BZ-Tagesprofil"); onClicked: page.glucoseProfile() }
             VButton { objectName: "bpProfileButton"; text: qsTr("RR-Tagesprofil"); onClicked: page.bpProfile() }
-            VButton { text: qsTr("PDF"); onClicked: { const f = app.exportReport("journal", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
-            VButton { text: qsTr("Excel"); onClicked: { const f = app.exportReport("journalXlsx", page.personId, { days: page.days }); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
+            VButton { objectName: "journalPdfButton"; text: qsTr("PDF"); onClicked: printSheet.open() }
+            VButton { text: qsTr("Excel"); onClicked: { const f = app.exportReport("journalXlsx", page.personId, page.rangeOptions()); if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             // Protokolle aus den erfassten Werten (Zeitraum wie oben gewählt; „Alle“ = gesamter Zeitraum)
             VButton {
                 id: protoBtn
@@ -54,7 +119,7 @@ Item {
                 Menu {
                     id: protoMenu
                     function run(kind) {
-                        const f = app.exportReport(kind, page.personId, { days: page.days })
+                        const f = app.exportReport(kind, page.personId, page.rangeOptions())
                         if (f) app.openFile(f); else win.toast(app.lastError, true)
                     }
                     MenuItem { text: qsTr("Stuhlprotokoll (PDF)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("stool") }
@@ -70,6 +135,17 @@ Item {
                     MenuItem { text: qsTr("RR-Tagesprofile (Excel)"); font.pixelSize: Theme.fsM; height: Theme.touch; onTriggered: protoMenu.run("bpProfileXlsx") }
                 }
             }
+        }
+        // Zeitraum von–bis (einschließlich)
+        Flow {
+            visible: page.days === -1
+            Layout.fillWidth: true
+            Layout.preferredWidth: 1
+            spacing: Theme.gapS
+            DateField { objectName: "journalFrom"; label: qsTr("Von"); allowEmpty: false; width: win.phone ? 150 : 170
+                        isoDate: page.fromDay; onIsoDateChanged: if (valid && isoDate) page.fromDay = isoDate }
+            DateField { objectName: "journalTo"; label: qsTr("Bis"); allowEmpty: false; width: win.phone ? 150 : 170
+                        isoDate: page.toDay; onIsoDateChanged: if (valid && isoDate) page.toDay = isoDate }
         }
         Timer { id: searchTimer; interval: 300; onTriggered: page.reload() }
 
@@ -91,26 +167,28 @@ Item {
               }
               AbstractButton {
                 width: list.width
-                implicitHeight: entry.implicitHeight + 24
+                // Geometrie über die Innenabstände des Knopfs – keine Anker am contentItem (sonst Layout-Schleife)
+                leftPadding: 16; rightPadding: 16; topPadding: 12; bottomPadding: 12
                 onClicked: page.edit(modelData.id)
                 background: Rectangle { color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule }
-                contentItem: RowLayout {
+                // ohne Layouts: zwei Spalten, Breite vom Knopf – keine Layout-Schleife, Werte linksbündig
+                contentItem: Item {
                     id: entry
-                    anchors.left: parent.left; anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: 16; anchors.rightMargin: 16
-                    spacing: Theme.gap
-                    ColumnLayout {
-                        Layout.preferredWidth: win.phone ? 76 : 120; Layout.alignment: Qt.AlignTop
-                        spacing: 0
+                    implicitHeight: Math.max(timeCol.implicitHeight, valCol.implicitHeight)
+                    Column {
+                        id: timeCol
+                        width: win.phone ? 76 : 120
                         Label { text: modelData.time; font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink }
-                        Label { text: modelData.context; color: Theme.muted; font.pixelSize: Theme.fsXs; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                        Label { text: modelData.context; color: Theme.muted; font.pixelSize: Theme.fsXs; wrapMode: Text.WordWrap; width: parent.width }
                     }
-                    ColumnLayout {
-                        Layout.fillWidth: true
+                    Column {
+                        id: valCol
+                        x: timeCol.width + Theme.gap
+                        width: entry.width - x
                         spacing: 6
                         Flow {
                             id: valFlow
-                            Layout.fillWidth: true
+                            width: parent.width
                             spacing: 18
                             Repeater {
                                 model: modelData.values
@@ -128,7 +206,7 @@ Item {
                             }
                         }
                         Label { visible: !!modelData.observations; text: modelData.observations; color: Theme.ink2
-                                wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                                wrapMode: Text.WordWrap; width: parent.width }
                     }
                 }
             }

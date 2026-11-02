@@ -15,6 +15,10 @@ Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biol
 **Neu in 0.28:** Schmerzstärke als eigener Messwert (Datenbankformat 12), RR-Tagesprofil
 (*Messwerte → RR-Tagesprofil*, Auswertung in den Berichten), Kontaktart „Angehörige/r“; auf dem
 Smartphone (Breite unter 600 px) knappere Kopfzeilen (✕ statt „Abbrechen“).
+**0.29:** Blutdruckamplitude (Pulsdruck) im Verlauf nach RR und Puls und als Kurve unter
+„Blutdruck & Puls“ (berechnet, nicht eingebbar). **Zeitraum von–bis** in Verlaufskurven (5. Knopf
+„Zeitraum“, ◀ ▶ verschieben um die Länge) und Messwerten (Chip „Zeitraum“; gilt auch für PDF, Excel,
+Protokolle). **Verlauf als PDF** mit Auswahl der Wertegruppen, je Gruppe chronologisch.
 **0.28.1:** Die Reiterleiste bricht bei wenig Platz in weitere Zeilen um – vorher waren „Krankenakte“
 und „Berichte“ im Hochformat (und je nach Schrift auch quer) nur durch Wischen erreichbar, ohne
 Hinweis. Ankreuzfelder mit langem Text brechen um (`components/VCheck.qml`), lange Chips werden

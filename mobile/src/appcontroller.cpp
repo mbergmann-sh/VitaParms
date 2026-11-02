@@ -877,13 +877,16 @@ QVariantList AppController::vitalFields() const
 QStringList AppController::contexts() const { return AppSettings::profileContexts(); }
 void AppController::setContexts(const QStringList &l) { AppSettings::setProfileContexts(l); }
 
-QVariantList AppController::journal(qint64 pid, const QString &query, int days)
+QVariantList AppController::journal(qint64 pid, const QString &query, int days, const QString &fromDay, const QString &toDay)
 {
     QVariantList l;
     if (!loggedIn() || !pid) return l;
-    QDateTime from;
+    QDateTime from, to;
     if (days > 0) from = QDateTime(QDate::currentDate().addDays(-days), QTime(0, 0));
-    QList<VitalRecord> recs = Database::instance().vitals(pid, from, {});
+    // Zeitraum von–bis (einschließlich), z. B. „Zeitraum“ in der Liste
+    const QDate a = QDate::fromString(fromDay, Qt::ISODate), b = QDate::fromString(toDay, Qt::ISODate);
+    if (a.isValid() && b.isValid()) { from = QDateTime(a, QTime(0, 0)); to = QDateTime(b.addDays(1), QTime(0, 0)); }
+    QList<VitalRecord> recs = Database::instance().vitals(pid, from, to);
     std::sort(recs.begin(), recs.end(), [](const VitalRecord &a, const VitalRecord &b) { return a.measuredAt > b.measuredAt; });
     const QLocale loc;
     const QString q = query.trimmed().toLower();
@@ -911,7 +914,7 @@ QVariantList AppController::journal(qint64 pid, const QString &query, int days)
                                                                                          r.diastolic ? QString::number(*r.diastolic) : QStringLiteral("–")) },
                                    { QStringLiteral("unit"), QStringLiteral("mmHg") },
                                    { QStringLiteral("color"), VitalDefs::color(VitalKey::Systolic).name() } };
-        for (VitalKey k : { VitalKey::Pulse, VitalKey::Temperature, VitalKey::SpO2, VitalKey::Glucose, VitalKey::Weight,
+        for (VitalKey k : { VitalKey::Pulse, VitalKey::PulsePressure, VitalKey::Temperature, VitalKey::SpO2, VitalKey::Glucose, VitalKey::Weight,
                             VitalKey::Height, VitalKey::Bmi, VitalKey::PeakFlow, VitalKey::Inr, VitalKey::FluidIn, VitalKey::FluidOut,
                             VitalKey::Edema, VitalKey::Pain }) {
             const QString t = VitalDefs::formatted(r, k);
@@ -983,7 +986,7 @@ static QVariantMap vitalToMap(const VitalRecord &r)
         }
     };
     for (VitalKey k : VitalDefs::all())
-        if (k != VitalKey::Bmi && k != VitalKey::Stool) put(k);
+        if (k != VitalKey::Bmi && k != VitalKey::Stool && k != VitalKey::PulsePressure) put(k);   // berechnete Werte nicht ins Formular
     for (auto it = r.extra.begin(); it != r.extra.end(); ++it)
         values.insert(it.key(), it.value().toVariant());
     const StoolDetail &sd = r.stoolDetail;
@@ -1712,6 +1715,38 @@ QVariantList AppController::upcoming(qint64 pid, int days)
 
 // ---------------------------------------------------------------- Ausgaben
 
+// Zeitraum aus den Ausgabe-Optionen: „from“/„to“ (einschließlich) oder „days“ (letzte n Tage), sonst alles
+void AppController::historyRange(const QVariantMap &options, QDateTime *from, QDateTime *to, QString *period)
+{
+    const QLocale loc;
+    const QDate a = fromIso(options.value(QStringLiteral("from"))), b = fromIso(options.value(QStringLiteral("to")));
+    const int days = options.value(QStringLiteral("days")).toInt();
+    *from = {}; *to = {};
+    if (a.isValid() && b.isValid()) {
+        *from = QDateTime(a, QTime(0, 0));
+        *to = QDateTime(b.addDays(1), QTime(0, 0));
+        *period = QStringLiteral("%1 – %2").arg(loc.toString(a, QStringLiteral("dd.MM.yyyy")), loc.toString(b, QStringLiteral("dd.MM.yyyy")));
+    } else if (days > 0) {
+        *from = QDateTime(QDate::currentDate().addDays(-days), QTime(0, 0));
+        *period = tr("letzte %1 Tage").arg(days);
+    } else {
+        *period = tr("gesamter Verlauf");
+    }
+}
+
+QVariantList AppController::historyGroups(qint64 pid, const QVariantMap &options)
+{
+    QVariantList l;
+    if (!loggedIn() || !pid) return l;
+    QDateTime from, to;
+    QString period;
+    historyRange(options, &from, &to, &period);
+    const QStringList has = ReportPrinter::historyGroupsWithData(Database::instance().vitals(pid, from, to));
+    for (const auto &g : ReportPrinter::historyGroups())
+        l << QVariantMap{ { QStringLiteral("id"), g.id }, { QStringLiteral("title"), g.title }, { QStringLiteral("hasData"), has.contains(g.id) } };
+    return l;
+}
+
 QString AppController::exportReport(const QString &kind, qint64 pid, const QVariantMap &options)
 {
     Database &db = Database::instance();
@@ -1752,15 +1787,19 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         path = QStringLiteral("%1/Medikamentenplan_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::medicationPlanToPdf(path, *p, db.medications(pid, false));
     } else if (kind == QLatin1String("journal") || kind == QLatin1String("journalXlsx")) {
-        const int days = options.value(QStringLiteral("days")).toInt();
-        const QDateTime from = days > 0 ? QDateTime(QDate::currentDate().addDays(-days), QTime(0, 0)) : QDateTime();
-        JournalModel model;
-        model.setRecords(db.vitals(pid, from, {}), db.vitalExtraKeys(pid));
-        const QString period = days > 0 ? tr("letzte %1 Tage").arg(days) : tr("gesamter Verlauf");
+        QDateTime from, to;
+        QString period;
+        historyRange(options, &from, &to, &period);
+        const QList<VitalRecord> recs = db.vitals(pid, from, to);
         if (kind == QLatin1String("journal")) {
+            // Druckfassung: je gewählter Wertegruppe chronologisch (ohne Angabe: alle Gruppen mit Werten)
+            QStringList groups = options.value(QStringLiteral("groups")).toStringList();
+            if (groups.isEmpty()) groups = ReportPrinter::historyGroupsWithData(recs);
             path = QStringLiteral("%1/Verlauf_%2_%3.pdf").arg(dir, base, stamp);
-            ok = ReportPrinter::journalToPdf(path, *p, model, period);
+            ok = ReportPrinter::historyToPdf(path, *p, recs, groups, period);
         } else {
+            JournalModel model;
+            model.setRecords(recs, db.vitalExtraKeys(pid));
             path = QStringLiteral("%1/Verlauf_%2_%3.xlsx").arg(dir, base, stamp);
             QString err;
             ok = ReportPrinter::journalToXlsx(path, *p, model, period, &err);
@@ -1778,6 +1817,10 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         Protocols::Options o;
         o.to = QDate::currentDate();
         if (days > 0) o.from = o.to.addDays(1 - days);
+        if (fromIso(options.value(QStringLiteral("from"))).isValid() && fromIso(options.value(QStringLiteral("to"))).isValid()) {
+            o.from = fromIso(options.value(QStringLiteral("from")));          // Zeitraum von–bis
+            o.to = fromIso(options.value(QStringLiteral("to")));
+        }
         if (options.contains(QStringLiteral("minValues"))) o.minValues = options.value(QStringLiteral("minValues")).toInt();
         const QDateTime from = o.from.isValid() ? QDateTime(o.from.addDays(-31), QTime(0, 0)) : QDateTime();
         const Protocols::Table t = Protocols::build(pk, db.vitals(pid, from, {}), o, *p);
@@ -1800,10 +1843,17 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
         ok = xlsx ? Wounds::toXlsx(*p, *w, path, &err) : Wounds::toPdf(*p, *w, path);
     } else if (kind == QLatin1String("chart") || kind == QLatin1String("chartXlsx")) {
         ChartSpec spec;
-        spec.scale = ChartSpec::Scale(qBound(0, options.value(QStringLiteral("scale")).toInt(), 3));
-        ChartSpec::rangeFor(spec.scale, fromIso(options.value(QStringLiteral("ref"))).isValid()
-                                            ? fromIso(options.value(QStringLiteral("ref"))) : QDate::currentDate(),
-                            spec.from, spec.to);
+        spec.scale = ChartSpec::Scale(qBound(0, options.value(QStringLiteral("scale")).toInt(), 4));
+        if (spec.scale == ChartSpec::Scale::Custom) {         // Zeitraum von–bis (einschließlich)
+            const QDate a = fromIso(options.value(QStringLiteral("from"))), b = fromIso(options.value(QStringLiteral("to")));
+            if (!a.isValid() || !b.isValid() || b < a) { setError(tr("Bitte einen gültigen Zeitraum wählen.")); return {}; }
+            spec.from = QDateTime(a, QTime(0, 0));
+            spec.to = QDateTime(b.addDays(1), QTime(0, 0));
+        } else {
+            ChartSpec::rangeFor(spec.scale, fromIso(options.value(QStringLiteral("ref"))).isValid()
+                                                ? fromIso(options.value(QStringLiteral("ref"))) : QDate::currentDate(),
+                                spec.from, spec.to);
+        }
         spec.panelIds = options.value(QStringLiteral("panels")).toStringList();
         spec.hiddenKeys = options.value(QStringLiteral("hidden")).toStringList();
         spec.records = db.vitals(pid, spec.from.addDays(-31), spec.to);

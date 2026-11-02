@@ -104,6 +104,89 @@ static QStringList widthProblems(QQuickWindow *win, QStringList *hidden = nullpt
     return bad;
 }
 
+// Zeitraum von–bis in Grafik und Verlauf, Verlauf als PDF (Wertegruppen) – für die volle und die Light-App
+static int rangeChecks(QQuickWindow *win, AppController &app, QObject *home, const QString &out, const QString &prefix)
+{
+    int fails = 0;
+    auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
+    auto shot = [&](const QString &name) { wait(450); win->grabWindow().save(out + QLatin1Char('/') + prefix + name + QStringLiteral(".png")); };
+    // Repeater-Delegaten haben keinen QObject-Elternteil: im Elementbaum suchen
+    std::function<QQuickItem *(QQuickItem *, const QString &)> findItem = [&](QQuickItem *it, const QString &name) -> QQuickItem * {
+        if (it->objectName() == name) return it;
+        for (QQuickItem *c : it->childItems()) if (QQuickItem *f = findItem(c, name)) return f;
+        return nullptr;
+    };
+    auto find = [&](const QString &name) -> QObject * {
+        if (QObject *o = win->findChild<QObject *>(name)) return o;
+        return findItem(win->contentItem()->parentItem() ? win->contentItem()->parentItem() : win->contentItem(), name);
+    };
+    auto click = [&](const QString &name) {
+        QObject *b = find(name);
+        if (b) QMetaObject::invokeMethod(b, "clicked");
+        return b != nullptr;
+    };
+    const qint64 pid = QQmlProperty::read(home, QStringLiteral("personId")).toLongLong();
+    // eine gerade fällige Tagesprofil-Rückfrage nicht mit aufs Bild nehmen
+    if (QObject *q = find(QStringLiteral("profileQuestion"))) QMetaObject::invokeMethod(q, "close");
+    const QString from = QDate::currentDate().addDays(-20).toString(Qt::ISODate), to = QDate::currentDate().addDays(-6).toString(Qt::ISODate);
+    // Grafik: „Zeitraum“
+    QQmlProperty::write(home, QStringLiteral("tab"), 2);
+    wait(300);
+    check(click(QStringLiteral("scale_4")), "Grafik: Knopf Zeitraum");
+    QObject *chart = nullptr;
+    for (QObject *o : win->findChildren<QObject *>()) if (QByteArray(o->metaObject()->className()) == "ChartItem") chart = o;
+    check(chart && chart->property("scale").toInt() == 4, "Grafik: Zeitraum gewählt");
+    if (chart) {
+        chart->setProperty("fromDate", from);
+        chart->setProperty("toDate", to);
+        wait(200);
+        const QString pt = chart->property("periodText").toString();
+        check(pt.contains(QLocale().toString(QDate::fromString(from, Qt::ISODate), QStringLiteral("dd.MM.yyyy")))
+              && pt.contains(QLocale().toString(QDate::fromString(to, Qt::ISODate), QStringLiteral("dd.MM.yyyy"))), "Grafik: Zeitraum im Titel");
+        QObject *ff = find(QStringLiteral("chartFrom"));
+        check(ff && QQmlProperty::read(ff, QStringLiteral("isoDate")).toString() == from, "Grafik: Feld Von");
+    }
+    shot(QStringLiteral("kurven_zeitraum"));
+    const QString cpdf = app.exportReport(QStringLiteral("chart"), pid, { { QStringLiteral("scale"), 4 }, { QStringLiteral("from"), from },
+                                                                         { QStringLiteral("to"), to }, { QStringLiteral("panels"), QStringList{ QStringLiteral("bp") } } });
+    check(!cpdf.isEmpty() && QFileInfo(cpdf).size() > 1000, "Grafik: PDF für den Zeitraum");
+    if (chart) click(QStringLiteral("scale_1"));
+    // Verlauf: „Zeitraum“
+    QQmlProperty::write(home, QStringLiteral("tab"), 1);
+    wait(300);
+    check(click(QStringLiteral("range_-1")), "Verlauf: Chip Zeitraum");
+    QObject *jp = nullptr;
+    for (QObject *o : win->findChildren<QObject *>()) if (o->property("printGroups").isValid() && o->property("fromDay").isValid()) jp = o;
+    check(jp != nullptr, "Verlauf: Seite");
+    if (jp) {
+        jp->setProperty("fromDay", from);
+        jp->setProperty("toDay", to);
+        wait(300);
+        const int shown = QQmlProperty::read(jp, QStringLiteral("entries")).toList().size();
+        const int expect = app.journal(pid, QString(), 0, from, to).size();
+        qInfo("Verlauf Zeitraum: %d Einträge (erwartet %d)", shown, expect);
+        check(shown == expect && shown > 0 && shown < app.journal(pid).size(), "Verlauf: nur der Zeitraum");
+    }
+    shot(QStringLiteral("messwerte_zeitraum"));
+    // Verlauf als PDF: Auswahl der Wertegruppen
+    check(click(QStringLiteral("journalPdfButton")), "Verlauf: Knopf PDF");
+    wait(300);
+    QObject *sheet = find(QStringLiteral("historyPrintSheet"));
+    check(sheet && sheet->property("visible").toBool(), "Verlauf: Auswahl der Werte");
+    check(find(QStringLiteral("historyGroup_bp")) != nullptr, "Verlauf: Gruppe Blutdruck & Puls");
+    shot(QStringLiteral("verlauf_pdf"));
+    if (sheet) QMetaObject::invokeMethod(sheet, "close");
+    const QVariantList groups = app.historyGroups(pid, { { QStringLiteral("from"), from }, { QStringLiteral("to"), to } });
+    check(!groups.isEmpty() && groups.first().toMap().value(QStringLiteral("id")).toString() == QStringLiteral("bp"), "Verlauf: Gruppen");
+    const QString hpdf = app.exportReport(QStringLiteral("journal"), pid, { { QStringLiteral("from"), from }, { QStringLiteral("to"), to },
+                                                                           { QStringLiteral("groups"), QStringList{ QStringLiteral("bp") } } });
+    check(!hpdf.isEmpty() && QFileInfo(hpdf).size() > 1000, "Verlauf: PDF nach Gruppen");
+    if (!hpdf.isEmpty()) QFile::copy(hpdf, out + QLatin1Char('/') + prefix + QStringLiteral("verlauf.pdf"));
+    check(click(QStringLiteral("range_0")), "Verlauf: wieder alle");
+    QQmlProperty::write(home, QStringLiteral("tab"), 0);
+    return fails;
+}
+
 #ifdef VP_LIGHT
 // VitaParms light: Rundgang auf dem Tablet (quer) und dem Smartphone (hoch) – Bildschirmfotos lt_… und lp_…
 static int runLightTour(QQuickWindow *win, AppController &app, const QString &out, int fails)
@@ -189,6 +272,7 @@ static int runLightTour(QQuickWindow *win, AppController &app, const QString &ou
             QQmlProperty::write(h, QStringLiteral("tab"), i);
             shot(pre + QString::fromLatin1(tabNames[i]));
         }
+        fails += rangeChecks(win, app, h, out, pre + QStringLiteral("21_"));
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
         QMetaObject::invokeMethod(h, "measure", Q_ARG(QVariant, 0));
         check(win->findChild<QObject *>(QStringLiteral("fluidSection"))
@@ -634,6 +718,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         QQmlProperty::write(h, QStringLiteral("tab"), i);
         shot(QString::fromLatin1(tabs[i]));
     }
+    fails += rangeChecks(win, app, h, out, QStringLiteral("m25_"));
     // Termine: neuer Termin, Serie bearbeiten, Rückfrage „Für welche Termine?“
     call(h, "editAppointment", 0);
     shot(QStringLiteral("m17_termin_neu"));

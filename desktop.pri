@@ -33,6 +33,7 @@ SOURCES += \
     $$PWD/src/websitedialog.cpp \
     $$PWD/src/usbsyncdialog.cpp \
     $$PWD/src/glucoseprofiledialog.cpp \
+    $$PWD/src/historyprintdialog.cpp \
     $$PWD/src/medsearchdialog.cpp \
     $$PWD/src/contactdialog.cpp
 
@@ -66,6 +67,7 @@ HEADERS += \
     $$PWD/src/websitedialog.h \
     $$PWD/src/usbsyncdialog.h \
     $$PWD/src/glucoseprofiledialog.h \
+    $$PWD/src/historyprintdialog.h \
     $$PWD/src/medsearchdialog.h \
     $$PWD/src/contactdialog.h
 

@@ -19,6 +19,17 @@ void journal(QWidget *parent, const Patient &p, const JournalModel &model,
 bool journalExcel(QWidget *parent, const Patient &p, const JournalModel &model,
                   const QString &periodText);
 
+// Verlauf zum Drucken (Druck, Vorschau, PDF): nach Wertegruppen getrennt, je Gruppe chronologisch
+// (älteste Messung zuerst) mit Mittelwert/Minimum/Maximum – nur die gewählten Gruppen, z. B.
+// „bp“ (RR, Puls, Blutdruckamplitude) und „temp“. Gruppen = Diagramm-Bereiche + „obs“ (Beobachtungen).
+struct HistoryGroup { QString id; QString title; };
+QList<HistoryGroup> historyGroups();
+QStringList historyGroupsWithData(const QList<VitalRecord> &records);
+void history(QWidget *parent, const Patient &p, const QList<VitalRecord> &records, const QStringList &groups,
+             const QString &periodText, Target t);
+bool historyToPdf(const QString &path, const Patient &p, const QList<VitalRecord> &records,
+                  const QStringList &groups, const QString &periodText);
+
 // Verlaufsgrafik – A4 hoch, mit Legende und Kennwerten (Min/Max/Mittel)
 void charts(QWidget *parent, const Patient &p, const ChartSpec &spec, Target t);
 bool chartsExcel(QWidget *parent, const Patient &p, const ChartSpec &spec);

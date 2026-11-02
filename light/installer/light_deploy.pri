@@ -7,8 +7,11 @@
 #         Linux:   linux_deploy.sh (ldd) → …/data (lib/, plugins/, qt.conf, Startskript VitaParmsLight.sh)
 #         macOS:   macdeployqt            → …/data/VitaParmsLight.app
 #    2. Handbücher (PDF, unter Windows auch CHM) in das Paket …light.docs/data/docs
-#    3. Ist das Qt Installer Framework vorhanden: Installer in light/installer/Output
-#         Windows: VitaParms-light-<Version>-Setup.exe
+#    3. Windows: nach JEDEM Build windeployqt neben das Programm; beim Release-Build zusätzlich
+#       das Installationsverzeichnis light/installer/install_src (für Inno Setup)
+#    4. Installer in light/installer/Output, soweit die Werkzeuge vorhanden sind
+#         Windows: VitaParms-light-<Version>-Setup.exe (Inno Setup, VP_ISCC oder Standardort)
+#                  VitaParms-light-<Version>-Setup-IFW.exe (Qt Installer Framework)
 #         Linux:   VitaParms-light-<Version>-Setup.run
 #         macOS:   VitaParms-light-<Version>-Setup.dmg (Installer-App im Disk-Image)
 #
@@ -47,6 +50,34 @@ else: message("VitaParms light: Qt Installer Framework nicht gefunden – nur Pa
 
 VP_IFW_ARGS = --offline-only --compression 9 -c $$vpQuote($$VP_LINST/qtifw/config/config.xml) -p $$vpQuote($$VP_LINST/qtifw/packages)
 
+win32 {
+    VP_EXE = \"$(DESTDIR_TARGET)\"
+    VP_LSTAGE = $$VP_LINST/install_src
+    VP_WINDEPLOYQT = $$vpQuote($$[QT_INSTALL_BINS]/windeployqt.exe) --verbose 0
+    # schlank ausliefern wie VitaParms (siehe installer/windows_deploy.pri); alles: CONFIG+=vp_full_deploy
+    !vp_full_deploy {
+        VP_WINDEPLOYQT += --no-opengl-sw --no-system-d3d-compiler --translations de
+        versionAtLeast(QT_VERSION, 6.8.0): \
+            VP_WINDEPLOYQT += --no-system-dxc-compiler --no-ffmpeg --exclude-plugins ffmpegmediaplugin
+    }
+    # Qt-DLLs nach jedem Build (Debug und Release) neben das Programm
+    QMAKE_POST_LINK += $$VP_WINDEPLOYQT $$VP_EXE
+
+    # Inno Setup suchen (VP_ISCC oder Standardorte)
+    VP_ISCC = $$(VP_ISCC)
+    isEmpty(VP_ISCC) {
+        VP_ISCC_CANDIDATES = \
+            "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" \
+            "C:/Program Files/Inno Setup 6/ISCC.exe" \
+            "$$(LOCALAPPDATA)/Programs/Inno Setup 6/ISCC.exe"
+        for(c, VP_ISCC_CANDIDATES): isEmpty(VP_ISCC): exists($$c): VP_ISCC = $$c
+    }
+    vp_no_installer: VP_ISCC =
+    !isEmpty(VP_ISCC): message("VitaParms light: Inno Setup gefunden – $$VP_ISCC")
+    else: message("VitaParms light: Inno Setup nicht gefunden – light/installer/VitaParmsLight.iss bei Bedarf von Hand übersetzen")
+    CONFIG(debug, debug|release): message("VitaParms light: Debug-Build – Installationsverzeichnis und Installer entstehen nur beim Release-Build")
+}
+
 CONFIG(release, debug|release) {
     QMAKE_POST_LINK += $$VP_NL-$$QMAKE_DEL_TREE $$shell_quote($$shell_path($$VP_LPKG))
     QMAKE_POST_LINK += $$VP_NL-$$QMAKE_DEL_TREE $$shell_quote($$shell_path($$VP_LDOCS))
@@ -56,19 +87,21 @@ CONFIG(release, debug|release) {
     for(f, VP_DOCS): QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL $$vpQuote($$f) $$vpQuote($$VP_LDOCS/docs/$$basename(f))
 
     win32 {
-        VP_EXE = \"$(DESTDIR_TARGET)\"
-        VP_WINDEPLOYQT = $$vpQuote($$[QT_INSTALL_BINS]/windeployqt.exe) --verbose 0
-        !vp_full_deploy {
-            VP_WINDEPLOYQT += --no-opengl-sw --no-system-d3d-compiler --translations de
-            versionAtLeast(QT_VERSION, 6.8.0): \
-                VP_WINDEPLOYQT += --no-system-dxc-compiler --no-ffmpeg --exclude-plugins ffmpegmediaplugin
-        }
-        QMAKE_POST_LINK += $$VP_NL$$VP_WINDEPLOYQT $$VP_EXE
+        # Installationsverzeichnis für Inno Setup frisch aufbauen (wie bei VitaParms: installer/install_src)
+        QMAKE_POST_LINK += $$VP_NL-$$QMAKE_DEL_TREE $$shell_quote($$shell_path($$VP_LSTAGE))
+        QMAKE_POST_LINK += $$VP_NL$$VP_WINDEPLOYQT --dir $$vpQuote($$VP_LSTAGE) $$VP_EXE
+        QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL -exe $$VP_EXE $$vpQuote($$VP_LSTAGE/VitaParmsLight.exe)
+        QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL $$vpQuote($$PWD/../docs) $$vpQuote($$VP_LSTAGE/docs)
+        QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL $$vpQuote($$PWD/../../LICENSE) $$vpQuote($$VP_LSTAGE/LICENSE.txt)
+        QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL $$vpQuote($$PWD/README.md) $$vpQuote($$VP_LSTAGE/README.md)
+        # Paket für das Qt Installer Framework
         QMAKE_POST_LINK += $$VP_NL$$VP_WINDEPLOYQT --dir $$vpQuote($$VP_LPKG) $$VP_EXE
         QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL -exe $$VP_EXE $$vpQuote($$VP_LPKG/VitaParmsLight.exe)
         QMAKE_POST_LINK += $$VP_NL$$VP_QINSTALL $$vpQuote($$PWD/../../LICENSE) $$vpQuote($$VP_LPKG/LICENSE.txt)
+        # Installer: Inno Setup (…-Setup.exe) und Qt Installer Framework (…-Setup-IFW.exe), soweit vorhanden
+        !isEmpty(VP_ISCC): QMAKE_POST_LINK += $$VP_NL-$$vpQuote($$VP_ISCC) /Q $$vpQuote($$PWD/VitaParmsLight.iss)
         !isEmpty(VP_BINARYCREATOR): QMAKE_POST_LINK += $$VP_NL-$$vpQuote($$VP_BINARYCREATOR) $$VP_IFW_ARGS \
-            $$vpQuote($$VP_LOUTPUT/VitaParms-light-$${VERSION}-Setup.exe)
+            $$vpQuote($$VP_LOUTPUT/VitaParms-light-$${VERSION}-Setup-IFW.exe)
     }
     macx {
         VP_APP = $$OUT_PWD/$${TARGET}.app

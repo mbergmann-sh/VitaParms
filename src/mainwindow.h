@@ -98,7 +98,8 @@ private slots:
     void startGlucoseProfile();
     void startBpProfile();
     void measureForAppointment(qint64 apptId);
-    void measureOpenProfilePoint();          // offene Messung eines heutigen Tagesprofils nachholen
+    void measureOpenProfilePoint();
+    void printHistory(const Patient &p, int target, const QString &okText);   // target: ReportPrinter::Target          // offene Messung eines heutigen Tagesprofils nachholen
     void showSettings();
     void customizeForms();
     void manageAccounts();

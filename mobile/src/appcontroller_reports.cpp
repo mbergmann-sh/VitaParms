@@ -97,7 +97,7 @@ QVariantList AppController::reportCatalog(qint64 pid)
         add(QStringLiteral("order"), gPerson, tr("Bestellliste"), tr("vom %1 – %2").arg(QLocale().toString(o.createdAt, QStringLiteral("dd.MM.yyyy")), o.statusText()),
             false, false, true, { { QStringLiteral("orderId"), o.id } });
     }
-    add(QStringLiteral("journal"), gValues, tr("Verlauf (alle Messwerte)"), tr("Tabelle mit allen Werten, neueste zuerst"), true, true, !recs.isEmpty());
+    add(QStringLiteral("journal"), gValues, tr("Verlauf (alle Messwerte)"), tr("PDF: je Wertegruppe chronologisch; Excel: Tabelle mit allen Werten"), true, true, !recs.isEmpty());
     add(QStringLiteral("chart"), gValues, tr("Verlaufskurven"), tr("Kurven mit Legende und Kennwerten (DIN A4)"), true, true, !recs.isEmpty());
     add(QStringLiteral("glucose"), gProt, tr("BZ-Tagesprofile"), tr("Blutzuckerwerte je Tag, nach Uhrzeit geordnet"), true, true, glucose);
     add(QStringLiteral("bpProfile"), gProt, tr("RR-Tagesprofile"), tr("Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten"), true, true, bp);

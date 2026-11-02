@@ -84,7 +84,7 @@ ApplicationWindow {
         objectName: "profileQuestion"
         property var due: ({})
         title: (due.subject || "") + " – " + (due.label || "")
-        message: qsTr("Zeit für die Blutzuckermessung (%1).").arg(due.person || "")
+        message: (due.bp ? qsTr("Zeit für die Blutdruckmessung (%1).") : qsTr("Zeit für die Blutzuckermessung (%1).")).arg(due.person || "")
         acceptText: qsTr("Messung erfassen")
         rejectText: qsTr("Später")
         onAccepted: win.measureProfile(due)

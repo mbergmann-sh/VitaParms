@@ -34,6 +34,7 @@ Flickable {
         spacing: Theme.gap
         Flow {
             Layout.fillWidth: true
+            Layout.preferredWidth: 1          // Breite vom Layout, nicht vom Inhalt (keine Layout-Schleife)
             spacing: Theme.gapS
             VButton { objectName: "prepareButton"; text: qsTr("Medikamente stellen"); iconText: "▶"; kind: "primary"; onClicked: page.prepare() }
             VButton { objectName: "stockButton"; text: qsTr("Bestand und Bestellungen"); onClicked: page.stock() }

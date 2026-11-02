@@ -11,7 +11,8 @@
 #include <optional>
 
 enum class VitalKey {
-    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool, Inr, FluidIn, FluidOut, Edema, Pain
+    Pulse, Systolic, Diastolic, Temperature, SpO2, Glucose, Weight, Height, Bmi, PeakFlow, Stool, Inr, FluidIn, FluidOut, Edema, Pain,
+    PulsePressure            // Blutdruckamplitude = systolisch − diastolisch (berechnet, nicht gespeichert)
 };
 
 enum class MarkerShape { Circle, Square, Triangle, Diamond, Cross, TriangleDown };

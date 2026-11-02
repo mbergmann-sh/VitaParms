@@ -73,7 +73,8 @@ macx: lightdocs.path = $$OUT_PWD/$${TARGET}.app/Contents/Resources/docs
 COPIES += lightdocs
 
 # Versionsnummer und Datum in die Installer-Vorlagen übernehmen (*.in → Datei ohne .in)
-VP_TEMPLATES = installer/qtifw/config/config.xml.in \
+VP_TEMPLATES = installer/VitaParmsLight.iss.in \
+               installer/qtifw/config/config.xml.in \
                installer/qtifw/packages/de.mbergmann.vitaparms.light/meta/package.xml.in \
                installer/qtifw/packages/de.mbergmann.vitaparms.light.docs/meta/package.xml.in
 for(t, VP_TEMPLATES) {
@@ -88,5 +89,5 @@ for(t, VP_TEMPLATES) {
 # Bereitstellen und Installer bauen (Windows, Linux, macOS) – nur im Release-Build
 include(installer/light_deploy.pri)
 
-OTHER_FILES += light.qrc installer/README.md installer/light_deploy.pri installer/linux_deploy.sh \
+OTHER_FILES += light.qrc installer/README.md installer/light_deploy.pri installer/linux_deploy.sh installer/VitaParmsLight.iss.in \
     $$files(installer/qtifw/config/*) $$files(installer/qtifw/packages/*/meta/*)

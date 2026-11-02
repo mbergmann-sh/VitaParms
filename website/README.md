@@ -69,6 +69,11 @@ die gar kein Format mitsenden – mit **HTTP 426** ab. Ein nicht aktualisiertes 
 Tabellen überschreiben, die es nicht kennt. **Nach dem Update auf 0.27 den Ordner `api/` auf dem
 Server ersetzen** und alle Geräte (Desktop und Tablet) aktualisieren, sonst ist kein Abgleich möglich.
 
+**0.29:** Das Website-Paket enthält die **Blutdruckamplitude** (`pulsePressure`, berechnet:
+systolisch − diastolisch) – als Spalte im Verlauf nach RR/Puls, als Kurve im Bereich „Blutdruck & Puls“
+und in der CSV-Ausgabe. `app.js` braucht dafür keine Änderung (Werte und Bereiche kommen aus dem Paket);
+die Website zeigt sie nach dem nächsten Hochladen mit VitaParms 0.29.
+
 **0.28 (Datenbankformat 12):** neue Spalte `vitals.pain` (Schmerzstärke). Die Website-Ansicht
 zeigt sie als eigene Kurve und im Verlauf; `api/` ist unverändert, der Versionsschutz verlangt aber,
 dass **alle Geräte auf 0.28** aktualisiert werden. `assets/app.js` bitte mit hochladen.

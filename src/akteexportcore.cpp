@@ -98,10 +98,9 @@ bool build(const QString &zipPath, const Patient &p, const Options &o, QString *
             .arg(QLocale().toString(from.date(), QStringLiteral("dd.MM.yyyy")),
                  QLocale().toString(QDate::currentDate(), QStringLiteral("dd.MM.yyyy")));
 
-        JournalModel model;
-        model.setRecords(recs, db.vitalExtraKeys(p.id));
+        // Druckfassung des Verlaufs: je Wertegruppe chronologisch
         QString f = tmp.filePath(QStringLiteral("v.pdf"));
-        ReportPrinter::journalToPdf(f, p, model, period);
+        ReportPrinter::historyToPdf(f, p, recs, ReportPrinter::historyGroupsWithData(recs), period);
         QString name = tr("%1_Verlauf_Vitalwerte.pdf").arg(no++, 2, 10, QLatin1Char('0'));
         reportFiles.append({ name, readFile(f) });
         reports.append({ name, tr("Alle Messwerte %1 (%2 Messungen)").arg(period).arg(recs.size()) });

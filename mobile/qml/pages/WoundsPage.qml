@@ -148,13 +148,12 @@ Flickable {
             delegate: AbstractButton {
                 objectName: "woundEntry_" + index
                 Layout.fillWidth: true
-                implicitHeight: er.implicitHeight + 24
+                // Geometrie über die Innenabstände des Knopfs – keine Anker am contentItem (sonst Layout-Schleife)
+                leftPadding: 16; rightPadding: 16; topPadding: 12; bottomPadding: 12
                 onClicked: page.editEntry(page.woundId, modelData.id, modelData.kind)
                 background: Rectangle { color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule }
                 contentItem: RowLayout {
                     id: er
-                    anchors.left: parent.left; anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: 16; anchors.rightMargin: 16
                     spacing: Theme.gap
                     ColumnLayout {
                         Layout.preferredWidth: win.phone ? 110 : 170; Layout.minimumWidth: win.phone ? 110 : 170; Layout.maximumWidth: win.phone ? 110 : 170; Layout.alignment: Qt.AlignTop; spacing: 2

@@ -11,7 +11,9 @@ class ChartItem : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(qint64 patientId READ patientId WRITE setPatientId NOTIFY specChanged)
-    Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY specChanged)              // 0 Tag … 3 Jahr
+    Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY specChanged)              // 0 Tag … 3 Jahr, 4 Zeitraum (von–bis)
+    Q_PROPERTY(QString fromDate READ fromDate WRITE setFromDate NOTIFY specChanged)  // Zeitraum: erster Tag (ISO)
+    Q_PROPERTY(QString toDate READ toDate WRITE setToDate NOTIFY specChanged)        // Zeitraum: letzter Tag (ISO, einschließlich)
     Q_PROPERTY(QString refDate READ refDate WRITE setRefDate NOTIFY specChanged)     // ISO-Datum
     Q_PROPERTY(QStringList panels READ panels WRITE setPanels NOTIFY specChanged)
     Q_PROPERTY(QStringList hiddenKeys READ hiddenKeys WRITE setHiddenKeys NOTIFY specChanged)
@@ -32,6 +34,10 @@ public:
     int scale() const { return int(m_spec.scale); }
     void setScale(int s);
     QString refDate() const { return m_ref.toString(Qt::ISODate); }
+    QString fromDate() const { return m_from.toString(Qt::ISODate); }
+    void setFromDate(const QString &d);
+    QString toDate() const { return m_to.toString(Qt::ISODate); }
+    void setToDate(const QString &d);
     void setRefDate(const QString &d);
     QStringList panels() const { return m_spec.panelIds; }
     void setPanels(const QStringList &p);
@@ -62,6 +68,7 @@ private:
 
     qint64 m_pid = 0;
     QDate m_ref = QDate::currentDate();
+    QDate m_from = QDate::currentDate().addDays(-29), m_to = QDate::currentDate();   // Zeitraum
     int m_revision = 0;
     bool m_dark = false;
     ChartSpec m_spec;

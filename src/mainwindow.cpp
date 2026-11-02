@@ -33,6 +33,7 @@
 #include "websitedialog.h"
 #include "usbsyncdialog.h"
 #include "glucoseprofiledialog.h"
+#include "historyprintdialog.h"
 #include "glucoseprofile.h"
 #include "edition.h"
 #include "lightimport.h"
@@ -1325,6 +1326,23 @@ void MainWindow::updateActions()
     }
 }
 
+// Verlauf drucken: Zeitraum und Wertegruppen wählen, dann je Gruppe chronologisch ausgeben
+void MainWindow::printHistory(const Patient &p, int target, const QString &okText)
+{
+    const auto t = ReportPrinter::Target(target);
+    QDateTime from, to;
+    journalRange(from, to);
+    const QList<VitalRecord> all = Database::instance().vitals(p.id);
+    QDate a = from.isValid() ? from.date() : QDate::currentDate(), b = to.isValid() ? to.date().addDays(-1) : QDate::currentDate();
+    if (!from.isValid())                     // „alle Messungen“: ab der ersten Messung
+        for (const VitalRecord &r : all) if (r.measuredAt.date() < a) a = r.measuredAt.date();
+    QStringList pre;                         // Vorauswahl: die in der Grafik gewählten Bereiche (Beobachtungen dazu)
+    if (m_chart) { pre = m_chart->spec().panelIds; if (!pre.isEmpty()) pre << QStringLiteral("obs"); }
+    HistoryPrintDialog d(p, a, b, pre, okText, this);
+    if (d.exec() != QDialog::Accepted) return;
+    ReportPrinter::history(this, p, d.records(), d.groups(), d.periodText(), t);
+}
+
 void MainWindow::printCurrent()
 {
     const auto p = currentPatient();
@@ -1333,7 +1351,7 @@ void MainWindow::printCurrent()
     if (m_tabs->currentIndex() == TabChart)
         ReportPrinter::charts(this, *p, m_chart->spec(), ReportPrinter::Target::Printer);
     else
-        ReportPrinter::journal(this, *p, *m_model, journalPeriodText(), ReportPrinter::Target::Printer);
+        printHistory(*p, int(ReportPrinter::Target::Printer), tr("&Drucken…"));
 }
 
 void MainWindow::previewCurrent()
@@ -1344,7 +1362,7 @@ void MainWindow::previewCurrent()
     if (m_tabs->currentIndex() == TabChart)
         ReportPrinter::charts(this, *p, m_chart->spec(), ReportPrinter::Target::Preview);
     else
-        ReportPrinter::journal(this, *p, *m_model, journalPeriodText(), ReportPrinter::Target::Preview);
+        printHistory(*p, int(ReportPrinter::Target::Preview), tr("&Vorschau…"));
 }
 
 void MainWindow::pdfCurrent()
@@ -1354,7 +1372,7 @@ void MainWindow::pdfCurrent()
     if (m_tabs->currentIndex() == TabChart)
         ReportPrinter::charts(this, *p, m_chart->spec(), ReportPrinter::Target::Pdf);
     else
-        ReportPrinter::journal(this, *p, *m_model, journalPeriodText(), ReportPrinter::Target::Pdf);
+        printHistory(*p, int(ReportPrinter::Target::Pdf), tr("Als &PDF speichern…"));
 }
 
 void MainWindow::excelCurrent()

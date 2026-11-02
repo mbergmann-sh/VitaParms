@@ -496,7 +496,7 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
                 model.setRecords(sp.recs, sp.extraKeys);
                 const QString period = WebSync::tr("gesamter Verlauf");
                 const QString jp = tmp.filePath(QStringLiteral("j%1.pdf").arg(p.id));
-                if (ReportPrinter::journalToPdf(jp, p, model, period))
+                if (ReportPrinter::historyToPdf(jp, p, sp.recs, ReportPrinter::historyGroupsWithData(sp.recs), period))
                     add(WebSync::tr("Verlauf (PDF)"), WebSync::tr("Verlauf %1.pdf").arg(base), QStringLiteral("application/pdf"), jp);
                 const QString jx = tmp.filePath(QStringLiteral("j%1.xlsx").arg(p.id));
                 if (ReportPrinter::journalToXlsx(jx, p, model, period))
