@@ -526,6 +526,9 @@ void MainWindow::buildMenus()
     {
         QMenu *print = users->addMenu(QIcon::fromTheme(QStringLiteral("document-print")), tr("&Drucken"));
         m_actUserPrint << print->addAction(tr("&Stammblatt…"), this, &MainWindow::printPatientSheet)
+                       << print->addAction(tr("&Impfpass…"), this, [this] {
+                              if (const auto p = currentPatient()) ReportPrinter::vaccinationRecord(this, *p, ReportPrinter::Target::Preview);
+                          })
                        << print->addAction(tr("&Medikamentenliste…"), this, &MainWindow::printMedicationPlan)
                        << print->addAction(tr("Medikationsliste für die &Apotheke…"), this, &MainWindow::printPharmacyList)
                        << print->addAction(tr("&Erinnerungen…"), this, &MainWindow::printReminders);
@@ -610,6 +613,10 @@ void MainWindow::buildMenus()
     m_actExcel->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_E));
     out->addSeparator();
     m_actSheet = out->addAction(tr("&Stammblatt drucken…"), this, &MainWindow::printPatientSheet);
+    m_actUserPrint << out->addAction(tr("&Impfpass drucken…"), this, [this] {
+        if (const auto p = currentPatient()) ReportPrinter::vaccinationRecord(this, *p, ReportPrinter::Target::Preview);
+    });
+    m_actUserPrint.last()->setObjectName(QStringLiteral("actPrintVaccinations"));
     m_actMedPlan = out->addAction(tr("&Medikamentenplan drucken…"), this, &MainWindow::printMedicationPlan);
     m_actPharmacy = out->addAction(tr("Medikationsliste für die &Apotheke…"), this, &MainWindow::printPharmacyList);
     m_actPharmacy->setStatusTip(tr("Alle aktuellen Medikamente mit Wirkstoff, PZN, Gewicht, Allergien und Diagnosen – "

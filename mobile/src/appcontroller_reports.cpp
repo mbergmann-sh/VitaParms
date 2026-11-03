@@ -8,6 +8,7 @@
 #include "database.h"
 #include "dbsync.h"
 #include "medstock.h"
+#include "vaccinations.h"
 #include "websync.h"
 #include "wounds.h"
 #include "zipwriter.h"
@@ -88,7 +89,9 @@ QVariantList AppController::reportCatalog(qint64 pid)
                           { QStringLiteral("available"), available }, { QStringLiteral("options"), opts } };
     };
     const QString gPerson = tr("Person und Medikamente"), gValues = tr("Messwerte"), gProt = tr("Protokolle");
-    add(QStringLiteral("sheet"), gPerson, tr("Stammblatt"), tr("Angaben zur Person, Diagnosen, Kontakte, Vorsorge, Medikamente"), false, false);
+    add(QStringLiteral("sheet"), gPerson, tr("Stammblatt"), tr("Angaben zur Person, Diagnosen, Kontakte, Impfpass, Vorsorge, Medikamente"), false, false);
+    add(QStringLiteral("vaccinations"), gPerson, tr("Impfpass"), tr("erhaltene Impfungen mit Datum, Impfstoff und Chargennummer"), false, false,
+        db.patient(pid) && !Vaccinations::list(*db.patient(pid)).isEmpty());
     add(QStringLiteral("medplan"), gPerson, tr("Medikamentenplan"), tr("aktueller Plan mit Einnahmezeiten, zum Ausdrucken"), false, false);
     add(QStringLiteral("pharmacy"), gPerson, tr("Liste für die Apotheke"),
         tr("alle Arzneimittel mit Wirkstoff und PZN – für die Prüfung auf Wechselwirkungen"), false, false);

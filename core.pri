@@ -38,6 +38,7 @@ SOURCES += \
     $$PWD/src/dbsync.cpp \
     $$PWD/src/careinfo.cpp \
     $$PWD/src/contacts.cpp \
+    $$PWD/src/vaccinations.cpp \
     $$PWD/src/usbsync.cpp \
     $$PWD/src/apptcore.cpp \
     $$PWD/src/quarterreminder.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     $$PWD/src/dbsync.h \
     $$PWD/src/careinfo.h \
     $$PWD/src/contacts.h \
+    $$PWD/src/vaccinations.h \
     $$PWD/src/usbsync.h \
     $$PWD/src/apptcore.h \
     $$PWD/src/quarterreminder.h \

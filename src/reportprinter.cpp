@@ -6,6 +6,7 @@
 #include "inr.h"
 #include "fluid.h"
 #include "contacts.h"
+#include "vaccinations.h"
 #include "careinfo.h"
 #include "database.h"
 #include "formloader.h"
@@ -310,6 +311,41 @@ QString journalHtml(QPaintDevice *dev, const JournalModel &m, const QString &per
     h += QStringLiteral("</table>");
     if (m.rowCount() == 0)
         h += QStringLiteral("<p><i>%1</i></p>").arg(tr("Keine Messungen im gewählten Zeitraum."));
+    return h;
+}
+
+// ---------------------------------------------------------------- Impfpass
+QString vaccinationTable(QPaintDevice *dev, const QList<Vaccinations::Vaccination> &l)
+{
+    const QLocale loc;
+    QString h = tableOpen(dev);
+    h += QStringLiteral("<thead><tr>") + th(tr("Datum"), QStringLiteral("width=\"12%\"")) + th(tr("Impfung gegen"), QStringLiteral("width=\"23%\""))
+         + th(tr("Impfstoff (Präparat)"), QStringLiteral("width=\"17%\"")) + th(tr("Ch.-B."), QStringLiteral("width=\"15%\""))
+         + th(tr("Arzt / Praxis"), QStringLiteral("width=\"17%\"")) + th(tr("Bemerkung")) + QStringLiteral("</tr></thead>");
+    int n = 0;
+    for (const auto &v : l) {
+        h += n++ % 2 ? QStringLiteral("<tr bgcolor=\"#f6f8fa\">") : QStringLiteral("<tr>");
+        h += td(v.date.isValid() ? loc.toString(v.date, QStringLiteral("dd.MM.yyyy")) : QStringLiteral("—")) + td(v.against) + td(v.product)
+             + QStringLiteral("<td style=\"white-space: nowrap\">%1</td>").arg(v.batch.toHtmlEscaped()) + td(v.doctor) + td(v.note) + QStringLiteral("</tr>");
+    }
+    h += QStringLiteral("</table>");
+    return h;
+}
+
+QString vaccinationHtml(QPaintDevice *dev, const Patient &p)
+{
+    const QList<Vaccinations::Vaccination> l = Vaccinations::list(p);
+    QString h;
+    if (l.isEmpty())
+        return QStringLiteral("<p><i>%1</i></p>").arg(tr("Im Impfpass sind noch keine Impfungen eingetragen."));
+    h += QStringLiteral("<p>%1</p>").arg(tr("%1 Impfung(en), neueste zuerst.").arg(l.size()));
+    h += vaccinationTable(dev, l);
+    if (const QStringList last = Vaccinations::latestPerAgainst(l); !last.isEmpty()) {
+        QStringList esc;
+        for (const QString &x : last) esc << x.toHtmlEscaped();
+        h += QStringLiteral("<h3>%1</h3><p>%2</p>").arg(tr("Zuletzt geimpft"), esc.join(QStringLiteral("<br>")));
+    }
+    h += QStringLiteral("<p><i>%1</i></p>").arg(tr("Abschrift aus dem persönlichen Gesundheitstagebuch – ersetzt nicht den amtlichen Impfausweis."));
     return h;
 }
 
@@ -650,6 +686,22 @@ void journal(QWidget *parent, const Patient &p, const JournalModel &model,
         [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Verlauf der Vitalwerte"), p, journalHtml(dev, model, periodText), 7.5); });
 }
 
+void vaccinationRecord(QWidget *parent, const Patient &p, Target t)
+{
+    run(parent, t, tr("Impfpass"), QStringLiteral("Impfpass"), p, QPageLayout::Portrait,
+        [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Impfpass"), p, vaccinationHtml(dev, p), 9); });
+}
+
+bool vaccinationRecordToPdf(const QString &path, const Patient &p)
+{
+    QPdfWriter w(path);
+    w.setResolution(300);
+    w.setCreator(QStringLiteral("VitaParms"));
+    configure(&w, QPageLayout::Portrait);
+    printHtml(&w, tr("Impfpass"), p, vaccinationHtml(&w, p), 9);
+    return true;
+}
+
 QList<HistoryGroup> historyGroups()
 {
     QList<HistoryGroup> l;
@@ -985,6 +1037,10 @@ QString patientSheetHtml(QPagedPaintDevice *dev, const Patient &p, const QList<M
                        + QStringLiteral("</tr>");
                 }
                 h += QStringLiteral("</table>");
+            }
+            if (const QList<Vaccinations::Vaccination> vl = Vaccinations::list(p); !vl.isEmpty()) {
+                h += QStringLiteral("<h3>%1</h3>").arg(tr("Impfpass"));
+                h += vaccinationTable(dev, vl);
             }
             if (!p.diagnoses.trimmed().isEmpty())
                 h += QStringLiteral("<h3>%1</h3><p>%2</p>").arg(tr("Diagnosen"),

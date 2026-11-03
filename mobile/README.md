@@ -6,7 +6,7 @@ den Abgleich über die eigene Website.
 
 **Stand 0.25:** Anmeldung, Personen, Übersicht, Messung erfassen (inkl. Minutenuhr für die
 Atemfrequenz, Schmerzskala, freier Messzeitpunkt), Messwerte, Verlaufskurven, Stammblatt mit
-Pflegegrad, Schwerbehindertenausweis, Kontakten und Vorsorge (Dokument aus der Krankenakte verknüpfen und öffnen), Medikamentenplan wie am Computer
+Pflegegrad, Schwerbehindertenausweis, Kontakten, Impfpass und Vorsorge (Dokument aus der Krankenakte verknüpfen und öffnen), Medikamentenplan wie am Computer
 (Einnahme-Rhythmus, Bedarfs-/Notfallmedikation, PZN, Kennzeichnung, „An Einnahme erinnern“),
 Terminplaner mit Serien und Erinnerungen (Android-Benachrichtigungen), BZ-Tagesprofil,
 Quartalswechsel-Erinnerung, Krankenakte (ansehen, suchen, mit der Kamera-App fotografieren –
@@ -15,6 +15,9 @@ Peak-Flow-Warnhinweise (Sollwert nach ERS 1994 bzw. persönlicher Bestwert, biol
 **Neu in 0.28:** Schmerzstärke als eigener Messwert (Datenbankformat 12), RR-Tagesprofil
 (*Messwerte → RR-Tagesprofil*, Auswertung in den Berichten), Kontaktart „Angehörige/r“; auf dem
 Smartphone (Breite unter 600 px) knappere Kopfzeilen (✕ statt „Abbrechen“).
+**0.30:** **Impfpass** im Stammblatt: Impfungen mit Datum, Impfstoff und Chargennummer eintragen,
+ändern und entfernen (`components/VaccinationPopup.qml`), Anzeige im Reiter „Stammblatt“, PDF unter
+„Berichte“.
 **0.29:** Blutdruckamplitude (Pulsdruck) im Verlauf nach RR und Puls und als Kurve unter
 „Blutdruck & Puls“ (berechnet, nicht eingebbar). **Zeitraum von–bis** in Verlaufskurven (5. Knopf
 „Zeitraum“, ◀ ▶ verschieben um die Länge) und Messwerten (Chip „Zeitraum“; gilt auch für PDF, Excel,

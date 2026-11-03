@@ -9,6 +9,7 @@
 #include "medstock.h"
 #include <algorithm>
 #include "contacts.h"
+#include "vaccinations.h"
 #include "database.h"
 #include "dbsync.h"
 #include "dbtransfer.h"
@@ -620,6 +621,37 @@ QVariantMap AppController::personDetail(qint64 id)
                                  { QStringLiteral("note"), c.note }, { QStringLiteral("summary"), c.summary() } };
         m.insert(QStringLiteral("contactList"), edit);
     }
+    {   // Impfpass: Anzeige (Zeilen) und Bearbeitung (alle Felder)
+        const QList<Vaccinations::Vaccination> vl = Vaccinations::list(p);
+        QVariantList rows, edit;
+        for (const Vaccinations::Vaccination &v : vl) {
+            QStringList l;
+            if (!v.against.isEmpty()) l << v.against;
+            if (!v.product.isEmpty()) l << v.product;
+            if (!v.batch.isEmpty()) l << tr("Ch.-B. %1").arg(v.batch);
+            if (!v.doctor.isEmpty()) l << v.doctor;
+            const QString dt = v.date.isValid() ? QLocale().toString(v.date, QStringLiteral("dd.MM.yyyy")) : tr("ohne Datum");
+            rows << QVariant(QVariantList{ dt, l.join(QStringLiteral(", ")) + (v.note.isEmpty() ? QString() : QStringLiteral("\n") + v.note) });
+            edit << QVariantMap{ { QStringLiteral("uid"), v.uid },
+                                 { QStringLiteral("date"), v.date.isValid() ? v.date.toString(Qt::ISODate) : QString() },
+                                 { QStringLiteral("dateText"), dt },
+                                 { QStringLiteral("against"), v.against }, { QStringLiteral("product"), v.product },
+                                 { QStringLiteral("batch"), v.batch }, { QStringLiteral("doctor"), v.doctor },
+                                 { QStringLiteral("note"), v.note },
+                                 { QStringLiteral("summary"), QStringList(l.mid(0, l.size() - (v.doctor.isEmpty() ? 0 : 1))).join(QStringLiteral(", ")) } };
+        }
+        m.insert(QStringLiteral("vaccinations"), rows);
+        m.insert(QStringLiteral("vaccinationList"), edit);
+        m.insert(QStringLiteral("vaccinationAgainst"), Vaccinations::againstSuggestions(vl));
+        m.insert(QStringLiteral("vaccinationProducts"), Vaccinations::productSuggestions(vl));
+        QStringList docs;
+        for (const Contacts::Contact &c : Contacts::list(p))
+            if ((c.kind == Contacts::FamilyDoctor || c.kind == Contacts::Specialist || c.kind == Contacts::Clinic)
+                && !c.name.isEmpty() && !docs.contains(c.name)) docs << c.name;
+        for (const Vaccinations::Vaccination &v : vl)
+            if (!v.doctor.isEmpty() && !docs.contains(v.doctor)) docs << v.doctor;
+        m.insert(QStringLiteral("vaccinationDoctors"), docs);
+    }
     {   // Vorsorgedokumente zum Bearbeiten
         const QList<MedicalDocument> docs = p.id ? Database::instance().documents(p.id) : QList<MedicalDocument>{};
         auto docTitle = [&docs](qint64 id) {
@@ -780,6 +812,21 @@ qint64 AppController::savePerson(const QVariantMap &m)
             if (!x.isEmpty()) list << x;
         }
         Contacts::store(p, list);
+    }
+    if (m.contains(QStringLiteral("vaccinationList"))) {
+        QList<Vaccinations::Vaccination> list;
+        for (const QVariant &v : m.value(QStringLiteral("vaccinationList")).toList()) {
+            const QVariantMap c = v.toMap();
+            Vaccinations::Vaccination x;
+            x.uid = c.value(QStringLiteral("uid")).toString();
+            if (x.uid.isEmpty()) x.uid = Vaccinations::newUid();
+            x.date = QDate::fromString(c.value(QStringLiteral("date")).toString().left(10), Qt::ISODate);
+            auto f = [&](const char *k) { return c.value(QLatin1String(k)).toString().trimmed(); };
+            x.against = f("against"); x.product = f("product"); x.batch = f("batch");
+            x.doctor = f("doctor"); x.note = f("note");
+            if (!x.isEmpty()) list << x;
+        }
+        Vaccinations::store(p, list);
     }
     if (m.contains(QStringLiteral("advanceDocs"))) {
         for (const QVariant &v : m.value(QStringLiteral("advanceDocs")).toList()) {
@@ -1765,6 +1812,9 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
     if (kind == QLatin1String("sheet")) {
         path = QStringLiteral("%1/Stammblatt_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::patientSheetToPdf(path, *p, db.medications(pid, false), db.admissionVitals(pid));
+    } else if (kind == QLatin1String("vaccinations")) {
+        path = QStringLiteral("%1/Impfpass_%2_%3.pdf").arg(dir, base, stamp);
+        ok = ReportPrinter::vaccinationRecordToPdf(path, *p);
     } else if (kind == QLatin1String("pharmacy")) {
         path = QStringLiteral("%1/Medikationsliste_Apotheke_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::pharmacyListToPdf(path, *p, db.medications(pid, false));

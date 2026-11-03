@@ -8,6 +8,7 @@
         <file>qml/components/Badge.qml</file>
         <file>qml/components/Confirm.qml</file>
         <file>qml/components/ContactPopup.qml</file>
+        <file>qml/components/VaccinationPopup.qml</file>
         <file>qml/components/DateField.qml</file>
         <file>qml/components/InfoBlock.qml</file>
         <file>qml/components/SectionTitle.qml</file>

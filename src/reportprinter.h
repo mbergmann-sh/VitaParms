@@ -44,6 +44,10 @@ void orderList(QWidget *parent, const Patient &p, const MedStock::Order &o, Targ
 bool orderListToPdf(const QString &path, const Patient &p, const MedStock::Order &o);
 int  longTermMedicationCount(const QList<Medication> &meds);   // Regelmedikation (für den Hinweis auf die Beratung)
 
+// Impfpass: alle erhaltenen Impfungen (Datum, Impfung gegen, Impfstoff, Chargennummer, Arzt) – A4 hoch
+void vaccinationRecord(QWidget *parent, const Patient &p, Target t);
+bool vaccinationRecordToPdf(const QString &path, const Patient &p);
+
 // Medikamentenplan und Stammblatt
 void medicationPlan(QWidget *parent, const Patient &p, const QList<Medication> &meds, Target t);
 void patientSheet(QWidget *parent, const Patient &p, const QList<Medication> &meds,

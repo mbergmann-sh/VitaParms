@@ -285,3 +285,9 @@ th.n small { display: block; font-weight: 400; color: var(--muted); }
   #logBtn .long { display: none; }
   #logBtn .short { display: inline; }
 }
+/* Impfpass im Stammblatt */
+dd .sub { color: var(--muted); font-size: var(--fs-s); }
+ul.vacc { list-style: none; margin: 0 0 .25rem; padding: 0; }
+ul.vacc li { padding: .15rem 0; }
+ul.vacc li + li { border-top: 1px solid var(--rule); }
+ul.vacc .when { font-variant-numeric: tabular-nums; font-weight: 600; margin-right: .35rem; }

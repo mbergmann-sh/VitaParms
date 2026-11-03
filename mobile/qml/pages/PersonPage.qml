@@ -83,6 +83,12 @@ Flickable {
                 rows: d.contacts || []
             }
             InfoBlock {
+                objectName: "vaccinationsBlock"
+                title: qsTr("Impfpass")
+                visible: (d.vaccinations || []).length > 0
+                rows: d.vaccinations || []
+            }
+            InfoBlock {
                 title: qsTr("Diagnosen")
                 rows: [["", d.diagnoses || qsTr("—")]]
             }

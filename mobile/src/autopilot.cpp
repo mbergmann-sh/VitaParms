@@ -187,6 +187,107 @@ static int rangeChecks(QQuickWindow *win, AppController &app, QObject *home, con
     return fails;
 }
 
+// Impfpass im Stammblatt: Anzeige, Impfung eintragen (Popup), PDF – für die volle und die Light-App
+static int vaccinationChecks(QQuickWindow *win, AppController &app, QObject *home, const QString &out, const QString &prefix)
+{
+    int fails = 0;
+    auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
+    auto shot = [&](const QString &name) { wait(450); win->grabWindow().save(out + QLatin1Char('/') + prefix + name + QStringLiteral(".png")); };
+    std::function<QQuickItem *(QQuickItem *, const QString &)> findItem = [&](QQuickItem *it, const QString &name) -> QQuickItem * {
+        if (it->objectName() == name) return it;
+        for (QQuickItem *c : it->childItems()) if (QQuickItem *f = findItem(c, name)) return f;
+        return nullptr;
+    };
+    auto find = [&](const QString &name) -> QObject * {
+        if (QObject *o = win->findChild<QObject *>(name)) return o;
+        return findItem(win->contentItem()->parentItem() ? win->contentItem()->parentItem() : win->contentItem(), name);
+    };
+    auto scrollTo = [&](QObject *o, double above) {
+        auto *it = qobject_cast<QQuickItem *>(o);
+        if (!it) return;
+        for (QQuickItem *p = it->parentItem(); p; p = p->parentItem())
+            if (p->inherits("QQuickFlickable")) {
+                QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, it->mapToItem(p->childItems().value(0), QPointF()).y() - above));
+                return;
+            }
+    };
+    const qint64 pid = QQmlProperty::read(home, QStringLiteral("personId")).toLongLong();
+    if (QObject *q = find(QStringLiteral("profileQuestion"))) QMetaObject::invokeMethod(q, "close");
+    const QVariantMap d = app.personDetail(pid);
+    const int n = d.value(QStringLiteral("vaccinationList")).toList().size();
+    check(n > 0 && d.value(QStringLiteral("vaccinations")).toList().size() == n, "Impfpass: Demo-Impfungen");
+    check(d.value(QStringLiteral("vaccinationAgainst")).toStringList().size() > 10, "Impfpass: Vorschläge");
+    // Anzeige im Reiter „Person“
+    QQmlProperty::write(home, QStringLiteral("tab"), 3);
+    wait(300);
+    QObject *blk = find(QStringLiteral("vaccinationsBlock"));
+    check(blk && blk->property("visible").toBool(), "Impfpass: Block im Stammblatt");
+    scrollTo(blk, 120);
+    shot(QStringLiteral("impfpass_anzeige"));
+    // Bearbeiten: Impfung hinzufügen
+    QMetaObject::invokeMethod(home, "editPerson", Q_ARG(QVariant, false));
+    wait(400);
+    QObject *add = find(QStringLiteral("addVaccinationButton"));
+    check(add != nullptr, "Impfpass: Knopf Impfung hinzufügen");
+    QObject *page = nullptr;
+    for (QObject *o : win->findChildren<QObject *>()) if (o->property("vaccinations").isValid() && o->property("contacts").isValid()) page = o;
+    check(page != nullptr, "Impfpass: Bearbeiten-Seite");
+    if (add && page) {
+        scrollTo(add, 420);
+        shot(QStringLiteral("impfpass_bearbeiten"));
+        QMetaObject::invokeMethod(add, "clicked");
+        wait(350);
+        QObject *pop = find(QStringLiteral("vaccinationPopup"));
+        check(pop && pop->property("visible").toBool(), "Impfpass: Eingabe offen");
+        const bool en = app.language() == QStringLiteral("en");
+        auto setText = [&](const char *name, const QString &v) { if (QObject *f = find(QLatin1String(name))) QQmlProperty::write(f, QStringLiteral("text"), v); else check(false, name); };
+        if (QObject *f = find(QStringLiteral("vaccDate"))) QQmlProperty::write(f, QStringLiteral("isoDate"), QDate::currentDate().addDays(-3).toString(Qt::ISODate));
+        if (pop) QMetaObject::invokeMethod(pop, "accept");          // noch ohne Angaben → bleibt offen
+        wait(150);
+        check(pop && pop->property("visible").toBool(), "Impfpass: Pflichtangabe");
+        setText("vaccAgainst", en ? QStringLiteral("Tick-borne encephalitis (TBE)") : QStringLiteral("FSME"));
+        setText("vaccProduct", QStringLiteral("FSME-Immun"));
+        setText("vaccBatch", QStringLiteral("AB1234X"));
+        setText("vaccNote", en ? QStringLiteral("1st dose") : QStringLiteral("1. Dosis"));
+        wait(150);
+        shot(QStringLiteral("impfung_neu"));
+        if (pop) QMetaObject::invokeMethod(pop, "accept");
+        wait(300);
+        const QVariantList l = page->property("vaccinations").toList();
+        qInfo("Impfpass: %d Einträge (vorher %d), oben: %s / %s", int(l.size()), n,
+              qPrintable(l.value(0).toMap().value(QStringLiteral("date")).toString()), qPrintable(l.value(0).toMap().value(QStringLiteral("batch")).toString()));
+        check(l.size() == n + 1 && l.value(0).toMap().value(QStringLiteral("batch")).toString() == QStringLiteral("AB1234X"), "Impfpass: neue Impfung oben");
+    }
+    QMetaObject::invokeMethod(win, "popPage");                 // ohne Speichern verlassen
+    wait(300);
+    check(app.personDetail(pid).value(QStringLiteral("vaccinationList")).toList().size() == n, "Impfpass: unverändert ohne Speichern");
+    // Speichern über die Schnittstelle (wie die Seite) und wieder zurück
+    QVariantMap m = app.personDetail(pid);
+    QVariantList vl = m.value(QStringLiteral("vaccinationList")).toList();
+    const QVariantList orig = vl;
+    vl << QVariantMap{ { QStringLiteral("date"), QStringLiteral("2020-02-03") }, { QStringLiteral("against"), QStringLiteral("Hepatitis B") },
+                       { QStringLiteral("product"), QStringLiteral("Engerix-B") }, { QStringLiteral("batch"), QStringLiteral("ZZ99") } };
+    const auto save = [&](const QVariantList &list) {
+        QVariantMap p = app.personDetail(pid);
+        p.insert(QStringLiteral("vaccinationList"), list);
+        return app.savePerson(p);
+    };
+    save(vl);
+    const QVariantList back = app.personDetail(pid).value(QStringLiteral("vaccinationList")).toList();
+    check(back.size() == n + 1 && back.last().toMap().value(QStringLiteral("batch")).toString() == QStringLiteral("ZZ99"), "Impfpass: speichern");
+    const QString pdf = app.exportReport(QStringLiteral("vaccinations"), pid, {});
+    check(!pdf.isEmpty() && QFileInfo(pdf).size() > 1000, "Impfpass: PDF");
+    if (!pdf.isEmpty()) QFile::copy(pdf, out + QLatin1Char('/') + prefix + QStringLiteral("impfpass.pdf"));
+    bool listed = false;
+    for (const QVariant &r : app.reportCatalog(pid)) listed = listed || r.toMap().value(QStringLiteral("kind")).toString() == QStringLiteral("vaccinations");
+    check(listed, "Impfpass: unter Berichte");
+    save(orig);
+    check(app.personDetail(pid).value(QStringLiteral("vaccinationList")).toList().size() == n, "Impfpass: zurückgesetzt");
+    QQmlProperty::write(home, QStringLiteral("tab"), 0);
+    wait(200);
+    return fails;
+}
+
 #ifdef VP_LIGHT
 // VitaParms light: Rundgang auf dem Tablet (quer) und dem Smartphone (hoch) – Bildschirmfotos lt_… und lp_…
 static int runLightTour(QQuickWindow *win, AppController &app, const QString &out, int fails)
@@ -273,6 +374,7 @@ static int runLightTour(QQuickWindow *win, AppController &app, const QString &ou
             shot(pre + QString::fromLatin1(tabNames[i]));
         }
         fails += rangeChecks(win, app, h, out, pre + QStringLiteral("21_"));
+        fails += vaccinationChecks(win, app, h, out, pre + QStringLiteral("22_"));
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
         QMetaObject::invokeMethod(h, "measure", Q_ARG(QVariant, 0));
         check(win->findChild<QObject *>(QStringLiteral("fluidSection"))
@@ -719,6 +821,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         shot(QString::fromLatin1(tabs[i]));
     }
     fails += rangeChecks(win, app, h, out, QStringLiteral("m25_"));
+    fails += vaccinationChecks(win, app, h, out, QStringLiteral("m26_"));
     // Termine: neuer Termin, Serie bearbeiten, Rückfrage „Für welche Termine?“
     call(h, "editAppointment", 0);
     shot(QStringLiteral("m17_termin_neu"));

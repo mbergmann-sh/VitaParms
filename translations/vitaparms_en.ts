@@ -2110,17 +2110,17 @@ Please update VitaParms on this device – the data remain unchanged.</translati
 <context>
     <name>DemoData</name>
     <message>
-        <location filename="../src/demodata.cpp" line="101" />
+        <location filename="../src/demodata.cpp" line="102" />
         <source>Beispieldokument der VitaParms-Demo – keine echten Befunddaten</source>
         <translation>Sample document of the VitaParms demo – no real medical data</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="161" />
+        <location filename="../src/demodata.cpp" line="162" />
         <source>Die alte Demo-Datenbank %1 lässt sich nicht löschen.</source>
         <translation>The old demo database %1 cannot be deleted.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="189" />
+        <location filename="../src/demodata.cpp" line="190" />
         <source>Arterielle Hypertonie (I10.90)
 Diabetes mellitus Typ 2 (E11.90)
 Asthma bronchiale (J45.9)
@@ -2131,576 +2131,624 @@ Bronchial asthma (J45.9)
 Obesity class I (E66.0)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="191" />
+        <location filename="../src/demodata.cpp" line="192" />
         <source>Demo-Person: Alle Angaben sind frei erfunden.</source>
         <translation>Demo person: all details are fictitious.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="192" />
+        <location filename="../src/demodata.cpp" line="193" />
         <source>Penicillin (Hautausschlag)</source>
         <translation>Penicillin (skin rash)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="204" />
+        <location filename="../src/demodata.cpp" line="205" />
         <source>Muster-Krankenkasse</source>
         <translation>Sample Health Insurance</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="246" />
+        <location filename="../src/demodata.cpp" line="236" />
+        <source>Influenza (Grippe)</source>
+        <translation>Influenza (flu)</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="236" />
+        <source>jährliche Grippeimpfung</source>
+        <translation>annual flu vaccination</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="237" />
+        <source>COVID-19</source>
+        <translation>COVID-19</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="237" />
+        <location filename="../src/demodata.cpp" line="241" />
+        <source>Auffrischung</source>
+        <translation>Booster</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="238" />
+        <source>Pneumokokken</source>
+        <translation>Pneumococcus</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="239" />
+        <location filename="../src/demodata.cpp" line="240" />
+        <source>Herpes zoster (Gürtelrose)</source>
+        <translation>Herpes zoster (shingles)</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="239" />
+        <source>2. Dosis</source>
+        <translation>2nd dose</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="240" />
+        <source>1. Dosis</source>
+        <translation>1st dose</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="241" />
+        <source>Tetanus, Diphtherie, Pertussis</source>
+        <translation>Tetanus, diphtheria, pertussis</translation>
+    </message>
+    <message>
+        <location filename="../src/demodata.cpp" line="265" />
         <source>Tablette</source>
         <translation>tablet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="246" />
+        <location filename="../src/demodata.cpp" line="265" />
         <source>Filmtablette</source>
         <translation>film-coated tablet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="246" />
+        <location filename="../src/demodata.cpp" line="265" />
         <source>Stück</source>
         <translation>pcs</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="247" />
+        <location filename="../src/demodata.cpp" line="266" />
         <source>Bluthochdruck</source>
         <translation>High blood pressure</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="247" />
+        <location filename="../src/demodata.cpp" line="266" />
         <source>Diabetes mellitus Typ 2</source>
         <translation>Type 2 diabetes</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="247" />
+        <location filename="../src/demodata.cpp" line="266" />
         <source>Asthma bronchiale</source>
         <translation>Bronchial asthma</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="251" />
+        <location filename="../src/demodata.cpp" line="270" />
         <source>Amlodipin</source>
         <translation>Amlodipine</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="261" />
+        <location filename="../src/demodata.cpp" line="280" />
         <source>Budesonid/Formoterol</source>
         <translation>Budesonide/formoterol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="262" />
+        <location filename="../src/demodata.cpp" line="281" />
         <source>160/4,5 µg/Hub</source>
         <translation>160/4.5 µg/puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="262" />
+        <location filename="../src/demodata.cpp" line="281" />
         <source>Pulver zur Inhalation</source>
         <translation>inhalation powder</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="262" />
-        <location filename="../src/demodata.cpp" line="277" />
+        <location filename="../src/demodata.cpp" line="281" />
+        <location filename="../src/demodata.cpp" line="296" />
         <source>Hub</source>
         <translation>puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="263" />
+        <location filename="../src/demodata.cpp" line="282" />
         <source>nach der Inhalation Mund ausspülen</source>
         <translation>rinse mouth after inhaling</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="265" />
+        <location filename="../src/demodata.cpp" line="284" />
         <source>Acetylsalicylsäure</source>
         <translation>Acetylsalicylic acid</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="266" />
+        <location filename="../src/demodata.cpp" line="285" />
         <source>Vorbeugung</source>
         <translation>Prevention</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="268" />
+        <location filename="../src/demodata.cpp" line="287" />
         <source>erhöhte Blutfette</source>
         <translation>Raised blood lipids</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="269" />
+        <location filename="../src/demodata.cpp" line="288" />
         <source>Colecalciferol (Vitamin D3)</source>
         <translation>Colecalciferol (vitamin D3)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="269" />
+        <location filename="../src/demodata.cpp" line="288" />
         <source>20.000 IE</source>
         <translation>20,000 IU</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="270" />
+        <location filename="../src/demodata.cpp" line="289" />
         <source>Weichkapsel</source>
         <translation>soft capsule</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="270" />
+        <location filename="../src/demodata.cpp" line="289" />
         <source>Vitamin-D-Mangel</source>
         <translation>Vitamin D deficiency</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="274" />
+        <location filename="../src/demodata.cpp" line="293" />
         <source>einmal pro Woche, sonntags zum Frühstück</source>
         <translation>once a week, on Sundays with breakfast</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="276" />
+        <location filename="../src/demodata.cpp" line="295" />
         <source>100 µg/Hub</source>
         <translation>100 µg/puff</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="277" />
+        <location filename="../src/demodata.cpp" line="296" />
         <source>Dosieraerosol</source>
         <translation>metered-dose inhaler</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="277" />
+        <location filename="../src/demodata.cpp" line="296" />
         <source>Atemnot</source>
         <translation>Shortness of breath</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="278" />
+        <location filename="../src/demodata.cpp" line="297" />
         <source>1–2 Hübe bei Atemnot, höchstens 8 Hübe am Tag</source>
         <translation>1–2 puffs when short of breath, at most 8 puffs a day</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="281" />
+        <location filename="../src/demodata.cpp" line="300" />
         <source>Schmerzen, Fieber</source>
         <translation>Pain, fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="282" />
+        <location filename="../src/demodata.cpp" line="301" />
         <source>bei Fieber über 38,5 °C, höchstens 3× täglich</source>
         <translation>for fever above 38.5 °C, at most 3 times a day</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="284" />
+        <location filename="../src/demodata.cpp" line="303" />
         <source>Prednisolon</source>
         <translation>Prednisolone</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="285" />
+        <location filename="../src/demodata.cpp" line="304" />
         <source>schwerer Asthmaanfall</source>
         <translation>Severe asthma attack</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="286" />
+        <location filename="../src/demodata.cpp" line="305" />
         <source>2 Tabletten bei schwerem Asthmaanfall, danach Notruf 112</source>
         <translation>2 tablets in a severe asthma attack, then call 112</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="288" />
+        <location filename="../src/demodata.cpp" line="307" />
         <source>Dexpanthenol</source>
         <translation>Dexpanthenol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="288" />
+        <location filename="../src/demodata.cpp" line="307" />
         <source>Salbe</source>
         <translation>ointment</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="289" />
+        <location filename="../src/demodata.cpp" line="308" />
         <source>trockene Haut an den Füßen</source>
         <translation>Dry skin on the feet</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="309" />
+        <location filename="../src/demodata.cpp" line="328" />
         <source>Neues Blutdruckmessgerät (Oberarm) in Betrieb genommen</source>
         <translation>Started using a new upper-arm blood pressure monitor</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="310" />
+        <location filename="../src/demodata.cpp" line="329" />
         <source>Spaziergang 45 Minuten, gut vertragen</source>
         <translation>Walked for 45 minutes, well tolerated</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="311" />
+        <location filename="../src/demodata.cpp" line="330" />
         <source>Blutdruck seit Wochen zu hoch – Hausarzt verordnet zusätzlich Amlodipin</source>
         <translation>Blood pressure too high for weeks – GP adds amlodipine</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="312" />
+        <location filename="../src/demodata.cpp" line="331" />
         <source>Knöchel abends leicht geschwollen (Amlodipin?) – beim nächsten Termin ansprechen</source>
         <translation>Ankles slightly swollen in the evening (amlodipine?) – mention at next appointment</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="313" />
+        <location filename="../src/demodata.cpp" line="332" />
         <source>HbA1c 7,8 % – Metformin wird auf 1000 mg erhöht</source>
         <translation>HbA1c 7.8 % – metformin increased to 1000 mg</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="314" />
+        <location filename="../src/demodata.cpp" line="333" />
         <source>Fußpflege; Haut an den Fersen trocken</source>
         <translation>Chiropody; skin on the heels dry</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="315" />
+        <location filename="../src/demodata.cpp" line="334" />
         <source>Husten, Halsschmerzen, Fieber seit gestern Abend</source>
         <translation>Cough, sore throat, fever since last night</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="316" />
+        <location filename="../src/demodata.cpp" line="335" />
         <source>Hausarzt: Bronchitis, Antibiotikum (kein Penicillin) verordnet</source>
         <translation>GP: bronchitis, antibiotic prescribed (no penicillin)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="317" />
+        <location filename="../src/demodata.cpp" line="336" />
         <source>Atemnot nachts, 2 Hübe Salbutamol</source>
         <translation>Short of breath at night, 2 puffs of salbutamol</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="318" />
+        <location filename="../src/demodata.cpp" line="337" />
         <source>deutlich besser, kein Fieber mehr</source>
         <translation>much better, no more fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="319" />
+        <location filename="../src/demodata.cpp" line="338" />
         <source>Diabetesschulung begonnen</source>
         <translation>Started diabetes education course</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="320" />
+        <location filename="../src/demodata.cpp" line="339" />
         <source>Gewicht stabil, Ernährungsumstellung zeigt Wirkung</source>
         <translation>Weight stable, change of diet is working</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="324" />
+        <location filename="../src/demodata.cpp" line="343" />
         <source>Transaktion konnte nicht gestartet werden.</source>
         <translation>Could not start the transaction.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="338" />
+        <location filename="../src/demodata.cpp" line="357" />
         <source>Aufnahme in VitaParms</source>
         <translation>Admission to VitaParms</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="413" />
+        <location filename="../src/demodata.cpp" line="432" />
         <source>Zittrig nach Gartenarbeit – Traubenzucker gegessen, nach 15 min 102 mg/dl</source>
         <translation>Shaky after gardening – took glucose tablets, 102 mg/dl after 15 min</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="483" />
+        <location filename="../src/demodata.cpp" line="502" />
         <source>Die Demo-Daten konnten nicht gespeichert werden.</source>
         <translation>The demo data could not be saved.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="503" />
+        <location filename="../src/demodata.cpp" line="522" />
         <source>Praxis Dr. Sommer, Musterstadt</source>
         <translation>Dr Sommer’s practice, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="506" />
+        <location filename="../src/demodata.cpp" line="525" />
         <source>Hausarzt: Blutdruckkontrolle</source>
         <translation>GP: blood pressure check</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="507" />
+        <location filename="../src/demodata.cpp" line="526" />
         <source>Labor: Blutabnahme (HbA1c)</source>
         <translation>Laboratory: blood test (HbA1c)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="507" />
+        <location filename="../src/demodata.cpp" line="526" />
         <source>nüchtern erscheinen</source>
         <translation>come fasting</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="508" />
+        <location filename="../src/demodata.cpp" line="527" />
         <source>Hausarzt: Husten und Fieber</source>
         <translation>GP: cough and fever</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="509" />
+        <location filename="../src/demodata.cpp" line="528" />
         <source>Lungenfacharzt: Lungenfunktion</source>
         <translation>Lung specialist: lung function test</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="510" />
+        <location filename="../src/demodata.cpp" line="529" />
         <source>Pneumologie am Markt, Musterstadt</source>
         <translation>Market Square Respiratory Clinic, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="510" />
+        <location filename="../src/demodata.cpp" line="529" />
         <source>Peak-Flow-Werte mitbringen</source>
         <translation>bring peak flow readings</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="511" />
+        <location filename="../src/demodata.cpp" line="530" />
         <source>Hausarzt: Kontrolle Blutdruck und Blutzucker</source>
         <translation>GP: blood pressure and blood glucose check</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="512" />
+        <location filename="../src/demodata.cpp" line="531" />
         <source>Blutzucker-Tagebuch und Medikamentenplan mitnehmen</source>
         <translation>bring blood glucose diary and medication plan</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="513" />
+        <location filename="../src/demodata.cpp" line="532" />
         <source>Labor: Blutabnahme</source>
         <translation>Laboratory: blood test</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="514" />
+        <location filename="../src/demodata.cpp" line="533" />
         <source>nüchtern erscheinen, Versichertenkarte mitnehmen</source>
         <translation>come fasting, bring health insurance card</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="515" />
+        <location filename="../src/demodata.cpp" line="534" />
         <source>Diabetesschulung, Teil 4</source>
         <translation>Diabetes education, part 4</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="214" />
-        <location filename="../src/demodata.cpp" line="516" />
+        <location filename="../src/demodata.cpp" line="215" />
+        <location filename="../src/demodata.cpp" line="535" />
         <source>Diabeteszentrum Musterstadt</source>
         <translation>Sampletown Diabetes Centre</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="204" />
+        <location filename="../src/demodata.cpp" line="205" />
         <source>Kassenplatz 1</source>
         <translation>1 Insurance Square</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="205" />
-        <location filename="../src/demodata.cpp" line="210" />
-        <location filename="../src/demodata.cpp" line="213" />
-        <location filename="../src/demodata.cpp" line="215" />
-        <location filename="../src/demodata.cpp" line="217" />
+        <location filename="../src/demodata.cpp" line="206" />
+        <location filename="../src/demodata.cpp" line="211" />
+        <location filename="../src/demodata.cpp" line="214" />
+        <location filename="../src/demodata.cpp" line="216" />
         <location filename="../src/demodata.cpp" line="218" />
+        <location filename="../src/demodata.cpp" line="219" />
         <source>Musterstadt</source>
         <translation>Sampletown</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="209" />
+        <location filename="../src/demodata.cpp" line="210" />
+        <location filename="../src/demodata.cpp" line="228" />
         <source>Dr. med. Anna Sommer</source>
         <translation>Dr Anna Sommer</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="209" />
+        <location filename="../src/demodata.cpp" line="210" />
         <source>Allgemeinmedizin</source>
         <translation>General practice</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="209" />
+        <location filename="../src/demodata.cpp" line="210" />
         <source>Lindenweg 3</source>
         <translation>3 Linden Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="212" />
+        <location filename="../src/demodata.cpp" line="213" />
         <source>Dr. med. Peter Winter</source>
         <translation>Dr Peter Winter</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="212" />
+        <location filename="../src/demodata.cpp" line="213" />
         <source>Kardiologie</source>
         <translation>Cardiology</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="212" />
+        <location filename="../src/demodata.cpp" line="213" />
         <source>Am Markt 8</source>
         <translation>8 Market Square</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="214" />
+        <location filename="../src/demodata.cpp" line="215" />
         <source>Diabetologie</source>
         <translation>Diabetology</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="214" />
+        <location filename="../src/demodata.cpp" line="215" />
         <source>Diabetesberaterin Frau Klein</source>
         <translation>diabetes adviser Mrs Klein</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="215" />
+        <location filename="../src/demodata.cpp" line="216" />
         <source>Bahnhofstraße 20</source>
         <translation>20 Station Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="216" />
+        <location filename="../src/demodata.cpp" line="217" />
         <source>Klinikum Musterstadt</source>
         <translation>Sampletown General Hospital</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="216" />
+        <location filename="../src/demodata.cpp" line="217" />
         <source>Innere Medizin, Station 4b</source>
         <translation>Internal medicine, ward 4b</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="216" />
+        <location filename="../src/demodata.cpp" line="217" />
         <source>Klinikallee 1</source>
         <translation>1 Hospital Avenue</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="218" />
+        <location filename="../src/demodata.cpp" line="219" />
         <source>Linden-Apotheke</source>
         <translation>Linden Pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="218" />
+        <location filename="../src/demodata.cpp" line="219" />
         <source>Lindenweg 5</source>
         <translation>5 Linden Road</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="220" />
+        <location filename="../src/demodata.cpp" line="221" />
         <source>Ehemann</source>
         <translation>husband</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="517" />
+        <location filename="../src/demodata.cpp" line="536" />
         <source>Augenarzt: Netzhautkontrolle (Diabetes)</source>
         <translation>Ophthalmologist: retina check (diabetes)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="518" />
+        <location filename="../src/demodata.cpp" line="537" />
         <source>Augenpraxis Lindenallee</source>
         <translation>Lindenallee Eye Clinic</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="518" />
+        <location filename="../src/demodata.cpp" line="537" />
         <source>Pupillen werden erweitert – nicht selbst fahren</source>
         <translation>pupils will be dilated – do not drive yourself</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="519" />
+        <location filename="../src/demodata.cpp" line="538" />
         <source>Rezept abholen: Metformin, Symbicort</source>
         <translation>Collect prescription: metformin, Symbicort</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="527" />
+        <location filename="../src/demodata.cpp" line="546" />
         <source>Physiotherapie: Atemtherapie</source>
         <translation>Physiotherapy: breathing therapy</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="528" />
+        <location filename="../src/demodata.cpp" line="547" />
         <source>Physiopraxis Bewegung, Musterstadt</source>
         <translation>Bewegung Physiotherapy, Musterstadt</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="528" />
+        <location filename="../src/demodata.cpp" line="547" />
         <source>Handtuch mitbringen</source>
         <translation>bring a towel</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="538" />
+        <location filename="../src/demodata.cpp" line="557" />
         <source>Patientin: Erika Mustermann, geb. 14.03.1952</source>
         <translation>Patient: Erika Mustermann, born 14/03/1952</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="542" />
+        <location filename="../src/demodata.cpp" line="561" />
         <source>Langzeit-Blutdruckmessung (24 h)</source>
         <translation>24-hour ambulatory blood pressure monitoring</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="542" />
+        <location filename="../src/demodata.cpp" line="561" />
         <source>Praxis Dr. med. Anna Sommer</source>
         <translation>Dr Anna Sommer’s practice</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="543" />
+        <location filename="../src/demodata.cpp" line="562" />
         <source>Mittelwert 24 h: 138/86 mmHg, Tag 142/89 mmHg, Nacht 127/78 mmHg.</source>
         <translation>24-hour mean: 138/86 mmHg, day 142/89 mmHg, night 127/78 mmHg.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="544" />
+        <location filename="../src/demodata.cpp" line="563" />
         <source>Nächtliche Absenkung 11 % (normal: 10–20 %).</source>
         <translation>Nocturnal dip 11 % (normal: 10–20 %).</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="545" />
+        <location filename="../src/demodata.cpp" line="564" />
         <source>Beurteilung: unter Ramipril und Amlodipin deutlich gebesserte, aber noch nicht optimale Einstellung.</source>
         <translation>Assessment: clearly improved on ramipril and amlodipine, but not yet optimally controlled.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="546" />
+        <location filename="../src/demodata.cpp" line="565" />
         <source>Empfehlung: Fortführung der Therapie, Kontrolle in drei Monaten.</source>
         <translation>Recommendation: continue treatment, review in three months.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="547" />
-        <location filename="../src/demodata.cpp" line="556" />
+        <location filename="../src/demodata.cpp" line="566" />
+        <location filename="../src/demodata.cpp" line="575" />
         <source>Laborbefund</source>
         <translation>Laboratory report</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="547" />
-        <location filename="../src/demodata.cpp" line="556" />
+        <location filename="../src/demodata.cpp" line="566" />
+        <location filename="../src/demodata.cpp" line="575" />
         <source>Labor Musterstadt</source>
         <translation>Musterstadt Laboratory</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="548" />
+        <location filename="../src/demodata.cpp" line="567" />
         <source>HbA1c: 7,8 % (Zielbereich individuell &lt; 7,5 %)</source>
         <translation>HbA1c: 7.8 % (individual target &lt; 7.5 %)</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="548" />
+        <location filename="../src/demodata.cpp" line="567" />
         <source>Nüchternglukose: 151 mg/dl</source>
         <translation>Fasting glucose: 151 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="549" />
+        <location filename="../src/demodata.cpp" line="568" />
         <source>Kreatinin: 0,9 mg/dl, eGFR 68 ml/min/1,73 m²</source>
         <translation>Creatinine: 0.9 mg/dl, eGFR 68 ml/min/1.73 m²</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="549" />
+        <location filename="../src/demodata.cpp" line="568" />
         <source>LDL-Cholesterin: 104 mg/dl</source>
         <translation>LDL cholesterol: 104 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="550" />
+        <location filename="../src/demodata.cpp" line="569" />
         <source>Kalium: 4,4 mmol/l</source>
         <translation>Potassium: 4.4 mmol/l</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="551" />
+        <location filename="../src/demodata.cpp" line="570" />
         <source>Arztbrief Pneumologie</source>
         <translation>Letter from the respiratory specialist</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="551" />
+        <location filename="../src/demodata.cpp" line="570" />
         <source>Pneumologie am Markt, Dr. med. Jonas Berg</source>
         <translation>Market Square Respiratory Clinic, Dr Jonas Berg</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="552" />
+        <location filename="../src/demodata.cpp" line="571" />
         <source>Vorstellung nach infektgetriggerter Asthma-Exazerbation.</source>
         <translation>Seen after an infection-triggered exacerbation of asthma.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="553" />
+        <location filename="../src/demodata.cpp" line="572" />
         <source>Lungenfunktion: FEV1 82 % des Sollwerts, nach Bronchospasmolyse 91 %.</source>
         <translation>Lung function: FEV1 82 % of predicted, 91 % after bronchodilator.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="554" />
+        <location filename="../src/demodata.cpp" line="573" />
         <source>Peak-Flow-Protokoll mit deutlichem Abfall während des Infekts, inzwischen wieder im persönlichen Bestbereich.</source>
         <translation>Peak flow diary with a clear drop during the infection, now back within the personal best range.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="555" />
+        <location filename="../src/demodata.cpp" line="574" />
         <source>Therapie: Symbicort 160/4,5 µg 2× täglich fortführen, Salbutamol bei Bedarf. Kontrolle in sechs Monaten.</source>
         <translation>Treatment: continue Symbicort 160/4.5 µg twice daily, salbutamol as needed. Review in six months.</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="557" />
+        <location filename="../src/demodata.cpp" line="576" />
         <source>HbA1c: 6,9 %</source>
         <translation>HbA1c: 6.9 %</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="557" />
+        <location filename="../src/demodata.cpp" line="576" />
         <source>Nüchternglukose: 124 mg/dl</source>
         <translation>Fasting glucose: 124 mg/dl</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="558" />
+        <location filename="../src/demodata.cpp" line="577" />
         <source>Kreatinin: 0,9 mg/dl, eGFR 70 ml/min/1,73 m²</source>
         <translation>Creatinine: 0.9 mg/dl, eGFR 70 ml/min/1.73 m²</translation>
     </message>
     <message>
-        <location filename="../src/demodata.cpp" line="558" />
+        <location filename="../src/demodata.cpp" line="577" />
         <source>LDL-Cholesterin: 92 mg/dl</source>
         <translation>LDL cholesterol: 92 mg/dl</translation>
     </message>
@@ -6340,7 +6388,7 @@ PZN: %1</translation>
     <message>
         <location filename="../src/mainwindow.cpp" line="112" />
         <location filename="../src/mainwindow.cpp" line="122" />
-        <location filename="../src/mainwindow.cpp" line="1513" />
+        <location filename="../src/mainwindow.cpp" line="1520" />
         <source>Datenbank: %1</source>
         <translation>Database: %1</translation>
     </message>
@@ -6356,7 +6404,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="153" />
-        <location filename="../src/mainwindow.cpp" line="1930" />
+        <location filename="../src/mainwindow.cpp" line="1937" />
         <source>Website wird aktualisiert …</source>
         <translation>Updating website …</translation>
     </message>
@@ -6367,7 +6415,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="161" />
-        <location filename="../src/mainwindow.cpp" line="1909" />
+        <location filename="../src/mainwindow.cpp" line="1916" />
         <source>Datenbank wird abgeglichen …</source>
         <translation>Synchronising database …</translation>
     </message>
@@ -6393,7 +6441,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="179" />
-        <location filename="../src/mainwindow.cpp" line="1957" />
+        <location filename="../src/mainwindow.cpp" line="1964" />
         <source>Automatische Sicherung</source>
         <translation>Automatic backup</translation>
     </message>
@@ -6504,7 +6552,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="373" />
-        <location filename="../src/mainwindow.cpp" line="1272" />
+        <location filename="../src/mainwindow.cpp" line="1279" />
         <source>&amp;Kurven</source>
         <translation>&amp;Curves</translation>
     </message>
@@ -6550,7 +6598,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="424" />
-        <location filename="../src/mainwindow.cpp" line="585" />
+        <location filename="../src/mainwindow.cpp" line="588" />
         <source>&amp;Termine</source>
         <translation>Appoint&amp;ments</translation>
     </message>
@@ -6606,7 +6654,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="449" />
-        <location filename="../src/mainwindow.cpp" line="1938" />
+        <location filename="../src/mainwindow.cpp" line="1945" />
         <source>Website</source>
         <translation>Website</translation>
     </message>
@@ -6627,7 +6675,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="461" />
-        <location filename="../src/mainwindow.cpp" line="1917" />
+        <location filename="../src/mainwindow.cpp" line="1924" />
         <source>Abgleich</source>
         <translation>Synchronisation</translation>
     </message>
@@ -6699,7 +6747,7 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="499" />
-        <location filename="../src/mainwindow.cpp" line="633" />
+        <location filename="../src/mainwindow.cpp" line="640" />
         <source>&amp;Wunddokumentation…</source>
         <translation>&amp;Wound documentation…</translation>
     </message>
@@ -6730,441 +6778,451 @@ PZN: %1</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="529" />
+        <source>&amp;Impfpass…</source>
+        <translation>&amp;Vaccination record…</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="532" />
         <source>&amp;Medikamentenliste…</source>
         <translation>&amp;Medication list…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="530" />
-        <location filename="../src/mainwindow.cpp" line="614" />
+        <location filename="../src/mainwindow.cpp" line="533" />
+        <location filename="../src/mainwindow.cpp" line="621" />
         <source>Medikationsliste für die &amp;Apotheke…</source>
         <translation>Medication list for the &amp;pharmacy…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="531" />
+        <location filename="../src/mainwindow.cpp" line="534" />
         <source>&amp;Erinnerungen…</source>
         <translation>&amp;Reminders…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="532" />
+        <location filename="../src/mainwindow.cpp" line="535" />
         <source>Anstehende, offene Termine der gewählten Person drucken</source>
         <translation>Print the upcoming open appointments of the selected person</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="541" />
+        <location filename="../src/mainwindow.cpp" line="544" />
         <source>Aktuellen Benutzer als Hauptbenutzer &amp;%1 festlegen</source>
         <translation>Set current person as main person &amp;%1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="545" />
+        <location filename="../src/mainwindow.cpp" line="548" />
         <source>&amp;Messwerte</source>
         <translation>&amp;Readings</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="546" />
-        <location filename="../src/mainwindow.cpp" line="722" />
+        <location filename="../src/mainwindow.cpp" line="549" />
+        <location filename="../src/mainwindow.cpp" line="729" />
         <source>&amp;Neue Messung…</source>
         <translation>&amp;New measurement…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="549" />
+        <location filename="../src/mainwindow.cpp" line="552" />
         <source>Messung &amp;bearbeiten…</source>
         <translation>&amp;Edit measurement…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="551" />
+        <location filename="../src/mainwindow.cpp" line="554" />
         <source>Messung &amp;löschen…</source>
         <translation>&amp;Delete measurement…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="554" />
+        <location filename="../src/mainwindow.cpp" line="557" />
         <source>&amp;BZ-Tagesprofil…</source>
         <translation>&amp;BG day profile…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="555" />
+        <location filename="../src/mainwindow.cpp" line="558" />
         <source>&amp;RR-Tagesprofil…</source>
         <translation>B&amp;P day profile…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="557" />
+        <location filename="../src/mainwindow.cpp" line="560" />
         <source>Blutdruck und Puls zu sechs Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster</source>
         <translation>Measure blood pressure and pulse at six times of a day – with reminders and entry window</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="559" />
+        <location filename="../src/mainwindow.cpp" line="562" />
         <source>Blutzucker zu sieben Zeitpunkten eines Tages messen – mit Erinnerung und Erfassungsfenster</source>
         <translation>Measure blood glucose at seven time points of a day – with reminders and entry window</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="560" />
+        <location filename="../src/mainwindow.cpp" line="563" />
         <source>&amp;Offene Tagesprofil-Messung erfassen…</source>
         <translation>Record &amp;open day profile measurement…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="563" />
+        <location filename="../src/mainwindow.cpp" line="566" />
         <source>Messung zum fälligen Zeitpunkt eines heutigen BZ- oder RR-Tagesprofils eintragen</source>
         <translation>Enter the measurement for the due time of today’s BG or BP day profile</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="566" />
+        <location filename="../src/mainwindow.cpp" line="569" />
         <source>&amp;Krankenakte</source>
         <translation>Medical &amp;record</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="567" />
+        <location filename="../src/mainwindow.cpp" line="570" />
         <source>Dokumente &amp;hinzufügen…</source>
         <translation>&amp;Add documents…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="572" />
+        <location filename="../src/mainwindow.cpp" line="575" />
         <source>Akte &amp;packen / per E-Mail senden…</source>
         <translation>&amp;Pack record / send by e-mail…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="577" />
+        <location filename="../src/mainwindow.cpp" line="580" />
         <source>Dokumenten&amp;liste drucken…</source>
         <translation>Print document &amp;list…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="581" />
+        <location filename="../src/mainwindow.cpp" line="584" />
         <source>Krankenakte &amp;anzeigen</source>
         <translation>&amp;Show medical record</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="586" />
+        <location filename="../src/mainwindow.cpp" line="589" />
         <source>&amp;Neuer Termin…</source>
         <translation>&amp;New appointment…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="591" />
+        <location filename="../src/mainwindow.cpp" line="594" />
         <source>Termin&amp;planer anzeigen</source>
         <translation>Show appointment &amp;planner</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="593" />
+        <location filename="../src/mainwindow.cpp" line="596" />
         <source>Erinnerungen jetzt &amp;prüfen</source>
         <translation>&amp;Check reminders now</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="594" />
+        <location filename="../src/mainwindow.cpp" line="597" />
         <source>Termine &amp;heute und morgen…</source>
         <translation>Appointments &amp;today and tomorrow…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="596" />
+        <location filename="../src/mainwindow.cpp" line="599" />
         <source>Termine e&amp;xportieren (iCalendar)…</source>
         <translation>E&amp;xport appointments (iCalendar)…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="602" />
+        <location filename="../src/mainwindow.cpp" line="605" />
         <source>&amp;Ausgabe</source>
         <translation>&amp;Output</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="603" />
-        <location filename="../src/mainwindow.cpp" line="1306" />
-        <location filename="../src/mainwindow.cpp" line="1354" />
+        <location filename="../src/mainwindow.cpp" line="606" />
+        <location filename="../src/mainwindow.cpp" line="1313" />
+        <location filename="../src/mainwindow.cpp" line="1361" />
         <source>&amp;Drucken…</source>
         <translation>&amp;Print…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="606" />
+        <location filename="../src/mainwindow.cpp" line="609" />
         <source>Druck&amp;vorschau…</source>
         <translation>Print pre&amp;view…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="608" />
-        <location filename="../src/mainwindow.cpp" line="1307" />
-        <location filename="../src/mainwindow.cpp" line="1319" />
-        <location filename="../src/mainwindow.cpp" line="1375" />
+        <location filename="../src/mainwindow.cpp" line="611" />
+        <location filename="../src/mainwindow.cpp" line="1314" />
+        <location filename="../src/mainwindow.cpp" line="1326" />
+        <location filename="../src/mainwindow.cpp" line="1382" />
         <source>Als &amp;PDF speichern…</source>
         <translation>Save as &amp;PDF…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="609" />
-        <location filename="../src/mainwindow.cpp" line="1308" />
-        <location filename="../src/mainwindow.cpp" line="1320" />
+        <location filename="../src/mainwindow.cpp" line="612" />
+        <location filename="../src/mainwindow.cpp" line="1315" />
+        <location filename="../src/mainwindow.cpp" line="1327" />
         <source>Nach &amp;Excel exportieren…</source>
         <translation>Export to &amp;Excel…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="612" />
+        <location filename="../src/mainwindow.cpp" line="615" />
         <source>&amp;Stammblatt drucken…</source>
         <translation>Print &amp;master record…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="613" />
+        <location filename="../src/mainwindow.cpp" line="616" />
+        <source>&amp;Impfpass drucken…</source>
+        <translation>Print &amp;vaccination record…</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="620" />
         <source>&amp;Medikamentenplan drucken…</source>
         <translation>Print &amp;medication plan…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="615" />
+        <location filename="../src/mainwindow.cpp" line="622" />
         <source>Alle aktuellen Medikamente mit Wirkstoff, PZN, Gewicht, Allergien und Diagnosen – zum Prüfen auf Wechselwirkungen in der Apotheke</source>
         <translation>All current medications with active ingredient, PZN, weight, allergies and diagnoses – for an interaction check at the pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="619" />
+        <location filename="../src/mainwindow.cpp" line="626" />
         <source>St&amp;uhlprotokoll…</source>
         <translation>Bo&amp;wel movement log…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="621" />
+        <location filename="../src/mainwindow.cpp" line="628" />
         <source>Stuhlgänge mit Menge, Konsistenz (Bristol 1–7), Farbe, Beimengungen und Begleitsymptomen</source>
         <translation>Bowel movements with amount, consistency (Bristol 1–7), colour, admixtures and accompanying symptoms</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="622" />
+        <location filename="../src/mainwindow.cpp" line="629" />
         <source>BZ-&amp;Tagesprofile…</source>
         <translation>Daily &amp;glucose profiles…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="624" />
+        <location filename="../src/mainwindow.cpp" line="631" />
         <source>Blutzuckerwerte je Tag nach Profilzeitpunkten, aus den erfassten Messungen zusammengestellt</source>
         <translation>Blood glucose values per day by profile time, compiled from the recorded measurements</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="625" />
+        <location filename="../src/mainwindow.cpp" line="632" />
         <source>RR-Tages&amp;profile…</source>
         <translation>BP day &amp;profiles…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="627" />
+        <location filename="../src/mainwindow.cpp" line="634" />
         <source>Blutdruck und Puls je Tag nach Profilzeitpunkten, mit Mittelwerten je Zeitpunkt</source>
         <translation>Blood pressure and pulse per day by profile time, with averages per time</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="629" />
+        <location filename="../src/mainwindow.cpp" line="636" />
         <source>Ein- und Ausfuhr (&amp;Bilanz)…</source>
         <translation>Fluid &amp;balance…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="631" />
+        <location filename="../src/mainwindow.cpp" line="638" />
         <source>Einfuhr und Ausfuhr je Eintrag, Tagessummen und Bilanz</source>
         <translation>Intake and output per entry, daily totals and balance</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="635" />
+        <location filename="../src/mainwindow.cpp" line="642" />
         <source>Wunde wählen und Dokumentation mit Chronik, Fotos und Flächenverlauf drucken, als PDF oder Excel ausgeben</source>
         <translation>Choose a wound and print its documentation with chronicle, photos and area chart, or output it as PDF or Excel</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="639" />
+        <location filename="../src/mainwindow.cpp" line="646" />
         <source>E&amp;xtras</source>
         <translation>&amp;Tools</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="640" />
+        <location filename="../src/mainwindow.cpp" line="647" />
         <source>&amp;Einstellungen…</source>
         <translation>&amp;Settings…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="641" />
+        <location filename="../src/mainwindow.cpp" line="648" />
         <source>&amp;Formulare anpassen…</source>
         <translation>Customize &amp;forms…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="642" />
+        <location filename="../src/mainwindow.cpp" line="649" />
         <source>&amp;Anmeldekonten…</source>
         <translation>Login &amp;accounts…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="643" />
+        <location filename="../src/mainwindow.cpp" line="650" />
         <source>&amp;Website…</source>
         <translation>&amp;Website…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="646" />
+        <location filename="../src/mainwindow.cpp" line="653" />
         <source>&amp;Hilfe</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="647" />
+        <location filename="../src/mainwindow.cpp" line="654" />
         <source>&amp;Handbuch</source>
         <translation>User &amp;manual</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="651" />
+        <location filename="../src/mainwindow.cpp" line="658" />
         <source>Öffnet das Benutzerhandbuch</source>
         <translation>Opens the user manual</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="652" />
+        <location filename="../src/mainwindow.cpp" line="659" />
         <source>&amp;Erste Schritte</source>
         <translation>&amp;Getting Started</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="654" />
+        <location filename="../src/mainwindow.cpp" line="661" />
         <source>Öffnet die Kurzanleitung mit Beispielen: Messwerte, Grafik, Medikamente, Termine, Tablet</source>
         <translation>Opens the quick guide with examples: readings, charts, medication, appointments, tablet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="657" />
+        <location filename="../src/mainwindow.cpp" line="664" />
         <source>Demo &amp;beenden</source>
         <translation>&amp;Exit demo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="659" />
+        <location filename="../src/mainwindow.cpp" line="666" />
         <source>&amp;Demo-Datenbank starten…</source>
         <translation>Start &amp;demo database…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="660" />
+        <location filename="../src/mainwindow.cpp" line="667" />
         <source>Öffnet ein zweites Fenster mit einer Beispielperson und 365 Tagen Messwerten</source>
         <translation>Opens a second window with a sample person and 365 days of readings</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="663" />
+        <location filename="../src/mainwindow.cpp" line="670" />
         <source>&amp;Haftungshinweis…</source>
         <translation>&amp;Disclaimer…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="665" />
+        <location filename="../src/mainwindow.cpp" line="672" />
         <source>Über &amp;Qt…</source>
         <translation>About &amp;Qt…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="683" />
+        <location filename="../src/mainwindow.cpp" line="690" />
         <source>Werkzeugleiste</source>
         <translation>Toolbar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="693" />
+        <location filename="../src/mainwindow.cpp" line="700" />
         <source> Benutzer: </source>
         <translation> Person: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="714" />
+        <location filename="../src/mainwindow.cpp" line="721" />
         <source>&amp;Person</source>
         <translation>&amp;Person</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="719" />
+        <location filename="../src/mainwindow.cpp" line="726" />
         <source>&amp;Benutzerhandbuch</source>
         <translation>&amp;User Guide</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="720" />
+        <location filename="../src/mainwindow.cpp" line="727" />
         <source>&amp;Passwort und Wiederherstellungsschlüssel…</source>
         <translation>&amp;Password and recovery key…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="798" />
+        <location filename="../src/mainwindow.cpp" line="805" />
         <source>&lt;b&gt;Noch kein Stammblatt.&lt;/b&gt; Legen Sie über &lt;i&gt;Person → Stammblatt&lt;/i&gt; Ihre persönlichen Daten an.</source>
         <translation>&lt;b&gt;No master record yet.&lt;/b&gt; Enter your personal details via &lt;i&gt;Person → Master record&lt;/i&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="800" />
+        <location filename="../src/mainwindow.cpp" line="807" />
         <source>&lt;b&gt;Kein Benutzer ausgewählt.&lt;/b&gt; Legen Sie über &lt;i&gt;Benutzer → Neuer Benutzer&lt;/i&gt; ein Stammblatt an.</source>
         <translation>&lt;b&gt;No person selected.&lt;/b&gt; Create a master record via &lt;i&gt;Person → New person&lt;/i&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="807" />
+        <location filename="../src/mainwindow.cpp" line="814" />
         <source> &amp;nbsp;·&amp;nbsp; geb. %1</source>
         <translation> &amp;nbsp;·&amp;nbsp; born %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="809" />
+        <location filename="../src/mainwindow.cpp" line="816" />
         <source> (%1 Jahre)</source>
         <translation> (%1 years)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="813" />
+        <location filename="../src/mainwindow.cpp" line="820" />
         <source>Diagnosen:</source>
         <translation>Diagnoses:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="816" />
+        <location filename="../src/mainwindow.cpp" line="823" />
         <source>Allergien:</source>
         <translation>Allergies:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="828" />
+        <location filename="../src/mainwindow.cpp" line="835" />
         <source>Ausweis: %1</source>
         <translation>Card: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="831" />
+        <location filename="../src/mainwindow.cpp" line="838" />
         <source>Vorsorge: %1</source>
         <translation>Advance directives: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="844" />
+        <location filename="../src/mainwindow.cpp" line="851" />
         <source>Notfallmedikation:</source>
         <translation>Emergency medication:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="856" />
+        <location filename="../src/mainwindow.cpp" line="863" />
         <source>Medikamente nachbestellen: %1</source>
         <translation>Medicines to reorder: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="857" />
+        <location filename="../src/mainwindow.cpp" line="864" />
         <source>Bestellliste noch nicht als bestellt bestätigt</source>
         <translation>order list not yet confirmed as ordered</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="860" />
+        <location filename="../src/mainwindow.cpp" line="867" />
         <source>Bestand:</source>
         <translation>Stock:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="875" />
+        <location filename="../src/mainwindow.cpp" line="882" />
         <source>INR:</source>
         <translation>INR:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="876" />
+        <location filename="../src/mainwindow.cpp" line="883" />
         <source>%1 am %2 – %3</source>
         <translation>%1 on %2 – %3</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="886" />
+        <location filename="../src/mainwindow.cpp" line="893" />
         <source>Stuhlgang:</source>
         <translation>Bowel movement:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="886" />
+        <location filename="../src/mainwindow.cpp" line="893" />
         <source>seit %1 Tagen keiner eingetragen (zuletzt %2)</source>
         <translation>none recorded for %1 days (last %2)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="900" />
+        <location filename="../src/mainwindow.cpp" line="907" />
         <source>Wunden:</source>
         <translation>Wounds:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="911" />
+        <location filename="../src/mainwindow.cpp" line="918" />
         <source>&amp;%1: %2</source>
         <translation>&amp;%1: %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="912" />
+        <location filename="../src/mainwindow.cpp" line="919" />
         <source>Hauptbenutzer &amp;%1 (nicht belegt)</source>
         <translation>Main person &amp;%1 (not assigned)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="913" />
+        <location filename="../src/mainwindow.cpp" line="920" />
         <source>Hauptbenutzer %1: %2 (Strg+%1)</source>
         <translation>Main person %1: %2 (Ctrl+%1)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="914" />
+        <location filename="../src/mainwindow.cpp" line="921" />
         <source>Hauptbenutzer %1 über Benutzer-Menü festlegen</source>
         <translation>Assign main person %1 via the Person menu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="934" />
+        <location filename="../src/mainwindow.cpp" line="941" />
         <source>Hauptbenutzer %1 festgelegt.</source>
         <translation>Main person %1 assigned.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="970" />
-        <location filename="../src/mainwindow.cpp" line="980" />
+        <location filename="../src/mainwindow.cpp" line="977" />
+        <location filename="../src/mainwindow.cpp" line="987" />
         <source>Benutzer löschen</source>
         <translation>Delete person</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="971" />
+        <location filename="../src/mainwindow.cpp" line="978" />
         <source>Soll „%1“ mit Stammblatt, Medikamentenplan, %2 Messung(en) und %3 Dokument(en) der Krankenakte endgültig gelöscht werden?
 
 Dies kann nicht rückgängig gemacht werden. Legen Sie vorher ggf. eine Sicherung an.</source>
@@ -7173,201 +7231,201 @@ Dies kann nicht rückgängig gemacht werden. Legen Sie vorher ggf. eine Sicherun
 This cannot be undone. Create a backup first if necessary.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1049" />
+        <location filename="../src/mainwindow.cpp" line="1056" />
         <source>%1 %2: noch nicht eingetragen – nachholen mit Messwerte → Offene Tagesprofil-Messung erfassen (Strg+Umschalt+G) oder Doppelklick auf den Termin.</source>
         <translation>%1 %2: not entered yet – catch up with Readings → Record open day profile measurement (Ctrl+Shift+G) or by double-clicking the appointment.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1070" />
+        <location filename="../src/mainwindow.cpp" line="1077" />
         <source>Tagesprofil</source>
         <translation>Day profile</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1070" />
+        <location filename="../src/mainwindow.cpp" line="1077" />
         <source>Für %1 ist heute keine Messung eines Tagesprofils offen.</source>
         <translation>There is no open day profile measurement for %1 today.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1082" />
+        <location filename="../src/mainwindow.cpp" line="1089" />
         <source>Offene Tagesprofil-Messung</source>
         <translation>Open day profile measurement</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1083" />
+        <location filename="../src/mainwindow.cpp" line="1090" />
         <source>Welche Messung möchten Sie eintragen?</source>
         <translation>Which measurement would you like to enter?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1111" />
-        <location filename="../src/mainwindow.cpp" line="1117" />
+        <location filename="../src/mainwindow.cpp" line="1118" />
+        <location filename="../src/mainwindow.cpp" line="1124" />
         <source>Messung löschen</source>
         <translation>Delete measurement</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1112" />
+        <location filename="../src/mainwindow.cpp" line="1119" />
         <source>Messung vom %1 löschen?</source>
         <translation>Delete measurement of %1?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1153" />
+        <location filename="../src/mainwindow.cpp" line="1160" />
         <source>alle Messungen</source>
         <translation>all measurements</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1177" />
+        <location filename="../src/mainwindow.cpp" line="1184" />
         <source>%1 Messung(en)</source>
         <translation>%1 measurement(s)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1267" />
+        <location filename="../src/mainwindow.cpp" line="1274" />
         <source>Alle Kurven einblenden</source>
         <translation>Show all curves</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1272" />
+        <location filename="../src/mainwindow.cpp" line="1279" />
         <source>&amp;Kurven (%1 ausgeblendet)</source>
         <translation>&amp;Curves (%1 hidden)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1314" />
+        <location filename="../src/mainwindow.cpp" line="1321" />
         <source>Ausgewählte Dokumente &amp;drucken…</source>
         <translation>&amp;Print selected documents…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1323" />
+        <location filename="../src/mainwindow.cpp" line="1330" />
         <source>Grafik &amp;drucken…</source>
         <translation>&amp;Print chart…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1323" />
+        <location filename="../src/mainwindow.cpp" line="1330" />
         <source>Verlauf &amp;drucken…</source>
         <translation>&amp;Print history…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1324" />
+        <location filename="../src/mainwindow.cpp" line="1331" />
         <source>Grafik als &amp;PDF speichern…</source>
         <translation>Save chart as &amp;PDF…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1324" />
+        <location filename="../src/mainwindow.cpp" line="1331" />
         <source>Verlauf als &amp;PDF speichern…</source>
         <translation>Save history as &amp;PDF…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1325" />
+        <location filename="../src/mainwindow.cpp" line="1332" />
         <source>Grafik nach &amp;Excel exportieren…</source>
         <translation>Export chart to &amp;Excel…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1325" />
+        <location filename="../src/mainwindow.cpp" line="1332" />
         <source>Verlauf nach &amp;Excel exportieren…</source>
         <translation>Export history to &amp;Excel…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1365" />
+        <location filename="../src/mainwindow.cpp" line="1372" />
         <source>&amp;Vorschau…</source>
         <translation>&amp;Preview…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1385" />
+        <location filename="../src/mainwindow.cpp" line="1392" />
         <source>Excel-Datei gespeichert.</source>
         <translation>Excel file saved.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1427" />
+        <location filename="../src/mainwindow.cpp" line="1434" />
         <source>Anstehende Termine</source>
         <translation>Upcoming appointments</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1428" />
+        <location filename="../src/mainwindow.cpp" line="1435" />
         <source>Für %1 stehen heute und morgen keine offenen Termine an.</source>
         <translation>There are no open appointments for %1 today or tomorrow.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1444" />
+        <location filename="../src/mainwindow.cpp" line="1451" />
         <source>Medikamente stellen</source>
         <translation>Prepare medication</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1445" />
+        <location filename="../src/mainwindow.cpp" line="1452" />
         <source>Für %1 sind keine aktuellen Medikamente eingetragen.
 Bitte zuerst den Medikamentenplan im Stammblatt pflegen.</source>
         <translation>No current medication is recorded for %1.
 Please maintain the medication plan in the master record first.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1499" />
+        <location filename="../src/mainwindow.cpp" line="1506" />
         <source>Datenbank</source>
         <translation>Database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1499" />
+        <location filename="../src/mainwindow.cpp" line="1506" />
         <source>Ohne geöffnete Datenbank wird VitaParms beendet.</source>
         <translation>Without an open database VitaParms will quit.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1525" />
+        <location filename="../src/mainwindow.cpp" line="1532" />
         <source>🔒 %1 (%2)</source>
         <translation>🔒 %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1527" />
+        <location filename="../src/mainwindow.cpp" line="1534" />
         <source>Angemeldet als %1 – Datenbank verschlüsselt</source>
         <translation>Logged in as %1 – database encrypted</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1572" />
+        <location filename="../src/mainwindow.cpp" line="1579" />
         <source>Neue Datenbank anlegen</source>
         <translation>Create new database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1574" />
+        <location filename="../src/mainwindow.cpp" line="1581" />
         <source>VitaParms-Datenbank (*.sqlite *.db)</source>
         <translation>VitaParms database (*.sqlite *.db)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1577" />
+        <location filename="../src/mainwindow.cpp" line="1584" />
         <source>Neue Datenbank</source>
         <translation>New database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1577" />
+        <location filename="../src/mainwindow.cpp" line="1584" />
         <source>Die Datei existiert bereits und wird geöffnet.</source>
         <translation>The file already exists and will be opened.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1587" />
+        <location filename="../src/mainwindow.cpp" line="1594" />
         <source>Datenbank öffnen</source>
         <translation>Open database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1588" />
+        <location filename="../src/mainwindow.cpp" line="1595" />
         <source>VitaParms-Datenbank (*.sqlite *.db);;Alle Dateien (*)</source>
         <translation>VitaParms database (*.sqlite *.db);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1596" />
+        <location filename="../src/mainwindow.cpp" line="1603" />
         <source>Sicherung erstellen</source>
         <translation>Create backup</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1599" />
+        <location filename="../src/mainwindow.cpp" line="1606" />
         <source>VitaParms-Datenbank (*.sqlite)</source>
         <translation>VitaParms database (*.sqlite)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1609" />
+        <location filename="../src/mainwindow.cpp" line="1616" />
         <source>Die Schlüsseldatei konnte nicht kopiert werden.</source>
         <translation>The key file could not be copied.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1613" />
-        <location filename="../src/mainwindow.cpp" line="1618" />
+        <location filename="../src/mainwindow.cpp" line="1620" />
+        <location filename="../src/mainwindow.cpp" line="1625" />
         <source>Sicherung</source>
         <translation>Backup</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1614" />
+        <location filename="../src/mainwindow.cpp" line="1621" />
         <source>Sicherung gespeichert (verschlüsselt):
 %1
 %2
@@ -7380,30 +7438,30 @@ Beide Dateien gehören zusammen. Ohne die .keys-Datei lässt sich die Sicherung 
 Both files belong together. Without the .keys file the backup can only be opened with the recovery key.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1618" />
+        <location filename="../src/mainwindow.cpp" line="1625" />
         <source>Sicherung fehlgeschlagen:
 %1</source>
         <translation>Backup failed:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1625" />
+        <location filename="../src/mainwindow.cpp" line="1632" />
         <source>Sicherung wiederherstellen / Datenbank importieren</source>
         <translation>Restore backup / import database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1627" />
+        <location filename="../src/mainwindow.cpp" line="1634" />
         <source>VitaParms-Datenbank (*.vpdb *.sqlite *.db);;Alle Dateien (*)</source>
         <translation>VitaParms database (*.vpdb *.sqlite *.db);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1631" />
-        <location filename="../src/mainwindow.cpp" line="1649" />
+        <location filename="../src/mainwindow.cpp" line="1638" />
+        <location filename="../src/mainwindow.cpp" line="1656" />
         <source>Sicherung wiederherstellen</source>
         <translation>Restore backup</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1632" />
+        <location filename="../src/mainwindow.cpp" line="1639" />
         <source>Die aktuelle Datenbank
 %1
 wird durch die gewählte ersetzt.
@@ -7422,64 +7480,64 @@ Afterwards you need to log in with an account of the selected database.
 Continue?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1682" />
+        <location filename="../src/mainwindow.cpp" line="1689" />
         <source>Datenbank der Light-Version importieren</source>
         <translation>Import database of the light edition</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1686" />
+        <location filename="../src/mainwindow.cpp" line="1693" />
         <source>Datenbank von VitaParms light (*.sqlite *.vpdb);;Alle Dateien (*)</source>
         <translation>VitaParms light database (*.sqlite *.vpdb);;All files (*)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1695" />
+        <location filename="../src/mainwindow.cpp" line="1702" />
         <source>Die Datei lässt sich nicht lesen:
 %1</source>
         <translation>The file cannot be read:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1701" />
+        <location filename="../src/mainwindow.cpp" line="1708" />
         <source>Das ist die geöffnete Datenbank selbst.</source>
         <translation>This is the open database itself.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1714" />
+        <location filename="../src/mainwindow.cpp" line="1721" />
         <source>Melden Sie sich mit dem Konto von &lt;b&gt;VitaParms light&lt;/b&gt; an, um die Datenbank&lt;br&gt;%1&lt;br&gt;zu entsperren.</source>
         <translation>Sign in with the &lt;b&gt;VitaParms light&lt;/b&gt; account to unlock the database&lt;br&gt;%1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1725" />
+        <location filename="../src/mainwindow.cpp" line="1732" />
         <source>&amp;Name:</source>
         <translation>&amp;Name:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1726" />
+        <location filename="../src/mainwindow.cpp" line="1733" />
         <source>&amp;Passwort:</source>
         <translation>&amp;Password:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1732" />
+        <location filename="../src/mainwindow.cpp" line="1739" />
         <source>&amp;Entsperren</source>
         <translation>&amp;Unlock</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1733" />
+        <location filename="../src/mainwindow.cpp" line="1740" />
         <source>&amp;Wiederherstellungsschlüssel…</source>
         <translation>&amp;Recovery key…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1743" />
+        <location filename="../src/mainwindow.cpp" line="1750" />
         <source>Konto oder Passwort ist falsch.</source>
         <translation>Account or password is wrong.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1749" />
+        <location filename="../src/mainwindow.cpp" line="1756" />
         <source>Datenbank von VitaParms light entsperren</source>
         <translation>Unlock VitaParms light database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1752" />
+        <location filename="../src/mainwindow.cpp" line="1759" />
         <source>Zur Datenbank
 %1
 fehlt die Schlüsseldatei (%2). Sie lässt sich nur mit dem Wiederherstellungsschlüssel von VitaParms light öffnen.</source>
@@ -7488,39 +7546,39 @@ fehlt die Schlüsseldatei (%2). Sie lässt sich nur mit dem Wiederherstellungssc
 is missing. It can only be opened with the VitaParms light recovery key.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1759" />
+        <location filename="../src/mainwindow.cpp" line="1766" />
         <source>&lt;p&gt;Die Person aus VitaParms light wird mit Stammblatt, Messungen, Medikamenten, Terminen, Kontakten und Dokumenten als &lt;b&gt;weitere Person&lt;/b&gt; in diese Datenbank übernommen. Vorhandene Personen bleiben unverändert.&lt;/p&gt;&lt;p&gt;Vorher legt VitaParms eine Sicherung dieser Datenbank an. Jetzt importieren?&lt;/p&gt;</source>
         <translation>&lt;p&gt;The person from VitaParms light is added to this database as a &lt;b&gt;further person&lt;/b&gt;, with master record, readings, medication, appointments, contacts and documents. Existing persons remain unchanged.&lt;/p&gt;&lt;p&gt;VitaParms first creates a backup of this database. Import now?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1774" />
+        <location filename="../src/mainwindow.cpp" line="1781" />
         <source>Die Daten waren schon übernommen – %1 Eintrag/Einträge aktualisiert, %2 neu.</source>
         <translation>The data had already been imported – %1 entry/entries updated, %2 new.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1775" />
+        <location filename="../src/mainwindow.cpp" line="1782" />
         <source>Übernommen: %1 (%2 Einträge).</source>
         <translation>Imported: %1 (%2 entries).</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1776" />
+        <location filename="../src/mainwindow.cpp" line="1783" />
         <source>Sicherung vor dem Import: %1</source>
         <translation>Backup before the import: %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1783" />
-        <location filename="../src/mainwindow.cpp" line="1793" />
-        <location filename="../src/mainwindow.cpp" line="1799" />
+        <location filename="../src/mainwindow.cpp" line="1790" />
+        <location filename="../src/mainwindow.cpp" line="1800" />
+        <location filename="../src/mainwindow.cpp" line="1806" />
         <source>Datenbank exportieren</source>
         <translation>Export database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1786" />
+        <location filename="../src/mainwindow.cpp" line="1793" />
         <source>VitaParms-Übertragungsdatei (*.vpdb)</source>
         <translation>VitaParms transfer file (*.vpdb)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1794" />
+        <location filename="../src/mainwindow.cpp" line="1801" />
         <source>Gespeichert:
 %1
 
@@ -7531,27 +7589,27 @@ Die Datei enthält die verschlüsselte Datenbank und die Anmeldekonten. Auf dem 
 The file contains the encrypted database and the login accounts. On the other device (computer or tablet) choose “Import database…” at login. Treat the file like a backup – it cannot be opened without an account password.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1829" />
+        <location filename="../src/mainwindow.cpp" line="1836" />
         <source>&lt;p&gt;&lt;b&gt;%1 ist ein persönliches Tagebuch für gesundheitsbezogene Messwerte – kein Medizinprodukt.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Das Programm stellt keine Diagnosen, gibt keine Therapieempfehlungen und ersetzt keine ärztliche Beratung. Berechnete Werte (z.&amp;nbsp;B. BMI) und Grafiken dienen nur der Übersicht. Die Verwendung erfolgt auf eigene Gefahr.&lt;/p&gt;&lt;p&gt;Bei Beschwerden oder auffälligen Werten wenden Sie sich bitte an Ihre Ärztin oder Ihren Arzt, im Notfall an den Notruf 112.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;%1 is a personal diary for health-related readings – not a medical device.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The program makes no diagnoses, gives no treatment recommendations and does not replace medical advice. Calculated values (e.g. BMI) and charts are for overview only. Use at your own risk.&lt;/p&gt;&lt;p&gt;If you have complaints or unusual readings, please contact your doctor; in an emergency call 112 (UK: 999).&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1840" />
+        <location filename="../src/mainwindow.cpp" line="1847" />
         <source>%1 – Demo</source>
         <translation>%1 – Demo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1869" />
+        <location filename="../src/mainwindow.cpp" line="1876" />
         <source>Über %1</source>
         <translation>About %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1870" />
+        <location filename="../src/mainwindow.cpp" line="1877" />
         <source>&lt;h3&gt;%3 %1&lt;/h3&gt;&lt;p&gt;Tagebuch für Vitalwerte mit Verlauf, Grafiken, Druck, PDF- und Excel-Export.&lt;/p&gt;&lt;p&gt;Copyright © 2026 Michael Bergmann&lt;br&gt;Freie Software unter der &lt;b&gt;MIT-Lizenz&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Erstellt mit Qt %2 (LGPLv3).&lt;/p&gt;&lt;p&gt;&lt;small&gt;Kein Medizinprodukt – Verwendung auf eigene Gefahr.&lt;/small&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;%3 %1&lt;/h3&gt;&lt;p&gt;Vital signs diary with history, charts, printing, PDF and Excel export.&lt;/p&gt;&lt;p&gt;Copyright © 2026 Michael Bergmann&lt;br&gt;Free software under the &lt;b&gt;MIT licence&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Built with Qt %2 (LGPLv3).&lt;/p&gt;&lt;p&gt;&lt;small&gt;Not a medical device – use at your own risk.&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1891" />
+        <location filename="../src/mainwindow.cpp" line="1898" />
         <source>Vor dem Beenden die Datenbank über das USB-Kabel mit dem Tablet abgleichen?
 
 Das Tablet muss angeschlossen sein, VitaParms darauf geöffnet und angemeldet.</source>
@@ -7560,12 +7618,12 @@ Das Tablet muss angeschlossen sein, VitaParms darauf geöffnet und angemeldet.</
 The tablet must be connected, with VitaParms open and logged in.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1948" />
+        <location filename="../src/mainwindow.cpp" line="1955" />
         <source>Automatische Sicherung …</source>
         <translation>Automatic backup …</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1958" />
+        <location filename="../src/mainwindow.cpp" line="1965" />
         <source>Die automatische Sicherung ist fehlgeschlagen:
 %1
 
@@ -7576,7 +7634,7 @@ Trotzdem beenden?</source>
 Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1636" />
+        <location filename="../src/mainwindow.cpp" line="1643" />
         <source>
 
 Zur Sicherung gibt es keine .keys-Datei – Sie benötigen den Wiederherstellungsschlüssel.</source>
@@ -7585,81 +7643,81 @@ Zur Sicherung gibt es keine .keys-Datei – Sie benötigen den Wiederherstellung
 There is no .keys file for this backup – you will need the recovery key.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="664" />
+        <location filename="../src/mainwindow.cpp" line="671" />
         <source>Ü&amp;ber %1…</source>
         <translation>&amp;About %1…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1015" />
+        <location filename="../src/mainwindow.cpp" line="1022" />
         <source>BZ-Tagesprofil für %1: %2 Erinnerung(en) gestellt.</source>
         <translation>BG day profile for %1: %2 reminder(s) set.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1024" />
+        <location filename="../src/mainwindow.cpp" line="1031" />
         <source>RR-Tagesprofil für %1: %2 Erinnerung(en) gestellt.</source>
         <translation>BP day profile for %1: %2 reminder(s) set.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1828" />
+        <location filename="../src/mainwindow.cpp" line="1835" />
         <source>Haftungshinweis</source>
         <translation>Disclaimer</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1845" />
-        <location filename="../src/mainwindow.cpp" line="1862" />
+        <location filename="../src/mainwindow.cpp" line="1852" />
+        <location filename="../src/mainwindow.cpp" line="1869" />
         <source>Demo-Datenbank</source>
         <translation>Demo database</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1846" />
+        <location filename="../src/mainwindow.cpp" line="1853" />
         <source>&lt;p&gt;Die Demo öffnet ein &lt;b&gt;zweites Programmfenster&lt;/b&gt; mit der erfundenen Person &lt;i&gt;Erika Mustermann&lt;/i&gt;: %1 Tage Messwerte bis heute (mit Tagesprofilen und einem Infekt), Medikamentenplan, Termine und Befunde in der Krankenakte.&lt;/p&gt;&lt;p&gt;Die Demo hat eine eigene, verschlüsselte Datenbank und eigene Einstellungen; Sprache und Erscheinungsbild werden übernommen. Die Anmeldung erfolgt automatisch (Konto &lt;tt&gt;%2&lt;/tt&gt;, Passwort &lt;tt&gt;%3&lt;/tt&gt;). Bei jedem Start wird die Demo neu erzeugt – Sie können also nichts kaputt machen.&lt;/p&gt;&lt;p&gt;Ihre eigenen Daten bleiben unberührt.&lt;/p&gt;</source>
         <translation>&lt;p&gt;The demo opens a &lt;b&gt;second program window&lt;/b&gt; with the fictitious person &lt;i&gt;Erika Mustermann&lt;/i&gt;: %1 days of readings up to today (with daily profiles and an infection), medication plan, appointments and reports in the medical record.&lt;/p&gt;&lt;p&gt;The demo has its own encrypted database and its own settings; language and appearance are taken over. You are logged in automatically (account &lt;tt&gt;%2&lt;/tt&gt;, password &lt;tt&gt;%3&lt;/tt&gt;). The demo is recreated every time it starts – so you cannot break anything.&lt;/p&gt;&lt;p&gt;Your own data remains untouched.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1856" />
+        <location filename="../src/mainwindow.cpp" line="1863" />
         <source>Demo &amp;starten</source>
         <translation>&amp;Start demo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1857" />
-        <location filename="../src/mainwindow.cpp" line="1896" />
+        <location filename="../src/mainwindow.cpp" line="1864" />
+        <location filename="../src/mainwindow.cpp" line="1903" />
         <source>Abbrechen</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1862" />
+        <location filename="../src/mainwindow.cpp" line="1869" />
         <source>Die Demo konnte nicht gestartet werden.</source>
         <translation>The demo could not be started.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1864" />
+        <location filename="../src/mainwindow.cpp" line="1871" />
         <source>Die Demo wird in einem eigenen Fenster geöffnet …</source>
         <translation>The demo is opening in a separate window …</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1890" />
+        <location filename="../src/mainwindow.cpp" line="1897" />
         <source>Mit dem Tablet abgleichen?</source>
         <translation>Sync with the tablet?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1894" />
+        <location filename="../src/mainwindow.cpp" line="1901" />
         <source>&amp;Abgleichen…</source>
         <translation>&amp;Synchronise…</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1895" />
+        <location filename="../src/mainwindow.cpp" line="1902" />
         <source>&amp;Ohne Abgleich beenden</source>
         <translation>&amp;Quit without syncing</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1910" />
-        <location filename="../src/mainwindow.cpp" line="1931" />
-        <location filename="../src/mainwindow.cpp" line="1949" />
+        <location filename="../src/mainwindow.cpp" line="1917" />
+        <location filename="../src/mainwindow.cpp" line="1938" />
+        <location filename="../src/mainwindow.cpp" line="1956" />
         <source>VitaParms</source>
         <translation>VitaParms</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1918" />
+        <location filename="../src/mainwindow.cpp" line="1925" />
         <source>Die Datenbank konnte nicht abgeglichen werden:
 %1
 
@@ -7670,7 +7728,7 @@ Trotzdem beenden?</source>
 Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1939" />
+        <location filename="../src/mainwindow.cpp" line="1946" />
         <source>Die Website konnte nicht aktualisiert werden:
 %1
 
@@ -8501,25 +8559,25 @@ Expected the file “%2” in the folder
     <name>MedicationAssistant</name>
     <message>
         <location filename="../src/medschedule.cpp" line="248" />
-        <location filename="../src/reportprinter.cpp" line="839" />
+        <location filename="../src/reportprinter.cpp" line="891" />
         <source>morgens</source>
         <translation>in the morning</translation>
     </message>
     <message>
         <location filename="../src/medschedule.cpp" line="249" />
-        <location filename="../src/reportprinter.cpp" line="840" />
+        <location filename="../src/reportprinter.cpp" line="892" />
         <source>mittags</source>
         <translation>at noon</translation>
     </message>
     <message>
         <location filename="../src/medschedule.cpp" line="250" />
-        <location filename="../src/reportprinter.cpp" line="841" />
+        <location filename="../src/reportprinter.cpp" line="893" />
         <source>abends</source>
         <translation>in the evening</translation>
     </message>
     <message>
         <location filename="../src/medschedule.cpp" line="251" />
-        <location filename="../src/reportprinter.cpp" line="842" />
+        <location filename="../src/reportprinter.cpp" line="894" />
         <source>zur Nacht</source>
         <translation>at night</translation>
     </message>
@@ -8535,7 +8593,7 @@ Expected the file “%2” in the folder
     </message>
     <message>
         <location filename="../src/medassistant.cpp" line="62" />
-        <location filename="../src/reportprinter.cpp" line="843" />
+        <location filename="../src/reportprinter.cpp" line="895" />
         <source>alle Zeitpunkte</source>
         <translation>all times</translation>
     </message>
@@ -9427,412 +9485,482 @@ Expected the file “%2” in the folder
 <context>
     <name>PatientDialog</name>
     <message>
-        <location filename="../src/patientdialog.cpp" line="78" />
+        <location filename="../src/patientdialog.cpp" line="81" />
         <source>Stammblatt – %1</source>
         <translation>Master record – %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="78" />
+        <location filename="../src/patientdialog.cpp" line="81" />
         <source>Neuer Benutzer – Stammblatt</source>
         <translation>New person – master record</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="84" />
+        <location filename="../src/patientdialog.cpp" line="87" />
         <source>&amp;Speichern</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="85" />
-        <location filename="../src/patientdialog.cpp" line="848" />
+        <location filename="../src/patientdialog.cpp" line="88" />
+        <location filename="../src/patientdialog.cpp" line="853" />
         <source>Abbrechen</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="94" />
-        <location filename="../src/patientdialog.cpp" line="523" />
+        <location filename="../src/patientdialog.cpp" line="97" />
+        <location filename="../src/patientdialog.cpp" line="528" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="95" />
-        <location filename="../src/patientdialog.cpp" line="524" />
+        <location filename="../src/patientdialog.cpp" line="98" />
+        <location filename="../src/patientdialog.cpp" line="529" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="96" />
+        <location filename="../src/patientdialog.cpp" line="99" />
         <source>divers</source>
         <translation>diverse</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="153" />
+        <location filename="../src/patientdialog.cpp" line="157" />
         <source>Präparat</source>
         <translation>Product</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="153" />
+        <location filename="../src/patientdialog.cpp" line="157" />
         <source>Wirkstoff</source>
         <translation>Active substance</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="153" />
+        <location filename="../src/patientdialog.cpp" line="157" />
         <source>Dosierung</source>
         <translation>Dosage</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="154" />
+        <location filename="../src/patientdialog.cpp" line="158" />
         <source>Grund</source>
         <translation>Reason</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="154" />
+        <location filename="../src/patientdialog.cpp" line="158" />
         <source>Beginn</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="154" />
+        <location filename="../src/patientdialog.cpp" line="158" />
         <source>Bemerkung / Hinweise</source>
         <translation>Note / remarks</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="155" />
+        <location filename="../src/patientdialog.cpp" line="159" />
         <source>Ende</source>
         <translation>End</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="155" />
+        <location filename="../src/patientdialog.cpp" line="159" />
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="167" />
+        <location filename="../src/patientdialog.cpp" line="171" />
         <source>Klick auf eine Spaltenüberschrift sortiert innerhalb jeder Art auf- bzw. absteigend</source>
         <translation>Click a column heading to sort ascending or descending within each type</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="307" />
+        <location filename="../src/patientdialog.cpp" line="312" />
         <source>Vorsorgedokumente</source>
         <translation>Advance directives</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
+        <location filename="../src/patientdialog.cpp" line="315" />
         <source>Dokument liegt vor</source>
         <translation>Document exists</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
+        <location filename="../src/patientdialog.cpp" line="315" />
         <source>Person</source>
         <translation>Person</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
+        <location filename="../src/patientdialog.cpp" line="315" />
         <source>Anschrift</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
-        <location filename="../src/patientdialog.cpp" line="327" />
-        <location filename="../src/patientdialog.cpp" line="1092" />
+        <location filename="../src/patientdialog.cpp" line="315" />
+        <location filename="../src/patientdialog.cpp" line="332" />
+        <location filename="../src/patientdialog.cpp" line="1097" />
         <source>Telefon</source>
         <translation>Phone</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
+        <location filename="../src/patientdialog.cpp" line="315" />
         <source>gültig bis</source>
         <translation>valid until</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="310" />
+        <location filename="../src/patientdialog.cpp" line="315" />
         <source>PDF</source>
         <translation>PDF</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="324" />
+        <location filename="../src/patientdialog.cpp" line="329" />
         <source>Straße, PLZ Ort</source>
         <translation>Street, postcode town</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="334" />
+        <location filename="../src/patientdialog.cpp" line="339" />
         <source>unbefristet</source>
         <translation>unlimited</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="336" />
+        <location filename="../src/patientdialog.cpp" line="341" />
         <source>Leer lassen (unbefristet), wenn das Dokument keine Befristung hat</source>
         <translation>Leave empty (unlimited) if the document has no time limit</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="352" />
+        <location filename="../src/patientdialog.cpp" line="357" />
         <source>&lt;small&gt;Die PDF-Dateien werden verschlüsselt in der Krankenakte abgelegt (Art „Vorsorge“). Bewahren Sie die Originale gut auffindbar auf – im Notfall zählen die unterschriebenen Dokumente.&lt;/small&gt;</source>
         <translation>&lt;small&gt;The PDF files are filed encrypted in the medical record (type “Advance directive”). Keep the originals where they can be found – in an emergency the signed documents are what counts.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="389" />
+        <location filename="../src/patientdialog.cpp" line="394" />
         <source>PDF ✔</source>
         <translation>PDF ✔</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="389" />
+        <location filename="../src/patientdialog.cpp" line="394" />
         <source>PDF…</source>
         <translation>PDF…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="390" />
+        <location filename="../src/patientdialog.cpp" line="395" />
         <source>PDF hinterlegt – anzeigen, ersetzen oder entfernen</source>
         <translation>PDF stored – show, replace or remove</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="390" />
+        <location filename="../src/patientdialog.cpp" line="395" />
         <source>PDF hinterlegen</source>
         <translation>Store PDF</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="399" />
+        <location filename="../src/patientdialog.cpp" line="404" />
         <source>PDF &amp;ersetzen…</source>
         <translation>&amp;Replace PDF…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="399" />
+        <location filename="../src/patientdialog.cpp" line="404" />
         <source>PDF &amp;hinterlegen…</source>
         <translation>&amp;Store PDF…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="400" />
+        <location filename="../src/patientdialog.cpp" line="405" />
         <source>PDF &amp;anzeigen</source>
         <translation>&amp;Show PDF</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="401" />
+        <location filename="../src/patientdialog.cpp" line="406" />
         <source>Verknüpfung &amp;entfernen</source>
         <translation>Re&amp;move link</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="407" />
+        <location filename="../src/patientdialog.cpp" line="412" />
         <source>%1 als PDF hinterlegen</source>
         <translation>Store %1 as PDF</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="408" />
+        <location filename="../src/patientdialog.cpp" line="413" />
         <source>PDF-Dokument (*.pdf)</source>
         <translation>PDF document (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="414" />
+        <location filename="../src/patientdialog.cpp" line="419" />
         <source>Die Datei ist kein PDF-Dokument.</source>
         <translation>The file is not a PDF document.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="447" />
+        <location filename="../src/patientdialog.cpp" line="452" />
         <source>Vorsorge</source>
         <translation>Advance directive</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="499" />
+        <location filename="../src/patientdialog.cpp" line="504" />
         <source>Werte außerhalb von %1–%2 werden hervorgehoben.</source>
         <translation>Values outside %1–%2 are highlighted.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="502" />
+        <location filename="../src/patientdialog.cpp" line="507" />
         <source>Bitte beide Grenzen eintragen (unten kleiner als oben).</source>
         <translation>Please enter both limits (lower below upper).</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="504" />
+        <location filename="../src/patientdialog.cpp" line="509" />
         <source>Nicht eingetragen: Bewertet wird gegen den Standard 2,0–3,0.</source>
         <translation>Not set: values are assessed against the default 2.0–3.0.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="522" />
+        <location filename="../src/patientdialog.cpp" line="527" />
         <source>— bitte wählen —</source>
         <translation>— please choose —</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="556" />
+        <location filename="../src/patientdialog.cpp" line="561" />
         <source>Bitte wählen – sonst gibt es keine geschlechtsabhängigen Normwerte (z. B. Peak-Flow-Sollwert).</source>
         <translation>Please choose – otherwise there are no sex-specific reference values (e.g. predicted peak flow).</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="558" />
+        <location filename="../src/patientdialog.cpp" line="563" />
         <source>Weicht vom Feld „Geschlecht“ ab und wird für Normwerte verwendet.</source>
         <translation>Differs from the “Sex” field and is used for reference values.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="560" />
+        <location filename="../src/patientdialog.cpp" line="565" />
         <source>Folgt dem Feld „Geschlecht“ (Reiter „Person“). Nur ändern, wenn das biologische Geschlecht abweicht.</source>
         <translation>Follows the “Sex” field (“Person” tab). Change it only if the biological sex differs.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="574" />
+        <location filename="../src/patientdialog.cpp" line="579" />
         <source>Sollwert heute: %1 l/min (%2).</source>
         <translation>Predicted value today: %1 l/min (%2).</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="577" />
+        <location filename="../src/patientdialog.cpp" line="582" />
         <source>Warnhinweise beziehen sich auf den %1 (%2 l/min): gelb unter %3, rot unter %4 l/min.</source>
         <translation>Warnings are based on the %1 (%2 l/min): yellow below %3, red below %4 l/min.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="578" />
+        <location filename="../src/patientdialog.cpp" line="583" />
         <source>persönlichen Bestwert</source>
         <translation>personal best</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="578" />
+        <location filename="../src/patientdialog.cpp" line="583" />
         <source>Sollwert</source>
         <translation>predicted value</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="581" />
+        <location filename="../src/patientdialog.cpp" line="586" />
         <source>Ohne Bezugswert gibt es keine Warnhinweise – bitte den persönlichen Bestwert eintragen.</source>
         <translation>Without a reference value there are no warnings – please enter the personal best.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="590" />
+        <location filename="../src/patientdialog.cpp" line="595" />
         <source>Fehlender Körperanteil: %1 %. Der BMI wird mit dem auf den vollständigen Körper hochgerechneten Gewicht berechnet (Osterkamp 1995).</source>
         <translation>Missing body proportion: %1 %. The BMI is calculated with the weight extrapolated to the complete body (Osterkamp 1995).</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="594" />
+        <location filename="../src/patientdialog.cpp" line="599" />
         <source>Bei fehlenden Gliedmaßen wird der BMI automatisch korrigiert.</source>
         <translation>The BMI is corrected automatically for missing limbs.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="608" />
+        <location filename="../src/patientdialog.cpp" line="613" />
         <source>bei Bedarf: </source>
         <translation>as needed: </translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="608" />
+        <location filename="../src/patientdialog.cpp" line="613" />
         <source>im Notfall: </source>
         <translation>in an emergency: </translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="765" />
+        <location filename="../src/patientdialog.cpp" line="770" />
         <source>&amp;Wieder aufnehmen</source>
         <translation>&amp;Resume</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="765" />
+        <location filename="../src/patientdialog.cpp" line="770" />
         <source>&amp;Absetzen…</source>
         <translation>Disc&amp;ontinue…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="817" />
+        <location filename="../src/patientdialog.cpp" line="822" />
         <source>Medikament absetzen</source>
         <translation>Discontinue medicine</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="835" />
+        <location filename="../src/patientdialog.cpp" line="840" />
         <source>&lt;b&gt;%1&lt;/b&gt; wird bis einschließlich %2 weiter gegeben und am %3 automatisch abgesetzt und ins Archiv verschoben.</source>
         <translation>&lt;b&gt;%1&lt;/b&gt; continues to be given up to and including %2 and is automatically discontinued and moved to the archive on %3.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="841" />
+        <location filename="../src/patientdialog.cpp" line="846" />
         <source>&lt;b&gt;%1&lt;/b&gt; wird nicht mehr eingenommen und ins Archiv verschoben. Die Historie bleibt erhalten.</source>
         <translation>&lt;b&gt;%1&lt;/b&gt; is no longer taken and is moved to the archive. Its history is kept.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="941" />
+        <location filename="../src/patientdialog.cpp" line="946" />
         <source>Wunden bei Aufnahme</source>
         <translation>Wounds on admission</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="950" />
+        <location filename="../src/patientdialog.cpp" line="955" />
         <source>Wunde bei Aufnahme e&amp;rfassen…</source>
         <translation>&amp;Record wound on admission…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="952" />
+        <location filename="../src/patientdialog.cpp" line="957" />
         <source>Wunddokumentation…</source>
         <translation>Wound documentation…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="974" />
+        <location filename="../src/patientdialog.cpp" line="979" />
         <source>Wunden lassen sich erfassen, sobald das Stammblatt einmal gespeichert ist.</source>
         <translation>Wounds can be recorded once the master sheet has been saved.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="980" />
+        <location filename="../src/patientdialog.cpp" line="985" />
         <source>Keine Wunden bei Aufnahme erfasst.</source>
         <translation>No wounds recorded on admission.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="994" />
+        <location filename="../src/patientdialog.cpp" line="999" />
         <source>Wunde bei Aufnahme</source>
         <translation>Wound on admission</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="995" />
+        <location filename="../src/patientdialog.cpp" line="1000" />
         <source>Jetzt die erste Wundbeurteilung (Aufnahmebefund mit Größe, Wundgrund, Exsudat …) erfassen?</source>
         <translation>Record the first wound assessment now (findings on admission with size, wound bed, exudate …)?</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1092" />
+        <location filename="../src/patientdialog.cpp" line="1097" />
         <source>Art</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1092" />
+        <location filename="../src/patientdialog.cpp" line="1097" />
         <source>Name</source>
         <translation>Last name</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1201" />
+        <location filename="../src/patientdialog.cpp" line="1206" />
         <source>Kontakt entfernen</source>
         <translation>Remove contact</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1201" />
+        <location filename="../src/patientdialog.cpp" line="1206" />
         <source>„%1“ aus den Kontakten entfernen?</source>
         <translation>Remove “%1” from the contacts?</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="828" />
+        <location filename="../src/patientdialog.cpp" line="1225" />
+        <source>Erhaltene Impfungen mit Datum, Impfstoff und Chargennummer – wie im gelben Impfausweis. Ersetzt nicht den amtlichen Impfausweis.</source>
+        <translation>Vaccinations received with date, vaccine and lot number – as in the vaccination certificate. Does not replace the official vaccination certificate.</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1232" />
+        <source>Datum</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1232" />
+        <source>Impfung gegen</source>
+        <translation>Vaccination against</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1232" />
+        <source>Impfstoff (Präparat)</source>
+        <translation>Vaccine (product)</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1232" />
+        <source>Ch.-B.</source>
+        <translation>Lot</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1233" />
+        <source>Arzt / Praxis</source>
+        <translation>Doctor / practice</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1233" />
+        <source>Bemerkung</source>
+        <translation>Note</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1256" />
+        <source>Impfung &amp;hinzufügen…</source>
+        <translation>&amp;Add vaccination…</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1257" />
+        <source>Be&amp;arbeiten…</source>
+        <translation>&amp;Edit…</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1258" />
+        <source>Ent&amp;fernen</source>
+        <translation>&amp;Remove</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1260" />
+        <source>Impfpass &amp;drucken…</source>
+        <translation>&amp;Print vaccination record…</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1274" />
+        <source>&amp;Impfpass</source>
+        <translation>&amp;Vaccinations</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1343" />
+        <source>Impfung entfernen</source>
+        <translation>Remove vaccination</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="1343" />
+        <source>„%1“ aus dem Impfpass entfernen?</source>
+        <translation>Remove “%1” from the vaccination record?</translation>
+    </message>
+    <message>
+        <location filename="../src/patientdialog.cpp" line="833" />
         <source>Abgesetzt &amp;am</source>
         <translation>Discontinued &amp;on</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="830" />
+        <location filename="../src/patientdialog.cpp" line="835" />
         <source>z. B. Nebenwirkung, Therapie beendet, ersetzt durch …</source>
         <translation>e.g. side effect, therapy completed, replaced by …</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="831" />
+        <location filename="../src/patientdialog.cpp" line="836" />
         <source>&amp;Grund</source>
         <translation>&amp;Reason</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="847" />
+        <location filename="../src/patientdialog.cpp" line="852" />
         <source>&amp;Absetzen</source>
         <translation>&amp;Discontinue</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="725" />
+        <location filename="../src/patientdialog.cpp" line="730" />
         <source>PZN %1</source>
         <translation>PZN %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="727" />
+        <location filename="../src/patientdialog.cpp" line="732" />
         <source>Beipackzettel in der Krankenakte gespeichert</source>
         <translation>Package leaflet stored in the medical record</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="731" />
+        <location filename="../src/patientdialog.cpp" line="736" />
         <source>Abgesetzt: %1</source>
         <translation>Discontinued: %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="733" />
+        <location filename="../src/patientdialog.cpp" line="738" />
         <source>Erinnerung: %1</source>
         <translation>Reminder: %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="851" />
+        <location filename="../src/patientdialog.cpp" line="856" />
         <source>Absetzen &amp;zurücknehmen</source>
         <translation>&amp;Cancel discontinuation</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="868" />
+        <location filename="../src/patientdialog.cpp" line="873" />
         <source>„%1“ endgültig löschen?
 
 Tipp: Abgesetzte Medikamente besser archivieren – dann bleibt die Historie erhalten.</source>
@@ -9841,52 +9969,52 @@ Tipp: Abgesetzte Medikamente besser archivieren – dann bleibt die Historie erh
 Tip: better archive discontinued medications – this keeps the history.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="883" />
+        <location filename="../src/patientdialog.cpp" line="888" />
         <source>Drucken…</source>
         <translation>Print…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="884" />
+        <location filename="../src/patientdialog.cpp" line="889" />
         <source>Als PDF speichern…</source>
         <translation>Save as PDF…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="909" />
+        <location filename="../src/patientdialog.cpp" line="914" />
         <source>Noch keine Aufnahmewerte erfasst.</source>
         <translation>No admission values recorded yet.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="913" />
+        <location filename="../src/patientdialog.cpp" line="918" />
         <source>&lt;b&gt;Aufnahme am %1&lt;/b&gt;</source>
         <translation>&lt;b&gt;Admission on %1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="916" />
+        <location filename="../src/patientdialog.cpp" line="921" />
         <source>RR %1/%2 mmHg</source>
         <translation>BP %1/%2 mmHg</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="930" />
+        <location filename="../src/patientdialog.cpp" line="935" />
         <source>Aufnahmewerte &amp;bearbeiten…</source>
         <translation>&amp;Edit admission values…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="930" />
+        <location filename="../src/patientdialog.cpp" line="935" />
         <source>Aufnahmewerte &amp;erfassen…</source>
         <translation>&amp;Record admission values…</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1012" />
+        <location filename="../src/patientdialog.cpp" line="1017" />
         <source>Bitte mindestens den Namen angeben.</source>
         <translation>Please enter at least the last name.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1023" />
+        <location filename="../src/patientdialog.cpp" line="1028" />
         <source>Es gibt bereits einen Benutzer „%1“. Trotzdem neu anlegen?</source>
         <translation>A person “%1” already exists. Create anyway?</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1038" />
+        <location filename="../src/patientdialog.cpp" line="1043" />
         <source>Die Angaben zu fehlenden Gliedmaßen wurden geändert.
 
 Sollen die BMI-Werte aller bisherigen Messungen mit den neuen Angaben neu berechnet werden?
@@ -9899,21 +10027,21 @@ Should the BMI values of all previous measurements be recalculated with the new 
 Choose “No” if the physical condition has actually only changed now – the old values then remain historically correct.</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1047" />
+        <location filename="../src/patientdialog.cpp" line="1052" />
         <source>Speichern fehlgeschlagen:
 %1</source>
         <translation>Saving failed:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1052" />
+        <location filename="../src/patientdialog.cpp" line="1057" />
         <source>PDF konnte nicht gespeichert werden:
 %1</source>
         <translation>The PDF could not be saved:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/patientdialog.cpp" line="1065" />
+        <location filename="../src/patientdialog.cpp" line="1070" />
         <source>Aufnahmewerte konnten nicht gespeichert werden:
 %1</source>
         <translation>Admission values could not be saved:
@@ -11158,49 +11286,49 @@ Choose “No” if the physical condition has actually only changed now – the 
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="422" />
-        <location filename="../src/websync.cpp" line="273" />
+        <location filename="../src/websync.cpp" line="274" />
         <source>Typ 1–2 hart</source>
         <translation>Type 1–2 hard</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="423" />
-        <location filename="../src/websync.cpp" line="273" />
+        <location filename="../src/websync.cpp" line="274" />
         <source>Typ 3–4 normal</source>
         <translation>Type 3–4 normal</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="424" />
-        <location filename="../src/websync.cpp" line="273" />
+        <location filename="../src/websync.cpp" line="274" />
         <source>Typ 5–7 weich/flüssig</source>
         <translation>Type 5–7 soft/liquid</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="425" />
-        <location filename="../src/websync.cpp" line="273" />
+        <location filename="../src/websync.cpp" line="274" />
         <source>ohne Angabe</source>
         <translation>not specified</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="426" />
-        <location filename="../src/websync.cpp" line="282" />
+        <location filename="../src/websync.cpp" line="283" />
         <source>≥ %1 Tage ohne Stuhlgang</source>
         <translation>≥ %1 days without bowel movement</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="480" />
-        <location filename="../src/websync.cpp" line="286" />
+        <location filename="../src/websync.cpp" line="287" />
         <source>Kein Stuhlgang im Zeitraum eingetragen</source>
         <translation>No bowel movement recorded in this period</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="493" />
-        <location filename="../src/websync.cpp" line="283" />
+        <location filename="../src/websync.cpp" line="284" />
         <source>%1 Tage ohne</source>
         <translation>%1 days without</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="500" />
-        <location filename="../src/websync.cpp" line="284" />
+        <location filename="../src/websync.cpp" line="285" />
         <source>%1 Tage ohne Stuhlgang (%2 – %3)</source>
         <translation>%1 days without bowel movement (%2 – %3)</translation>
     </message>
@@ -11216,31 +11344,31 @@ Choose “No” if the physical condition has actually only changed now – the 
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="573" />
-        <location filename="../src/websync.cpp" line="285" />
+        <location filename="../src/websync.cpp" line="286" />
         <source>%1× Stuhlgang</source>
         <translation>%1× bowel movement</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="653" />
-        <location filename="../src/websync.cpp" line="294" />
+        <location filename="../src/websync.cpp" line="295" />
         <source>Bilanz</source>
         <translation>Balance</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="654" />
-        <location filename="../src/websync.cpp" line="296" />
+        <location filename="../src/websync.cpp" line="297" />
         <source>mind. %1 ml</source>
         <translation>at least %1 ml</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="655" />
-        <location filename="../src/websync.cpp" line="297" />
+        <location filename="../src/websync.cpp" line="298" />
         <source>höchstens %1 ml</source>
         <translation>at most %1 ml</translation>
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="671" />
-        <location filename="../src/websync.cpp" line="295" />
+        <location filename="../src/websync.cpp" line="296" />
         <source>Keine Ein- oder Ausfuhr im Zeitraum eingetragen</source>
         <translation>No intake or output recorded in this period</translation>
     </message>
@@ -11278,7 +11406,7 @@ Choose “No” if the physical condition has actually only changed now – the 
     </message>
     <message>
         <location filename="../src/chartwidget.cpp" line="1005" />
-        <location filename="../src/websync.cpp" line="299" />
+        <location filename="../src/websync.cpp" line="300" />
         <source>Zielbereich %1–%2</source>
         <translation>target range %1–%2</translation>
     </message>
@@ -11347,27 +11475,27 @@ Choose “No” if the physical condition has actually only changed now – the 
 %1</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="298" />
+        <location filename="../src/websync.cpp" line="299" />
         <source>Ein-/Ausfuhr heute</source>
         <translation>Intake/output today</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="300" />
+        <location filename="../src/websync.cpp" line="301" />
         <source>Menge</source>
         <translation>Amount</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="300" />
+        <location filename="../src/websync.cpp" line="301" />
         <source>Farbe</source>
         <translation>Colour</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="300" />
+        <location filename="../src/websync.cpp" line="301" />
         <source>Beimengungen / Geruch</source>
         <translation>Admixtures / odour</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="301" />
+        <location filename="../src/websync.cpp" line="302" />
         <source>Begleitsymptome / Besonderheiten</source>
         <translation>Accompanying symptoms / remarks</translation>
     </message>
@@ -11799,906 +11927,956 @@ Sent automatically by VitaParms.
 <context>
     <name>ReportPrinter</name>
     <message>
-        <location filename="../src/reportprinter.cpp" line="49" />
+        <location filename="../src/reportprinter.cpp" line="50" />
         <source>Persönliches Gesundheitstagebuch – kein Medizinprodukt</source>
         <translation>Personal health diary – not a medical device</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="102" />
+        <location filename="../src/reportprinter.cpp" line="103" />
         <source> – als PDF speichern</source>
         <translation> – save as PDF</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="103" />
+        <location filename="../src/reportprinter.cpp" line="104" />
         <source>PDF-Dateien (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="119" />
+        <location filename="../src/reportprinter.cpp" line="120" />
         <source> drucken</source>
         <translation> – print</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="129" />
+        <location filename="../src/reportprinter.cpp" line="130" />
         <source> – Druckvorschau</source>
         <translation> – print preview</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="149" />
+        <location filename="../src/reportprinter.cpp" line="150" />
         <source>geb. %1</source>
         <translation>born %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="176" />
+        <location filename="../src/reportprinter.cpp" line="177" />
         <source> (%1 J.)</source>
         <translation> (%1 y.)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="192" />
+        <location filename="../src/reportprinter.cpp" line="193" />
         <source>VitaParms · Ausdruck vom %1</source>
         <translation>VitaParms · printed on %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="193" />
+        <location filename="../src/reportprinter.cpp" line="194" />
         <source>Seite %1 von %2</source>
         <translation>Page %1 of %2</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="274" />
-        <location filename="../src/reportprinter.cpp" line="367" />
-        <location filename="../src/reportprinter.cpp" line="877" />
+        <location filename="../src/reportprinter.cpp" line="275" />
+        <location filename="../src/reportprinter.cpp" line="403" />
+        <location filename="../src/reportprinter.cpp" line="929" />
         <source>Zeitraum:</source>
         <translation>Period:</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="275" />
+        <location filename="../src/reportprinter.cpp" line="276" />
         <source>%n Messung(en), aktuellste zuerst</source>
         <translation>%n measurement(s), most recent first</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="312" />
+        <location filename="../src/reportprinter.cpp" line="313" />
         <source>Keine Messungen im gewählten Zeitraum.</source>
         <translation>No measurements in the selected period.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="441" />
-        <location filename="../src/reportprinter.cpp" line="737" />
+        <location filename="../src/reportprinter.cpp" line="477" />
+        <location filename="../src/reportprinter.cpp" line="789" />
         <source>Verlaufsgrafik</source>
         <translation>Trend chart</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="452" />
-        <location filename="../src/reportprinter.cpp" line="649" />
-        <location filename="../src/reportprinter.cpp" line="677" />
-        <location filename="../src/reportprinter.cpp" line="707" />
+        <location filename="../src/reportprinter.cpp" line="488" />
+        <location filename="../src/reportprinter.cpp" line="685" />
+        <location filename="../src/reportprinter.cpp" line="729" />
+        <location filename="../src/reportprinter.cpp" line="759" />
         <source>Verlauf</source>
         <translation>History</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="454" />
+        <location filename="../src/reportprinter.cpp" line="490" />
         <source>%1 · %2 · %3 Messung(en)</source>
         <translation>%1 · %2 · %3 measurement(s)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="769" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="821" />
         <source>Parameter</source>
         <translation>Parameter</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="414" />
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="769" />
+        <location filename="../src/reportprinter.cpp" line="450" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="821" />
         <source>Anzahl</source>
         <translation>Count</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="414" />
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="769" />
+        <location filename="../src/reportprinter.cpp" line="450" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="821" />
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="414" />
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="769" />
+        <location filename="../src/reportprinter.cpp" line="450" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="821" />
         <source>Maximum</source>
         <translation>Maximum</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="414" />
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="769" />
+        <location filename="../src/reportprinter.cpp" line="450" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="821" />
         <source>Mittelwert</source>
         <translation>Mean</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="469" />
-        <location filename="../src/reportprinter.cpp" line="552" />
-        <location filename="../src/reportprinter.cpp" line="769" />
-        <location filename="../src/reportprinter.cpp" line="1092" />
+        <location filename="../src/reportprinter.cpp" line="505" />
+        <location filename="../src/reportprinter.cpp" line="588" />
+        <location filename="../src/reportprinter.cpp" line="821" />
+        <location filename="../src/reportprinter.cpp" line="1148" />
         <source>Einheit</source>
         <translation>Unit</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="531" />
-        <location filename="../src/reportprinter.cpp" line="938" />
-        <location filename="../src/reportprinter.cpp" line="948" />
-        <location filename="../src/reportprinter.cpp" line="1059" />
+        <location filename="../src/reportprinter.cpp" line="567" />
+        <location filename="../src/reportprinter.cpp" line="990" />
+        <location filename="../src/reportprinter.cpp" line="1000" />
+        <location filename="../src/reportprinter.cpp" line="1115" />
         <source>männlich</source>
         <translation>male</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="531" />
-        <location filename="../src/reportprinter.cpp" line="938" />
-        <location filename="../src/reportprinter.cpp" line="948" />
-        <location filename="../src/reportprinter.cpp" line="1059" />
+        <location filename="../src/reportprinter.cpp" line="567" />
+        <location filename="../src/reportprinter.cpp" line="990" />
+        <location filename="../src/reportprinter.cpp" line="1000" />
+        <location filename="../src/reportprinter.cpp" line="1115" />
         <source>weiblich</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="531" />
-        <location filename="../src/reportprinter.cpp" line="939" />
-        <location filename="../src/reportprinter.cpp" line="1060" />
+        <location filename="../src/reportprinter.cpp" line="567" />
+        <location filename="../src/reportprinter.cpp" line="991" />
+        <location filename="../src/reportprinter.cpp" line="1116" />
         <source>divers</source>
         <translation>diverse</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="534" />
+        <location filename="../src/reportprinter.cpp" line="570" />
         <source>Stand: %1</source>
         <translation>As of: %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="537" />
+        <location filename="../src/reportprinter.cpp" line="573" />
         <source>Allergien/Unverträglichkeiten:</source>
         <translation>Allergies/intolerances:</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="549" />
-        <location filename="../src/reportprinter.cpp" line="1089" />
-        <location filename="../src/reportprinter.cpp" line="1196" />
+        <location filename="../src/reportprinter.cpp" line="585" />
+        <location filename="../src/reportprinter.cpp" line="1145" />
+        <location filename="../src/reportprinter.cpp" line="1252" />
         <source>Wirkstoff</source>
         <translation>Active substance</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="549" />
-        <location filename="../src/reportprinter.cpp" line="1089" />
+        <location filename="../src/reportprinter.cpp" line="585" />
+        <location filename="../src/reportprinter.cpp" line="1145" />
         <source>Handelsname</source>
         <translation>Brand name</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="549" />
-        <location filename="../src/reportprinter.cpp" line="1089" />
-        <location filename="../src/reportprinter.cpp" line="1125" />
-        <location filename="../src/reportprinter.cpp" line="1196" />
+        <location filename="../src/reportprinter.cpp" line="585" />
+        <location filename="../src/reportprinter.cpp" line="1145" />
+        <location filename="../src/reportprinter.cpp" line="1181" />
+        <location filename="../src/reportprinter.cpp" line="1252" />
         <source>Stärke</source>
         <translation>Strength</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="550" />
-        <location filename="../src/reportprinter.cpp" line="1090" />
-        <location filename="../src/reportprinter.cpp" line="1197" />
+        <location filename="../src/reportprinter.cpp" line="586" />
+        <location filename="../src/reportprinter.cpp" line="1146" />
+        <location filename="../src/reportprinter.cpp" line="1253" />
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="550" />
-        <location filename="../src/reportprinter.cpp" line="1090" />
+        <location filename="../src/reportprinter.cpp" line="586" />
+        <location filename="../src/reportprinter.cpp" line="1146" />
         <source>mo</source>
         <translation>mor</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="550" />
-        <location filename="../src/reportprinter.cpp" line="1090" />
+        <location filename="../src/reportprinter.cpp" line="586" />
+        <location filename="../src/reportprinter.cpp" line="1146" />
         <source>mi</source>
         <translation>noon</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="551" />
-        <location filename="../src/reportprinter.cpp" line="1091" />
+        <location filename="../src/reportprinter.cpp" line="587" />
+        <location filename="../src/reportprinter.cpp" line="1147" />
         <source>ab</source>
         <translation>eve</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="551" />
-        <location filename="../src/reportprinter.cpp" line="1091" />
+        <location filename="../src/reportprinter.cpp" line="587" />
+        <location filename="../src/reportprinter.cpp" line="1147" />
         <source>na</source>
         <translation>night</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="554" />
+        <location filename="../src/reportprinter.cpp" line="590" />
         <source>Hinweise</source>
         <translation>Instructions</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="554" />
-        <location filename="../src/reportprinter.cpp" line="1092" />
-        <location filename="../src/reportprinter.cpp" line="1197" />
+        <location filename="../src/reportprinter.cpp" line="590" />
+        <location filename="../src/reportprinter.cpp" line="1148" />
+        <location filename="../src/reportprinter.cpp" line="1253" />
         <source>Grund</source>
         <translation>Reason</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="553" />
+        <location filename="../src/reportprinter.cpp" line="589" />
         <source>Einnahme / Bemerkung</source>
         <translation>Intake / note</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="553" />
+        <location filename="../src/reportprinter.cpp" line="589" />
         <source>Anlass / Bemerkung</source>
         <translation>Occasion / note</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="577" />
-        <location filename="../src/reportprinter.cpp" line="1112" />
+        <location filename="../src/reportprinter.cpp" line="613" />
+        <location filename="../src/reportprinter.cpp" line="1168" />
         <source>Keine aktuellen Medikamente eingetragen.</source>
         <translation>No current medications recorded.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="579" />
+        <location filename="../src/reportprinter.cpp" line="615" />
         <source>Dieser Plan wurde vom Anwender selbst geführt und ersetzt nicht den ärztlich ausgestellten (bundeseinheitlichen) Medikationsplan.</source>
         <translation>This plan is kept by the user and does not replace a medication plan issued by a doctor.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="587" />
+        <location filename="../src/reportprinter.cpp" line="623" />
         <source>Datum/Uhrzeit</source>
         <translation>Date/time</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="387" />
-        <location filename="../src/reportprinter.cpp" line="587" />
+        <location filename="../src/reportprinter.cpp" line="423" />
+        <location filename="../src/reportprinter.cpp" line="623" />
         <source>Messzeitpunkt</source>
         <translation>Timing</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="395" />
-        <location filename="../src/reportprinter.cpp" line="587" />
+        <location filename="../src/reportprinter.cpp" line="431" />
+        <location filename="../src/reportprinter.cpp" line="623" />
         <source>Aufnahme</source>
         <translation>Admission</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="353" />
-        <location filename="../src/reportprinter.cpp" line="597" />
-        <location filename="../src/reportprinter.cpp" line="657" />
+        <location filename="../src/reportprinter.cpp" line="389" />
+        <location filename="../src/reportprinter.cpp" line="633" />
+        <location filename="../src/reportprinter.cpp" line="709" />
         <source>Beobachtungen</source>
         <translation>Observations</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="611" />
+        <location filename="../src/reportprinter.cpp" line="647" />
         <source>ja</source>
         <translation>yes</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="639" />
+        <location filename="../src/reportprinter.cpp" line="675" />
         <source>Zeitraum: %1</source>
         <translation>Period: %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="650" />
-        <location filename="../src/reportprinter.cpp" line="678" />
-        <location filename="../src/reportprinter.cpp" line="688" />
-        <location filename="../src/reportprinter.cpp" line="698" />
+        <location filename="../src/reportprinter.cpp" line="686" />
+        <location filename="../src/reportprinter.cpp" line="730" />
+        <location filename="../src/reportprinter.cpp" line="740" />
+        <location filename="../src/reportprinter.cpp" line="750" />
         <source>Verlauf der Vitalwerte</source>
         <translation>History of vital signs</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="706" />
+        <location filename="../src/reportprinter.cpp" line="758" />
         <source>VitaParms – Verlauf %1</source>
         <translation>VitaParms – history %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="709" />
+        <location filename="../src/reportprinter.cpp" line="761" />
         <source>VitaParms – Verlauf der Vitalwerte</source>
         <translation>VitaParms – history of vital signs</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="717" />
+        <location filename="../src/reportprinter.cpp" line="769" />
         <source>Verlauf nach Excel exportieren</source>
         <translation>Export history to Excel</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="719" />
-        <location filename="../src/reportprinter.cpp" line="811" />
+        <location filename="../src/reportprinter.cpp" line="771" />
+        <location filename="../src/reportprinter.cpp" line="863" />
         <source>Excel-Arbeitsmappe (*.xlsx)</source>
         <translation>Excel workbook (*.xlsx)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="723" />
-        <location filename="../src/reportprinter.cpp" line="815" />
+        <location filename="../src/reportprinter.cpp" line="775" />
+        <location filename="../src/reportprinter.cpp" line="867" />
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="723" />
-        <location filename="../src/reportprinter.cpp" line="815" />
+        <location filename="../src/reportprinter.cpp" line="775" />
+        <location filename="../src/reportprinter.cpp" line="867" />
         <source>Export fehlgeschlagen:
 %1</source>
         <translation>Export failed:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="756" />
+        <location filename="../src/reportprinter.cpp" line="808" />
         <source>VitaParms – Verlaufsgrafik %1</source>
         <translation>VitaParms – trend chart %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="760" />
+        <location filename="../src/reportprinter.cpp" line="812" />
         <source>Grafik</source>
         <translation>Chart</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="761" />
+        <location filename="../src/reportprinter.cpp" line="813" />
         <source>VitaParms – Verlaufsgrafik</source>
         <translation>VitaParms – trend chart</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="767" />
+        <location filename="../src/reportprinter.cpp" line="819" />
         <source>Kennwerte</source>
         <translation>Statistics</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="768" />
+        <location filename="../src/reportprinter.cpp" line="820" />
         <source>Kennwerte im Zeitraum</source>
         <translation>Statistics for the period</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="798" />
+        <location filename="../src/reportprinter.cpp" line="850" />
         <source>Messwerte</source>
         <translation>Readings</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="800" />
+        <location filename="../src/reportprinter.cpp" line="852" />
         <source>Messwerte im Zeitraum</source>
         <translation>Readings in the period</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="809" />
+        <location filename="../src/reportprinter.cpp" line="861" />
         <source>Grafik nach Excel exportieren</source>
         <translation>Export chart to Excel</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="823" />
-        <location filename="../src/reportprinter.cpp" line="824" />
-        <location filename="../src/reportprinter.cpp" line="832" />
+        <location filename="../src/reportprinter.cpp" line="875" />
+        <location filename="../src/reportprinter.cpp" line="876" />
+        <location filename="../src/reportprinter.cpp" line="884" />
         <source>Medikamentenplan</source>
         <translation>Medication plan</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="877" />
+        <location filename="../src/reportprinter.cpp" line="929" />
         <source>%1 Eintrag/Einträge, neueste zuerst</source>
         <translation>%1 entry/entries, newest first</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="879" />
+        <location filename="../src/reportprinter.cpp" line="931" />
         <source>Gestellt am</source>
         <translation>Prepared on</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="879" />
+        <location filename="../src/reportprinter.cpp" line="931" />
         <source>Für</source>
         <translation>For</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="880" />
+        <location filename="../src/reportprinter.cpp" line="932" />
         <source>Gestellt von</source>
         <translation>Prepared by</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="880" />
-        <location filename="../src/reportprinter.cpp" line="1191" />
+        <location filename="../src/reportprinter.cpp" line="932" />
+        <location filename="../src/reportprinter.cpp" line="1247" />
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="881" />
+        <location filename="../src/reportprinter.cpp" line="933" />
         <source>Medikamente</source>
         <translation>Medication</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="553" />
-        <location filename="../src/reportprinter.cpp" line="881" />
-        <location filename="../src/reportprinter.cpp" line="1192" />
+        <location filename="../src/reportprinter.cpp" line="324" />
+        <location filename="../src/reportprinter.cpp" line="589" />
+        <location filename="../src/reportprinter.cpp" line="933" />
+        <location filename="../src/reportprinter.cpp" line="1248" />
         <source>Bemerkung</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="867" />
+        <location filename="../src/reportprinter.cpp" line="919" />
         <source>Woche %1–%2</source>
         <translation>Week %1–%2</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="891" />
+        <location filename="../src/reportprinter.cpp" line="943" />
         <source> (nicht bestätigt)</source>
         <translation> (not confirmed)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="894" />
+        <location filename="../src/reportprinter.cpp" line="946" />
         <source>vollständig</source>
         <translation>complete</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="895" />
+        <location filename="../src/reportprinter.cpp" line="947" />
         <source>abgebrochen
 (%1 von %2)</source>
         <translation>cancelled
 (%1 of %2)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="907" />
-        <location filename="../src/reportprinter.cpp" line="909" />
-        <location filename="../src/reportprinter.cpp" line="919" />
+        <location filename="../src/reportprinter.cpp" line="959" />
+        <location filename="../src/reportprinter.cpp" line="961" />
+        <location filename="../src/reportprinter.cpp" line="971" />
         <source>Protokoll Medikamente stellen</source>
         <translation>Medication preparation log</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="928" />
+        <location filename="../src/reportprinter.cpp" line="980" />
         <source>Persönliche Daten</source>
         <translation>Personal data</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="935" />
-        <location filename="../src/reportprinter.cpp" line="975" />
-        <location filename="../src/reportprinter.cpp" line="1051" />
-        <location filename="../src/reportprinter.cpp" line="1186" />
+        <location filename="../src/reportprinter.cpp" line="987" />
+        <location filename="../src/reportprinter.cpp" line="1027" />
+        <location filename="../src/reportprinter.cpp" line="1107" />
+        <location filename="../src/reportprinter.cpp" line="1242" />
         <source>Name</source>
         <translation>Last name</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="936" />
+        <location filename="../src/reportprinter.cpp" line="988" />
         <source>Vorname</source>
         <translation>First name</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="937" />
-        <location filename="../src/reportprinter.cpp" line="1058" />
-        <location filename="../src/reportprinter.cpp" line="1187" />
+        <location filename="../src/reportprinter.cpp" line="989" />
+        <location filename="../src/reportprinter.cpp" line="1114" />
+        <location filename="../src/reportprinter.cpp" line="1243" />
         <source>Geburtsdatum</source>
         <translation>Date of birth</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="938" />
-        <location filename="../src/reportprinter.cpp" line="1059" />
+        <location filename="../src/reportprinter.cpp" line="990" />
+        <location filename="../src/reportprinter.cpp" line="1115" />
         <source>Geschlecht</source>
         <translation>Sex</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="940" />
-        <location filename="../src/reportprinter.cpp" line="975" />
+        <location filename="../src/reportprinter.cpp" line="992" />
+        <location filename="../src/reportprinter.cpp" line="1027" />
         <source>Anschrift</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="942" />
+        <location filename="../src/reportprinter.cpp" line="994" />
         <source>Telefon</source>
         <translation>Phone</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="943" />
+        <location filename="../src/reportprinter.cpp" line="995" />
         <source>Mobiltelefon</source>
         <translation>Mobile phone</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="948" />
+        <location filename="../src/reportprinter.cpp" line="1000" />
         <source>Biologisches Geschlecht</source>
         <translation>Biological sex</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="949" />
+        <location filename="../src/reportprinter.cpp" line="1001" />
         <source>Gliedmaßen</source>
         <translation>Limbs</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="952" />
+        <location filename="../src/reportprinter.cpp" line="1004" />
         <source>persönlicher Bestwert %1 l/min</source>
         <translation>personal best %1 l/min</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="954" />
+        <location filename="../src/reportprinter.cpp" line="1006" />
         <source>Sollwert %1 l/min (%2)</source>
         <translation>predicted value %1 l/min (%2)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="955" />
+        <location filename="../src/reportprinter.cpp" line="1007" />
         <source>Peak Flow</source>
         <translation>Peak flow</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="958" />
+        <location filename="../src/reportprinter.cpp" line="1010" />
         <source>INR-Zielbereich</source>
         <translation>INR target range</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="963" />
+        <location filename="../src/reportprinter.cpp" line="1015" />
         <source>Gewichtszunahme melden ab %1 kg in %2 Tagen</source>
         <translation>report weight gain from %1 kg in %2 days</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="964" />
+        <location filename="../src/reportprinter.cpp" line="1016" />
         <source>Trinkmenge/Gewicht</source>
         <translation>Fluid intake/weight</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="966" />
-        <location filename="../src/reportprinter.cpp" line="1072" />
+        <location filename="../src/reportprinter.cpp" line="1018" />
+        <location filename="../src/reportprinter.cpp" line="1128" />
         <source>Pflegegrad</source>
         <translation>Care level</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="967" />
+        <location filename="../src/reportprinter.cpp" line="1019" />
         <source>Schwerbehindertenausweis</source>
         <translation>Severe disability card</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="973" />
+        <location filename="../src/reportprinter.cpp" line="1025" />
         <source>Kontakte</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="975" />
+        <location filename="../src/reportprinter.cpp" line="1027" />
         <source>Telefon / Mobil</source>
         <translation>Telephone / mobile</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="976" />
+        <location filename="../src/reportprinter.cpp" line="1028" />
         <source>E-Mail / Website</source>
         <translation>E-mail / website</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="980" />
+        <location filename="../src/reportprinter.cpp" line="1032" />
         <source>Vers.-Nr. %1</source>
         <translation>Ins. no. %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="990" />
-        <location filename="../src/reportprinter.cpp" line="1071" />
+        <location filename="../src/reportprinter.cpp" line="1046" />
+        <location filename="../src/reportprinter.cpp" line="1127" />
         <source>Diagnosen</source>
         <translation>Diagnoses</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="993" />
+        <location filename="../src/reportprinter.cpp" line="1049" />
         <source>Bemerkungen</source>
         <translation>Remarks</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="996" />
+        <location filename="../src/reportprinter.cpp" line="1052" />
         <source>Vitalwerte bei Aufnahme (%1)</source>
         <translation>Vital signs on admission (%1)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="337" />
-        <location filename="../src/reportprinter.cpp" line="1002" />
+        <location filename="../src/reportprinter.cpp" line="373" />
+        <location filename="../src/reportprinter.cpp" line="1058" />
         <source>RR [mmHg]</source>
         <translation>BP [mmHg]</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="345" />
+        <location filename="../src/reportprinter.cpp" line="322" />
+        <source>Impfung gegen</source>
+        <translation>Vaccination against</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="323" />
+        <source>Impfstoff (Präparat)</source>
+        <translation>Vaccine (product)</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="323" />
+        <source>Ch.-B.</source>
+        <translation>Lot</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="324" />
+        <source>Arzt / Praxis</source>
+        <translation>Doctor / practice</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="340" />
+        <source>Im Impfpass sind noch keine Impfungen eingetragen.</source>
+        <translation>No vaccinations have been entered yet.</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="341" />
+        <source>%1 Impfung(en), neueste zuerst.</source>
+        <translation>%1 vaccination(s), most recent first.</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="346" />
+        <source>Zuletzt geimpft</source>
+        <translation>Most recent vaccinations</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="348" />
+        <source>Abschrift aus dem persönlichen Gesundheitstagebuch – ersetzt nicht den amtlichen Impfausweis.</source>
+        <translation>Copy from the personal health diary – does not replace the official vaccination certificate.</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="381" />
         <source>Art (Einfuhr)</source>
         <translation>Type (intake)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="347" />
+        <location filename="../src/reportprinter.cpp" line="383" />
         <source>Art (Ausfuhr)</source>
         <translation>Type (output)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="367" />
+        <location filename="../src/reportprinter.cpp" line="403" />
         <source>Werte:</source>
         <translation>Values:</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="368" />
+        <location filename="../src/reportprinter.cpp" line="404" />
         <source>keine gewählt</source>
         <translation>none selected</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="369" />
+        <location filename="../src/reportprinter.cpp" line="405" />
         <source>Je Wertegruppe chronologisch – älteste Messung zuerst.</source>
         <translation>Each group of values in chronological order – oldest measurement first.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="381" />
+        <location filename="../src/reportprinter.cpp" line="417" />
         <source>Keine Werte im gewählten Zeitraum.</source>
         <translation>No values in the selected period.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="386" />
+        <location filename="../src/reportprinter.cpp" line="422" />
         <source>Datum / Uhrzeit</source>
         <translation>Date / time</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1020" />
+        <location filename="../src/reportprinter.cpp" line="691" />
+        <location filename="../src/reportprinter.cpp" line="692" />
+        <location filename="../src/reportprinter.cpp" line="701" />
+        <location filename="../src/reportprinter.cpp" line="1042" />
+        <source>Impfpass</source>
+        <translation>Vaccination record</translation>
+    </message>
+    <message>
+        <location filename="../src/reportprinter.cpp" line="1076" />
         <source>Aktueller Medikamentenplan</source>
         <translation>Current medication plan</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1040" />
+        <location filename="../src/reportprinter.cpp" line="1096" />
         <source>Bitte prüfen Sie diese Liste auf Wechselwirkungen, doppelte Wirkstoffe, Dosierung und Einnahmezeitpunkte. Ergänzungen und Notizen bitte unten eintragen.</source>
         <translation>Please check this list for interactions, duplicate active ingredients, dosage and intake times. Please enter additions and notes below.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1056" />
+        <location filename="../src/reportprinter.cpp" line="1112" />
         <source> (%1 Jahre)</source>
         <translation> (%1 years)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1066" />
+        <location filename="../src/reportprinter.cpp" line="1122" />
         <source>Gewicht</source>
         <translation>Weight</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1066" />
+        <location filename="../src/reportprinter.cpp" line="1122" />
         <source>%1 kg (gemessen am %2)</source>
         <translation>%1 kg (measured on %2)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1069" />
+        <location filename="../src/reportprinter.cpp" line="1125" />
         <source>Größe</source>
         <translation>Height</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1069" />
+        <location filename="../src/reportprinter.cpp" line="1125" />
         <source>%1 cm</source>
         <translation>%1 cm</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1070" />
+        <location filename="../src/reportprinter.cpp" line="1126" />
         <source>Allergien/Unverträglichkeiten</source>
         <translation>Allergies/intolerances</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1073" />
-        <location filename="../src/reportprinter.cpp" line="1189" />
+        <location filename="../src/reportprinter.cpp" line="1129" />
+        <location filename="../src/reportprinter.cpp" line="1245" />
         <source>Hausarztpraxis</source>
         <translation>GP practice</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1074" />
+        <location filename="../src/reportprinter.cpp" line="1130" />
         <source>Stand der Liste</source>
         <translation>List as of</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1092" />
+        <location filename="../src/reportprinter.cpp" line="1148" />
         <source>Einnahme</source>
         <translation>Intake</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1092" />
+        <location filename="../src/reportprinter.cpp" line="1148" />
         <source>Anlass</source>
         <translation>Occasion</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1093" />
+        <location filename="../src/reportprinter.cpp" line="1149" />
         <source>seit</source>
         <translation>since</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1093" />
-        <location filename="../src/reportprinter.cpp" line="1197" />
+        <location filename="../src/reportprinter.cpp" line="1149" />
+        <location filename="../src/reportprinter.cpp" line="1253" />
         <source>PZN</source>
         <translation>PZN</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1116" />
+        <location filename="../src/reportprinter.cpp" line="1172" />
         <source>Bitte ergänzen – wird oft vergessen</source>
         <translation>Please add – often forgotten</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1118" />
+        <location filename="../src/reportprinter.cpp" line="1174" />
         <source>frei verkäufliche Mittel (Schmerz-, Abführ-, Schlaf-, Erkältungsmittel)</source>
         <translation>over-the-counter medicines (painkillers, laxatives, sleeping aids, cold remedies)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1119" />
+        <location filename="../src/reportprinter.cpp" line="1175" />
         <source>Nahrungsergänzung, Vitamine, Mineralstoffe</source>
         <translation>food supplements, vitamins, minerals</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1119" />
+        <location filename="../src/reportprinter.cpp" line="1175" />
         <source>pflanzliche Mittel und Tees</source>
         <translation>herbal remedies and teas</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1120" />
+        <location filename="../src/reportprinter.cpp" line="1176" />
         <source>Salben, Augentropfen, Sprays, Pflaster, Inhalatoren</source>
         <translation>ointments, eye drops, sprays, patches, inhalers</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1121" />
+        <location filename="../src/reportprinter.cpp" line="1177" />
         <source>Medikamente von anderen Ärzten oder aus dem Krankenhaus</source>
         <translation>medicines from other doctors or from hospital</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1125" />
+        <location filename="../src/reportprinter.cpp" line="1181" />
         <source>Präparat / Wirkstoff</source>
         <translation>Product / active ingredient</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1125" />
+        <location filename="../src/reportprinter.cpp" line="1181" />
         <source>Wie oft / wann</source>
         <translation>How often / when</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1126" />
+        <location filename="../src/reportprinter.cpp" line="1182" />
         <source>Wofür</source>
         <translation>What for</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1132" />
+        <location filename="../src/reportprinter.cpp" line="1188" />
         <source>Fragen an die Apotheke</source>
         <translation>Questions for the pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1134" />
+        <location filename="../src/reportprinter.cpp" line="1190" />
         <source>Gibt es Wechselwirkungen zwischen diesen Mitteln?</source>
         <translation>Are there interactions between these medicines?</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1135" />
+        <location filename="../src/reportprinter.cpp" line="1191" />
         <source>Ist ein Wirkstoff doppelt enthalten?</source>
         <translation>Is any active ingredient included twice?</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1136" />
+        <location filename="../src/reportprinter.cpp" line="1192" />
         <source>Passt die Dosierung (Alter, Gewicht, Nierenfunktion)?</source>
         <translation>Is the dosage right (age, weight, kidney function)?</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1137" />
+        <location filename="../src/reportprinter.cpp" line="1193" />
         <source>Wann und wie einnehmen (vor/nach dem Essen, Abstand zu anderen Mitteln)?</source>
         <translation>When and how to take (before/after meals, spacing from other medicines)?</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1140" />
+        <location filename="../src/reportprinter.cpp" line="1196" />
         <source>Notizen der Apotheke</source>
         <translation>Pharmacy notes</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1147" />
+        <location filename="../src/reportprinter.cpp" line="1203" />
         <source>Hinweis: Bei fünf oder mehr dauerhaft ärztlich verordneten Arzneimitteln besteht alle zwölf Monate Anspruch auf eine erweiterte Medikationsberatung in der Apotheke (pharmazeutische Dienstleistung, die Kosten trägt die Krankenkasse). In dieser Liste stehen %1 Arzneimittel der Regelmedikation.</source>
         <translation>Note: in Germany, patients with five or more long-term prescribed medicines are entitled to an extended medication review at the pharmacy every twelve months (pharmaceutical service paid by the health insurance). This list contains %1 medicines of the regular medication.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1150" />
+        <location filename="../src/reportprinter.cpp" line="1206" />
         <source>Hinweis: Apotheken prüfen Medikamente auf Wechselwirkungen. Bei fünf oder mehr dauerhaft ärztlich verordneten Arzneimitteln besteht alle zwölf Monate Anspruch auf eine erweiterte Medikationsberatung (pharmazeutische Dienstleistung, die Kosten trägt die Krankenkasse).</source>
         <translation>Note: pharmacies check medicines for interactions. In Germany, patients with five or more long-term prescribed medicines are entitled to an extended medication review every twelve months (pharmaceutical service paid by the health insurance).</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1155" />
+        <location filename="../src/reportprinter.cpp" line="1211" />
         <source>Diese Liste wurde vom Anwender selbst mit VitaParms geführt. VitaParms prüft nicht auf Wechselwirkungen und ersetzt weder die Beratung in Apotheke oder Arztpraxis noch den bundeseinheitlichen Medikationsplan.</source>
         <translation>This list was kept by the user with VitaParms. VitaParms does not check for interactions and replaces neither advice from a pharmacy or doctor nor the official German medication plan (BMP).</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1163" />
-        <location filename="../src/reportprinter.cpp" line="1164" />
-        <location filename="../src/reportprinter.cpp" line="1171" />
-        <location filename="../src/reportprinter.cpp" line="1173" />
+        <location filename="../src/reportprinter.cpp" line="1219" />
+        <location filename="../src/reportprinter.cpp" line="1220" />
+        <location filename="../src/reportprinter.cpp" line="1227" />
+        <location filename="../src/reportprinter.cpp" line="1229" />
         <source>Medikationsliste für die Apotheke</source>
         <translation>Medication list for the pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1188" />
+        <location filename="../src/reportprinter.cpp" line="1244" />
         <source>Krankenkasse</source>
         <translation>Health insurance</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1190" />
+        <location filename="../src/reportprinter.cpp" line="1246" />
         <source>Bestellliste vom</source>
         <translation>Order list of</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1191" />
+        <location filename="../src/reportprinter.cpp" line="1247" />
         <source> von %1</source>
         <translation> by %1</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1196" />
+        <location filename="../src/reportprinter.cpp" line="1252" />
         <source>Präparat</source>
         <translation>Product</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1197" />
+        <location filename="../src/reportprinter.cpp" line="1253" />
         <source>Menge</source>
         <translation>Amount</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1198" />
+        <location filename="../src/reportprinter.cpp" line="1254" />
         <source>geliefert</source>
         <translation>delivered</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1208" />
+        <location filename="../src/reportprinter.cpp" line="1264" />
         <source>Rezept angefordert am: ______________ &amp;nbsp;&amp;nbsp;&amp;nbsp; bestellt bei: ______________________________</source>
         <translation>Prescription requested on: ______________ &amp;nbsp;&amp;nbsp;&amp;nbsp; ordered from: ______________________________</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1209" />
+        <location filename="../src/reportprinter.cpp" line="1265" />
         <source>bestellt am: ______________ &amp;nbsp;&amp;nbsp;&amp;nbsp; Abholung/Lieferung am: ______________</source>
         <translation>ordered on: ______________ &amp;nbsp;&amp;nbsp;&amp;nbsp; collection/delivery on: ______________</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1210" />
+        <location filename="../src/reportprinter.cpp" line="1266" />
         <source>Erstellt mit VitaParms – Bestandsführung. Die Mengen sind Vorschläge; maßgeblich ist die ärztliche Verordnung.</source>
         <translation>Created with VitaParms – stock management. The quantities are suggestions; the prescription is what counts.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1217" />
-        <location filename="../src/reportprinter.cpp" line="1218" />
-        <location filename="../src/reportprinter.cpp" line="1226" />
-        <location filename="../src/reportprinter.cpp" line="1228" />
+        <location filename="../src/reportprinter.cpp" line="1273" />
+        <location filename="../src/reportprinter.cpp" line="1274" />
+        <location filename="../src/reportprinter.cpp" line="1282" />
+        <location filename="../src/reportprinter.cpp" line="1284" />
         <source>Bestellliste Medikamente</source>
         <translation>Medication order list</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1235" />
-        <location filename="../src/reportprinter.cpp" line="1236" />
-        <location filename="../src/reportprinter.cpp" line="1246" />
+        <location filename="../src/reportprinter.cpp" line="1291" />
+        <location filename="../src/reportprinter.cpp" line="1292" />
+        <location filename="../src/reportprinter.cpp" line="1302" />
         <source>Stammblatt</source>
         <translation>Master record</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1258" />
+        <location filename="../src/reportprinter.cpp" line="1314" />
         <source>Berichte aus VitaParms</source>
         <translation>Reports from VitaParms</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1260" />
+        <location filename="../src/reportprinter.cpp" line="1316" />
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1261" />
+        <location filename="../src/reportprinter.cpp" line="1317" />
         <source>Inhalt</source>
         <translation>Contents</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1266" />
+        <location filename="../src/reportprinter.cpp" line="1322" />
         <source>Dokumente (%1)</source>
         <translation>Documents (%1)</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1268" />
+        <location filename="../src/reportprinter.cpp" line="1324" />
         <source>Nr.</source>
         <translation>No.</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1269" />
+        <location filename="../src/reportprinter.cpp" line="322" />
+        <location filename="../src/reportprinter.cpp" line="1325" />
         <source>Datum</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="376" />
-        <location filename="../src/reportprinter.cpp" line="975" />
-        <location filename="../src/reportprinter.cpp" line="1269" />
+        <location filename="../src/reportprinter.cpp" line="412" />
+        <location filename="../src/reportprinter.cpp" line="1027" />
+        <location filename="../src/reportprinter.cpp" line="1325" />
         <source>Art</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1270" />
+        <location filename="../src/reportprinter.cpp" line="1326" />
         <source>Titel</source>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1270" />
+        <location filename="../src/reportprinter.cpp" line="1326" />
         <source>Von</source>
         <translation>From</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1271" />
+        <location filename="../src/reportprinter.cpp" line="1327" />
         <source>Seiten</source>
         <translation>Pages</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1292" />
+        <location filename="../src/reportprinter.cpp" line="1348" />
         <source>Inhaltsverzeichnis der Krankenakte</source>
         <translation>Medical record – table of contents</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1298" />
+        <location filename="../src/reportprinter.cpp" line="1354" />
         <source>Dokumentenliste</source>
         <translation>Document list</translation>
     </message>
     <message>
-        <location filename="../src/reportprinter.cpp" line="1299" />
+        <location filename="../src/reportprinter.cpp" line="1355" />
         <source>Dokumente der Krankenakte</source>
         <translation>Documents of the medical record</translation>
     </message>
@@ -14242,7 +14420,7 @@ Restart VitaParms now? (You will need to log in again.)</translation>
     </message>
     <message>
         <location filename="../src/stool.cpp" line="173" />
-        <location filename="../src/websync.cpp" line="287" />
+        <location filename="../src/websync.cpp" line="288" />
         <source>Seit %1 Tagen kein Stuhlgang eingetragen (zuletzt am %2). Bitte auf Beschwerden achten, ausreichend trinken und bei anhaltender Verstopfung ärztlichen Rat einholen.</source>
         <translation>No bowel movement recorded for %1 days (last on %2). Watch for complaints, drink enough and seek medical advice if constipation persists.</translation>
     </message>
@@ -14253,19 +14431,19 @@ Restart VitaParms now? (You will need to log in again.)</translation>
     </message>
     <message>
         <location filename="../src/stool.cpp" line="181" />
-        <location filename="../src/websync.cpp" line="289" />
+        <location filename="../src/websync.cpp" line="290" />
         <source>letzter Stuhlgang heute</source>
         <translation>last bowel movement today</translation>
     </message>
     <message>
         <location filename="../src/stool.cpp" line="182" />
-        <location filename="../src/websync.cpp" line="290" />
+        <location filename="../src/websync.cpp" line="291" />
         <source>letzter Stuhlgang gestern</source>
         <translation>last bowel movement yesterday</translation>
     </message>
     <message>
         <location filename="../src/stool.cpp" line="183" />
-        <location filename="../src/websync.cpp" line="291" />
+        <location filename="../src/websync.cpp" line="292" />
         <source>letzter Stuhlgang vor %1 Tagen</source>
         <translation>last bowel movement %1 days ago</translation>
     </message>
@@ -14879,6 +15057,210 @@ Continue?</translation>
         <location filename="../src/usbsync.cpp" line="527" />
         <source>Unbekannter Befehl.</source>
         <translation>Unknown command.</translation>
+    </message>
+</context>
+<context>
+    <name>VaccinationDialog</name>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="36" />
+        <source>Impfung eintragen</source>
+        <translation>Add vaccination</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="36" />
+        <source>Impfung ändern</source>
+        <translation>Edit vaccination</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="38" />
+        <source>Übernehmen Sie die Angaben aus dem Impfpass bzw. vom Aufkleber des Impfstoffs.</source>
+        <translation>Copy the details from the vaccination certificate or the vaccine sticker.</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="49" />
+        <source>z. B. Tetanus, Diphtherie, Pertussis</source>
+        <translation>e.g. tetanus, diphtheria, pertussis</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="52" />
+        <source>Handelsname, z. B. Boostrix</source>
+        <translation>Brand name, e.g. Boostrix</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="55" />
+        <source>Ch.-B. vom Aufkleber</source>
+        <translation>Lot number from the sticker</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="62" />
+        <source>z. B. 2. Dosis, Auffrischung, Reaktion</source>
+        <translation>e.g. 2nd dose, booster, reaction</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="63" />
+        <source>&amp;Datum:</source>
+        <translation>D&amp;ate:</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="64" />
+        <source>Impfung &amp;gegen:</source>
+        <translation>Vaccination a&amp;gainst:</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="65" />
+        <source>&amp;Impfstoff (Präparat):</source>
+        <translation>Vaccine (&amp;product):</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="66" />
+        <source>&amp;Chargennummer:</source>
+        <translation>&amp;Lot number:</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="67" />
+        <source>&amp;Arzt / Praxis:</source>
+        <translation>&amp;Doctor / practice:</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="68" />
+        <source>&amp;Bemerkung:</source>
+        <translation>&amp;Note:</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="74" />
+        <source>&amp;Übernehmen</source>
+        <translation>&amp;Import</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinationdialog.cpp" line="99" />
+        <source>Bitte angeben, wogegen geimpft wurde (oder den Impfstoff).</source>
+        <translation>Please enter what the vaccination was against (or the vaccine).</translation>
+    </message>
+</context>
+<context>
+    <name>Vaccinations</name>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="92" />
+        <source>Tetanus, Diphtherie, Pertussis</source>
+        <translation>Tetanus, diphtheria, pertussis</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="92" />
+        <source>Tetanus, Diphtherie</source>
+        <translation>Tetanus, diphtheria</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="92" />
+        <source>Tetanus</source>
+        <translation>Tetanus</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="93" />
+        <source>Poliomyelitis</source>
+        <translation>Poliomyelitis</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="93" />
+        <source>Influenza (Grippe)</source>
+        <translation>Influenza (flu)</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="93" />
+        <source>COVID-19</source>
+        <translation>COVID-19</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="93" />
+        <source>Pneumokokken</source>
+        <translation>Pneumococcus</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="94" />
+        <source>Herpes zoster (Gürtelrose)</source>
+        <translation>Herpes zoster (shingles)</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="94" />
+        <source>RSV</source>
+        <translation>RSV</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="94" />
+        <source>FSME</source>
+        <translation>Tick-borne encephalitis (TBE)</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="94" />
+        <source>Hepatitis A</source>
+        <translation>Hepatitis A</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="94" />
+        <source>Hepatitis B</source>
+        <translation>Hepatitis B</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="95" />
+        <source>Hepatitis A und B</source>
+        <translation>Hepatitis A and B</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="95" />
+        <source>Masern, Mumps, Röteln</source>
+        <translation>Measles, mumps, rubella</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="95" />
+        <source>Varizellen (Windpocken)</source>
+        <translation>Varicella (chickenpox)</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="96" />
+        <source>Meningokokken</source>
+        <translation>Meningococcus</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="96" />
+        <source>HPV</source>
+        <translation>HPV</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="96" />
+        <source>Haemophilus influenzae Typ b (Hib)</source>
+        <translation>Haemophilus influenzae type b (Hib)</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="96" />
+        <source>Tollwut</source>
+        <translation>Rabies</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="97" />
+        <source>Typhus</source>
+        <translation>Typhoid</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="97" />
+        <source>Gelbfieber</source>
+        <translation>Yellow fever</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="97" />
+        <source>Japanische Enzephalitis</source>
+        <translation>Japanese encephalitis</translation>
+    </message>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="97" />
+        <source>Cholera</source>
+        <translation>Cholera</translation>
+    </message>
+</context>
+<context>
+    <name>Vaccinations::Vaccination</name>
+    <message>
+        <location filename="../src/vaccinations.cpp" line="50" />
+        <source>Ch.-B. %1</source>
+        <translation>Lot %1</translation>
     </message>
 </context>
 <context>
@@ -15858,123 +16240,123 @@ Were the values swapped? Save anyway?</translation>
 <context>
     <name>WebSync</name>
     <message>
-        <location filename="../src/websync.cpp" line="197" />
+        <location filename="../src/websync.cpp" line="198" />
         <source>Die Website ist nicht eingeschaltet.</source>
         <translation>The website is not enabled.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="198" />
+        <location filename="../src/websync.cpp" line="199" />
         <source>Die Adresse der Website fehlt oder ist ungültig.</source>
         <translation>The website address is missing or invalid.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="201" />
+        <location filename="../src/websync.cpp" line="202" />
         <source>Die Website muss über https:// erreichbar sein.</source>
         <translation>The website must be reachable via https://.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="202" />
+        <location filename="../src/websync.cpp" line="203" />
         <source>Das Master-Passwort muss mindestens 10 Zeichen lang sein.</source>
         <translation>The master password must be at least 10 characters long.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="203" />
+        <location filename="../src/websync.cpp" line="204" />
         <source>Der Upload-Schlüssel fehlt.</source>
         <translation>The upload key is missing.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="486" />
+        <location filename="../src/websync.cpp" line="499" />
         <source>Stammblatt</source>
         <translation>Master record</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="486" />
+        <location filename="../src/websync.cpp" line="499" />
         <source>Stammblatt %1.pdf</source>
         <translation>Patient sheet %1.pdf</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="489" />
+        <location filename="../src/websync.cpp" line="502" />
         <source>Medikamentenplan</source>
         <translation>Medication plan</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="489" />
+        <location filename="../src/websync.cpp" line="502" />
         <source>Medikamentenplan %1.pdf</source>
         <translation>Medication plan %1.pdf</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="492" />
+        <location filename="../src/websync.cpp" line="505" />
         <source>Medikationsliste für die Apotheke</source>
         <translation>Medication list for the pharmacy</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="492" />
+        <location filename="../src/websync.cpp" line="505" />
         <source>Medikationsliste Apotheke %1.pdf</source>
         <translation>Medication list pharmacy %1.pdf</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="497" />
+        <location filename="../src/websync.cpp" line="510" />
         <source>gesamter Verlauf</source>
         <translation>complete history</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="500" />
+        <location filename="../src/websync.cpp" line="513" />
         <source>Verlauf (PDF)</source>
         <translation>History (PDF)</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="500" />
+        <location filename="../src/websync.cpp" line="513" />
         <source>Verlauf %1.pdf</source>
         <translation>History %1.pdf</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="503" />
+        <location filename="../src/websync.cpp" line="516" />
         <source>Verlauf (Excel)</source>
         <translation>History (Excel)</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="503" />
+        <location filename="../src/websync.cpp" line="516" />
         <source>Verlauf %1.xlsx</source>
         <translation>History %1.xlsx</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="621" />
+        <location filename="../src/websync.cpp" line="634" />
         <source>Auf der Website fehlt api/upload.php (HTTP 404). Ist der Website-Ordner vollständig hochgeladen?</source>
         <translation>api/upload.php is missing on the website (HTTP 404). Has the website folder been uploaded completely?</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="623" />
+        <location filename="../src/websync.cpp" line="636" />
         <source>Unerwartete Antwort der Website (HTTP %1).</source>
         <translation>Unexpected response from the website (HTTP %1).</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="633" />
+        <location filename="../src/websync.cpp" line="646" />
         <source>Website aktualisiert (%1).</source>
         <translation>Website updated (%1).</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="682" />
-        <location filename="../src/websync.cpp" line="687" />
+        <location filename="../src/websync.cpp" line="695" />
+        <location filename="../src/websync.cpp" line="700" />
         <source>Zeitüberschreitung beim Hochladen.</source>
         <translation>Upload timed out.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="707" />
+        <location filename="../src/websync.cpp" line="720" />
         <source>Verbindung in Ordnung – PHP %1, %2.</source>
         <translation>Connection OK – PHP %1, %2.</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="710" />
+        <location filename="../src/websync.cpp" line="723" />
         <source>Upload-Schlüssel gültig</source>
         <translation>upload key valid</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="711" />
+        <location filename="../src/websync.cpp" line="724" />
         <source>Upload-Schlüssel passt NICHT</source>
         <translation>upload key does NOT match</translation>
     </message>
     <message>
-        <location filename="../src/websync.cpp" line="712" />
+        <location filename="../src/websync.cpp" line="725" />
         <source>die Website wird beim ersten Hochladen mit diesem Schlüssel eingerichtet</source>
         <translation>the website will be set up with this key on the first upload</translation>
     </message>

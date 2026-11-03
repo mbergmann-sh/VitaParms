@@ -17,6 +17,9 @@ Page {
     property var marks: app.careMarks()
     property var selectedMarks: d.disabilityMarks || []
     property var contacts: (d.contactList || []).slice()
+    property var vaccinations: (d.vaccinationList || []).slice()
+    // Impfpass nach Datum ordnen, neueste Impfung zuerst (ohne Datum ans Ende)
+    function sortVaccinations(l) { return l.sort((a, b) => (b.date || "").localeCompare(a.date || "")) }
     property var advance: (d.advanceDocs || []).map(a => Object.assign({}, a))
     // ohne Neuzuweisung ändern – sonst baut der Repeater die Felder beim Tippen neu auf
     function setAdvance(i, key, value) { page.advance[i][key] = value }
@@ -56,7 +59,7 @@ Page {
             disabilityValid: gdb.value > 0 && !unlimited.checked ? valid.isoDate : "",
             armLeft: armL.currentIndex, armRight: armR.currentIndex, legLeft: legL.currentIndex, legRight: legR.currentIndex,
             extra: extraRep.model.map((e, i) => ({ key: e.key, value: extraRep.itemAt(i).value })),
-            contactList: page.contacts, advanceDocs: page.advance,
+            contactList: page.contacts, vaccinationList: page.vaccinations, advanceDocs: page.advance,
             peakFlowBest: page.pfBest(), bioSex: ["", "m", "w"][bioSex.currentIndex] || "",
             inrLow: inrLow.text, inrHigh: inrHigh.text,
             fluidMin: fluidMin.text, fluidMax: fluidMax.text, weightWatch: weightWatch.text
@@ -111,6 +114,14 @@ Page {
         id: contactPopup
         onSaved: (c, i) => { const l = page.contacts.slice(); if (i < 0) l.push(c); else l[i] = c; page.contacts = l }
         onRemoved: (i) => { const l = page.contacts.slice(); l.splice(i, 1); page.contacts = l }
+    }
+    VaccinationPopup {
+        id: vaccPopup
+        againstList: page.d.vaccinationAgainst || []
+        productList: page.d.vaccinationProducts || []
+        doctorList: page.d.vaccinationDoctors || []
+        onSaved: (e, i) => { const l = page.vaccinations.slice(); if (i < 0) l.push(e); else l[i] = e; page.vaccinations = page.sortVaccinations(l) }
+        onRemoved: (i) => { const l = page.vaccinations.slice(); l.splice(i, 1); page.vaccinations = l }
     }
 
     header: ToolBar {
@@ -232,6 +243,27 @@ Page {
             }
             VButton { objectName: "addContactButton"; text: qsTr("Kontakt hinzufügen"); iconText: "+"
                       onClicked: contactPopup.openWith(null, -1) }
+
+            SectionTitle { text: qsTr("Impfpass") }
+            Label { visible: page.vaccinations.length === 0; color: Theme.muted; Layout.fillWidth: true; wrapMode: Text.WordWrap
+                    text: qsTr("Noch keine Impfungen eingetragen – Datum, Impfstoff und Chargennummer stehen im Impfausweis.") }
+            Repeater {
+                model: page.vaccinations
+                delegate: AbstractButton {
+                    objectName: "vaccinationEntry_" + index
+                    Layout.fillWidth: true
+                    padding: 10; leftPadding: 14
+                    onClicked: vaccPopup.openWith(modelData, index)
+                    background: Rectangle { radius: Theme.radius; color: parent.down ? Theme.brandWash : Theme.surface; border.color: Theme.rule }
+                    contentItem: ColumnLayout {
+                        spacing: 2
+                        Label { text: modelData.dateText || ""; color: Theme.muted; font.pixelSize: Theme.fsXs }
+                        Label { text: modelData.summary || ""; color: Theme.ink; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                    }
+                }
+            }
+            VButton { objectName: "addVaccinationButton"; text: qsTr("Impfung hinzufügen"); iconText: "+"
+                      onClicked: vaccPopup.openWith(null, -1) }
 
             ColumnLayout {   // Vorsorge: nicht in VitaParms light
                 visible: !app.light

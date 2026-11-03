@@ -4,6 +4,7 @@
 #include "sqlquery.h"
 #include "fluid.h"
 #include "contacts.h"
+#include "vaccinations.h"
 #include "appsettings.h"
 #include "database.h"
 #include "medschedule.h"
@@ -221,6 +222,24 @@ bool DemoData::populate(qint64 *patientId, const QDate &today, QString *error,
         em.mobile = QStringLiteral("0170 7654321");
         cl << em;
         Contacts::store(p, cl);
+    }
+    {   // Impfpass: einige Impfungen (Präparate und Chargennummern frei erfunden)
+        const QDate today = QDate::currentDate();
+        const QString doc = tr("Dr. med. Anna Sommer");
+        auto vac = [&](const QDate &d, const QString &against, const QString &product, const QString &batch, const QString &note = {}) {
+            Vaccinations::Vaccination v;
+            v.uid = Vaccinations::newUid(); v.date = d; v.against = against; v.product = product;
+            v.batch = batch; v.doctor = doc; v.note = note;
+            return v;
+        };
+        QList<Vaccinations::Vaccination> vl;
+        vl << vac(QDate(today.year() - 1, 10, 14), tr("Influenza (Grippe)"), QStringLiteral("Influvac Tetra"), QStringLiteral("X41K7"), tr("jährliche Grippeimpfung"))
+           << vac(QDate(today.year() - 1, 10, 14), tr("COVID-19"), QStringLiteral("Comirnaty JN.1"), QStringLiteral("HB2093"), tr("Auffrischung"))
+           << vac(QDate(today.year() - 2, 3, 2), tr("Pneumokokken"), QStringLiteral("Prevenar 20"), QStringLiteral("LP7741"))
+           << vac(QDate(today.year() - 3, 11, 20), tr("Herpes zoster (Gürtelrose)"), QStringLiteral("Shingrix"), QStringLiteral("AC37B114B"), tr("2. Dosis"))
+           << vac(QDate(today.year() - 3, 9, 18), tr("Herpes zoster (Gürtelrose)"), QStringLiteral("Shingrix"), QStringLiteral("AC37B092A"), tr("1. Dosis"))
+           << vac(QDate(today.year() - 4, 5, 6), tr("Tetanus, Diphtherie, Pertussis"), QStringLiteral("Boostrix"), QStringLiteral("AC52B370AB"), tr("Auffrischung"));
+        Vaccinations::store(p, vl);
     }
     p.careLevel = 2;
     p.careReview = QDate::currentDate().addDays(45);

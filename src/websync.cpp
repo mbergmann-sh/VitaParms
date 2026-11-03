@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "websync.h"
 #include "contacts.h"
+#include "vaccinations.h"
 #include "careinfo.h"
 #include "aes256.h"
 #include "appsettings.h"
@@ -399,6 +400,18 @@ static WebSync::Bundle buildFromSnapshot(const WebSnapshot &snap)
                 cj.append(o);
             }
             if (!cj.isEmpty()) pj.insert(QStringLiteral("contacts"), cj);
+        }
+        {   // Impfpass (Datum, Impfung gegen, Impfstoff, Chargennummer, Arzt/Praxis, Bemerkung)
+            QJsonArray vj;
+            for (const Vaccinations::Vaccination &v : Vaccinations::list(p)) {
+                QJsonObject o;
+                auto put = [&](const char *k, const QString &x) { if (!x.trimmed().isEmpty()) o.insert(QLatin1String(k), x.trimmed()); };
+                put("date", v.date.isValid() ? v.date.toString(Qt::ISODate) : QString());
+                put("against", v.against); put("product", v.product); put("batch", v.batch);
+                put("doctor", v.doctor); put("note", v.note);
+                vj.append(o);
+            }
+            if (!vj.isEmpty()) pj.insert(QStringLiteral("vaccinations"), vj);
         }
         if (p.extra.contains(QStringLiteral("Allergien")))
             pj.insert(QStringLiteral("allergies"), p.extra.value(QStringLiteral("Allergien")).toString());

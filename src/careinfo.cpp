@@ -167,7 +167,8 @@ bool isInternalExtraKey(const QString &key)
                                       QStringLiteral("bvDocId"), QStringLiteral("prepDays"), QStringLiteral("prepWeekday"),
                                       Contacts::contactsKey(), QStringLiteral("peakFlowBest"), QStringLiteral("bioSex"),
                                       QStringLiteral("inrLow"), QStringLiteral("inrHigh"), QStringLiteral("fluidMin"),
-                                      QStringLiteral("fluidMax"), QStringLiteral("weightWatch") };
+                                      QStringLiteral("fluidMax"), QStringLiteral("weightWatch"),
+                                      QStringLiteral("vaccinations") };                  // Impfpass (eigene Liste)
     // die alten Kontakt-Zusatzfelder werden aus der Kontaktliste mitgeschrieben und dort angezeigt
     return keys.contains(key) || Contacts::isLegacyKey(key);
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "contacts.h"
+#include "vaccinations.h"
 #include "datatypes.h"
 #include <QDialog>
 
@@ -48,6 +49,13 @@ private slots:
     void addContact();
     void editContact();
     void deleteContact();
+    // Impfpass (eigener Reiter, nach „Diagnosen“)
+    void setupVaccinations();
+    void fillVaccinationTable();
+    void addVaccination();
+    void editVaccination();
+    void deleteVaccination();
+    void printVaccinations();
 
 private:
     void fillMedicationTable();
@@ -73,6 +81,8 @@ private:
     QTableWidget *m_medTable = nullptr;
     QTableWidget *m_contactTable = nullptr;
     QList<Contacts::Contact> m_contacts;
+    QTableWidget *m_vaccTable = nullptr;
+    QList<Vaccinations::Vaccination> m_vaccinations;
 
     QList<Medication> m_meds;          // alle (inkl. archivierte)
     int m_sortColumn = -1;             // -1 = Reihenfolge der Eingabe

@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "patientdialog.h"
+#include <QHBoxLayout>
+#include <QTabWidget>
+#include "vaccinationdialog.h"
 #include "edition.h"
 #include "contactdialog.h"
 #include <QBoxLayout>
@@ -108,6 +111,7 @@ PatientDialog::PatientDialog(const Patient &p, QWidget *parent)
 
     setupCareWidgets();
     setupContacts();
+    setupVaccinations();
 
     // Werte eintragen
     FormIO::write(m_form, QStringLiteral("lastNameEdit"), p.lastName);
@@ -245,6 +249,7 @@ Patient PatientDialog::collectPatient() const
         if (fmin && fmax && ww) Fluid::setLimits(p, fmin->value(), fmax->value(), ww->value());
     }
     if (m_contactTable) Contacts::store(p, m_contacts);   // angepasste ältere Formulare ohne Liste: unverändert
+    if (m_vaccTable) Vaccinations::store(p, m_vaccinations);
     if (auto *c = m_form->findChild<QComboBox *>(QStringLiteral("careLevelCombo")))
         p.careLevel = qMax(0, c->currentIndex());
     if (const auto v = FormIO::read(m_form, QStringLiteral("careReviewEdit")))
@@ -1204,4 +1209,150 @@ void PatientDialog::deleteContact()
     m_contacts.erase(std::remove_if(m_contacts.begin(), m_contacts.end(),
                                     [&](const Contacts::Contact &c) { return c.uid == uid; }), m_contacts.end());
     fillContactTable();
+}
+
+// ================================================================ Impfpass
+
+// Eigener Reiter, im Programm erzeugt (auch angepasste Formulare erhalten ihn): nach „Diagnosen“
+void PatientDialog::setupVaccinations()
+{
+    auto *tabs = m_form->findChild<QTabWidget *>(QStringLiteral("tabWidget"));
+    if (!tabs) return;
+    m_vaccinations = Vaccinations::list(m_patient);
+    auto *page = new QWidget(tabs);
+    page->setObjectName(QStringLiteral("vaccinationTab"));
+    auto *lay = new QVBoxLayout(page);
+    auto *intro = new QLabel(tr("Erhaltene Impfungen mit Datum, Impfstoff und Chargennummer – wie im gelben Impfausweis. "
+                                "Ersetzt nicht den amtlichen Impfausweis."), page);
+    intro->setWordWrap(true);
+    lay->addWidget(intro);
+    m_vaccTable = new QTableWidget(page);
+    m_vaccTable->setObjectName(QStringLiteral("vaccinationTable"));
+    m_vaccTable->setColumnCount(6);
+    m_vaccTable->setHorizontalHeaderLabels({ tr("Datum"), tr("Impfung gegen"), tr("Impfstoff (Präparat)"), tr("Ch.-B."),
+                                             tr("Arzt / Praxis"), tr("Bemerkung") });
+    m_vaccTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_vaccTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_vaccTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_vaccTable->setAlternatingRowColors(true);
+    m_vaccTable->verticalHeader()->hide();
+    m_vaccTable->setWordWrap(false);
+    auto *hh = m_vaccTable->horizontalHeader();
+    for (int c : { 0, 3 }) hh->setSectionResizeMode(c, QHeaderView::ResizeToContents);
+    for (int c : { 1, 2, 4 }) hh->setSectionResizeMode(c, QHeaderView::Interactive);
+    hh->setStretchLastSection(true);
+    m_vaccTable->setColumnWidth(1, 220);
+    m_vaccTable->setColumnWidth(2, 150);
+    m_vaccTable->setColumnWidth(4, 150);
+    lay->addWidget(m_vaccTable, 1);
+    auto *row = new QHBoxLayout;
+    auto button = [&](const QString &text, const char *name, void (PatientDialog::*slot)()) {
+        auto *b = new QPushButton(text, page);
+        b->setObjectName(QLatin1String(name));
+        connect(b, &QPushButton::clicked, this, slot);
+        row->addWidget(b);
+        return b;
+    };
+    button(tr("Impfung &hinzufügen…"), "addVaccinationButton", &PatientDialog::addVaccination);
+    QPushButton *ed = button(tr("Be&arbeiten…"), "editVaccinationButton", &PatientDialog::editVaccination);
+    QPushButton *del = button(tr("Ent&fernen"), "deleteVaccinationButton", &PatientDialog::deleteVaccination);
+    row->addStretch();
+    button(tr("Impfpass &drucken…"), "printVaccinationsButton", &PatientDialog::printVaccinations);
+    lay->insertLayout(1, row);            // Schaltflächen über der Tabelle: ohne Blättern erreichbar
+    ed->setEnabled(false);
+    del->setEnabled(false);
+    connect(m_vaccTable, &QTableWidget::itemSelectionChanged, this, [this, ed, del] {
+        const bool sel = !m_vaccTable->selectedItems().isEmpty();
+        ed->setEnabled(sel);
+        del->setEnabled(sel);
+    });
+    connect(m_vaccTable, &QTableWidget::cellDoubleClicked, this, [this] { editVaccination(); });
+    int at = tabs->count();
+    if (QWidget *d = m_form->findChild<QWidget *>(QStringLiteral("diagnosesEdit")))
+        for (int i = 0; i < tabs->count(); ++i)
+            if (tabs->widget(i)->isAncestorOf(d)) { at = i + 1; break; }
+    tabs->insertTab(at, page, tr("&Impfpass"));
+    fillVaccinationTable();
+}
+
+void PatientDialog::fillVaccinationTable()
+{
+    if (!m_vaccTable) return;
+    const QLocale loc;
+    m_vaccTable->setRowCount(0);
+    for (const Vaccinations::Vaccination &v : std::as_const(m_vaccinations)) {
+        const int r = m_vaccTable->rowCount();
+        m_vaccTable->insertRow(r);
+        const QStringList cells = { v.date.isValid() ? loc.toString(v.date, QStringLiteral("dd.MM.yyyy")) : QStringLiteral("—"),
+                                    v.against, v.product, v.batch, v.doctor, v.note };
+        for (int c = 0; c < cells.size(); ++c) {
+            auto *it = new QTableWidgetItem(cells[c]);
+            if (c == 0) it->setData(Qt::UserRole, v.uid);
+            it->setToolTip(v.summary());
+            m_vaccTable->setItem(r, c, it);
+        }
+    }
+}
+
+// Ärzte aus den Kontakten als Vorschläge für „Arzt / Praxis“
+static QStringList doctorSuggestions(const QList<Contacts::Contact> &contacts)
+{
+    QStringList l;
+    for (const Contacts::Contact &c : contacts)
+        if ((c.kind == Contacts::FamilyDoctor || c.kind == Contacts::Specialist || c.kind == Contacts::Clinic) && !c.name.isEmpty())
+            l << c.name;
+    return l;
+}
+
+void PatientDialog::addVaccination()
+{
+    VaccinationDialog d(Vaccinations::Vaccination{}, m_vaccinations, doctorSuggestions(m_contacts), this);
+    if (d.exec() != QDialog::Accepted) return;
+    const Vaccinations::Vaccination v = d.vaccination();
+    m_vaccinations << v;
+    Vaccinations::sort(m_vaccinations);
+    fillVaccinationTable();
+    for (int r = 0; r < m_vaccTable->rowCount(); ++r)
+        if (m_vaccTable->item(r, 0)->data(Qt::UserRole).toString() == v.uid) m_vaccTable->selectRow(r);
+}
+
+void PatientDialog::editVaccination()
+{
+    const auto rows = m_vaccTable ? m_vaccTable->selectionModel()->selectedRows() : QModelIndexList();
+    if (rows.isEmpty()) return;
+    const QString uid = m_vaccTable->item(rows.first().row(), 0)->data(Qt::UserRole).toString();
+    for (Vaccinations::Vaccination &v : m_vaccinations) {
+        if (v.uid != uid) continue;
+        QList<Vaccinations::Vaccination> others = m_vaccinations;
+        VaccinationDialog d(v, others, doctorSuggestions(m_contacts), this);
+        if (d.exec() != QDialog::Accepted) return;
+        v = d.vaccination();
+        break;
+    }
+    Vaccinations::sort(m_vaccinations);
+    fillVaccinationTable();
+}
+
+void PatientDialog::deleteVaccination()
+{
+    const auto rows = m_vaccTable ? m_vaccTable->selectionModel()->selectedRows() : QModelIndexList();
+    if (rows.isEmpty()) return;
+    const int r = rows.first().row();
+    const QString uid = m_vaccTable->item(r, 0)->data(Qt::UserRole).toString();
+    const QString what = m_vaccTable->item(r, 0)->text() + QLatin1Char(' ') + m_vaccTable->item(r, 1)->text();
+    if (QMessageBox::question(this, tr("Impfung entfernen"), tr("„%1“ aus dem Impfpass entfernen?").arg(what)) != QMessageBox::Yes)
+        return;
+    m_vaccinations.erase(std::remove_if(m_vaccinations.begin(), m_vaccinations.end(),
+                                        [&](const Vaccinations::Vaccination &v) { return v.uid == uid; }), m_vaccinations.end());
+    fillVaccinationTable();
+}
+
+// Druckt den Stand im Dialog (auch noch nicht gespeicherte Änderungen)
+void PatientDialog::printVaccinations()
+{
+    Patient p = m_patient;
+    p.lastName = FormIO::read(m_form, QStringLiteral("lastNameEdit")).value_or(QVariant(p.lastName)).toString();
+    p.firstName = FormIO::read(m_form, QStringLiteral("firstNameEdit")).value_or(QVariant(p.firstName)).toString();
+    Vaccinations::store(p, m_vaccinations);
+    ReportPrinter::vaccinationRecord(this, p, ReportPrinter::Target::Preview);
 }

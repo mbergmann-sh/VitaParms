@@ -42,6 +42,7 @@
       personal: 'Persönliche Angaben',
       careLevel: 'Pflegegrad', careNone: 'kein Pflegegrad', careReview: 'nächste Überprüfung',
       insuranceNo: 'Vers.-Nr.', tel: 'Tel.', mobileShort: 'mobil',
+      vaccinations: 'Impfpass', batch: 'Ch.-B.', noDate: 'ohne Datum', vaccNote: 'Übersicht – ersetzt nicht den amtlichen Impfausweis',
       advance: 'Vorsorge', disability: 'Schwerbehindertenausweis', gdb: 'GdB', validUntil: 'gültig bis', unlimited: 'unbefristet', reviewSoon: 'bald fällig',
       footer: 'Daten mit AES-256 verschlüsselt, entschlüsselt nur in diesem Browser. Automatische Abmeldung nach 30 Minuten ohne Benutzung.',
       idle: 'Sie wurden nach 30 Minuten ohne Benutzung abgemeldet.',
@@ -92,6 +93,7 @@
       personal: 'Personal details',
       careLevel: 'Care level', careNone: 'no care level', careReview: 'next review',
       insuranceNo: 'Insurance no.', tel: 'Tel.', mobileShort: 'mobile',
+      vaccinations: 'Vaccination record', batch: 'Lot', noDate: 'no date', vaccNote: 'Overview – does not replace the official vaccination certificate',
       advance: 'Advance directives', disability: 'Severe disability card', gdb: 'Degree of disability', validUntil: 'valid until', unlimited: 'unlimited', reviewSoon: 'due soon',
       footer: 'Data encrypted with AES-256, decrypted only in this browser. Automatic logout after 30 minutes without use.',
       idle: 'You were logged out after 30 minutes without use.',
@@ -481,6 +483,16 @@
       if (c.note) dd.append(h('div', { class: 'sub', text: c.note }));
       dl.append(h('dt', { text: c.kind }), dd);
     }
+    if ((p.vaccinations || []).length) {
+      const ul = h('ul', { class: 'vacc' });
+      for (const v of p.vaccinations) {
+        const what = [v.against, [v.product, v.batch ? `${L.batch} ${v.batch}` : ''].filter(Boolean).join(', ')].filter(Boolean).join(': ');
+        const li = h('li', {}, h('span', { class: 'when', text: v.date ? fmtDate.format(parseD(v.date)) : L.noDate }), ' ', what);
+        if (v.doctor || v.note) li.append(h('div', { class: 'sub', text: [v.doctor, v.note].filter(Boolean).join(' – ') }));
+        ul.append(li);
+      }
+      dl.append(h('dt', { text: L.vaccinations }), h('dd', {}, ul, h('div', { class: 'sub', text: L.vaccNote })));
+    }
     row(L.address, p.address);
     row(L.phone, [p.phone, p.mobile].filter(Boolean).join(', '));
     if (dl.children.length) {
@@ -514,7 +526,7 @@
     if (!p.rs.length) { view.append(h('p', { class: 'empty', text: L.noReadings })); }
     else {
       const strip = h('div', { class: 'strip' });
-      const order = ['systolic', 'pulse', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow', 'pain', 'inr', 'edema'];
+      const order = ['systolic', 'pulse', 'pulsePressure', 'glucose', 'weight', 'bmi', 'temperature', 'spo2', 'peakflow', 'pain', 'inr', 'edema'];
       for (const key of order) {
         const def = state.vitals[key];
         if (!def) continue;
