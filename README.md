@@ -431,6 +431,13 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.30.2:** **Kleine Bildschirme (z. B. 1366 × 768):** Alle Fenster passen sich an (`src/screenfit.*`,
+  app-weiter Filter beim Anzeigen): Ist ein Dialog höher oder breiter als der freie Bildschirmbereich,
+  kommt sein Inhalt in eine rollbare Fläche, die Leiste mit OK/Abbrechen bleibt darunter sichtbar (z. B.
+  Einstellungen, Messung, Medikament, Termin, Wundbeurteilung); jedes Fenster wird auf den freien Bereich
+  begrenzt und ganz sichtbar platziert (auch mit einer gespeicherten Größe von einem größeren Bildschirm).
+  Hauptfenster: Die Bereichsauswahl der Grafik bricht um (`src/flowlayout.*`) – das Fenster ist nicht mehr
+  mindestens 1 690 Pixel breit, die Werkzeugleiste zeigt überzählige Einträge hinter der Schaltfläche ».
 * **0.30.1:** **Debian-Pakete (.deb)** für VitaParms und VitaParms light: `installer/debian/build_deb.sh`
   baut auf Debian 12/13, Ubuntu 24.04+ und Derivaten (ältere mit `--qt5`) native Pakete gegen das Qt der
   Distribution – Prüfung der Voraussetzungen mit passendem `apt`-Befehl (`--check`, `--install-deps`),

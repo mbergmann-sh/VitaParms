@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "mainwindow.h"
+#include "flowlayout.h"
 #include "dbtransfer.h"
 #include "medstock.h"
 #include "protocoldialog.h"
@@ -350,7 +351,8 @@ void MainWindow::buildUi()
     m_customRange->setVisible(m_scaleCombo->currentIndex() == 4);
     m_navigation->setVisible(m_scaleCombo->currentIndex() != 4);
 
-    auto *panels = new QHBoxLayout;
+    // umbrechend: bei vielen Bereichen oder schmalem Fenster zweite Zeile statt Überbreite
+    auto *panels = new FlowLayout(nullptr, 10, 4);
     panels->addWidget(new QLabel(tr("Bereiche:"), cw));
     const QStringList sel = AppSettings::chartSeries();
     for (const auto &pd : VitalDefs::panels()) {
@@ -367,7 +369,6 @@ void MainWindow::buildUi()
         m_panelChecks << c;
         panels->addWidget(c);
     }
-    panels->addSpacing(12);
     // Kurven einzeln ein-/ausblenden (auch per Klick auf die Legende)
     m_seriesButton = new QToolButton(cw);
     m_seriesButton->setText(tr("&Kurven"));
@@ -375,7 +376,6 @@ void MainWindow::buildUi()
     m_seriesButton->setPopupMode(QToolButton::InstantPopup);
     m_seriesButton->setMenu(new QMenu(m_seriesButton));
     panels->addWidget(m_seriesButton);
-    panels->addStretch();
     cl->addLayout(panels);
     rebuildSeriesMenu();
 

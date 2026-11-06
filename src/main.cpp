@@ -5,6 +5,7 @@
 #include "appsettings.h"
 #include "database.h"
 #include "demodata.h"
+#include "screenfit.h"
 #include "edition.h"
 #include "mainwindow.h"
 #include "session.h"
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
     QApplication app(argc, argv);
+    ScreenFit::install(app);     // kleine Bildschirme: Dialoge rollbar, Fenster ganz sichtbar
     QApplication::setOrganizationName(QStringLiteral("VitaParms"));
     // VitaParms light: eigene Einstellungen und eigener Datenordner (beide Ausgaben laufen nebeneinander)
     QApplication::setApplicationName(Edition::settingsName());

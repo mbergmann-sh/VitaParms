@@ -36,7 +36,9 @@ SOURCES += \
     $$PWD/src/historyprintdialog.cpp \
     $$PWD/src/vaccinationdialog.cpp \
     $$PWD/src/medsearchdialog.cpp \
-    $$PWD/src/contactdialog.cpp
+    $$PWD/src/contactdialog.cpp \
+    $$PWD/src/flowlayout.cpp \
+    $$PWD/src/screenfit.cpp
 
 HEADERS += \
     $$PWD/src/accountdialogs.h \
@@ -71,6 +73,8 @@ HEADERS += \
     $$PWD/src/historyprintdialog.h \
     $$PWD/src/vaccinationdialog.h \
     $$PWD/src/medsearchdialog.h \
-    $$PWD/src/contactdialog.h
+    $$PWD/src/contactdialog.h \
+    $$PWD/src/flowlayout.h \
+    $$PWD/src/screenfit.h
 
 win32: SOURCES += $$PWD/src/mapi_win.cpp   # E-Mail-Versand mit Anhang über Simple MAPI (Outlook, Thunderbird …)
