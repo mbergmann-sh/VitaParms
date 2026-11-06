@@ -58,6 +58,11 @@ static void chooseLanguageOnFirstStart()
 {
     QSettings st;
     if (st.value(QStringLiteral("ui/languageChosen"), false).toBool()) return;
+    // Nur Hilfe oder Version auf der Befehlszeile: kein Dialog (Ausgabe in der Systemsprache)
+    for (const QString &a : QCoreApplication::arguments().mid(1))
+        if (a == QLatin1String("-h") || a == QLatin1String("--help") || a == QLatin1String("--help-all")
+            || a == QLatin1String("-v") || a == QLatin1String("--version") || a == QLatin1String("-?"))
+            return;
     if (QCoreApplication::arguments().contains(QStringLiteral("--demo"))
         || Database::fileHasContent(AppSettings::databasePath())) {
         st.setValue(QStringLiteral("ui/languageChosen"), true);   // bestehende Installation: nicht fragen
@@ -84,6 +89,8 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName(Edition::settingsName());
     QApplication::setApplicationDisplayName(Edition::appName());
     QApplication::setApplicationVersion(QStringLiteral(VITAPARMS_VERSION));
+    // Linux: Zuordnung zum Starter (vitaparms.desktop / vitaparms-light.desktop) – Symbol in Dock und Taskleiste, Wayland-App-ID
+    QGuiApplication::setDesktopFileName(Edition::light() ? QStringLiteral("vitaparms-light") : QStringLiteral("vitaparms"));
     QApplication::setWindowIcon(QIcon(Edition::light() ? QStringLiteral(":/icons/vitaparms-light.png")
                                                        : QStringLiteral(":/icons/vitaparms.png")));
 

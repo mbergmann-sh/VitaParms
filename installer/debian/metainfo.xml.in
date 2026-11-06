@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VitaParms – AppStream-Beschreibung (Vorlage für build_deb.sh) -->
+<component type="desktop-application">
+  <id>@APPID@</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>@NAME@</name>
+  <summary>@SUMMARY_EN@</summary>
+  <summary xml:lang="de">@SUMMARY_DE@</summary>
+  <developer id="de.mbergmann">
+    <name>Michael Bergmann</name>
+  </developer>
+  <description>
+    <p>@DESC_EN@</p>
+    <p xml:lang="de">@DESC_DE@</p>
+    <p>VitaParms is a diary for health-related data, not a medical device. Use at your own risk.</p>
+    <p xml:lang="de">VitaParms ist ein Tagebuch für medizinisch relevante Daten, kein Medizinprodukt. Die Verwendung erfolgt auf eigene Gefahr.</p>
+  </description>
+  <!--HOMEPAGE-->
+  <launchable type="desktop-id">@DESKTOP@</launchable>
+  <provides>
+    <binary>@BIN@</binary>
+  </provides>
+  <categories>
+    <category>Office</category>
+    <category>MedicalSoftware</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="@VERSION@" date="@DATE@"/>
+  </releases>
+</component>

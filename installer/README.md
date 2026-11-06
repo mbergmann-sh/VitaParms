@@ -78,3 +78,7 @@ die eine fremde Toolchain (z. B. ein Cross-Compiler) in den `PATH` bringt.
   und können durch eigene ersetzt werden (Inno: 164 × 314 und 55 × 55 Pixel).
 * Windows sperrt heruntergeladene Hilfedateien (.chm): Installer bzw. ZIP vor dem Ausführen unter
   *Eigenschaften → Zulassen* entsperren, falls die Hilfe „Die Navigation zu der Webseite wurde abgebrochen“ meldet.
+
+## Linux: Debian-Paket
+
+Für Debian, Ubuntu und Derivate: `installer/debian/build_deb.sh` – siehe `installer/debian/README.md`.

@@ -1,0 +1,35 @@
+.TH @BINUP@ 1 "@DATE@" "@NAME@ @VERSION@" "User Commands"
+.SH NAME
+@BIN@ \- @SUMMARY_EN@
+.SH SYNOPSIS
+.B @BIN@
+.RI [ options ]
+.SH DESCRIPTION
+.B @NAME@
+@DESC_EN@
+.PP
+It is a diary for health-related data, not a medical device. Use at your own risk.
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Show the command line help.
+.TP
+.BR \-v ", " \-\-version
+Show the version.
+.TP
+.BI \-d " file" "\fR, \fP\-\-database " file
+Open the given database file.
+.TP
+.B \-\-demo
+Start with the demo database containing sample data.
+.SH FILES
+.TP
+.I /usr/share/@BIN@/docs/
+User manuals as PDF (German and English), opened with F1.
+.TP
+.I ~/.config/VitaParms/@SETTINGS@.conf
+Settings.
+.SH SEE ALSO
+The user manual (Help menu or F1).
+.SH AUTHOR
+Michael Bergmann. Licensed under the MIT license.

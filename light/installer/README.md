@@ -76,3 +76,10 @@ Passwörter gehören **nicht** ins Projekt.
   die von qmake erzeugten Windows-Makefiles enthalten alle Schritte (windeployqt, `install_src`, ISCC, binarycreator).
   Ein echter Windows-Build samt Installation steht noch aus.
 * macOS: vorbereitet, nicht geprüft.
+
+## Debian-Paket (.deb)
+
+Für Debian, Ubuntu und Derivate gibt es zusätzlich ein natives Paket `vitaparms-light_<V>-1~<Distribution>_<Arch>.deb`,
+gebaut mit dem Qt der Distribution: `installer/debian/build_deb.sh light` (im Projektordner).
+Voraussetzungen und Ablauf: `installer/debian/README.md`.
+

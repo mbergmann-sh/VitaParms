@@ -1,0 +1,35 @@
+.TH @BINUP@ 1 "@DATE@" "@NAME@ @VERSION@" "Benutzerbefehle"
+.SH NAME
+@BIN@ \- @SUMMARY_DE@
+.SH ÜBERSICHT
+.B @BIN@
+.RI [ Optionen ]
+.SH BESCHREIBUNG
+.B @NAME@
+@DESC_DE@
+.PP
+Es ist ein Tagebuch für medizinisch relevante Daten, kein Medizinprodukt. Die Verwendung erfolgt auf eigene Gefahr.
+.SH OPTIONEN
+.TP
+.BR \-h ", " \-\-help
+Hilfe zur Befehlszeile anzeigen.
+.TP
+.BR \-v ", " \-\-version
+Version anzeigen.
+.TP
+.BI \-d " Datei" "\fR, \fP\-\-database " Datei
+Die angegebene Datenbankdatei öffnen.
+.TP
+.B \-\-demo
+Mit der Demo-Datenbank (Beispieldaten) starten.
+.SH DATEIEN
+.TP
+.I /usr/share/@BIN@/docs/
+Handbücher als PDF (deutsch und englisch), Aufruf mit F1.
+.TP
+.I ~/.config/VitaParms/@SETTINGS@.conf
+Einstellungen.
+.SH SIEHE AUCH
+Das Handbuch (Menü Hilfe oder F1).
+.SH AUTOR
+Michael Bergmann. Lizenz: MIT.

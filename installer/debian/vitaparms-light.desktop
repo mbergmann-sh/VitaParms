@@ -1,0 +1,20 @@
+[Desktop Entry]
+Type=Application
+Name=VitaParms light
+GenericName=Vital Signs Diary
+GenericName[de]=Vitalwerte-Tagebuch
+Comment=The simple vital signs diary for one person
+Comment[de]=Das einfache Vitalwerte-Tagebuch für eine Person
+Exec=vitaparms-light
+Icon=vitaparms-light
+Terminal=false
+Categories=Office;MedicalSoftware;
+Keywords=blood pressure;pulse;blood sugar;diary;health;
+Keywords[de]=Blutdruck;Puls;Blutzucker;Tagebuch;Gesundheit;Vitalwerte;
+StartupWMClass=VitaParmsLight
+Actions=demo;
+
+[Desktop Action demo]
+Name=Demo database
+Name[de]=Demo-Datenbank
+Exec=vitaparms-light --demo

@@ -158,7 +158,12 @@ Debian/Ubuntu: sudo apt install qt6-base-dev qt6-tools-dev qt6-tools-dev-tools q
   **Inno-Setup-Installer** und **Qt-Installer-Framework-Installer** in `installer/Output`
   (Ziel `C:\VitaParms`, Sprachauswahl, Lizenz, Komponenten Programm/Handbücher, Update und Deinstallation)
 * macOS: `macdeployqt VitaParms.app -dmg`
-* Linux: Distributionspakete oder z. B. linuxdeploy mit Qt-Plugin
+* Linux (Debian, Ubuntu, Linux Mint, Raspberry Pi OS …): **natives Debian-Paket** mit
+  `installer/debian/build_deb.sh [full|light|all]` – gebaut mit dem Qt der Distribution,
+  Abhängigkeiten über `dpkg-shlibdeps`, je Distribution ein Paket
+  (`vitaparms_<V>-1~deb12_amd64.deb`, `…~deb13…`, `…~ubuntu24.04…`); zu installierende Pakete und
+  Ablauf in `installer/debian/README.md`. VitaParms light zusätzlich als IFW-Installer
+  (`light/installer/README.md`)
 
 Externe Bibliotheken werden **nicht** benötigt: Diagramme (QPainter), ZIP- und XLSX-Erzeugung
 sind selbst implementiert.
@@ -426,6 +431,13 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.30.1:** **Debian-Pakete (.deb)** für VitaParms und VitaParms light: `installer/debian/build_deb.sh`
+  baut auf Debian 12/13, Ubuntu 24.04+ und Derivaten (ältere mit `--qt5`) native Pakete gegen das Qt der
+  Distribution – Prüfung der Voraussetzungen mit passendem `apt`-Befehl (`--check`, `--install-deps`),
+  Abhängigkeiten über `dpkg-shlibdeps`, Menüeintrag mit Aktion „Demo-Datenbank“, Symbole 16–256 px,
+  AppStream-Metadaten, Manpages DE/EN, Handbücher unter `/usr/share/<programm>/docs`, lintian-sauber.
+  Programm: `setDesktopFileName` (Symbol in Dock/Taskleiste, Wayland); `--help`/`--version` zeigen beim
+  allerersten Start keinen Sprachdialog mehr.
 * **0.30.0:** **Digitaler Impfpass** im Stammblatt (alle Ausgaben): erhaltene Impfungen mit Datum,
   „Impfung gegen“ (Vorschläge), Impfstoff (Präparat), **Chargennummer**, Arzt/Praxis und Bemerkung,
   vom Anwender editierbar – am Computer eigener Reiter *Impfpass* (`VaccinationDialog`), Ausdruck über
