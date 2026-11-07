@@ -95,14 +95,13 @@ Selection select(const QList<Medication> &source, const QDate &day, int nd, int 
         }
         if (slot < 0 || !doseOf(m, slot).isEmpty()) r.list << m;
     }
-    // In der Reihenfolge des Tages vorlesen: zuerst, was morgens genommen wird
-    auto firstSlot = [](const Medication &m) {
-        for (int s = 0; s < 4; ++s) if (!doseOf(m, s).isEmpty()) return s;
-        return 4;
-    };
+    // Alphabetisch nach Präparat – wie im Medikamentenplan und auf der Stell-Liste
+    QCollator col;
+    col.setCaseSensitivity(Qt::CaseInsensitive);
+    col.setNumericMode(true);
     std::stable_sort(r.list.begin(), r.list.end(), [&](const Medication &a, const Medication &b) {
-        const int fa = firstSlot(a), fb = firstSlot(b);
-        return fa != fb ? fa < fb : a.name.localeAwareCompare(b.name) < 0;
+        const int c = col.compare(a.name, b.name);
+        return c != 0 ? c < 0 : col.compare(a.strength, b.strength) < 0;
     });
     return r;
 }

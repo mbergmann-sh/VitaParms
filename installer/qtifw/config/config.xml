@@ -2,8 +2,8 @@
 <!-- ERZEUGT von qmake aus config.xml.in – Änderungen bitte dort vornehmen -->
 <Installer>
     <Name>VitaParms</Name>
-    <Version>0.30.3</Version>
-    <Title>VitaParms 0.30.3</Title>
+    <Version>0.30.4</Version>
+    <Title>VitaParms 0.30.4</Title>
     <Publisher>Michael Bergmann</Publisher>
     <StartMenuDir>VitaParms</StartMenuDir>
     <TargetDir>C:/VitaParms</TargetDir>

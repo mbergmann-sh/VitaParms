@@ -11,7 +11,7 @@
 ; ===========================================================================
 
 #define AppName      "VitaParms light"
-#define AppVersion   "0.30.3"
+#define AppVersion   "0.30.4"
 #define AppPublisher "Michael Bergmann"
 #define AppExe       "VitaParmsLight.exe"
 #define AppGuid      "8B90C0BC-A4C1-4385-9C57-EA8C7ADC45D0"   ; eigene AppId: unabhängig von VitaParms

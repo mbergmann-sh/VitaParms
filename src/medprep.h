@@ -32,7 +32,7 @@ bool givenOn(const Medication &m, const QDate &day);
 bool dueInRange(const Medication &m, const QDate &start, int days, int slot);
 
 struct Selection {
-    QList<Medication> list;       // zu stellen, in der Reihenfolge des Tages (zuerst morgens)
+    QList<Medication> list;       // zu stellen, alphabetisch nach Präparat
     QStringList notDue;           // an diesem Tag / in diesen Tagen nicht fällig (Klartext)
     QStringList asNeeded, other, emergency;
 };

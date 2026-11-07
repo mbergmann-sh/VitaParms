@@ -319,7 +319,7 @@ lässt sich in den Einstellungen abschalten. Maßgeblich ist immer der Beipackze
 *Benutzer → Medikamente stellen (Assistent)…* liest die am gewählten **Tag fälligen** Medikamente der
 Regelmedikation (nicht archiviert, gültig, Rhythmus beachtet) nacheinander vor – Datum wählbar, z. B. Tag für
 Tag beim Befüllen eines Wochendosierers. Nicht fällige, Bedarfs- und Notfallmedikamente werden darüber
-angezeigt. Vorgelesen werden – in der Reihenfolge des Tages (morgens zuerst):
+angezeigt. Vorgelesen werden – alphabetisch nach Präparat (wie Medikamentenplan und Stell-Liste):
 Präparat, Stärke, Form, die Dosis je Zeitpunkt sowie Rhythmus und Bemerkung. Kürzel werden ausgeschrieben (mg → Milligramm,
 IE → internationale Einheiten, ½ → eine halbe, s.c. → unter die Haut).
 
@@ -431,6 +431,9 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.30.4:** Medikamente stellen: Der Assistent (Computer und App) führt die Medikamente jetzt **alphabetisch
+  nach Präparat** durch – wie Medikamentenplan und Stell-Liste. Bisher galt die Reihenfolge des Tages
+  (zuerst, was morgens genommen wird), sodass z. B. ein Mittel nur „zur Nacht“ zuletzt kam.
 * **0.30.3:** **Medikamente stellen → „Liste drucken…“** (alle Ausgaben; App: Knopf „Liste“ → PDF): nur die zu
   stellenden Medikamente des gewählten Tages/der Woche und Zeitpunkts, alphabetisch, mit Präparat, Wirkstoff,
   Stärke, Tagesgabe („1 - 0 - 1 - 0“) und Restbestand **nach** dem Stellen (Bestand minus noch nicht abgebuchte
