@@ -431,6 +431,9 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.30.5:** **Terminübersicht** (Reiter *Termine*): Beim Öffnen ist unter *Person* die im Hauptfenster gewählte
+  Person eingestellt, die Liste zeigt nur ihre Termine; ein Personenwechsel im Hauptfenster wird übernommen.
+  Die Termine aller Personen erscheinen nur mit *Alle Personen* (bisher Vorgabe).
 * **0.30.4:** Medikamente stellen: Der Assistent (Computer und App) führt die Medikamente jetzt **alphabetisch
   nach Präparat** durch – wie Medikamentenplan und Stell-Liste. Bisher galt die Reihenfolge des Tages
   (zuerst, was morgens genommen wird), sodass z. B. ein Mittel nur „zur Nacht“ zuletzt kam.

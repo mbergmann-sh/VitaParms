@@ -7,6 +7,7 @@
 #include "icalexport.h"
 #include "session.h"
 
+#include <QShowEvent>
 #include <QCalendarWidget>
 #include <QCheckBox>
 #include <QComboBox>
@@ -145,6 +146,7 @@ AppointmentsPage::AppointmentsPage(QWidget *parent) : QWidget(parent)
     top->addWidget(m_view);
     top->addWidget(new QLabel(tr("Person:"), this));
     m_patient = new QComboBox(this);
+    m_patient->setObjectName(QStringLiteral("apptPatientCombo"));
     top->addWidget(m_patient);
     m_owner = new QComboBox(this);
     m_owner->setToolTip(tr("Administratoren sehen die Termine aller Anmeldekonten"));
@@ -313,7 +315,8 @@ void AppointmentsPage::reload()
     m_patient->clear();
     m_patient->addItem(tr("Alle Personen"), qint64(0));
     for (const Patient &p : Database::instance().patients()) m_patient->addItem(p.displayName(), p.id);
-    m_patient->setCurrentIndex(std::max(0, m_patient->findData(selPatient < 0 ? qint64(0) : selPatient)));
+    // noch keine Auswahl (erstes Füllen): die im Hauptfenster gewählte Person
+    m_patient->setCurrentIndex(std::max(0, m_patient->findData(selPatient < 0 ? m_currentPatient : selPatient)));
 
     // Kontenfilter (nur Administratoren)
     const QString selOwner = m_owner->currentData().toString();
@@ -336,6 +339,22 @@ void AppointmentsPage::reload()
     m_info->setText(tr("%1 Termin(e)").arg(list.size()));
     markCalendar();
     updateButtons();
+}
+
+void AppointmentsPage::setCurrentPatient(qint64 id)
+{
+    m_currentPatient = id;
+    const int idx = m_patient->findData(id);
+    if (idx < 0 || m_patient->currentIndex() == idx) return;
+    m_patient->setCurrentIndex(idx);
+    reload();
+}
+
+void AppointmentsPage::showEvent(QShowEvent *e)
+{
+    QWidget::showEvent(e);
+    // Beim Öffnen der Terminübersicht die Person des Hauptfensters vorwählen
+    if (m_currentPatient) setCurrentPatient(m_currentPatient);
 }
 
 void AppointmentsPage::markCalendar()

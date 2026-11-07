@@ -32,12 +32,14 @@ private:
     QHash<qint64, QString> m_seriesText;
 };
 
+class QShowEvent;
 class AppointmentsPage : public QWidget
 {
     Q_OBJECT
 public:
     explicit AppointmentsPage(QWidget *parent = nullptr);
-    void setCurrentPatient(qint64 id) { m_currentPatient = id; }
+    // Person des Hauptfensters: die Terminübersicht zeigt deren Termine (bis „Alle Personen“ gewählt wird)
+    void setCurrentPatient(qint64 id);
     AppointmentModel *model() const { return m_model; }
 
 public slots:
@@ -54,6 +56,9 @@ public slots:
 signals:
     void changed();
     void measureRequested(qint64 appointmentId);
+
+protected:
+    void showEvent(QShowEvent *e) override;   // beim Öffnen: Person des Hauptfensters
 
 private:
     void updateQuarterBar();
