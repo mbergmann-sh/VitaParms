@@ -8,6 +8,7 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
+#include <QByteArray>
 #include <QDateTime>
 #include <QList>
 #include <QObject>
@@ -39,4 +40,5 @@ public:
 private:
     QTimer m_debounce;
     int m_count = 0;
+    QByteArray m_lastPlan;            // zuletzt an Android übergebener Plan (unverändert: nichts tun)
 };

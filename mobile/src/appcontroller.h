@@ -325,7 +325,8 @@ private:
     class QQmlEngine *m_engine = nullptr;
     void setError(const QString &e);
     void afterLogin();
-    void bump();
+    void bump();                      // Änderung melden (gebündelt, nach Rückkehr in die Ereignisschleife)
+    void flushBump();
     void applyPalette();
     QString dbPath() const;
 
@@ -333,6 +334,7 @@ private:
     QString m_syncMessage;
     int m_revision = 0;
     QTimer m_idle;
+    QTimer m_bumpTimer;               // fasst mehrere Änderungen eines Vorgangs zu einem Neuladen zusammen
     class UsbSyncServer *m_usb = nullptr;
     class TabletReminders *m_reminders = nullptr;
     class Speech *m_speech = nullptr;

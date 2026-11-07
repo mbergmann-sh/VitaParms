@@ -431,6 +431,18 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.31.1:** **App reagiert wieder flüssig** (VitaParms mobile, vor allem Tablets): Nach jeder Änderung
+  (Messung speichern, löschen, Bestand buchen …) luden bisher alle Reiter neu – auch die unsichtbaren, weil
+  die Startseite die Person bei jedem Neuladen neu setzte – und das bis zu dreimal je Vorgang. Auf einem
+  Tablet blockierte das die Oberfläche mehrere Sekunden („VitaParms reagiert nicht“, Tastatur öffnete
+  nicht). Jetzt: Änderungen eines Vorgangs werden gebündelt (`AppController::bump` → ein `dataChanged`
+  nach Rückkehr in die Ereignisschleife), nur der sichtbare Reiter lädt sofort, die anderen beim Anzeigen
+  (auch beim Personenwechsel und für die Verlaufskurven), Personenliste und Kopf werden nur bei echter
+  Änderung neu aufgebaut. Messung speichern samt Neuladen: Demo-Datenbank am PC von ca. 2,5 s auf ca. 50 ms.
+  Erinnerungen: unveränderter Plan wird nicht erneut an Android gegeben, die Wecker werden in einem
+  Hintergrund-Thread gestellt. **Tastatur:** öffnet auch beim Antippen der Messwert-Kachel neben den Ziffern
+  und beim erneuten Antippen eines Feldes, nachdem sie mit „Zurück“ geschlossen wurde.
+  Messmodus `VP_AUTOPILOT_BENCH=1` im Autopiloten (Zeiten der App-Aufrufe).
 * **0.31.0:** **Terminkollisions-Check** (nur VitaParms und VitaParms mobile, nicht light): nachträglich aufrufbar über
   *Termine → Terminkollisionen prüfen…* bzw. *Kollisionen prüfen…* im Terminplaner (App: Reiter Termine,
   „Kollisionen prüfen“, ab zwei Personen). Vergleicht die Termine von zwei oder mehr gewählten Personen in einem

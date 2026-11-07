@@ -26,7 +26,7 @@ Item {
         for (let i = 0; i < l.length; ++i) l[i].showDay = i === 0 || l[i].day !== l[i - 1].day
         entries = l
     }
-    onPersonIdChanged: reload()
+    onPersonIdChanged: if (active) reload(); else stale = true
     onDaysChanged: reload()
     onFromDayChanged: if (days === -1) reload()
     onToDayChanged: if (days === -1) reload()

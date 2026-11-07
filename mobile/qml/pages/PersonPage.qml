@@ -13,7 +13,7 @@ Flickable {
     property var arms: app.armOptions()
     property var legs: app.legOptions()
     function reload() { d = personId ? app.personDetail(personId) : ({}) }
-    onPersonIdChanged: reload()
+    onPersonIdChanged: if (active) reload(); else stale = true
     // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
     property bool active: true
     property bool stale: false

@@ -23,6 +23,7 @@ ColumnLayout {
         color: Theme.ink
         placeholderTextColor: Theme.muted
         leftPadding: 14; rightPadding: 14; topPadding: 12; bottomPadding: 12
+        onReleased: if (activeFocus && !Qt.inputMethod.visible) Qt.inputMethod.show()   // Android: Tastatur nach „Zurück“ wieder öffnen
         background: Rectangle {
             radius: Theme.radius
             color: Theme.surface

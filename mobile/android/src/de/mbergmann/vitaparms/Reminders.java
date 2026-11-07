@@ -19,6 +19,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,6 +30,8 @@ public class Reminders {
     static final String CHANNEL_SILENT = "termine_still";
     static final String PREFS = "vitaparms_reminders";
     static final String KEY_PLAN = "plan";
+    // Wecker stellen kostet je Eintrag einen Systemaufruf: nicht im Oberflächen-Thread, nacheinander
+    private static final ExecutorService WORKER = Executors.newSingleThreadExecutor();
 
     // Kanäle anlegen bzw. umbenennen (Texte in der Programmsprache)
     public static void ensureChannels(Context ctx, String nameSound, String nameSilent, String description) {
@@ -84,6 +89,11 @@ public class Reminders {
     // Alle bisher gestellten Wecker durch 'planJson' ersetzen:
     // [{"id":1,"at":1730000000000,"title":"…","text":"…","sound":true}, …]
     public static void replaceAll(Context ctx, String planJson, String publicText) {
+        final Context app = ctx.getApplicationContext();
+        WORKER.execute(() -> replaceAllNow(app, planJson, publicText));
+    }
+
+    private static void replaceAllNow(Context ctx, String planJson, String publicText) {
         SharedPreferences prefs = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         try {

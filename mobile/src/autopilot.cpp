@@ -3,6 +3,9 @@
 //   VP_AUTOPILOT_DB   Datenbank (mit .keys), VP_AUTOPILOT_USER / _PASSWORD, VP_AUTOPILOT_OUT Zielordner
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "dbsync.h"
+#include <QElapsedTimer>
+#include <QSignalBlocker>
 #include "edition.h"
 #include "dbtransfer.h"
 #include "usbsync.h"
@@ -564,11 +567,97 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
 #ifdef VP_LIGHT
     return runLightTour(win, app, out, fails);
 #endif
+    if (qEnvironmentVariableIsSet("VP_AUTOPILOT_BENCH")) {   // Zeitmessung der Aufrufe, die die Oberfläche macht
+        const qint64 bp = app.persons().value(0).toMap().value(QStringLiteral("id")).toLongLong();
+        auto t = [&](const char *name, const std::function<void()> &f) {
+            QElapsedTimer et; et.start();
+            for (int i = 0; i < 5; ++i) f();
+            qInfo("BENCH %-28s %8.1f ms", name, et.nsecsElapsed() / 5e6);
+        };
+        t("persons", [&] { app.persons(); });
+        t("personSummary", [&] { app.personSummary(bp); });
+        t("personDetail", [&] { app.personDetail(bp); });
+        t("latest", [&] { app.latest(bp); });
+        t("careNotices", [&] { app.careNotices(bp); });
+        t("stoolStatus", [&] { app.stoolStatus(bp); });
+        t("upcoming", [&] { app.upcoming(bp, 14); });
+        t("journal", [&] { app.journal(bp); });
+        t("journal30", [&] { app.journal(bp, {}, 30); });
+        t("newVital", [&] { app.newVital(bp); });
+        t("vitalFields", [&] { app.vitalFields(); });
+        t("contexts", [&] { app.contexts(); });
+        t("medications", [&] { app.medications(bp, false); });
+        t("appointmentList", [&] { app.appointmentList(bp, QStringLiteral("upcoming"), false); });
+        t("apptPersons", [&] { app.apptPersons(); });
+        t("dueProfileMeasurement", [&] { app.dueProfileMeasurement(); });
+        t("quarterDue", [&] { app.quarterDue(); });
+        t("quarterBanner", [&] { app.quarterBanner(); });
+        t("documents", [&] { app.documents(bp); });
+        t("prepInfo", [&] { app.prepInfo(bp); });
+        t("stockOverview", [&] { app.stockOverview(bp); });
+        t("historyGroups", [&] { app.historyGroups(bp, {}); });
+        t("fluidDay", [&] { app.fluidDay(bp, {}); });
+        t("speechInfo", [&] { app.speechInfo(); });
+        t("plannedReminders", [&] { app.plannedReminders(); });
+        QVariantMap v = app.newVital(bp);
+        v.insert(QStringLiteral("values"), QVariantMap{ { QStringLiteral("pulse"), 70 } });
+        QElapsedTimer et; et.start();
+        const qint64 id = app.saveVital(bp, v);
+        qInfo("BENCH %-28s %8.1f ms", "saveVital", et.nsecsElapsed() / 1e6);
+        QCoreApplication::processEvents();
+        qInfo("BENCH %-28s %8.1f ms", "saveVital + Neuladen", et.nsecsElapsed() / 1e6);
+        et.restart();
+        app.deleteVital(id);
+        QCoreApplication::processEvents();
+        qInfo("BENCH %-28s %8.1f ms", "deleteVital + Neuladen", et.nsecsElapsed() / 1e6);
+        {
+            Database &db = Database::instance();
+            VitalRecord r; r.patientId = bp; r.measuredAt = QDateTime::currentDateTime(); r.pulse = 66;
+            et.restart();
+            { const QSignalBlocker b(&db); db.saveVital(r); }
+            qInfo("BENCH %-28s %8.1f ms", "db.saveVital ohne Signale", et.nsecsElapsed() / 1e6);
+            et.restart();
+            emit db.vitalsChanged(bp);
+            QCoreApplication::processEvents();
+            qInfo("BENCH %-28s %8.1f ms", "vitalsChanged-Signal", et.nsecsElapsed() / 1e6);
+            et.restart();
+            emit app.dataChanged();
+            qInfo("BENCH %-28s %8.1f ms", "dataChanged (QML)", et.nsecsElapsed() / 1e6);
+            et.restart();
+            emit app.syncStatusChanged();
+            qInfo("BENCH %-28s %8.1f ms", "syncStatusChanged (QML)", et.nsecsElapsed() / 1e6);
+            et.restart();
+            (void)DbSync::config();
+            qInfo("BENCH %-28s %8.1f ms", "DbSync::config", et.nsecsElapsed() / 1e6);
+            et.restart();
+            { const QSignalBlocker b(&db); db.deleteVital(r.id); }
+            qInfo("BENCH %-28s %8.1f ms", "db.deleteVital ohne Signale", et.nsecsElapsed() / 1e6);
+        }
+        return 0;
+    }
     // ---- Funktionsprüfung der Brücke (auf der Kopie der Demo-Datenbank)
     auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
     const QVariantList ps = app.persons();
     check(ps.size() >= 1, "Personen");
     const qint64 pid = ps.value(0).toMap().value(QStringLiteral("id")).toLongLong();
+    {   // 0.31.1: ein Vorgang = ein Neuladen der Oberfläche, und das schnell (Tablet: „App reagiert nicht“)
+        int n = 0;
+        const auto conn = QObject::connect(&app, &AppController::dataChanged, &app, [&n] { ++n; });
+        QVariantMap v = app.newVital(pid);
+        v.insert(QStringLiteral("values"), QVariantMap{ { QStringLiteral("pulse"), 69 } });
+        QElapsedTimer et; et.start();
+        const qint64 id = app.saveVital(pid, v);
+        QCoreApplication::processEvents();
+        const double ms = et.nsecsElapsed() / 1e6;
+        check(n == 1, "Speichern lädt die Oberfläche genau einmal neu");
+        check(ms < 1000, "Speichern samt Neuladen unter 1 s");
+        n = 0;
+        app.deleteVital(id);
+        QCoreApplication::processEvents();
+        check(n == 1, "Löschen lädt die Oberfläche genau einmal neu");
+        QObject::disconnect(conn);
+        qInfo("Neuladen nach Speichern: %.0f ms", ms);
+    }
     {
         QVariantMap v = app.newVital(pid);
         QVariantMap vals{ { QStringLiteral("systolic"), 128 }, { QStringLiteral("diastolic"), 82 }, { QStringLiteral("pulse"), 71 },

@@ -74,6 +74,9 @@ void TabletReminders::scheduleNow()
         arr << QJsonObject{ { QStringLiteral("id"), it.id }, { QStringLiteral("at"), double(it.at.toMSecsSinceEpoch()) },
                             { QStringLiteral("title"), it.title }, { QStringLiteral("text"), it.text },
                             { QStringLiteral("sound"), it.sound } };
+    const QByteArray planJson = QJsonDocument(arr).toJson(QJsonDocument::Compact);
+    if (planJson == m_lastPlan) return;          // z. B. neue Messung: an den Erinnerungen ändert sich nichts
+    m_lastPlan = planJson;
     const QJniObject ctx(QNativeInterface::QAndroidApplication::context());
     QJniObject::callStaticMethod<void>("de/mbergmann/vitaparms/Reminders", "ensureChannels",
         "(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",
@@ -82,7 +85,7 @@ void TabletReminders::scheduleNow()
         QJniObject::fromString(tr("Erinnerungen an Termine und Medikamente aus VitaParms")).object<jstring>());
     QJniObject::callStaticMethod<void>("de/mbergmann/vitaparms/Reminders", "replaceAll",
         "(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)V",
-        ctx.object(), QJniObject::fromString(QString::fromUtf8(QJsonDocument(arr).toJson(QJsonDocument::Compact))).object<jstring>(),
+        ctx.object(), QJniObject::fromString(QString::fromUtf8(planJson)).object<jstring>(),
         QJniObject::fromString(tr("Termin-Erinnerung")).object<jstring>());
 #endif
 }

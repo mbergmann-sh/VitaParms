@@ -17,7 +17,7 @@ Flickable {
     property var items: []
     property var quarter: ({})
     function reload() { items = app.appointmentList(allPersons ? 0 : personId, range, showDone); quarter = app.quarterBanner() }
-    onPersonIdChanged: reload()
+    onPersonIdChanged: if (active) reload(); else stale = true
     onRangeChanged: reload()
     onAllPersonsChanged: reload()
     onShowDoneChanged: reload()

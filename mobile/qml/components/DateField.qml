@@ -42,6 +42,7 @@ ColumnLayout {
         inputMethodHints: Qt.ImhPreferNumbers
         leftPadding: 14; rightPadding: 14
         onTextEdited: { const p = f.parse(text); f.isoDate = text.trim() === "" ? "" : p }
+        onReleased: if (activeFocus && !Qt.inputMethod.visible) Qt.inputMethod.show()   // Android: Tastatur nach „Zurück“ wieder öffnen
         background: Rectangle {
             radius: Theme.radius; color: Theme.surface
             border.width: input.activeFocus ? 2 : 1

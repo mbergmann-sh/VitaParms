@@ -14,14 +14,18 @@ Page {
     property int tab: 0
     background: Rectangle { color: Theme.paper }
 
+    // Nach jeder Änderung: nur zuweisen, was sich wirklich geändert hat. Eine neue Personenliste baut die
+    // Listen neu auf, eine neu gesetzte personId lädt alle Reiter neu – beides kostet auf Tablets Sekunden.
     function reload() {
-        persons = app.persons()
+        const l = app.persons()
+        if (JSON.stringify(l) !== JSON.stringify(persons)) persons = l
         let keep = personId || app.lastPerson()
         if (!persons.some(p => p.id === keep)) keep = persons.length ? persons[0].id : 0
-        personId = keep
-        summary = personId ? app.personSummary(personId) : ({})
+        if (keep !== personId) personId = keep
+        const s = personId ? app.personSummary(personId) : ({})
+        if (JSON.stringify(s) !== JSON.stringify(summary)) summary = s
     }
-    function select(id) { personId = id; app.setLastPerson(id); summary = app.personSummary(id) }
+    function select(id) { if (id === personId) return; personId = id; app.setLastPerson(id); summary = app.personSummary(id) }
     function measure(id) {
         stackView.push(measureComp, { personId: home.personId, vitalId: id || 0 })
     }

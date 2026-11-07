@@ -63,8 +63,12 @@ signals:
     void specChanged();
     void tipChanged();
 
+protected:
+    void itemChange(ItemChange change, const ItemChangeData &value) override;
+
 private:
     void reload();
+    bool m_stale = false;             // unsichtbar geändert: beim nächsten Anzeigen neu laden
 
     qint64 m_pid = 0;
     QDate m_ref = QDate::currentDate();

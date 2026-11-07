@@ -32,7 +32,7 @@ Flickable {
         const f = app.createReport(personId, "wound-" + woundId, xlsx, 0, {})
         if (f) app.openFile(f); else win.toast(app.lastError, true)
     }
-    onPersonIdChanged: { woundId = 0; reload() }
+    onPersonIdChanged: { woundId = 0; if (active) reload(); else stale = true }
     onShowClosedChanged: reload()
     property bool active: true
     property bool stale: false

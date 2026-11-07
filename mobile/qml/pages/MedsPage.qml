@@ -16,7 +16,7 @@ Flickable {
     property var cats: app.medCategories()
     property var reminder: []
     function reload() { meds = app.medications(personId, archived); reminder = app.stockReminder(personId) }
-    onPersonIdChanged: reload()
+    onPersonIdChanged: if (active) reload(); else stale = true
     onArchivedChanged: reload()
     // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
     property bool active: true

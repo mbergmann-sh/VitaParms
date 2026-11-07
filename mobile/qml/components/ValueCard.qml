@@ -52,11 +52,14 @@ Rectangle {
                 padding: 0
                 background: Item {}
                 onTextEdited: card.edited()
+                // Android: Tastatur auch dann öffnen, wenn das Feld den Fokus schon hat (Tastatur zuvor
+                // mit „Zurück“ geschlossen) – sonst bleibt sie beim erneuten Antippen zu
+                onReleased: if (activeFocus && !Qt.inputMethod.visible) Qt.inputMethod.show()
             }
             Label { text: card.unit; color: Theme.muted; font.pixelSize: Theme.fsM; Layout.alignment: Qt.AlignBottom; bottomPadding: 8 }
         }
         Label { visible: card.outOfRange; text: qsTr("Wert ungewöhnlich (%1–%2)").arg(card.minValue).arg(card.maxValue)
                 color: Theme.alert; font.pixelSize: Theme.fsXs }
     }
-    MouseArea { anchors.fill: parent; z: -1; onClicked: input.forceActiveFocus() }
+    MouseArea { anchors.fill: parent; z: -1; onClicked: { input.forceActiveFocus(); Qt.inputMethod.show() } }   // Tippen neben die Ziffern: Feld und Tastatur
 }

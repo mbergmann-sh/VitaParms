@@ -81,8 +81,17 @@ void ChartItem::setRevision(int r)
     reload();
 }
 
+void ChartItem::itemChange(ItemChange change, const ItemChangeData &value)
+{
+    QQuickPaintedItem::itemChange(change, value);
+    if (change == ItemVisibleHasChanged && value.boolValue && m_stale) reload();
+}
+
 void ChartItem::reload()
 {
+    // Unsichtbare Kurven (anderer Reiter) nicht bei jeder Änderung neu laden – erst beim Anzeigen
+    if (!isVisible() && m_pid) { m_stale = true; return; }
+    m_stale = false;
     if (m_spec.scale == ChartSpec::Scale::Custom) {          // Zeitraum: von 0:00 bis Ende des letzten Tages
         m_spec.from = QDateTime(m_from, QTime(0, 0));
         m_spec.to = QDateTime(m_to.addDays(1), QTime(0, 0));

@@ -106,6 +106,9 @@ AppController::AppController(QObject *parent) : QObject(parent)
     connect(qApp, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState s) {
         if (s == Qt::ApplicationActive && loggedIn() && !m_demo) m_reminders->scheduleSoon();
     });
+    m_bumpTimer.setSingleShot(true);
+    m_bumpTimer.setInterval(0);
+    connect(&m_bumpTimer, &QTimer::timeout, this, &AppController::flushBump);
     m_idle.setSingleShot(true);
     connect(&m_idle, &QTimer::timeout, this, [this] {
         if (!loggedIn()) return;
@@ -206,8 +209,18 @@ void AppController::setError(const QString &e)
     emit lastErrorChanged();
 }
 
+// Ein Vorgang (Messung speichern, Bestand buchen, Abgleich …) meldet oft mehrere Änderungen
+// hintereinander. Jede davon lädt alle sichtbaren Seiten neu; auf Tablets dauerte das Sekunden und
+// blockierte die Oberfläche („App reagiert nicht“, Tastatur öffnet nicht). Deshalb wird gebündelt:
+// Die Seiten laden einmal neu, sobald der Vorgang fertig ist und die Ereignisschleife wieder läuft.
 void AppController::bump()
 {
+    if (!m_bumpTimer.isActive()) m_bumpTimer.start();
+}
+
+void AppController::flushBump()
+{
+    m_bumpTimer.stop();
     if (m_reminders && loggedIn() && !m_demo) m_reminders->scheduleSoon();   // Erinnerungen neu stellen (nicht in der Demo)
     ++m_revision;
     emit dataChanged();

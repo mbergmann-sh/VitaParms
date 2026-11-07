@@ -23,7 +23,7 @@ Flickable {
         appts = app.upcoming(personId, 14)
         meds = app.medications(personId, false).filter(m => m.category === 0)
     }
-    onPersonIdChanged: reload()
+    onPersonIdChanged: if (active) reload(); else stale = true
     // nur der sichtbare Reiter lädt sofort neu; die anderen beim nächsten Anzeigen
     property bool active: true
     property bool stale: false

@@ -30,6 +30,9 @@ ColumnLayout {
         selectByMouse: true
         leftPadding: 14; rightPadding: 14
         onAccepted: f.accepted()
+        // Android: Tastatur auch dann öffnen, wenn das Feld den Fokus schon hat (Tastatur zuvor
+        // mit „Zurück“ geschlossen) – sonst bleibt sie beim erneuten Antippen zu
+        onReleased: if (activeFocus && !Qt.inputMethod.visible) Qt.inputMethod.show()
         background: Rectangle {
             radius: Theme.radius
             color: Theme.surface
