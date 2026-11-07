@@ -5,6 +5,7 @@
 #include "medstock.h"
 #include "speech.h"
 
+#include <QCollator>
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QLocale>
@@ -271,6 +272,61 @@ QString statusText(const MedPreparation &e)
 {
     return e.complete ? QCoreApplication::translate("MedLogDialog", "✔ vollständig")
                       : QCoreApplication::translate("MedLogDialog", "abgebrochen (%1 von %2)").arg(e.confirmed).arg(e.total);
+}
+
+QString dailyPattern(const Medication &m)
+{
+    QStringList l;
+    for (int s = 0; s < 4; ++s) {
+        const QString d = doseOf(m, s);
+        l << (d.isEmpty() ? QStringLiteral("0") : d);
+    }
+    return l.join(QStringLiteral(" - "));
+}
+
+QList<ListRow> listRows(const QList<Medication> &list, const QDate &day, int days, int slot)
+{
+    QList<ListRow> rows;
+    QList<Medication> sorted = list;
+    QCollator col;
+    col.setCaseSensitivity(Qt::CaseInsensitive);
+    col.setNumericMode(true);
+    std::stable_sort(sorted.begin(), sorted.end(), [&](const Medication &a, const Medication &b) {
+        const int c = col.compare(a.name, b.name);
+        return c != 0 ? c < 0 : col.compare(a.strength, b.strength) < 0;
+    });
+    for (const Medication &m : sorted) {
+        ListRow r;
+        r.name = m.name;
+        r.substance = m.substance;
+        r.strength = m.strength;
+        r.daily = dailyPattern(m);
+        const MedStock::Forecast f = MedStock::forecast(m, QDate::currentDate());
+        r.tracked = f.tracked;
+        if (!f.tracked) {
+            r.rest = QStringLiteral("—");
+        } else {
+            double need = 0;
+            for (int d = 0; d < std::max(1, days); ++d)
+                need += MedStock::pendingPreparation(m, day.addDays(d), slot);
+            const double rest = f.stock - need;
+            r.shortage = rest < -0.0001;
+            r.rest = r.shortage ? tr("fehlen %1").arg(MedStock::qtyText(-rest) + unitSuffix(m))
+                                : MedStock::qtyText(std::max(0.0, rest)) + unitSuffix(m);
+        }
+        rows << r;
+    }
+    return rows;
+}
+
+QString listSubtitle(const QDate &day, int days, int slot)
+{
+    const QLocale loc;
+    const QString when = days > 1
+        ? tr("Wochendosierer %1 bis %2").arg(loc.toString(day, QStringLiteral("ddd dd.MM.yyyy")),
+                                             loc.toString(day.addDays(days - 1), QStringLiteral("ddd dd.MM.yyyy")))
+        : tr("Tagesdosierer für %1").arg(loc.toString(day, QStringLiteral("ddd dd.MM.yyyy")));
+    return when + QStringLiteral(", ") + (slot < 0 ? tr("alle Zeitpunkte") : slotName(slot));
 }
 
 } // namespace MedPrep

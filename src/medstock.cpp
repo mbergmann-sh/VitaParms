@@ -323,6 +323,25 @@ QList<Move> moves(qint64 medicationId, int limit)
     return l;
 }
 
+double pendingPreparation(const Medication &m, const QDate &day, int slot)
+{
+    if (!isTracked(m) || m.archived) return 0;
+    const QString uid = medUid(m.id);
+    double sum = 0;
+    for (int s = 0; s < 4; ++s) {
+        if (slot >= 0 && s != slot) continue;
+        const double need = doseOn(m, day, s);
+        if (need <= 0) continue;
+        const QString key = QStringLiteral("%1|%2|%3").arg(uid, day.toString(Qt::ISODate)).arg(s);
+        SqlQuery c(db());
+        c.prepare(QStringLiteral("SELECT 1 FROM med_stock_moves WHERE prep_key = ? LIMIT 1"));
+        c.addBindValue(key);
+        if (c.exec() && c.next()) continue;   // schon abgebucht
+        sum += need;
+    }
+    return sum;
+}
+
 QStringList bookPreparation(qint64 patientId, const QList<Medication> &meds, const QDate &day, int slot)
 {
     QStringList shortage;

@@ -58,4 +58,17 @@ LogResult log(const Patient &p, const QString &by, const QList<Medication> &list
               bool complete, int slot, const QDate &day, int days, const QString &note);
 QString statusText(const MedPreparation &e);                // "✔ vollständig" / "abgebrochen (2 von 5)"
 
+// Stell-Liste zum Drucken: nur die zu stellenden Medikamente, alphabetisch, mit Tagesgabe und dem
+// Restbestand NACH dem Stellen (aktueller Bestand minus der noch nicht abgebuchten Stellmenge).
+struct ListRow {
+    QString name, substance, strength;
+    QString daily;                // "1 - 0 - 1 - 0" (morgens - mittags - abends - zur Nacht)
+    QString rest;                 // "26 Stück" / "fehlen 2 Stück" / "—" (ohne Bestandsführung)
+    bool tracked = false;
+    bool shortage = false;        // Bestand reicht für das Stellen nicht
+};
+QString dailyPattern(const Medication &m);
+QList<ListRow> listRows(const QList<Medication> &list, const QDate &day, int days, int slot);
+QString listSubtitle(const QDate &day, int days, int slot);   // "Tagesdosierer für Sa 07.11.2026, alle Zeitpunkte"
+
 } // namespace MedPrep

@@ -431,6 +431,12 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.30.3:** **Medikamente stellen → „Liste drucken…“** (alle Ausgaben; App: Knopf „Liste“ → PDF): nur die zu
+  stellenden Medikamente des gewählten Tages/der Woche und Zeitpunkts, alphabetisch, mit Präparat, Wirkstoff,
+  Stärke, Tagesgabe („1 - 0 - 1 - 0“) und Restbestand **nach** dem Stellen (Bestand minus noch nicht abgebuchte
+  Stellmenge, `MedStock::pendingPreparation`; rot „fehlen …“, „—“ ohne Bestandsführung). DIN A4 hoch mit
+  üblichen Druckrändern (links 25 mm, sonst 20 mm), Spaltenbreiten nach Inhalt, eine Zeile je Medikament
+  (zu Langes mit „…“ gekürzt). `MedPrep::listRows`, `ReportPrinter::preparationList`/`preparationListToPdf`.
 * **0.30.2:** **Kleine Bildschirme (z. B. 1366 × 768):** Alle Fenster passen sich an (`src/screenfit.*`,
   app-weiter Filter beim Anzeigen): Ist ein Dialog höher oder breiter als der freie Bildschirmbereich,
   kommt sein Inhalt in eine rollbare Fläche, die Leiste mit OK/Abbrechen bleibt darunter sichtbar (z. B.

@@ -7,6 +7,8 @@
 #include "fluid.h"
 #include "contacts.h"
 #include "vaccinations.h"
+#include "medprep.h"
+#include <QGuiApplication>
 #include "careinfo.h"
 #include "database.h"
 #include "formloader.h"
@@ -40,6 +42,7 @@
 #include <QStandardPaths>
 #include <QTextDocument>
 #include <functional>
+#include <numeric>
 
 namespace ReportPrinter {
 
@@ -56,9 +59,12 @@ using RenderFn = std::function<void(QPagedPaintDevice *)>;
 
 const QMarginsF kMarginsMm(15, 12, 15, 12);
 
-void configure(QPagedPaintDevice *dev, QPageLayout::Orientation o)
+// Übliche Druckränder (in Anlehnung an DIN 5008): links 25 mm (Heftrand), sonst 20 mm
+const QMarginsF kStandardMarginsMm(25, 20, 20, 20);
+
+void configure(QPagedPaintDevice *dev, QPageLayout::Orientation o, const QMarginsF &margins = kMarginsMm)
 {
-    dev->setPageLayout(QPageLayout(QPageSize(QPageSize::A4), o, kMarginsMm, QPageLayout::Millimeter));
+    dev->setPageLayout(QPageLayout(QPageSize(QPageSize::A4), o, margins, QPageLayout::Millimeter));
 }
 
 QString exportDir()
@@ -96,7 +102,7 @@ QString askFile(QWidget *parent, const QString &title, const QString &suggested,
 }
 
 void run(QWidget *parent, Target t, const QString &title, const QString &kind, const Patient &p,
-         QPageLayout::Orientation o, const RenderFn &fn)
+         QPageLayout::Orientation o, const RenderFn &fn, const QMarginsF &margins = kMarginsMm)
 {
     switch (t) {
     case Target::Pdf: {
@@ -107,7 +113,7 @@ void run(QWidget *parent, Target t, const QString &title, const QString &kind, c
         w.setResolution(300);
         w.setTitle(title);
         w.setCreator(QStringLiteral("VitaParms"));
-        configure(&w, o);
+        configure(&w, o, margins);
         fn(&w);
         break;
     }
@@ -115,7 +121,7 @@ void run(QWidget *parent, Target t, const QString &title, const QString &kind, c
     case Target::Printer: {
         QPrinter printer(QPrinter::HighResolution);
         printer.setDocName(title);
-        configure(&printer, o);
+        configure(&printer, o, margins);
         QPrintDialog dlg(&printer, parent);
         dlg.setWindowTitle(title + tr(" drucken"));
         if (dlg.exec() == QDialog::Accepted)
@@ -125,7 +131,7 @@ void run(QWidget *parent, Target t, const QString &title, const QString &kind, c
     case Target::Preview: {
         QPrinter printer(QPrinter::HighResolution);
         printer.setDocName(title);
-        configure(&printer, o);
+        configure(&printer, o, margins);
         QPrintPreviewDialog dlg(&printer, parent);
         dlg.setWindowTitle(title + tr(" – Druckvorschau"));
         QObject::connect(&dlg, &QPrintPreviewDialog::paintRequested, [&](QPrinter *pr) { fn(pr); });
@@ -135,7 +141,7 @@ void run(QWidget *parent, Target t, const QString &title, const QString &kind, c
     }
 #else
     default:
-        run(parent, Target::Pdf, title, kind, p, o, fn);   // ohne Druckunterstützung: PDF
+        run(parent, Target::Pdf, title, kind, p, o, fn, margins);   // ohne Druckunterstützung: PDF
         break;
 #endif
     }
@@ -311,6 +317,91 @@ QString journalHtml(QPaintDevice *dev, const JournalModel &m, const QString &per
     h += QStringLiteral("</table>");
     if (m.rowCount() == 0)
         h += QStringLiteral("<p><i>%1</i></p>").arg(tr("Keine Messungen im gewählten Zeitraum."));
+    return h;
+}
+
+// ---------------------------------------------------------------- Stell-Liste (Medikamente stellen)
+// Eine Zeile je Medikament: zu lange Texte werden gekürzt („…“), damit keine Zeile umbricht.
+QString preparationListHtml(QPaintDevice *dev, const QList<MedPrep::ListRow> &rows, const QString &subtitle, qreal fontPt)
+{
+    // etwas Luft für Rahmenlinien und Rundung der Spaltenbreiten, damit nichts über den rechten Rand ragt
+    const qreal bodyW = 0.97 * static_cast<QPagedPaintDevice *>(dev)->pageLayout().paintRectPixels(dev->logicalDpiX()).width();
+    QFont f = QGuiApplication::font();
+    f.setPointSizeF(fontPt);
+    const qreal pad = 2 * qRound(ptPx(dev, 1.3)) + 2 * qMax(1, qRound(ptPx(dev, 0.4))) + ptPx(dev, 3);
+    struct Col { QString head; double pct; Qt::Alignment align; };
+    QList<Col> cols{ { tr("Präparat"), 0, Qt::AlignLeft }, { tr("Wirkstoff"), 0, Qt::AlignLeft },
+                     { tr("Stärke"), 0, Qt::AlignLeft }, { tr("Tagesgabe"), 0, Qt::AlignHCenter },
+                     { tr("Rest nach Stellen"), 0, Qt::AlignRight } };
+    {   // Spaltenbreiten nach dem Inhalt: Stärke, Tagesgabe und Rest bekommen ihre volle Breite,
+        // Präparat und Wirkstoff teilen sich den Rest (zu Langes wird gekürzt)
+        QFont bf = f;
+        bf.setBold(true);
+        const QFontMetricsF fmN(f, dev), fmB(bf, dev);
+        QList<qreal> nat(cols.size(), 0);
+        for (int c = 0; c < cols.size(); ++c) nat[c] = fmB.horizontalAdvance(cols[c].head) + pad;
+        for (const MedPrep::ListRow &r : rows) {
+            nat[0] = std::max(nat[0], fmB.horizontalAdvance(r.name) + pad);
+            nat[1] = std::max(nat[1], fmN.horizontalAdvance(r.substance) + pad);
+            nat[2] = std::max(nat[2], fmN.horizontalAdvance(r.strength) + pad);
+            nat[3] = std::max(nat[3], fmN.horizontalAdvance(r.daily) + pad);
+            nat[4] = std::max(nat[4], fmB.horizontalAdvance(r.rest) + pad);
+        }
+        for (int c = 2; c < 5; ++c) nat[c] = std::min(nat[c], bodyW * 0.22);
+        const qreal total = std::accumulate(nat.begin(), nat.end(), qreal(0));
+        if (total <= bodyW) {
+            for (int c = 0; c < cols.size(); ++c) cols[c].pct = 100.0 * nat[c] / total;   // freien Platz anteilig verteilen
+        } else {
+            const qreal fixed = nat[2] + nat[3] + nat[4];
+            const qreal free = std::max(bodyW * 0.4, bodyW - fixed);
+            const qreal scale = (bodyW - free) / fixed;                                  // nur falls fixed zu groß
+            for (int c = 2; c < 5; ++c) cols[c].pct = 100.0 * nat[c] * std::min<qreal>(1, scale) / bodyW;
+            const qreal both = nat[0] + nat[1];
+            const qreal rest = 100.0 - cols[2].pct - cols[3].pct - cols[4].pct;
+            cols[0].pct = rest * nat[0] / both;
+            cols[1].pct = rest * nat[1] / both;
+        }
+    }
+    auto cell = [&](const QString &text, int c, bool bold = false, const QString &color = {}) {
+        const qreal w = bodyW * cols[c].pct / 100.0 - pad;
+        QFont cf = f;
+        cf.setBold(bold);
+        const QString t = QFontMetricsF(cf, dev).elidedText(text, Qt::ElideRight, w);
+        const QString align = cols[c].align == Qt::AlignRight ? QStringLiteral("right")
+                            : cols[c].align == Qt::AlignHCenter ? QStringLiteral("center") : QStringLiteral("left");
+        QString style = QStringLiteral("white-space: nowrap;");
+        if (!color.isEmpty()) style += QStringLiteral(" color: %1;").arg(color);
+        return QStringLiteral("<td align=\"%1\" style=\"%2\">%3%4%5</td>")
+            .arg(align, style, bold ? QStringLiteral("<b>") : QString(), t.toHtmlEscaped(), bold ? QStringLiteral("</b>") : QString());
+    };
+    QString h = QStringLiteral("<p><b>%1</b><br>%2</p>")
+                    .arg(subtitle.toHtmlEscaped(),
+                         tr("Zu stellen: %1 Medikament(e). Restbestand berechnet am %2.").arg(rows.size())
+                             .arg(QLocale().toString(QDateTime::currentDateTime(), QStringLiteral("dd.MM.yyyy HH:mm"))).toHtmlEscaped());
+    if (rows.isEmpty())
+        return h + QStringLiteral("<p><i>%1</i></p>").arg(tr("Für diesen Tag und Zeitpunkt ist nichts zu stellen."));
+    h += tableOpen(dev) + QStringLiteral("<thead><tr>");
+    for (const Col &c : cols)
+        h += QStringLiteral("<th width=\"%1%\" align=\"%2\" bgcolor=\"#e8edf2\" style=\"white-space: nowrap;\">%3</th>")
+                 .arg(c.pct, 0, 'f', 1)
+                 .arg(c.align == Qt::AlignRight ? QStringLiteral("right") : c.align == Qt::AlignHCenter ? QStringLiteral("center") : QStringLiteral("left"),
+                      c.head.toHtmlEscaped());
+    h += QStringLiteral("</tr></thead>");
+    int n = 0;
+    bool anyShort = false, anyUntracked = false;
+    for (const MedPrep::ListRow &r : rows) {
+        h += n++ % 2 ? QStringLiteral("<tr bgcolor=\"#f6f8fa\">") : QStringLiteral("<tr>");
+        h += cell(r.name, 0, true) + cell(r.substance, 1) + cell(r.strength, 2) + cell(r.daily, 3)
+             + cell(r.rest, 4, r.shortage, r.shortage ? QStringLiteral("#B00020") : QString());
+        h += QStringLiteral("</tr>");
+        anyShort = anyShort || r.shortage;
+        anyUntracked = anyUntracked || !r.tracked;
+    }
+    h += QStringLiteral("</table>");
+    QStringList notes{ tr("Tagesgabe: morgens - mittags - abends - zur Nacht.") };
+    if (anyUntracked) notes << tr("— = ohne Bestandsführung.");
+    if (anyShort) notes << tr("Rot: Der Bestand reicht für das Stellen nicht.");
+    h += QStringLiteral("<p><small>%1</small></p>").arg(notes.join(QLatin1Char(' ')).toHtmlEscaped());
     return h;
 }
 
@@ -684,6 +775,29 @@ void journal(QWidget *parent, const Patient &p, const JournalModel &model,
 {
     run(parent, t, tr("Verlauf"), QStringLiteral("Verlauf"), p, QPageLayout::Landscape,
         [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Verlauf der Vitalwerte"), p, journalHtml(dev, model, periodText), 7.5); });
+}
+
+void preparationList(QWidget *parent, const Patient &p, const QList<Medication> &meds, const QDate &day, int days,
+                     int slot, Target t)
+{
+    const QList<MedPrep::ListRow> rows = MedPrep::listRows(MedPrep::select(meds, day, days, slot).list, day, days, slot);
+    const QString sub = MedPrep::listSubtitle(day, days, slot);
+    run(parent, t, tr("Stell-Liste"), QStringLiteral("Stellliste"), p, QPageLayout::Portrait,
+        [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Medikamente stellen – Liste"), p, preparationListHtml(dev, rows, sub, 9), 9); },
+        kStandardMarginsMm);
+}
+
+bool preparationListToPdf(const QString &path, const Patient &p, const QList<Medication> &meds, const QDate &day,
+                          int days, int slot)
+{
+    const QList<MedPrep::ListRow> rows = MedPrep::listRows(MedPrep::select(meds, day, days, slot).list, day, days, slot);
+    QPdfWriter w(path);
+    w.setResolution(300);
+    w.setCreator(QStringLiteral("VitaParms"));
+    w.setTitle(tr("Medikamente stellen – Liste"));
+    configure(&w, QPageLayout::Portrait, kStandardMarginsMm);
+    printHtml(&w, tr("Medikamente stellen – Liste"), p, preparationListHtml(&w, rows, MedPrep::listSubtitle(day, days, slot), 9), 9);
+    return true;
 }
 
 void vaccinationRecord(QWidget *parent, const Patient &p, Target t)

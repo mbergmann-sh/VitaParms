@@ -97,6 +97,8 @@ Flickable {
                     spacing: Theme.gap
                     ColumnLayout {
                         Layout.fillWidth: true
+                        Layout.preferredWidth: 1       // nicht breiter als der Platz (lange Titel brechen um)
+                        Layout.minimumWidth: 0
                         spacing: 4
                         Label { text: page.current.title || ""; font.pixelSize: Theme.fsL; font.bold: true; color: Theme.ink; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                         Label { text: page.current.summary || ""; color: Theme.ink2; wrapMode: Text.WordWrap; Layout.fillWidth: true }
@@ -106,7 +108,7 @@ Flickable {
                                     wrapMode: Text.WordWrap; Layout.fillWidth: true }
                         }
                         Label { visible: !!page.current.nextDue; text: qsTr("Nächste Wundbeurteilung spätestens am %1.").arg(page.current.nextDue || "")
-                                color: Theme.ink2; font.pixelSize: Theme.fsS }
+                                color: Theme.ink2; font.pixelSize: Theme.fsS; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     }
                     Rectangle {
                         visible: page.current.hasChart === true && page.width > 700

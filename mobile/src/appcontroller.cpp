@@ -1815,6 +1815,13 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
     } else if (kind == QLatin1String("vaccinations")) {
         path = QStringLiteral("%1/Impfpass_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::vaccinationRecordToPdf(path, *p);
+    } else if (kind == QLatin1String("preplist")) {
+        const QDate day = options.contains(QStringLiteral("day"))
+            ? QDate::fromString(options.value(QStringLiteral("day")).toString().left(10), Qt::ISODate) : QDate::currentDate();
+        path = QStringLiteral("%1/Stellliste_%2_%3.pdf").arg(dir, base, (day.isValid() ? day : QDate::currentDate()).toString(Qt::ISODate));
+        ok = ReportPrinter::preparationListToPdf(path, *p, db.medications(pid, false), day.isValid() ? day : QDate::currentDate(),
+                                                 std::max(1, options.value(QStringLiteral("days"), 1).toInt()),
+                                                 options.value(QStringLiteral("slot"), -1).toInt());
     } else if (kind == QLatin1String("pharmacy")) {
         path = QStringLiteral("%1/Medikationsliste_Apotheke_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::pharmacyListToPdf(path, *p, db.medications(pid, false));

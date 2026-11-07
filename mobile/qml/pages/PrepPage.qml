@@ -105,6 +105,10 @@ Page {
                 Label { text: page.summary.name || ""; color: Theme.muted; font.pixelSize: Theme.fsS; Layout.fillWidth: true; Layout.minimumWidth: 0
                         horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             }
+            VButton { objectName: "prepListButton"; text: qsTr("Liste"); kind: "flat"
+                      // Liste der zu stellenden Medikamente als PDF (alphabetisch, Tagesgabe, Rest nach dem Stellen)
+                      onClicked: { const f = app.exportReport("preplist", page.personId, { days: page.days, slot: page.slot, day: day.isoDate })
+                                   if (f) app.openFile(f); else win.toast(app.lastError, true) } }
             VButton { text: qsTr("Protokoll"); kind: "flat"; onClicked: { page.saveNote(); logPopup.open() } }
         }
     }

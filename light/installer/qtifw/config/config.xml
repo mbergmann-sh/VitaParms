@@ -2,8 +2,8 @@
 <!-- ERZEUGT von qmake aus config.xml.in – Änderungen bitte dort vornehmen -->
 <Installer>
     <Name>VitaParms light</Name>
-    <Version>0.30.2</Version>
-    <Title>VitaParms light 0.30.2</Title>
+    <Version>0.30.3</Version>
+    <Title>VitaParms light 0.30.3</Title>
     <Publisher>Michael Bergmann</Publisher>
     <StartMenuDir>VitaParms light</StartMenuDir>
     <!-- Zielordner je System im Steuerskript: Windows C:\VPlight, macOS /Applications/VPlight, Linux ~/VPlight -->

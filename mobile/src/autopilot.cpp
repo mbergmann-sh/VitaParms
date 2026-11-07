@@ -1377,6 +1377,10 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
         const QString logPdf = app.exportReport(QStringLiteral("preplog"), pid, { { QStringLiteral("days"), 30 } });
         QFile lf(logPdf);
         check(lf.open(QIODevice::ReadOnly) && lf.read(5) == "%PDF-", "Stellen: Protokoll als PDF");
+        const QString listPdf = app.exportReport(QStringLiteral("preplist"), pid,
+            { { QStringLiteral("days"), 7 }, { QStringLiteral("slot"), -1 }, { QStringLiteral("day"), QDate::currentDate().toString(Qt::ISODate) } });
+        QFile spf(listPdf);
+        check(spf.open(QIODevice::ReadOnly) && spf.read(5) == "%PDF-", "Stellen: Liste als PDF");
 
         // Bildschirmfotos (vor dem Bestätigen: offene Bestellliste)
         QQmlProperty::write(h, QStringLiteral("tab"), 4);

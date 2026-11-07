@@ -11,9 +11,9 @@ also je einmal bauen (auf dem Rechner selbst, in einer virtuellen Maschine oder 
 Die Abhängigkeiten (`Depends:`) ermittelt `dpkg-shlibdeps` automatisch aus den tatsächlich
 gelinkten Bibliotheken, die Distribution steht in der Versionsnummer:
 
-    vitaparms_0.30.2-1~deb12_amd64.deb            VitaParms für Debian 12
-    vitaparms-light_0.30.2-1~deb13_amd64.deb      VitaParms light für Debian 13
-    vitaparms_0.30.2-1~ubuntu24.04_amd64.deb      VitaParms für Ubuntu 24.04
+    vitaparms_0.30.3-1~deb12_amd64.deb            VitaParms für Debian 12
+    vitaparms-light_0.30.3-1~deb13_amd64.deb      VitaParms light für Debian 13
+    vitaparms_0.30.3-1~ubuntu24.04_amd64.deb      VitaParms für Ubuntu 24.04
 
 Das Bauen ist bewusst **nicht** in den qmake-Build eingebunden, sondern wird von Hand gestartet.
 
@@ -34,7 +34,9 @@ VitaParms braucht **Qt 6.4 oder neuer**; auf älteren Distributionen ersatzweise
 ```sh
 sudo apt install build-essential dpkg-dev \
      qmake6 qt6-base-dev qt6-base-dev-tools qt6-tools-dev qt6-l10n-tools libgl-dev \
-     qt6-multimedia-dev qt6-speech-dev qt6-declarative-dev qt6-pdf-dev
+     qt6-multimedia-dev qt6-speech-dev qt6-declarative-dev
+# nur wenn vorhanden (nicht in jedem Debian-Archiv bzw. nicht für jede Architektur):
+sudo apt install qt6-pdf-dev
 ```
 
 | Paket | wofür |
@@ -93,8 +95,8 @@ Ein Durchlauf für beide Ausgaben dauert je nach Rechner etwa 5–15 Minuten.
 ## 3. Installieren, aktualisieren, entfernen
 
 ```sh
-sudo apt install ./dist-deb/vitaparms_0.30.2-1~deb12_amd64.deb
-sudo apt install ./dist-deb/vitaparms-light_0.30.2-1~deb12_amd64.deb
+sudo apt install ./dist-deb/vitaparms_0.30.3-1~deb12_amd64.deb
+sudo apt install ./dist-deb/vitaparms-light_0.30.3-1~deb12_amd64.deb
 ```
 
 `apt` (nicht `dpkg -i`) installiert die fehlenden Qt-Laufzeitpakete gleich mit. Eine neuere

@@ -178,6 +178,11 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
     m_leafletBtn->setToolTip(tr("Beipackzettel des angezeigten Medikaments anzeigen bzw. im Internet abrufen"));
     m_leafletBtn->setAutoDefault(false);
     row->addWidget(m_leafletBtn);
+    auto *listBtn = new QPushButton(tr("Liste &drucken…"), this);
+    listBtn->setObjectName(QStringLiteral("prepListPrintButton"));
+    listBtn->setToolTip(tr("Liste der zu stellenden Medikamente drucken – alphabetisch, mit Tagesgabe und Restbestand nach dem Stellen"));
+    listBtn->setAutoDefault(false);
+    row->addWidget(listBtn);
     row->addWidget(logBtn);
     row->addWidget(close);
     lay->addLayout(row);
@@ -197,6 +202,11 @@ MedicationAssistant::MedicationAssistant(const Patient &p, const QList<Medicatio
         Database::instance().updateMedicationLeaflet(cur.id, cur.pzn, cur.extra);
         for (Medication &m : m_source)
             if (m.id == cur.id) m = cur;
+    });
+    connect(listBtn, &QPushButton::clicked, this, [this] {
+        m_speech->stop();
+        ReportPrinter::preparationList(this, m_patient, m_source, m_date->date(), days(), m_slot->currentData().toInt(),
+                                       ReportPrinter::Target::Preview);
     });
     connect(logBtn, &QPushButton::clicked, this, [this] {
         saveNote();

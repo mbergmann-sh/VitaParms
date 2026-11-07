@@ -126,6 +126,8 @@ void setTracked(Medication &m, bool on);                       // speichert die 
 // Stellvorgang abbuchen (je Medikament, Tag und Einnahmezeit nur einmal). Liefert die Namen
 // der Medikamente, bei denen der Bestand nicht reichte.
 QStringList bookPreparation(qint64 patientId, const QList<Medication> &meds, const QDate &day, int slot);
+// Menge, die das Stellen an diesem Tag/Zeitpunkt noch abbuchen wird (schon gestellt → 0)
+double pendingPreparation(const Medication &m, const QDate &day, int slot);
 
 Forecast forecast(const Medication &m, const QDate &today = QDate::currentDate());
 
