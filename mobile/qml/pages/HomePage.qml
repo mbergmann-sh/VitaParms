@@ -12,6 +12,7 @@ Page {
     property var personId: 0
     property var summary: ({})
     property int tab: 0
+    function goBack() { if (tab === 0) return false; tab = 0; return true }   // „Zurück“: erst zur Übersicht
     background: Rectangle { color: Theme.paper }
 
     // Nach jeder Änderung: nur zuweisen, was sich wirklich geändert hat. Eine neue Personenliste baut die

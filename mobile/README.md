@@ -47,15 +47,17 @@ qmake6 ../light/mobile/VitaParmsLightMobile.pro && make -j        # bzw. Qt Crea
 
 ## Voraussetzungen
 
-* Qt **6.5 oder neuer** mit der Komponente *Android* (Qt Maintenance Tool → Qt 6.x → Android),
+* Qt **6.10 oder neuer** mit der Komponente *Android* (ältere Versionen bricht qmake mit einer
+  Meldung ab: erst Qt 6.10 kann Ziel-API 36 und 16-KB-Speicherseiten, die Google Play verlangt) (Qt Maintenance Tool → Qt 6.x → Android),
   dazu *Qt Multimedia* und *Qt TextToSpeech* (optional)
 * Qt Creator mit eingerichtetem Android-SDK/NDK
   (*Bearbeiten → Einstellungen → Geräte → Android → „Set Up SDK“* lädt alles Nötige)
-* ein Android-Tablet (Android 8 oder neuer) mit **Entwickleroptionen** und **USB-Debugging**:
+* ein Android-Tablet oder Smartphone (Android 9 oder neuer) mit **Entwickleroptionen** und **USB-Debugging**:
   *Einstellungen → Über das Tablet → 7 × auf „Build-Nummer“ tippen*, danach
   *Einstellungen → System → Entwickleroptionen → USB-Debugging* einschalten
 
-Die App wird nicht über Google Play verteilt, sondern direkt als APK installiert.
+Die App wird bisher nicht über Google Play verteilt, sondern direkt als APK installiert; für den
+Play Store ist sie vorbereitet (Abschnitt *Google Play* unten).
 
 ## Bauen und auf das Tablet bringen
 
@@ -76,9 +78,29 @@ am Computer *Computer → Tablet…*, (3) die alte App deinstallieren.
 
 **Termin-Erinnerungen:** Beim ersten Anmelden fragt Android (ab Version 13), ob VitaParms
 Benachrichtigungen senden darf. Die App stellt für die Erinnerungen der nächsten 14 Tage je einen
-Wecker (`AlarmManager`, Recht `USE_EXACT_ALARM`); Android zeigt sie auch an, wenn die App nicht
-läuft, und stellt sie nach einem Neustart wieder (`BootReceiver`). Auf dem Sperrbildschirm steht nur
-„VitaParms – Termin-Erinnerung“.
+Wecker (`AlarmManager`); Android zeigt sie auch an, wenn die App nicht läuft, und stellt sie nach
+einem Neustart wieder (`BootReceiver`). Auf dem Sperrbildschirm steht nur „VitaParms –
+Termin-Erinnerung“. Pünktlich (`setExactAndAllowWhileIdle`) mit dem Recht `SCHEDULE_EXACT_ALARM`
+(„Wecker und Erinnerungen“): bis Android 13 automatisch erteilt, ab Android 14 vom Anwender –
+*Einstellungen → Erinnerungen → Pünktliche Erinnerungen erlauben* öffnet die Android-Einstellung;
+ohne das Recht stellt die App die Wecker ungefähr (`setAndAllowWhileIdle`). Erteilt der Anwender
+das Recht, stellt der `BootReceiver` (`SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED`) die Wecker
+neu. `USE_EXACT_ALARM` (ohne Rückfrage) ist seit 0.31.2 entfernt: Google Play lässt es nur für
+Wecker- und Kalender-Apps zu. Die Wecker stellt ein Hintergrund-Thread; ein unveränderter Plan
+wird nicht erneut übergeben.
+
+**Android 15 und 16 (Ziel-API 36):**
+
+* *Darstellung bis an den Rand:* Android zeichnet die App unter Status- und Navigationsleiste.
+  Qt (ab 6.9) polstert den Fensterinhalt selbst um diese Ränder; `SystemUi`
+  (`src/systemui.*`, in QML `systemUi`) meldet sie zusätzlich (`QWindow::safeAreaMargins`) und
+  stellt die Symbole der Leisten passend zum hellen/dunklen Design ein (`SystemBars.java`).
+* *Zurück:* `android:enableOnBackInvokedCallback="false"` – sonst meldet Android 16 „Zurück“ nicht
+  mehr als Taste, und die App würde geschlossen statt eine Seite zurückzugehen. „Zurück“ schließt
+  die geöffnete Seite wie *Abbrechen*/*Schließen*, führt aus einem Reiter zur Übersicht und beendet
+  die App erst dort (`win.goBack()` in `Main.qml`).
+* Auf Geräten mit Android 13 oder älter ändert sich dadurch nichts. Zum Prüfen ein Gerät mit
+  Android 15/16 oder den Emulator von Android Studio verwenden.
 
 **Release-Build:** Android installiert nur signierte Pakete. Ein *Debug*-Build wird automatisch mit
 dem Debug-Schlüssel signiert; ein *Release*-Build bleibt unsigniert, bis ein eigener Schlüssel
@@ -127,6 +149,31 @@ kopieren und dort öffnen (vorher *Installation aus unbekannten Quellen* für de
 erlauben). Für eine dauerhafte Installation die APK mit einem eigenen Schlüssel signieren
 (*Build Android APK → Sign package*), sonst lässt sich ein Update später nicht über eine ältere
 Version installieren.
+
+## Google Play: App Bundle und 16-KB-Speicherseiten
+
+Google Play verlangt (Stand November 2026) für neue Apps und Updates **Ziel-API 36** (Android 16),
+für 64-Bit-Geräte **16-KB-Speicherseiten** und ein **App Bundle** (`.aab`) statt einer APK.
+
+* *Ziel-API* steht in `mobile.pri` (`ANDROID_TARGET_SDK_VERSION = 36`, Mindestversion 28 =
+  Android 9, wie Qt 6.10+).
+* *App Bundle:* *Projekte → Build (Release) → Build Android APK*: alle ABIs wählen (arm64-v8a,
+  armeabi-v7a, x86_64), *Build Android App Bundle (\*.aab)* anhaken, mit dem eigenen Schlüssel
+  signieren. Ergebnis: `android-build/build/outputs/bundle/release/android-build-release.aab`.
+* *16 KB:* Qt ab 6.10 und das mitgelieferte OpenSSL (arm64-v8a, x86_64: Ausrichtung 0x4000) sind
+  bereit; der eigene Code wird vom NDK (r28 oder neuer) passend gebaut. Prüfen:
+
+  ```sh
+  tools/check_android_16k.sh android-build/build/outputs/bundle/release/android-build-release.aab
+  tools/check_android_16k.sh android-build/build/outputs/apk/release/android-build-release-signed.apk
+  ```
+
+  Das Skript prüft jede 64-Bit-Bibliothek (`readelf`, LOAD-Ausrichtung ≥ 0x4000) und bei einer
+  APK zusätzlich die Lage im Paket (`zipalign -c -P 16`, Android-Build-Tools 35+).
+* *Play Console:* Erklärung „Gesundheits-Apps“, Angaben zur Datensicherheit, Adresse einer
+  Datenschutzerklärung; in der Beschreibung der Hinweis „kein Medizinprodukt“.
+* *Ohne Play Store:* Google führt eine Registrierungspflicht für Entwickler auch bei direkt
+  installierten APKs ein (zunächst einzelne Länder seit 30.09.2026, weltweit voraussichtlich 2027).
 
 ## Krankenakte: Kamera, Teilen, Vorschau
 

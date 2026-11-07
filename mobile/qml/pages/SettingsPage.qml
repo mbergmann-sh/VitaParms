@@ -143,10 +143,17 @@ ColumnLayout {   // Abgleich und Website: nicht in VitaParms light (dort nur USB
                        checked: app.quarterReminderEnabled(); onToggled: app.setQuarterReminderEnabled(checked); font.pixelSize: Theme.fsM }
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.muted; font.pixelSize: Theme.fsS; leftPadding: 36
                     text: qsTr("Zu Beginn jedes Quartals: KV-Karte in den Praxen einlesen lassen.") }
+            // app.permissionRevision: neu prüfen, wenn die App aus den Systemeinstellungen zurückkommt
             Label { Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
-                    text: app.notificationsAllowed() ? qsTr("Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.")
-                                                     : qsTr("Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.") }
-            VButton { visible: !app.notificationsAllowed(); text: qsTr("Benachrichtigungen erlauben"); onClicked: app.requestNotifications() }
+                    text: (app.permissionRevision, app.notificationsAllowed())
+                          ? qsTr("Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.")
+                          : qsTr("Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.") }
+            VButton { visible: (app.permissionRevision, !app.notificationsAllowed()); text: qsTr("Benachrichtigungen erlauben"); onClicked: app.requestNotifications() }
+            Label { objectName: "exactAlarmLabel"; Layout.fillWidth: true; wrapMode: Text.WordWrap; color: Theme.ink2
+                    visible: (app.permissionRevision, !app.remindersExact())
+                    text: qsTr("Pünktliche Erinnerungen sind nicht erlaubt: Android zeigt sie dann ungefähr, unter Umständen einige Minuten später. Erlauben unter „Wecker und Erinnerungen“.") }
+            VButton { objectName: "exactAlarmButton"; visible: (app.permissionRevision, !app.remindersExact())
+                      text: qsTr("Pünktliche Erinnerungen erlauben"); onClicked: app.openExactAlarmSettings() }
 
             SectionTitle { text: qsTr("Darstellung") }
             Flow {

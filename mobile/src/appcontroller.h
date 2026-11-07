@@ -35,6 +35,8 @@ class AppController : public QObject
     Q_PROPERTY(QString language READ language NOTIFY languageChanged)
     Q_PROPERTY(bool languageChosen READ languageChosen NOTIFY languageChanged)
     Q_PROPERTY(int dataRevision READ dataRevision NOTIFY dataChanged)
+    // zählt hoch, wenn die App wieder in den Vordergrund kommt (Rechte evtl. in den Systemeinstellungen geändert)
+    Q_PROPERTY(int permissionRevision READ permissionRevision NOTIFY permissionsChanged)
     Q_PROPERTY(bool disclaimerAccepted READ disclaimerAccepted NOTIFY disclaimerChanged)
     Q_PROPERTY(bool usbActive READ usbActive NOTIFY usbChanged)
     Q_PROPERTY(bool usbConnected READ usbConnected NOTIFY usbChanged)
@@ -173,6 +175,9 @@ public:
     Q_INVOKABLE void setQuarterReminderEnabled(bool on);       // gestellte Erinnerungen (Anzeige, Prüfung)
     Q_INVOKABLE bool notificationsAllowed() const;
     Q_INVOKABLE void requestNotifications();
+    Q_INVOKABLE bool remindersExact() const;          // pünktliche Wecker erlaubt (Android 12+; sonst ungefähr)
+    Q_INVOKABLE void openExactAlarmSettings();        // Systemeinstellung „Wecker und Erinnerungen“
+    int permissionRevision() const { return m_permRevision; }
 
     // ---- Ausgaben (PDF/Excel → Anzeige-App, dort drucken oder teilen)
     Q_INVOKABLE QString exportReport(const QString &kind, qint64 pid, const QVariantMap &options = {});
@@ -303,6 +308,7 @@ public:
     Q_INVOKABLE void setContexts(const QStringList &l);
 
 signals:
+    void permissionsChanged();
     void languageChanged();
     void sessionChanged();
     void lastErrorChanged();
@@ -334,7 +340,8 @@ private:
     QString m_syncMessage;
     int m_revision = 0;
     QTimer m_idle;
-    QTimer m_bumpTimer;               // fasst mehrere Änderungen eines Vorgangs zu einem Neuladen zusammen
+    QTimer m_bumpTimer;
+    int m_permRevision = 0;               // fasst mehrere Änderungen eines Vorgangs zu einem Neuladen zusammen
     class UsbSyncServer *m_usb = nullptr;
     class TabletReminders *m_reminders = nullptr;
     class Speech *m_speech = nullptr;

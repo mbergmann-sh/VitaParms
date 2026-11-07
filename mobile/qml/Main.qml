@@ -47,7 +47,23 @@ ApplicationWindow {
     function quitApp() {
         win.askUsbThen(function() { win.exitConfirmed = true; if (app.loggedIn) app.lock(); Qt.quit() }, qsTr("Ohne Abgleich beenden"))
     }
+    // „Zurück“ (Taste oder Wischgeste): offene Seite schließen wie mit „Abbrechen“/„Schließen“, auf der
+    // Startseite zuerst zur Übersicht; erst danach beenden. Liefert true, wenn ein Schritt zurück ging.
+    function goBack() {
+        const cur = stack.currentItem
+        if (stack.depth > 1) {
+            const n = systemUi.signalArity(cur, "closed")   // wie „Abbrechen“/„Schließen“ der Seite
+            if (n === 0) cur.closed()
+            else if (n > 0) cur.closed("")
+            else stack.pop()
+            return true
+        }
+        if (cur && typeof cur.goBack === "function") return cur.goBack()
+        return false
+    }
     onClosing: (close) => {
+        // Android schickt „Zurück“, das keine Seite behandelt, als Schließen des Fensters
+        if (!win.exitConfirmed && Qt.platform.os === "android" && win.goBack()) { close.accepted = false; return }
         if (win.exitConfirmed || !app.loggedIn || !app.usbAskOnExit) return
         close.accepted = false
         win.askUsbThen(function() { win.exitConfirmed = true; Qt.quit() }, qsTr("Ohne Abgleich beenden"))
@@ -111,6 +127,11 @@ ApplicationWindow {
         id: stack
         objectName: "stack"
         anchors.fill: parent
+        // Android 15+: nicht unter Status- und Navigationsleiste (ab Qt 6.9 polstert das Fenster selbst)
+        anchors.topMargin: systemUi.windowPads ? 0 : systemUi.top
+        anchors.bottomMargin: systemUi.windowPads ? 0 : systemUi.bottom
+        anchors.leftMargin: systemUi.windowPads ? 0 : systemUi.left
+        anchors.rightMargin: systemUi.windowPads ? 0 : systemUi.right
         initialItem: win.startPage()
         onCurrentItemChanged: app.userActivity()
         // ruhige Übergänge ohne Schwung

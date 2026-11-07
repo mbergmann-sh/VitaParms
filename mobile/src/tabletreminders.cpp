@@ -107,3 +107,21 @@ bool TabletReminders::permissionGranted() const
     return true;
 #endif
 }
+
+bool TabletReminders::exactAllowed() const
+{
+#ifdef Q_OS_ANDROID
+    return QJniObject::callStaticMethod<jboolean>("de/mbergmann/vitaparms/Reminders", "exactAllowed",
+        "(Landroid/content/Context;)Z", QJniObject(QNativeInterface::QAndroidApplication::context()).object());
+#else
+    return true;
+#endif
+}
+
+void TabletReminders::openExactSettings()
+{
+#ifdef Q_OS_ANDROID
+    QJniObject::callStaticMethod<void>("de/mbergmann/vitaparms/Reminders", "openExactSettings",
+        "(Landroid/content/Context;)V", QJniObject(QNativeInterface::QAndroidApplication::context()).object());
+#endif
+}

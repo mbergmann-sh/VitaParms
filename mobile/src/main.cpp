@@ -1,6 +1,7 @@
 // VitaParms Tablet – Startpunkt
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "systemui.h"
 #include "edition.h"
 #include "chartitem.h"
 #include "database.h"
@@ -63,6 +64,7 @@ int main(int argc, char *argv[])
     if (!controller.login(qEnvironmentVariable("VP_AUTOPILOT_USER"), qEnvironmentVariable("VP_AUTOPILOT_PASSWORD")))
         qWarning("Anmeldung fehlgeschlagen: %s", qPrintable(controller.lastError()));
 #endif
+    SystemUi systemUi;                     // Ränder der Systemleisten (Android 15+), Farbe der Symbole (vor der Engine: lebt länger)
     QQmlApplicationEngine engine;
     controller.setEngine(&engine);
     // Seiten der Krankenakte: image://docpage/<Dokument-ID oder draft>/<Seite>
@@ -98,9 +100,13 @@ int main(int argc, char *argv[])
     };
     engine.addImageProvider(QStringLiteral("wound"), new WoundImages(&controller));
     engine.rootContext()->setContextProperty(QStringLiteral("app"), &controller);
+    engine.rootContext()->setContextProperty(QStringLiteral("systemUi"), &systemUi);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty())
         return 1;
+    systemUi.attach(qobject_cast<QWindow *>(engine.rootObjects().constFirst()));
+    systemUi.setLightBars(!controller.dark());
+    QObject::connect(&controller, &AppController::themeChanged, &systemUi, [&] { systemUi.setLightBars(!controller.dark()); });
 #ifdef VP_AUTOPILOT
     QTimer::singleShot(800, &app, [&] { QCoreApplication::exit(runAutopilot(engine, controller)); });
 #endif

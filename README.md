@@ -431,6 +431,17 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.31.2:** **VitaParms mobile für Android 15/16 und Google Play:** Ziel-API 36 (Android 16),
+  Mindestversion Android 9, qmake verlangt für Android Qt 6.10 oder neuer (16-KB-Speicherseiten).
+  Darstellung bis an den Rand: Inhalt bleibt frei von Status- und Navigationsleiste (`SystemUi`,
+  `src/systemui.*`), Symbole der Leisten passend zum hellen/dunklen Design (`SystemBars.java`).
+  **Zurück-Taste/-Geste** schließt die geöffnete Seite wie *Abbrechen*, führt aus einem Reiter zur
+  Übersicht und beendet die App erst dort (vorher beendete sie die App sofort);
+  `enableOnBackInvokedCallback="false"`. Erinnerungen ohne `USE_EXACT_ALARM` (Google Play nur für
+  Wecker-/Kalender-Apps): pünktlich mit `SCHEDULE_EXACT_ALARM`, ab Android 14 vom Anwender erteilt
+  (*Einstellungen → Erinnerungen → Pünktliche Erinnerungen erlauben*), sonst ungefähr. Neues Skript
+  `tools/check_android_16k.sh` prüft APK/AAB auf 16-KB-Speicherseiten. Autopilot: „Zurück“ und
+  vorgetäuschte Systemleisten (`VP_AUTOPILOT_SAFE`). Auf Android 13 und älter ändert sich nichts.
 * **0.31.1:** **App reagiert wieder flüssig** (VitaParms mobile, vor allem Tablets): Nach jeder Änderung
   (Messung speichern, löschen, Bestand buchen …) luden bisher alle Reiter neu – auch die unsichtbaren, weil
   die Startseite die Person bei jedem Neuladen neu setzte – und das bis zu dreimal je Vorgang. Auf einem

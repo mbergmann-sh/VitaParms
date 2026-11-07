@@ -9,7 +9,7 @@ Rectangle {
     function show(msg, error) { label.text = msg; isError = !!error; opacity = 1; timer.restart() }
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: 28
+    anchors.bottomMargin: 28 + (systemUi.windowPads ? 0 : systemUi.bottom)
     width: Math.min(parent.width - 32, label.implicitWidth + 40)
     height: label.implicitHeight + 24
     radius: Theme.radius

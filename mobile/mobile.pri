@@ -42,10 +42,12 @@ SOURCES += \
     $$PWD/src/appcontroller_admin.cpp \
     $$PWD/src/appcontroller_wounds.cpp \
     $$PWD/src/tabletreminders.cpp \
+    $$PWD/src/systemui.cpp \
     $$PWD/src/chartitem.cpp
 HEADERS += \
     $$PWD/src/appcontroller.h \
     $$PWD/src/tabletreminders.h \
+    $$PWD/src/systemui.h \
     $$PWD/src/chartitem.h
 
 # Nur für Bildschirmfotos/Tests: automatischer Rundgang (qmake CONFIG+=autopilot)
@@ -69,8 +71,11 @@ android {
     ANDROID_VERSION_NAME = $$VERSION
     ANDROID_VERSION_CODE = $$num_add($$member(VP_PARTS, 0)000000, $$member(VP_PARTS, 1)000, $$member(VP_PARTS, 2))
     isEmpty(ANDROID_PACKAGE_SOURCE_DIR): ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
-    ANDROID_TARGET_SDK_VERSION = 34
-    ANDROID_MIN_SDK_VERSION = 26
+    # Google Play verlangt seit 31.08.2026 Ziel-API 36 (Android 16) und 16-KB-Speicherseiten;
+    # beides kann Qt erst ab 6.10. Qt 6.10 und neuer laufen ab Android 9 (API 28).
+    !versionAtLeast(QT_VERSION, 6.10.0): error("VitaParms mobile für Android braucht Qt 6.10 oder neuer (gefunden: $$QT_VERSION) – Ziel-API 36 und 16-KB-Speicherseiten")
+    ANDROID_TARGET_SDK_VERSION = 36
+    ANDROID_MIN_SDK_VERSION = 28
 
     # Kurzanleitung „Erste Schritte“ (PDF, deutsch und englisch) ins Paket: assets:/docs
     isEmpty(VP_MOBILE_DOCS): VP_MOBILE_DOCS = $$PWD/../docs/VitaParms-ErsteSchritte.pdf $$PWD/../docs/VitaParms-GettingStarted.pdf

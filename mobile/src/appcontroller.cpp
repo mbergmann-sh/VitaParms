@@ -104,7 +104,10 @@ AppController::AppController(QObject *parent) : QObject(parent)
 #endif
     m_reminders = new TabletReminders(this);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState s) {
-        if (s == Qt::ApplicationActive && loggedIn() && !m_demo) m_reminders->scheduleSoon();
+        if (s != Qt::ApplicationActive) return;
+        ++m_permRevision;
+        emit permissionsChanged();
+        if (loggedIn() && !m_demo) m_reminders->scheduleSoon();
     });
     m_bumpTimer.setSingleShot(true);
     m_bumpTimer.setInterval(0);
@@ -326,6 +329,17 @@ bool AppController::notificationsAllowed() const
 void AppController::requestNotifications()
 {
     m_reminders->requestPermission();
+}
+
+bool AppController::remindersExact() const
+{
+    return m_reminders->exactAllowed();
+}
+
+void AppController::openExactAlarmSettings()
+{
+    m_reminders->resetPlan();          // nach der Rückkehr die Wecker auf jeden Fall neu stellen
+    m_reminders->openExactSettings();
 }
 
 void AppController::lock()

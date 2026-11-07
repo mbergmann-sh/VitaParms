@@ -2,6 +2,9 @@
 # Used by tools/apply_translations.py to fill translations/vitaparms_en.ts.
 # Edit vitaparms_en.ts with Qt Linguist afterwards if you prefer.
 EN = {
+"Pünktliche Erinnerungen sind nicht erlaubt: Android zeigt sie dann ungefähr, unter Umständen einige Minuten später. Erlauben unter „Wecker und Erinnerungen“.": "On-time reminders are not allowed: Android then shows them approximately, possibly a few minutes late. Allow them under “Alarms & reminders”.",
+"Pünktliche Erinnerungen erlauben": "Allow on-time reminders",
+"Content stays clear of the system bars": "Content stays clear of the system bars",
 "Administrator-Konto einrichten": "Set up administrator account",
 "Neues Anmeldekonto": "New login account",
 "Passwort neu setzen": "Reset password",

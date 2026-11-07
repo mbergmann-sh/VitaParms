@@ -9,10 +9,11 @@
     android:versionName="-- %%INSERT_VERSION_NAME%% --">
     <!-- %%INSERT_PERMISSIONS -->
     <!-- %%INSERT_FEATURES -->
-    <!-- Termin-Erinnerungen: Benachrichtigungen (Android 13+), pünktliche Wecker, nach Neustart neu stellen -->
+    <!-- Termin-Erinnerungen: Benachrichtigungen (Android 13+), pünktliche Wecker, nach Neustart neu stellen.
+         Pünktliche Wecker über SCHEDULE_EXACT_ALARM (Android 14+: vom Anwender erteilt, sonst ungefähr);
+         USE_EXACT_ALARM lässt Google Play nur für Wecker- und Kalender-Apps zu. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <supports-screens
         android:anyDensity="true"
@@ -44,7 +45,9 @@
         android:label="VitaParms light"
         android:icon="@drawable/icon"
         android:allowBackup="false"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="false">
+        <!-- enableOnBackInvokedCallback="false": Android 16 (Ziel-API 36) meldet „Zurück“ sonst nicht mehr
+             als Taste; die App ginge dann nicht eine Seite zurück, sondern würde geschlossen. -->
         <activity
             android:name="org.qtproject.qt.android.bindings.QtActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
@@ -76,13 +79,14 @@
         <receiver
             android:name="de.mbergmann.vitaparms.ReminderReceiver"
             android:exported="false" />
-        <!-- nach einem Neustart die gestellten Erinnerungen wiederherstellen -->
+        <!-- nach einem Neustart (oder wenn pünktliche Wecker erlaubt wurden) die Erinnerungen neu stellen -->
         <receiver
             android:name="de.mbergmann.vitaparms.BootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 

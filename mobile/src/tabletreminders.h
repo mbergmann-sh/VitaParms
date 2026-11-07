@@ -35,6 +35,9 @@ public:
     void scheduleNow();
     void requestPermission();     // Android 13+: Erlaubnis für Benachrichtigungen erfragen
     bool permissionGranted() const;
+    bool exactAllowed() const;    // Android 12+: pünktliche Wecker erlaubt (sonst ungefähr)
+    void openExactSettings();     // Systemeinstellung „Wecker und Erinnerungen“
+    void resetPlan() { m_lastPlan.clear(); }   // nächster Plan wird auf jeden Fall übergeben
     int lastCount() const { return m_count; }
 
 private:

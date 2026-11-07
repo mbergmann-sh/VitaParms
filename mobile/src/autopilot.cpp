@@ -293,6 +293,55 @@ static int vaccinationChecks(QQuickWindow *win, AppController &app, QObject *hom
 }
 
 // Terminkollisions-Check (nur VitaParms, nicht light)
+// 0.31.2: „Zurück“ (Android) geht eine Seite bzw. zur Übersicht zurück statt die App zu schließen;
+// vorgetäuschte Systemleisten (VP_AUTOPILOT_SAFE): Inhalt bleibt frei von Status- und Navigationsleiste
+static int systemChecks(QQuickWindow *win, AppController &app, QObject *home, const QString &out, const QString &prefix)
+{
+    int fails = 0;
+    auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
+    auto back = [&]() { QVariant r; QMetaObject::invokeMethod(win, "goBack", Q_RETURN_ARG(QVariant, r)); wait(350); return r.toBool(); };
+    auto *stack = qobject_cast<QQuickItem *>(win->findChild<QObject *>(QStringLiteral("stack")));
+    check(stack != nullptr, "Zurück: Seitenstapel");
+    if (!stack) return fails;
+    if (QObject *q = win->findChild<QObject *>(QStringLiteral("profileQuestion"))) QMetaObject::invokeMethod(q, "close");
+    QQmlProperty::write(home, QStringLiteral("tab"), 0);
+    wait(300);
+    const int depth0 = stack->property("depth").toInt();
+    QMetaObject::invokeMethod(win, "openUsbSync");
+    wait(400);
+    check(stack->property("depth").toInt() == depth0 + 1, "Zurück: Seite geöffnet");
+    check(back() && stack->property("depth").toInt() == depth0, "Zurück: schließt die geöffnete Seite");
+    QQmlProperty::write(home, QStringLiteral("tab"), 3);
+    wait(300);
+    check(back() && QQmlProperty::read(home, QStringLiteral("tab")).toInt() == 0, "Zurück: von einem Reiter zur Übersicht");
+    check(!back(), "Zurück: auf der Übersicht nichts mehr zurück (App darf schließen)");
+    check(stack->property("depth").toInt() == depth0, "Zurück: Startseite bleibt");
+
+    // Systemleisten: Werte aus VP_AUTOPILOT_SAFE (oben,rechts,unten,links)
+    QQmlEngine *eng = qmlEngine(win);
+    QObject *sys = eng ? qvariant_cast<QObject *>(eng->rootContext()->contextProperty(QStringLiteral("systemUi"))) : nullptr;
+    check(sys != nullptr, "Systemleisten: Objekt systemUi");
+    if (sys && qEnvironmentVariableIsSet("VP_AUTOPILOT_SAFE")) {
+        const int top = sys->property("top").toInt(), bottom = sys->property("bottom").toInt();
+        const int left = sys->property("left").toInt(), right = sys->property("right").toInt();
+        const QRectF r = stack->mapRectToScene(QRectF(0, 0, stack->width(), stack->height()));
+        check(top > 0 && bottom > 0, "Systemleisten: vorgetäuschte Ränder");
+        check(qAbs(r.top() - top) < 1 && qAbs(r.bottom() - (win->height() - bottom)) < 1
+              && qAbs(r.left() - left) < 1 && qAbs(r.right() - (win->width() - right)) < 1,
+              "Systemleisten: Inhalt frei von Status- und Navigationsleiste");
+        const QVariant oldColor = QQmlProperty::read(win, QStringLiteral("color"));
+        QQmlProperty::write(win, QStringLiteral("color"), QColor(0xB3, 0x26, 0x1E));   // Ränder im Bildschirmfoto sichtbar machen
+        QMetaObject::invokeMethod(win, "toast", Q_ARG(QVariant, app.language() == QStringLiteral("en")
+                                  ? QStringLiteral("Content stays clear of the system bars") : QStringLiteral("Inhalt bleibt frei von den Systemleisten")),
+                                  Q_ARG(QVariant, false));
+        wait(450);
+        win->grabWindow().save(out + QLatin1Char('/') + prefix + QStringLiteral("systemleisten.png"));
+        QQmlProperty::write(win, QStringLiteral("color"), oldColor);
+        qInfo("Systemleisten geprüft: oben %d, unten %d", top, bottom);
+    }
+    return fails;
+}
+
 static int conflictChecks(QQuickWindow *win, AppController &app, QObject *home, const QString &out, const QString &prefix)
 {
     int fails = 0;
@@ -459,6 +508,7 @@ static int runLightTour(QQuickWindow *win, AppController &app, const QString &ou
         fails += rangeChecks(win, app, h, out, pre + QStringLiteral("21_"));
         fails += vaccinationChecks(win, app, h, out, pre + QStringLiteral("22_"));
         fails += conflictChecks(win, app, h, out, pre + QStringLiteral("23_"));
+        fails += systemChecks(win, app, h, out, pre + QStringLiteral("24_"));
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
         QMetaObject::invokeMethod(h, "measure", Q_ARG(QVariant, 0));
         check(win->findChild<QObject *>(QStringLiteral("fluidSection"))
@@ -993,6 +1043,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
     fails += rangeChecks(win, app, h, out, QStringLiteral("m25_"));
     fails += vaccinationChecks(win, app, h, out, QStringLiteral("m26_"));
     fails += conflictChecks(win, app, h, out, QStringLiteral("m27_"));
+    fails += systemChecks(win, app, h, out, QStringLiteral("m28_"));
     // Termine: neuer Termin, Serie bearbeiten, Rückfrage „Für welche Termine?“
     call(h, "editAppointment", 0);
     shot(QStringLiteral("m17_termin_neu"));

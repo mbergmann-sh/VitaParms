@@ -63,6 +63,24 @@ public class Reminders {
         return ctx.checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED;
     }
 
+    // Pünktliche Wecker (Android 12+): Recht „Wecker und Erinnerungen“ (SCHEDULE_EXACT_ALARM). Ab
+    // Android 14 erteilt es der Anwender selbst; ohne das Recht stellt VitaParms die Erinnerungen
+    // ungefähr (Android darf sie dann um einige Minuten verschieben).
+    public static boolean exactAllowed(Context ctx) {
+        if (Build.VERSION.SDK_INT < 31) return true;
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        return am != null && am.canScheduleExactAlarms();
+    }
+
+    // Systemeinstellung „Wecker und Erinnerungen“ für VitaParms öffnen
+    public static void openExactSettings(Context ctx) {
+        if (Build.VERSION.SDK_INT < 31) return;
+        Intent i = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                              android.net.Uri.parse("package:" + ctx.getPackageName()));
+        if (!(ctx instanceof Activity)) i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try { ctx.startActivity(i); } catch (Exception e) { /* Einstellung nicht vorhanden */ }
+    }
+
     private static PendingIntent alarmIntent(Context ctx, int id, String title, String text, String publicText, boolean sound) {
         Intent i = new Intent(ctx, ReminderReceiver.class);
         i.setAction("de.mbergmann.vitaparms.REMINDER." + id);

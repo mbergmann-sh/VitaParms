@@ -361,302 +361,302 @@
         <translation>diverse</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="193" />
+        <location filename="../src/appcontroller.cpp" line="199" />
         <source>Die Kurzanleitung lässt sich nicht öffnen. Ist eine App zum Anzeigen von PDF-Dateien installiert?</source>
         <translation>The quick guide cannot be opened. Is an app for viewing PDF files installed?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="196" />
+        <location filename="../src/appcontroller.cpp" line="202" />
         <source>Die Kurzanleitung „Erste Schritte“ ist in dieser Installation nicht enthalten.</source>
         <translation>The quick guide “Getting Started” is not included in this installation.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="277" />
+        <location filename="../src/appcontroller.cpp" line="293" />
         <source>Name oder Passwort stimmt nicht.</source>
         <translation>Name or password is incorrect.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="469" />
+        <location filename="../src/appcontroller.cpp" line="496" />
         <source>Bitte auch die zugehörige Schlüsseldatei (.keys) wählen – oder am Computer „Datei → Datenbank exportieren“ verwenden, dann ist alles in einer Datei.</source>
         <translation>Please also select the matching key file (.keys) – or use “File → Export database” on the computer, then everything is in one file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="481" />
+        <location filename="../src/appcontroller.cpp" line="508" />
         <source>Die Datei enthält keine Anmeldekonten (.keys).</source>
         <translation>The file contains no login accounts (.keys).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="496" />
+        <location filename="../src/appcontroller.cpp" line="523" />
         <source>Das ist keine Kopplungsdatei von VitaParms.</source>
         <translation>This is not a VitaParms pairing file.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="579" />
+        <location filename="../src/appcontroller.cpp" line="606" />
         <source>Ausweichtermine für %1</source>
         <translation>Alternatives for %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="653" />
+        <location filename="../src/appcontroller.cpp" line="680" />
         <source>Vers.-Nr. %1</source>
         <translation>Ins. no. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="655" />
+        <location filename="../src/appcontroller.cpp" line="682" />
         <source>Tel. %1</source>
         <translation>Tel. %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="656" />
+        <location filename="../src/appcontroller.cpp" line="683" />
         <source>mobil %1</source>
         <translation>mobile %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="682" />
+        <location filename="../src/appcontroller.cpp" line="709" />
         <source>Ch.-B. %1</source>
         <translation>Lot %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="684" />
+        <location filename="../src/appcontroller.cpp" line="711" />
         <source>ohne Datum</source>
         <translation>no date</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="763" />
+        <location filename="../src/appcontroller.cpp" line="790" />
         <source>Sollwert heute: %1 l/min (%2).</source>
         <translation>Predicted value today: %1 l/min (%2).</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="766" />
+        <location filename="../src/appcontroller.cpp" line="793" />
         <source>Warnhinweise beziehen sich auf den %1 (%2 l/min): gelb unter %3, rot unter %4 l/min.</source>
         <translation>Warnings are based on the %1 (%2 l/min): yellow below %3, red below %4 l/min.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="767" />
+        <location filename="../src/appcontroller.cpp" line="794" />
         <source>persönlichen Bestwert</source>
         <translation>personal best</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="767" />
+        <location filename="../src/appcontroller.cpp" line="794" />
         <source>Sollwert</source>
         <translation>predicted value</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="770" />
+        <location filename="../src/appcontroller.cpp" line="797" />
         <source>Ohne Bezugswert gibt es keine Warnhinweise – bitte den persönlichen Bestwert eintragen.</source>
         <translation>Without a reference value there are no warnings – please enter the personal best.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="814" />
+        <location filename="../src/appcontroller.cpp" line="841" />
         <source>Bitte einen Namen eingeben.</source>
         <translation>Please enter a name.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="911" />
+        <location filename="../src/appcontroller.cpp" line="938" />
         <source>Nur Administratoren können Personen löschen.</source>
         <translation>Only administrators can delete persons.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1010" />
+        <location filename="../src/appcontroller.cpp" line="1037" />
         <source>RR</source>
         <translation>BP</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1054" />
+        <location filename="../src/appcontroller.cpp" line="1081" />
         <source>Begleitsymptome</source>
         <translation>Accompanying symptoms</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1068" />
+        <location filename="../src/appcontroller.cpp" line="1095" />
         <source>bei Aufnahme</source>
         <translation>on admission</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1183" />
+        <location filename="../src/appcontroller.cpp" line="1210" />
         <source>Bitte mindestens einen Wert eingeben.</source>
         <translation>Please enter at least one value.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1185" />
+        <location filename="../src/appcontroller.cpp" line="1212" />
         <source>Beim Blutdruck ist nur ein Wert (systolisch oder diastolisch) eingetragen.</source>
         <translation>Only one blood pressure value (systolic or diastolic) has been entered.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1187" />
+        <location filename="../src/appcontroller.cpp" line="1214" />
         <source>Der systolische Wert (%1) ist nicht größer als der diastolische (%2) – vertauscht?</source>
         <translation>The systolic value (%1) is not greater than the diastolic value (%2) – swapped?</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1189" />
+        <location filename="../src/appcontroller.cpp" line="1216" />
         <source>Der Messzeitpunkt liegt in der Zukunft.</source>
         <translation>The measurement time is in the future.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1201" />
+        <location filename="../src/appcontroller.cpp" line="1228" />
         <source>Person nicht gefunden.</source>
         <translation>Person not found.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1225" />
+        <location filename="../src/appcontroller.cpp" line="1252" />
         <source>Für den BMI wird die Körpergröße benötigt.</source>
         <translation>Height is required for the BMI.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1226" />
+        <location filename="../src/appcontroller.cpp" line="1253" />
         <source>BMI %1 kg/m²</source>
         <translation>BMI %1 kg/m²</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1229" />
+        <location filename="../src/appcontroller.cpp" line="1256" />
         <source> (Größe aus letzter Messung: %1 cm)</source>
         <translation> (height from last measurement: %1 cm)</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1230" />
+        <location filename="../src/appcontroller.cpp" line="1257" />
         <source>, korrigiert für fehlende Gliedmaßen</source>
         <translation>, corrected for missing limbs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1244" />
-        <location filename="../src/appcontroller.cpp" line="1357" />
-        <location filename="../src/appcontroller.cpp" line="1806" />
+        <location filename="../src/appcontroller.cpp" line="1271" />
+        <location filename="../src/appcontroller.cpp" line="1384" />
+        <location filename="../src/appcontroller.cpp" line="1833" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>heute</source>
         <translation>today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1244" />
-        <location filename="../src/appcontroller.cpp" line="1357" />
+        <location filename="../src/appcontroller.cpp" line="1271" />
+        <location filename="../src/appcontroller.cpp" line="1384" />
         <source>gestern</source>
         <translation>yesterday</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1249" />
+        <location filename="../src/appcontroller.cpp" line="1276" />
         <source>Blutdruck</source>
         <translation>Blood pressure</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1318" />
+        <location filename="../src/appcontroller.cpp" line="1345" />
         <source>Ein-/Ausfuhr heute</source>
         <translation>Intake/output today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1320" />
+        <location filename="../src/appcontroller.cpp" line="1347" />
         <source>ml</source>
         <translation>ml</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1321" />
+        <location filename="../src/appcontroller.cpp" line="1348" />
         <source>Bilanz %1</source>
         <translation>Balance %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1358" />
+        <location filename="../src/appcontroller.cpp" line="1385" />
         <source>vor %1 Tagen</source>
         <translation>%1 days ago</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1360" />
+        <location filename="../src/appcontroller.cpp" line="1387" />
         <source>an %1 der letzten 30 Tage</source>
         <translation>on %1 of the last 30 days</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1446" />
+        <location filename="../src/appcontroller.cpp" line="1473" />
         <source>Heute</source>
         <translation>Today</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1447" />
+        <location filename="../src/appcontroller.cpp" line="1474" />
         <source>: Einfuhr %1 ml, Ausfuhr %2 ml, Bilanz %3</source>
         <translation>: intake %1 ml, output %2 ml, balance %3</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1480" />
+        <location filename="../src/appcontroller.cpp" line="1507" />
         <source>Ödeme: %1</source>
         <translation>Oedema: %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1599" />
+        <location filename="../src/appcontroller.cpp" line="1626" />
         <source>Bestand %1%2</source>
         <translation>stock %1%2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1600" />
+        <location filename="../src/appcontroller.cpp" line="1627" />
         <source>reicht bis %1</source>
         <translation>lasts until %1</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1651" />
+        <location filename="../src/appcontroller.cpp" line="1678" />
         <source>Stück</source>
         <translation>pcs</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1712" />
+        <location filename="../src/appcontroller.cpp" line="1739" />
         <source>Bitte den Namen des Medikaments eingeben.</source>
         <translation>Please enter the name of the medication.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1732" />
+        <location filename="../src/appcontroller.cpp" line="1759" />
         <source>Bitte mindestens einen Wochentag für die Einnahme wählen.</source>
         <translation>Please choose at least one weekday for the intake.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1745" />
+        <location filename="../src/appcontroller.cpp" line="1772" />
         <source>Das Enddatum liegt vor dem Beginn.</source>
         <translation>The end date is before the start date.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1769" />
+        <location filename="../src/appcontroller.cpp" line="1796" />
         <source>Bitte die Uhrzeit im Format 08:00 eingeben.</source>
         <translation>Please enter the time in the format 08:00.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1773" />
+        <location filename="../src/appcontroller.cpp" line="1800" />
         <source>Bitte mindestens eine Uhrzeit für die Erinnerung wählen.</source>
         <translation>Please choose at least one time for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1774" />
+        <location filename="../src/appcontroller.cpp" line="1801" />
         <source>Bitte mindestens einen Tag für die Erinnerung wählen.</source>
         <translation>Please choose at least one day for the reminder.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1806" />
+        <location filename="../src/appcontroller.cpp" line="1833" />
         <location filename="../src/appcontroller_appts.cpp" line="90" />
         <source>morgen</source>
         <translation>tomorrow</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1894" />
+        <location filename="../src/appcontroller.cpp" line="1921" />
         <source>%1 – %2</source>
         <translation>%1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1896" />
+        <location filename="../src/appcontroller.cpp" line="1923" />
         <source>alle Einträge</source>
         <translation>all entries</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1829" />
+        <location filename="../src/appcontroller.cpp" line="1856" />
         <source>letzte %1 Tage</source>
         <translation>last %1 days</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1831" />
+        <location filename="../src/appcontroller.cpp" line="1858" />
         <source>gesamter Verlauf</source>
         <translation>complete history</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1962" />
+        <location filename="../src/appcontroller.cpp" line="1989" />
         <source>Bitte einen gültigen Zeitraum wählen.</source>
         <translation>Please choose a valid period.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="1983" />
+        <location filename="../src/appcontroller.cpp" line="2010" />
         <source>Die Ausgabe konnte nicht erstellt werden.</source>
         <translation>The output could not be created.</translation>
     </message>
     <message>
-        <location filename="../src/appcontroller.cpp" line="2000" />
+        <location filename="../src/appcontroller.cpp" line="2027" />
         <source>Öffnen mit …</source>
         <translation>Open with …</translation>
     </message>
@@ -5948,177 +5948,177 @@ You can take over the current template again via “Tools → Customize forms…
 <context>
     <name>HomePage</name>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="95" />
+        <location filename="../qml/pages/HomePage.qml" line="100" />
         <source>Personen</source>
         <translation>Persons</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="115" />
-        <location filename="../qml/pages/HomePage.qml" line="241" />
+        <location filename="../qml/pages/HomePage.qml" line="120" />
+        <location filename="../qml/pages/HomePage.qml" line="246" />
         <source>geb. %1</source>
         <translation>born %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="121" />
+        <location filename="../qml/pages/HomePage.qml" line="126" />
         <source>Neue Person</source>
         <translation>New person</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="155" />
+        <location filename="../qml/pages/HomePage.qml" line="160" />
         <source>Demo – erfundene Daten</source>
         <translation>Demo – fictitious data</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="156" />
+        <location filename="../qml/pages/HomePage.qml" line="161" />
         <source>Demo beenden</source>
         <translation>End demo</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="169" />
+        <location filename="../qml/pages/HomePage.qml" line="174" />
         <source>Abgleich …</source>
         <translation>Synchronising …</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="169" />
+        <location filename="../qml/pages/HomePage.qml" line="174" />
         <source>Abgleichen</source>
         <translation>Synchronise</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="169" />
+        <location filename="../qml/pages/HomePage.qml" line="174" />
         <source>Abgeglichen</source>
         <translation>Synchronised</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="175" />
-        <location filename="../qml/pages/HomePage.qml" line="190" />
+        <location filename="../qml/pages/HomePage.qml" line="180" />
+        <location filename="../qml/pages/HomePage.qml" line="195" />
         <source>Einstellungen</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="176" />
-        <location filename="../qml/pages/HomePage.qml" line="194" />
+        <location filename="../qml/pages/HomePage.qml" line="181" />
+        <location filename="../qml/pages/HomePage.qml" line="199" />
         <source>Sperren</source>
         <translation>Lock</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="177" />
-        <location filename="../qml/pages/HomePage.qml" line="195" />
+        <location filename="../qml/pages/HomePage.qml" line="182" />
+        <location filename="../qml/pages/HomePage.qml" line="200" />
         <source>Ohne Abgleich sperren</source>
         <translation>Lock without syncing</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="178" />
-        <location filename="../qml/pages/HomePage.qml" line="196" />
+        <location filename="../qml/pages/HomePage.qml" line="183" />
+        <location filename="../qml/pages/HomePage.qml" line="201" />
         <source>Beenden</source>
         <translation>Quit</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="184" />
+        <location filename="../qml/pages/HomePage.qml" line="189" />
         <source>Menü</source>
         <translation>Menu</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="189" />
+        <location filename="../qml/pages/HomePage.qml" line="194" />
         <source>Mit dem Computer abgleichen (USB)</source>
         <translation>Synchronise with the computer (USB)</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="191" />
+        <location filename="../qml/pages/HomePage.qml" line="196" />
         <source>Erste Schritte</source>
         <translation>Getting Started</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="208" />
+        <location filename="../qml/pages/HomePage.qml" line="213" />
         <source>Noch keine Person angelegt</source>
         <translation>No person created yet</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="208" />
+        <location filename="../qml/pages/HomePage.qml" line="213" />
         <source>Willkommen!</source>
         <translation>Welcome!</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="210" />
+        <location filename="../qml/pages/HomePage.qml" line="215" />
         <source>Legen Sie zuerst Ihr Stammblatt an: Name, Geburtsdatum und – wenn Sie möchten – Ärzte, Angehörige, Diagnosen und Medikamente.</source>
         <translation>First create your master record: name, date of birth and – if you like – doctors, relatives, diagnoses and medication.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="211" />
+        <location filename="../qml/pages/HomePage.qml" line="216" />
         <source>Legen Sie ein Stammblatt an, um Messwerte zu erfassen.</source>
         <translation>Create a master record to enter readings.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="213" />
+        <location filename="../qml/pages/HomePage.qml" line="218" />
         <source>Neue Person anlegen</source>
         <translation>Create new person</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="213" />
+        <location filename="../qml/pages/HomePage.qml" line="218" />
         <source>Stammblatt anlegen</source>
         <translation>Create master record</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="242" />
+        <location filename="../qml/pages/HomePage.qml" line="247" />
         <source>%1 Jahre</source>
         <translation>%1 years</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="246" />
+        <location filename="../qml/pages/HomePage.qml" line="251" />
         <source>Messung erfassen</source>
         <translation>New reading</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="258" />
+        <location filename="../qml/pages/HomePage.qml" line="263" />
         <source>Allergien:</source>
         <translation>Allergies:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="268" />
+        <location filename="../qml/pages/HomePage.qml" line="273" />
         <source>Notfallmedikation:</source>
         <translation>Emergency medication:</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Übersicht</source>
         <translation>Overview</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Messwerte</source>
         <translation>Readings</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Verlaufskurven</source>
         <translation>Trend charts</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Stammblatt</source>
         <translation>Master record</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Medikamente</source>
         <translation>Medication</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Termine</source>
         <translation>Appointments</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Krankenakte</source>
         <translation>Medical record</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Berichte</source>
         <translation>Reports</translation>
     </message>
     <message>
-        <location filename="../qml/pages/HomePage.qml" line="286" />
+        <location filename="../qml/pages/HomePage.qml" line="291" />
         <source>Wunden</source>
         <translation>Wounds</translation>
     </message>
@@ -6561,72 +6561,72 @@ You can take over the current template again via “Tools → Customize forms…
     <name>Main</name>
     <message>
         <location filename="../qml/Main.qml" line="48" />
-        <location filename="../qml/Main.qml" line="53" />
+        <location filename="../qml/Main.qml" line="69" />
         <source>Ohne Abgleich beenden</source>
         <translation>Quit without syncing</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="87" />
+        <location filename="../qml/Main.qml" line="103" />
         <source>Zeit für die Blutzuckermessung (%1).</source>
         <translation>Time to measure blood glucose (%1).</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="87" />
+        <location filename="../qml/Main.qml" line="103" />
         <source>Zeit für die Blutdruckmessung (%1).</source>
         <translation>Time for the blood pressure measurement (%1).</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="88" />
+        <location filename="../qml/Main.qml" line="104" />
         <source>Messung erfassen</source>
         <translation>New reading</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="89" />
+        <location filename="../qml/Main.qml" line="105" />
         <source>Später</source>
         <translation>Later</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="95" />
+        <location filename="../qml/Main.qml" line="111" />
         <source>Erledigt – nicht mehr erinnern</source>
         <translation>Done – stop reminding</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="96" />
+        <location filename="../qml/Main.qml" line="112" />
         <source>Morgen wieder erinnern</source>
         <translation>Remind me tomorrow</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="103" />
+        <location filename="../qml/Main.qml" line="119" />
         <source>Mit dem Computer abgleichen?</source>
         <translation>Sync with the computer?</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="104" />
+        <location filename="../qml/Main.qml" line="120" />
         <source>Die Werte dieses Tablets über das USB-Kabel mit VitaParms am Computer abgleichen? Am Computer dazu „Datei → Mit Tablet über USB abgleichen…“ wählen und den Code eingeben, den das Tablet gleich anzeigt.</source>
         <translation>Synchronise this tablet’s data with VitaParms on the computer over the USB cable? On the computer choose “File → Sync with tablet via USB…” and enter the code the tablet is about to show.</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="105" />
+        <location filename="../qml/Main.qml" line="121" />
         <source>USB-Abgleich öffnen</source>
         <translation>Open USB sync</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="138" />
+        <location filename="../qml/Main.qml" line="159" />
         <source>Aus Sicherheitsgründen gesperrt – bitte erneut anmelden.</source>
         <translation>Locked for security – please log in again.</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="141" />
+        <location filename="../qml/Main.qml" line="162" />
         <source>Abgleich: %1</source>
         <translation>Synchronisation: %1</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="142" />
+        <location filename="../qml/Main.qml" line="163" />
         <source>Website aktualisiert.</source>
         <translation>Website updated.</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="142" />
+        <location filename="../qml/Main.qml" line="163" />
         <source>Website: %1</source>
         <translation>Website: %1</translation>
     </message>
@@ -8171,7 +8171,7 @@ You can take over the current template again via “Tools → Customize forms…
     <name>PatientDialog</name>
     <message>
         <location filename="../src/appcontroller_docs.cpp" line="408" />
-        <location filename="../src/autopilot.cpp" line="1542" />
+        <location filename="../src/autopilot.cpp" line="1682" />
         <source>Vorsorge</source>
         <translation>Advance directive</translation>
     </message>
@@ -8179,36 +8179,43 @@ You can take over the current template again via “Tools → Customize forms…
 <context>
     <name>PatientForm</name>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="18" />
         <location filename="../../forms/patientform.ui" line="18" />
         <source>Stammblatt</source>
         <translation>Master record</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="43" />
         <location filename="../../forms/patientform.ui" line="34" />
         <source>Person</source>
         <translation>Person</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="49" />
         <location filename="../../forms/patientform.ui" line="38" />
         <source>Persönliche Daten</source>
         <translation>Personal data</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="55" />
         <location filename="../../forms/patientform.ui" line="42" />
         <source>&amp;Name *</source>
         <translation>Last &amp;name *</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="68" />
         <location filename="../../forms/patientform.ui" line="51" />
         <source>&amp;Vorname</source>
         <translation>&amp;First name</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="81" />
         <location filename="../../forms/patientform.ui" line="60" />
         <source>&amp;Geburtsdatum</source>
         <translation>Date of &amp;birth</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="91" />
         <location filename="../../forms/patientform.ui" line="66" />
         <location filename="../../forms/patientform.ui" line="251" />
         <location filename="../../forms/patientform.ui" line="303" />
@@ -8216,6 +8223,7 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>dd.MM.yyyy</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="97" />
         <location filename="../../forms/patientform.ui" line="68" />
         <location filename="../../forms/patientform.ui" line="253" />
         <location filename="../../forms/patientform.ui" line="480" />
@@ -8227,49 +8235,73 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>—</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="111" />
         <location filename="../../forms/patientform.ui" line="74" />
         <source>Ge&amp;schlecht</source>
         <translation>&amp;Sex</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="124" />
         <location filename="../../forms/patientform.ui" line="83" />
         <source>Straße, Nr.</source>
         <translation>Street, no.</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="137" />
         <location filename="../../forms/patientform.ui" line="92" />
         <source>PLZ, Ort</source>
         <translation>Postcode, town</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="164" />
         <location filename="../../forms/patientform.ui" line="110" />
         <source>Telefon</source>
         <translation>Phone</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="177" />
         <location filename="../../forms/patientform.ui" line="119" />
         <source>Mobiltelefon</source>
         <translation>Mobile phone</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="194" />
+        <source>Ärzte &amp;&amp; Angehörige</source>
+        <translation>Doctors &amp;&amp; relatives</translation>
+    </message>
+    <message>
+        <location filename="../../forms/light/patientform.ui" line="200" />
+        <source>Ärzte, Angehörige und weitere Kontakte</source>
+        <translation>Doctors, relatives and further contacts</translation>
+    </message>
+    <message>
+        <location filename="../../forms/light/patientform.ui" line="272" />
         <location filename="../../forms/patientform.ui" line="182" />
         <source>Diagnosen</source>
         <translation>Diagnoses</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="278" />
         <location filename="../../forms/patientform.ui" line="186" />
         <source>&amp;Diagnosen (eine pro Zeile, gern mit ICD-10-Code):</source>
         <translation>&amp;Diagnoses (one per line, ICD-10 code welcome):</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="291" />
         <location filename="../../forms/patientform.ui" line="195" />
         <source>&amp;Allergien / Unverträglichkeiten:</source>
         <translation>&amp;Allergies / intolerances:</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="314" />
         <location filename="../../forms/patientform.ui" line="207" />
         <source>&amp;Bemerkungen:</source>
         <translation>&amp;Remarks:</translation>
+    </message>
+    <message>
+        <location filename="../../forms/light/patientform.ui" line="431" />
+        <source>Aufnahme</source>
+        <translation>Admission</translation>
     </message>
     <message>
         <location filename="../../forms/patientform.ui" line="221" />
@@ -8362,11 +8394,14 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>&amp;unlimited</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="335" />
         <location filename="../../forms/patientform.ui" line="332" />
         <source>Medikamentenplan</source>
         <translation>Medication plan</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="228" />
+        <location filename="../../forms/light/patientform.ui" line="359" />
         <location filename="../../forms/patientform.ui" line="148" />
         <location filename="../../forms/patientform.ui" line="346" />
         <source>&amp;Hinzufügen…</source>
@@ -8378,66 +8413,79 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>Further details: contacts</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="206" />
         <location filename="../../forms/patientform.ui" line="135" />
         <source>Kontakte durchsuchen (Name, Fachrichtung, Ort, Telefon …)</source>
         <translation>Search contacts (name, speciality, town, phone …)</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="235" />
         <location filename="../../forms/patientform.ui" line="153" />
         <source>Bearbe&amp;iten…</source>
         <translation>Ed&amp;it…</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="242" />
         <location filename="../../forms/patientform.ui" line="158" />
         <source>Entfe&amp;rnen</source>
         <translation>Re&amp;move</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="258" />
         <location filename="../../forms/patientform.ui" line="170" />
         <source>&lt;small&gt;Krankenkasse (mit Versichertennummer), Hausarzt, Fachärzte, Kliniken, Pflegedienst, Apotheke, Notfallkontakt – jeweils mit Anschrift, Telefon, Mobil, E-Mail und Website. Doppelklick öffnet einen Kontakt.&lt;/small&gt;</source>
         <translation>&lt;small&gt;Health insurance (with insurance number), GP, specialists, hospitals, home care service, pharmacy, emergency contact – each with address, telephone, mobile, e-mail and website. Double-click opens a contact.&lt;/small&gt;</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="366" />
         <location filename="../../forms/patientform.ui" line="351" />
         <source>&amp;Bearbeiten…</source>
         <translation>&amp;Edit…</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="373" />
         <location filename="../../forms/patientform.ui" line="356" />
         <source>&amp;Absetzen…</source>
         <translation>Disc&amp;ontinue…</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="380" />
         <location filename="../../forms/patientform.ui" line="361" />
         <source>&amp;Löschen</source>
         <translation>&amp;Delete</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="387" />
         <location filename="../../forms/patientform.ui" line="366" />
         <source>&amp;Beipackzettel…</source>
         <translation>Package &amp;leaflet…</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="390" />
         <location filename="../../forms/patientform.ui" line="367" />
         <source>Beipackzettel des Medikaments im Internet abrufen und anzeigen</source>
         <translation>Retrieve and show the medication's package leaflet from the internet</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="404" />
         <location filename="../../forms/patientform.ui" line="377" />
         <source>Historie an&amp;zeigen</source>
         <translation>Show &amp;history</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="411" />
         <location filename="../../forms/patientform.ui" line="382" />
         <source>&amp;Suchen…</source>
         <translation>&amp;Search…</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="414" />
         <location filename="../../forms/patientform.ui" line="383" />
         <source>BtM, Schmerzmittel oder Blutverdünner im Medikamentenplan suchen – mit Dosierung und Einnahmemenge</source>
         <translation>Search the medication plan for narcotics, painkillers or blood thinners – with dosage and intake amount</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="421" />
         <location filename="../../forms/patientform.ui" line="388" />
         <source>&amp;Drucken…</source>
         <translation>&amp;Print…</translation>
@@ -8463,26 +8511,31 @@ You can take over the current template again via “Tools → Customize forms…
         <translation>Reference tables (e.g. predicted peak flow) depend on the biological sex. It follows the “Sex” field – change it only if that does not fit or the field says “diverse”.</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="437" />
         <location filename="../../forms/patientform.ui" line="425" />
         <source>Gliedmaßen (für die BMI-Korrektur)</source>
         <translation>Limbs (for BMI correction)</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="443" />
         <location filename="../../forms/patientform.ui" line="429" />
         <source>&lt;b&gt;links&lt;/b&gt;</source>
         <translation>&lt;b&gt;left&lt;/b&gt;</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="450" />
         <location filename="../../forms/patientform.ui" line="434" />
         <source>&lt;b&gt;rechts&lt;/b&gt;</source>
         <translation>&lt;b&gt;right&lt;/b&gt;</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="457" />
         <location filename="../../forms/patientform.ui" line="439" />
         <source>Arm:</source>
         <translation>Arm:</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="470" />
         <location filename="../../forms/patientform.ui" line="450" />
         <source>Bein:</source>
         <translation>Leg:</translation>
@@ -8574,11 +8627,13 @@ You can take over the current template again via “Tools → Customize forms…
         <translation> kg in 3 days</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="493" />
         <location filename="../../forms/patientform.ui" line="598" />
         <source>Vitalwerte bei Aufnahme</source>
         <translation>Vital signs on admission</translation>
     </message>
     <message>
+        <location filename="../../forms/light/patientform.ui" line="511" />
         <location filename="../../forms/patientform.ui" line="610" />
         <source>Aufnahmewerte &amp;erfassen…</source>
         <translation>&amp;Record admission values…</translation>
@@ -11807,7 +11862,7 @@ For security reasons you are logged in with user rights only. An administrator s
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="74" />
         <location filename="../qml/pages/SettingsPage.qml" line="109" />
-        <location filename="../qml/pages/SettingsPage.qml" line="184" />
+        <location filename="../qml/pages/SettingsPage.qml" line="191" />
         <source>Gespeichert.</source>
         <translation>Saved.</translation>
     </message>
@@ -11947,97 +12002,107 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>At the start of each quarter: have the health insurance card read at the practices.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="186" />
+        <location filename="../qml/pages/SettingsPage.qml" line="154" />
+        <source>Pünktliche Erinnerungen sind nicht erlaubt: Android zeigt sie dann ungefähr, unter Umständen einige Minuten später. Erlauben unter „Wecker und Erinnerungen“.</source>
+        <translation>On-time reminders are not allowed: Android then shows them approximately, possibly a few minutes late. Allow them under “Alarms &amp; reminders”.</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="156" />
+        <source>Pünktliche Erinnerungen erlauben</source>
+        <translation>Allow on-time reminders</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="193" />
         <source>Über %1</source>
         <translation>About %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="188" />
+        <location filename="../qml/pages/SettingsPage.qml" line="195" />
         <source>%3 %1 – persönliches Gesundheitstagebuch, kein Medizinprodukt. Open Source (MIT-Lizenz). Angemeldet als %2.</source>
         <translation>%3 %1 – personal health diary, not a medical device. Open source (MIT licence). Signed in as %2.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="147" />
+        <location filename="../qml/pages/SettingsPage.qml" line="149" />
         <source>Benachrichtigungen sind erlaubt: Termine und das BZ-Tagesprofil erinnern auch, wenn VitaParms im Hintergrund ist.</source>
         <translation>Notifications are allowed: appointments and the BG day profile remind you even when VitaParms is in the background.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="148" />
+        <location filename="../qml/pages/SettingsPage.qml" line="150" />
         <source>Benachrichtigungen sind nicht erlaubt – Erinnerungen erscheinen nur, solange VitaParms geöffnet ist.</source>
         <translation>Notifications are not allowed – reminders only appear while VitaParms is open.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="149" />
+        <location filename="../qml/pages/SettingsPage.qml" line="151" />
         <source>Benachrichtigungen erlauben</source>
         <translation>Allow notifications</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="151" />
+        <location filename="../qml/pages/SettingsPage.qml" line="158" />
         <source>Darstellung</source>
         <translation>Appearance</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="156" />
+        <location filename="../qml/pages/SettingsPage.qml" line="163" />
         <source>wie das System</source>
         <translation>like the system</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="156" />
+        <location filename="../qml/pages/SettingsPage.qml" line="163" />
         <source>hell</source>
         <translation>light</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="156" />
+        <location filename="../qml/pages/SettingsPage.qml" line="163" />
         <source>dunkel</source>
         <translation>dark</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="160" />
+        <location filename="../qml/pages/SettingsPage.qml" line="167" />
         <source>Blutzucker</source>
         <translation>Blood glucose</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="170" />
+        <location filename="../qml/pages/SettingsPage.qml" line="177" />
         <source>Sicherheit</source>
         <translation>Security</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="171" />
+        <location filename="../qml/pages/SettingsPage.qml" line="178" />
         <source>Automatisch sperren nach</source>
         <translation>Lock automatically after</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="176" />
+        <location filename="../qml/pages/SettingsPage.qml" line="183" />
         <source>nie</source>
         <translation>never</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="176" />
+        <location filename="../qml/pages/SettingsPage.qml" line="183" />
         <source>5 Minuten</source>
         <translation>5 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="176" />
+        <location filename="../qml/pages/SettingsPage.qml" line="183" />
         <source>10 Minuten</source>
         <translation>10 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="176" />
+        <location filename="../qml/pages/SettingsPage.qml" line="183" />
         <source>30 Minuten</source>
         <translation>30 minutes</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="182" />
+        <location filename="../qml/pages/SettingsPage.qml" line="189" />
         <source>Messzeitpunkte für Tagesprofile</source>
         <translation>Measurement times for daily profiles</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="183" />
+        <location filename="../qml/pages/SettingsPage.qml" line="190" />
         <source>Ein Eintrag pro Zeile</source>
         <translation>One entry per line</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="184" />
+        <location filename="../qml/pages/SettingsPage.qml" line="191" />
         <source>Messzeitpunkte speichern</source>
         <translation>Save measurement times</translation>
     </message>
@@ -13036,22 +13101,22 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>tomorrow</translation>
     </message>
     <message>
-        <location filename="../src/tabletreminders.cpp" line="80" />
+        <location filename="../src/tabletreminders.cpp" line="83" />
         <source>Termin-Erinnerungen</source>
         <translation>Appointment reminders</translation>
     </message>
     <message>
-        <location filename="../src/tabletreminders.cpp" line="81" />
+        <location filename="../src/tabletreminders.cpp" line="84" />
         <source>Termin-Erinnerungen (ohne Ton)</source>
         <translation>Appointment reminders (silent)</translation>
     </message>
     <message>
-        <location filename="../src/tabletreminders.cpp" line="82" />
+        <location filename="../src/tabletreminders.cpp" line="85" />
         <source>Erinnerungen an Termine und Medikamente aus VitaParms</source>
         <translation>Reminders for appointments and medication from VitaParms</translation>
     </message>
     <message>
-        <location filename="../src/tabletreminders.cpp" line="86" />
+        <location filename="../src/tabletreminders.cpp" line="89" />
         <source>Termin-Erinnerung</source>
         <translation>Appointment reminder</translation>
     </message>
@@ -13559,7 +13624,7 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>ValueCard</name>
     <message>
-        <location filename="../qml/components/ValueCard.qml" line="58" />
+        <location filename="../qml/components/ValueCard.qml" line="61" />
         <source>Wert ungewöhnlich (%1–%2)</source>
         <translation>Unusual value (%1–%2)</translation>
     </message>
@@ -13817,67 +13882,90 @@ For security reasons you are logged in with user rights only. An administrator s
 <context>
     <name>VitalForm</name>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="18" />
+        <location filename="../../forms/light/vitalform.ui" line="156" />
         <location filename="../../forms/vitalform.ui" line="18" />
         <location filename="../../forms/vitalform.ui" line="109" />
         <source>Vitalwerte</source>
         <translation>Vital signs</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="45" />
         <location filename="../../forms/vitalform.ui" line="34" />
         <source>Name</source>
         <translation>Last name</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="55" />
         <location filename="../../forms/vitalform.ui" line="40" />
         <source>Vorname</source>
         <translation>First name</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="72" />
         <location filename="../../forms/vitalform.ui" line="51" />
         <source>geb.</source>
         <translation>born</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="82" />
         <location filename="../../forms/vitalform.ui" line="59" />
         <source>Zeitpunkt</source>
         <translation>Time</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="88" />
         <location filename="../../forms/vitalform.ui" line="63" />
         <source>&amp;Datum / Uhrzeit</source>
         <translation>&amp;Date / time</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="100" />
         <location filename="../../forms/vitalform.ui" line="71" />
         <source>dd.MM.yyyy HH:mm</source>
         <translation>dd.MM.yyyy HH:mm</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="110" />
         <location filename="../../forms/vitalform.ui" line="77" />
         <source>&amp;Jetzt</source>
         <translation>&amp;Now</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="113" />
         <location filename="../../forms/vitalform.ui" line="78" />
         <source>Aktuelles Datum und Uhrzeit übernehmen</source>
         <translation>Use current date and time</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="129" />
         <location filename="../../forms/vitalform.ui" line="90" />
         <source>&amp;Messzeitpunkt</source>
         <translation>&amp;Timing</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="142" />
         <location filename="../../forms/vitalform.ui" line="97" />
         <source>Für Tagesprofile (z. B. Blutzucker- oder Blutdruck-Tagesprofil). Freitext möglich.</source>
         <translation>For daily profiles (e.g. blood glucose or blood pressure profile). Free text allowed.</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="162" />
         <location filename="../../forms/vitalform.ui" line="113" />
         <source>&amp;Blutdruck (sys / dia)</source>
         <translation>&amp;Blood pressure (sys / dia)</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="174" />
+        <location filename="../../forms/light/vitalform.ui" line="200" />
+        <location filename="../../forms/light/vitalform.ui" line="238" />
+        <location filename="../../forms/light/vitalform.ui" line="267" />
+        <location filename="../../forms/light/vitalform.ui" line="302" />
+        <location filename="../../forms/light/vitalform.ui" line="339" />
+        <location filename="../../forms/light/vitalform.ui" line="375" />
+        <location filename="../../forms/light/vitalform.ui" line="407" />
+        <location filename="../../forms/light/vitalform.ui" line="438" />
+        <location filename="../../forms/light/vitalform.ui" line="479" />
         <location filename="../../forms/vitalform.ui" line="121" />
         <location filename="../../forms/vitalform.ui" line="135" />
         <location filename="../../forms/vitalform.ui" line="157" />
@@ -13897,43 +13985,52 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>—</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="177" />
+        <location filename="../../forms/light/vitalform.ui" line="203" />
         <location filename="../../forms/vitalform.ui" line="122" />
         <location filename="../../forms/vitalform.ui" line="136" />
         <source> mmHg</source>
         <translation> mmHg</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="193" />
         <location filename="../../forms/vitalform.ui" line="130" />
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="228" />
         <location filename="../../forms/vitalform.ui" line="151" />
         <source>&amp;Puls</source>
         <translation>&amp;Pulse</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="241" />
         <location filename="../../forms/vitalform.ui" line="158" />
         <location filename="../../forms/vitalform.ui" line="529" />
         <source> /min</source>
         <translation> /min</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="257" />
         <location filename="../../forms/vitalform.ui" line="166" />
         <source>&amp;Körpertemperatur</source>
         <translation>Body &amp;temperature</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="270" />
         <location filename="../../forms/vitalform.ui" line="173" />
         <source> °C</source>
         <translation> °C</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="292" />
         <location filename="../../forms/vitalform.ui" line="183" />
         <source>&amp;Sauerstoffsättigung (SpO₂)</source>
         <translation>&amp;Oxygen saturation (SpO₂)</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="305" />
         <location filename="../../forms/vitalform.ui" line="190" />
         <source> %</source>
         <translation> %</translation>
@@ -13954,16 +14051,19 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation> L/min</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="321" />
         <location filename="../../forms/vitalform.ui" line="215" />
         <source>Blut&amp;zucker</source>
         <translation>Blood &amp;glucose</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="342" />
         <location filename="../../forms/vitalform.ui" line="225" />
         <source>Einheit (mg/dl oder mmol/l) unter Extras → Einstellungen</source>
         <translation>Unit (mg/dl or mmol/l) under Tools → Settings</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="349" />
         <location filename="../../forms/vitalform.ui" line="230" />
         <source>mg/dl</source>
         <translation>mg/dl</translation>
@@ -13979,31 +14079,37 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>Coagulation value INR (e.g. with warfarin/phenprocoumon) – self-test or laboratory value</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="365" />
         <location filename="../../forms/vitalform.ui" line="258" />
         <source>&amp;Gewicht</source>
         <translation>&amp;Weight</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="378" />
         <location filename="../../forms/vitalform.ui" line="265" />
         <source> kg</source>
         <translation> kg</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="397" />
         <location filename="../../forms/vitalform.ui" line="274" />
         <source>Körper&amp;größe</source>
         <translation>&amp;Height</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="410" />
         <location filename="../../forms/vitalform.ui" line="281" />
         <source> cm</source>
         <translation> cm</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="422" />
         <location filename="../../forms/vitalform.ui" line="285" />
         <source>Leer lassen: für den BMI wird die zuletzt erfasste Größe verwendet.</source>
         <translation>Leave empty: the most recently recorded height is used for the BMI.</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="429" />
         <location filename="../../forms/vitalform.ui" line="290" />
         <source>BMI (berechnet)</source>
         <translation>BMI (calculated)</translation>
@@ -14120,21 +14226,25 @@ For security reasons you are logged in with user rights only. An administrator s
         <translation>Respiratory rate</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="469" />
         <location filename="../../forms/vitalform.ui" line="538" />
         <source>&amp;Schmerzstärke (0–10)</source>
         <translation>&amp;Pain intensity (0–10)</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="491" />
         <location filename="../../forms/vitalform.ui" line="548" />
         <source>Numerische Rating-Skala: 0 = kein Schmerz, 10 = stärkster vorstellbarer Schmerz</source>
         <translation>Numeric rating scale: 0 = no pain, 10 = worst pain imaginable</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="512" />
         <location filename="../../forms/vitalform.ui" line="563" />
         <source>&amp;Beobachtungen:</source>
         <translation>&amp;Observations:</translation>
     </message>
     <message>
+        <location filename="../../forms/light/vitalform.ui" line="528" />
         <location filename="../../forms/vitalform.ui" line="570" />
         <source>z. B. Befinden, Besonderheiten, Messbedingungen …</source>
         <translation>e.g. well-being, special circumstances, measuring conditions …</translation>
