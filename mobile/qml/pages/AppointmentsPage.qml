@@ -10,6 +10,7 @@ Flickable {
     objectName: "appointmentsPage"
     property var personId: 0
     signal edit(var id)
+    signal checkConflicts()
     property string range: "upcoming"
     property bool allPersons: false
     property bool showDone: false
@@ -64,6 +65,8 @@ Flickable {
             Layout.fillWidth: true
             spacing: Theme.gapS
             VButton { objectName: "newAppointmentButton"; text: qsTr("Neuer Termin"); iconText: "+"; kind: "primary"; onClicked: page.edit(0) }
+            VButton { objectName: "apptConflictsButton"; text: qsTr("Kollisionen prüfen"); visible: !app.light && app.persons().length >= 2
+                      onClicked: page.checkConflicts() }
             Repeater {
                 model: [{ t: qsTr("Kommende"), v: "upcoming" }, { t: qsTr("Heute"), v: "today" }, { t: qsTr("Diese Woche"), v: "week" },
                         { t: qsTr("Dieser Monat"), v: "month" }, { t: qsTr("Vergangene"), v: "past" }]

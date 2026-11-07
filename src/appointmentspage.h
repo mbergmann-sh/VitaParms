@@ -50,6 +50,7 @@ public slots:
     void deleteAppointment();
     void toggleDone();
     void exportICal();
+    void checkConflicts();          // Terminkollisions-Check (nicht light)
 
     void measureSelected();              // offener Tagesprofil-Termin: Messung erfassen
 

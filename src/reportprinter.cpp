@@ -8,6 +8,7 @@
 #include "contacts.h"
 #include "vaccinations.h"
 #include "medprep.h"
+#include "apptconflicts.h"
 #include <QGuiApplication>
 #include "careinfo.h"
 #include "database.h"
@@ -405,6 +406,50 @@ QString preparationListHtml(QPaintDevice *dev, const QList<MedPrep::ListRow> &ro
     return h;
 }
 
+// ---------------------------------------------------------------- Terminkollisionen
+QString conflictsHtml(QPaintDevice *dev, const ApptConflicts::Options &o, const ApptConflicts::Result &r)
+{
+    QString h = QStringLiteral("<p><b>%1</b><br>%2<br>%3</p>")
+                    .arg(tr("Personen: %1").arg(r.persons.join(QStringLiteral("; "))).toHtmlEscaped(),
+                         ApptConflicts::optionsText(o).toHtmlEscaped(),
+                         tr("%1 Termine geprüft, %2 Kollision(en).").arg(r.checked).arg(r.conflicts.size()).toHtmlEscaped());
+    if (!r.error.isEmpty()) return h + QStringLiteral("<p><i>%1</i></p>").arg(r.error.toHtmlEscaped());
+    if (r.conflicts.isEmpty())
+        return h + QStringLiteral("<p><i>%1</i></p>").arg(tr("Keine Überschneidungen im gewählten Zeitraum."));
+    auto cellAppt = [](const Appointment &a, const QString &person, bool mark) {
+        QString t = QStringLiteral("<b>%1</b><br>%2<br>%3").arg(ApptConflicts::when(a).toHtmlEscaped(),
+                                                               a.title.toHtmlEscaped(), person.toHtmlEscaped());
+        if (!a.location.isEmpty()) t += QStringLiteral("<br><small>%1</small>").arg(a.location.toHtmlEscaped());
+        if (mark) t += QStringLiteral("<br><small><i>%1</i></small>").arg(tr("verschieben").toHtmlEscaped());
+        return QStringLiteral("<td valign=\"top\">%1</td>").arg(t);
+    };
+    h += tableOpen(dev) + QStringLiteral("<thead><tr>")
+         + th(tr("Termin 1"), QStringLiteral("width=\"27%\"")) + th(tr("Termin 2"), QStringLiteral("width=\"27%\""))
+         + th(tr("Kollision"), QStringLiteral("width=\"20%\"")) + th(tr("Ausweichtermine")) + QStringLiteral("</tr></thead>");
+    int n = 0;
+    for (const ApptConflicts::Conflict &c : r.conflicts) {
+        h += n++ % 2 ? QStringLiteral("<tr bgcolor=\"#f6f8fa\">") : QStringLiteral("<tr>");
+        h += cellAppt(c.a, c.personA, !c.moveB) + cellAppt(c.b, c.personB, c.moveB);
+        h += QStringLiteral("<td valign=\"top\">%1</td>").arg(ApptConflicts::overlapText(c, o.bufferMinutes).toHtmlEscaped());
+        h += QStringLiteral("<td valign=\"top\">%1<br>%2</td>")
+                 .arg(tr("für %1:").arg(ApptConflicts::movedTitle(c)).toHtmlEscaped(),
+                      ApptConflicts::alternativesText(c).toHtmlEscaped().replace(QLatin1Char('\n'), QStringLiteral("<br>")));
+        h += QStringLiteral("</tr>");
+    }
+    h += QStringLiteral("</table>");
+    h += QStringLiteral("<p><small>%1</small></p>").arg(tr("Ausweichtermine: gleiche Dauer, frei für alle gewählten Personen. "
+                                                           "Ganztägige und erledigte Termine werden nicht geprüft. "
+                                                           "Bitte Vorschläge mit den Beteiligten abstimmen.").toHtmlEscaped());
+    return h;
+}
+
+Patient conflictsHeaderPerson(const ApptConflicts::Result &r)
+{
+    Patient p;
+    p.lastName = r.persons.size() <= 2 ? r.persons.join(QStringLiteral(" · ")) : tr("%1 Personen").arg(r.persons.size());
+    return p;
+}
+
 // ---------------------------------------------------------------- Impfpass
 QString vaccinationTable(QPaintDevice *dev, const QList<Vaccinations::Vaccination> &l)
 {
@@ -797,6 +842,25 @@ bool preparationListToPdf(const QString &path, const Patient &p, const QList<Med
     w.setTitle(tr("Medikamente stellen – Liste"));
     configure(&w, QPageLayout::Portrait, kStandardMarginsMm);
     printHtml(&w, tr("Medikamente stellen – Liste"), p, preparationListHtml(&w, rows, MedPrep::listSubtitle(day, days, slot), 9), 9);
+    return true;
+}
+
+void appointmentConflicts(QWidget *parent, const ApptConflicts::Options &o, const ApptConflicts::Result &r, Target t)
+{
+    const Patient hp = conflictsHeaderPerson(r);
+    run(parent, t, tr("Terminkollisionen"), QStringLiteral("Terminkollisionen"), hp, QPageLayout::Portrait,
+        [&](QPagedPaintDevice *dev) { printHtml(dev, tr("Terminkollisionen"), hp, conflictsHtml(dev, o, r), 9); },
+        kStandardMarginsMm);
+}
+
+bool appointmentConflictsToPdf(const QString &path, const ApptConflicts::Options &o, const ApptConflicts::Result &r)
+{
+    QPdfWriter w(path);
+    w.setResolution(300);
+    w.setCreator(QStringLiteral("VitaParms"));
+    w.setTitle(tr("Terminkollisionen"));
+    configure(&w, QPageLayout::Portrait, kStandardMarginsMm);
+    printHtml(&w, tr("Terminkollisionen"), conflictsHeaderPerson(r), conflictsHtml(&w, o, r), 9);
     return true;
 }
 

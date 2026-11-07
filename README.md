@@ -431,6 +431,16 @@ Wiederherstellungsschlüssel (Anmeldedialog → *Wiederherstellungsschlüssel…
   ein Abgleich (USB oder Website) mit einem Gerät in neuerer Version abgelehnt, und der Server
   nimmt von älteren Versionen keine Datenbank mehr an (HTTP 426) – so kann ein nicht
   aktualisiertes Gerät keine Daten überschreiben, die es nicht kennt.
+* **0.31.0:** **Terminkollisions-Check** (nur VitaParms und VitaParms mobile, nicht light): nachträglich aufrufbar über
+  *Termine → Terminkollisionen prüfen…* bzw. *Kollisionen prüfen…* im Terminplaner (App: Reiter Termine,
+  „Kollisionen prüfen“, ab zwei Personen). Vergleicht die Termine von zwei oder mehr gewählten Personen in einem
+  Zeitraum, meldet Überschneidungen (optional mit Mindestabstand, z. B. Fahrzeit) und schlägt je Kollision bis zu drei
+  freie Ausweichtermine gleicher Dauer vor (innerhalb von 14 Tagen, Tageszeit von–bis, wahlweise nur Mo–Fr, frei für
+  alle gewählten Personen); verschoben werden soll der Termin mit niedrigerer Priorität, sonst der spätere.
+  Doppelklick bzw. „Termin öffnen“ bearbeitet ihn, danach wird neu geprüft. Ausdruck DIN A4 hoch, PDF.
+  Ganztägige, erledigte Termine und Termine derselben Person werden nicht verglichen. `src/apptconflicts.*`,
+  `src/apptconflictdialog.*`, `ReportPrinter::appointmentConflicts*`, App `ConflictsPage.qml`,
+  `AppController::apptConflicts`, Export-Art `conflicts`.
 * **0.30.5:** **Terminübersicht** (Reiter *Termine*): Beim Öffnen ist unter *Person* die im Hauptfenster gewählte
   Person eingestellt, die Liste zeigt nur ihre Termine; ein Personenwechsel im Hauptfenster wird übernommen.
   Die Termine aller Personen erscheinen nur mit *Alle Personen* (bisher Vorgabe).

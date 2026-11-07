@@ -46,6 +46,9 @@ Page {
     Component { id: apptEditComp; AppointmentEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     Component { id: medEditComp; MedEditPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) } } }
     // Medikamente stellen, Bestand und Bestellungen
+    function openConflicts() { stackView.push(conflictsComp, { personId: home.personId }) }
+    Component { id: conflictsComp; ConflictsPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) }
+                                                   onEditAppointment: (id) => home.editAppointment(id) } }
     function openPrep() { stackView.push(prepComp, { personId: home.personId }) }
     function openStock(tab) { stackView.push(stockComp, { personId: home.personId, tab: tab || 0 }) }
     Component { id: prepComp; PrepPage { onClosed: (msg) => { stackView.pop(); if (msg) win.toast(msg) }
@@ -319,7 +322,8 @@ Page {
                 MedsPage { personId: home.personId; active: home.tab === 4
                            onEdit: (id) => stackView.push(medEditComp, { personId: home.personId, medId: id })
                            onPrepare: home.openPrep(); onStock: home.openStock(0) }
-                AppointmentsPage { personId: home.personId; active: home.tab === 5; onEdit: (id) => home.editAppointment(id) }
+                AppointmentsPage { personId: home.personId; active: home.tab === 5; onEdit: (id) => home.editAppointment(id)
+                                   onCheckConflicts: home.openConflicts() }
                 WoundsPage { id: woundsPage; personId: home.personId; active: home.tab === 6
                              onEditWound: (id, admission) => home.editWound(id, admission)
                              onEditEntry: (wid, eid, kind) => home.editWoundEntry(wid, eid, kind)

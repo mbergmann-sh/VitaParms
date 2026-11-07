@@ -8,6 +8,8 @@
 #include "session.h"
 
 #include <QShowEvent>
+#include "apptconflictdialog.h"
+#include "edition.h"
 #include <QCalendarWidget>
 #include <QCheckBox>
 #include <QComboBox>
@@ -233,6 +235,11 @@ AppointmentsPage::AppointmentsPage(QWidget *parent) : QWidget(parent)
     m_measureBtn->setToolTip(tr("Messung zu diesem Zeitpunkt des BZ- oder RR-Tagesprofils eintragen"));
     m_measureBtn->setVisible(false);
     row->addStretch();
+    if (!Edition::light()) {   // Terminkollisionen mehrerer Personen (nicht in der Light-Ausgabe)
+        auto *cb = button(tr("&Kollisionen prüfen…"), &AppointmentsPage::checkConflicts);
+        cb->setObjectName(QStringLiteral("apptConflictButton"));
+        cb->setToolTip(tr("Überschneidende Termine mehrerer Personen finden und Ausweichtermine vorschlagen"));
+    }
     button(tr("iCal-E&xport…"), &AppointmentsPage::exportICal)
         ->setToolTip(tr("Termine als .ics-Datei für Kalender-Programme und Smartphones exportieren"));
     v->addLayout(row);
@@ -442,6 +449,13 @@ void AppointmentsPage::toggleDone()
         Database::instance().setAppointmentDone(a->id, !a->done);
         emit changed();
     }
+}
+
+void AppointmentsPage::checkConflicts()
+{
+    ApptConflictDialog dlg(m_currentPatient, this);
+    dlg.exec();
+    reload();
 }
 
 void AppointmentsPage::exportICal()

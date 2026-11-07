@@ -89,6 +89,9 @@ public:
 
     // ---- Personen
     Q_INVOKABLE QVariantList persons();
+    // Terminkollisions-Check (nicht light): options = { persons: [ids], from, to (ISO), buffer (min),
+    // dayStart, dayEnd ("08:00"), weekdays (bool) } → { error, checked, persons, summary, conflicts: [...] }
+    Q_INVOKABLE QVariantMap apptConflicts(const QVariantMap &options);
     Q_INVOKABLE QVariantMap personSummary(qint64 id);
     Q_INVOKABLE QVariantMap personDetail(qint64 id);   // 0 = neue Person
     Q_INVOKABLE qint64 savePerson(const QVariantMap &m);

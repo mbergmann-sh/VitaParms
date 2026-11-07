@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "contacts.h"
 #include "vaccinations.h"
+#include "apptconflicts.h"
 #include "database.h"
 #include "dbsync.h"
 #include "dbtransfer.h"
@@ -531,6 +532,56 @@ QVariantMap AppController::personSummary(qint64 id)
                              + (med.rhythmNote.isEmpty() ? QString() : QStringLiteral(" – ") + med.rhythmNote);
     m.insert(QStringLiteral("emergency"), emergency.join(QStringLiteral("; ")));
     return m;
+}
+
+// ---------------------------------------------------------------- Terminkollisionen
+static ApptConflicts::Options conflictOptions(const QVariantMap &m)
+{
+    ApptConflicts::Options o;
+    for (const QVariant &v : m.value(QStringLiteral("persons")).toList()) o.patients << v.toLongLong();
+    o.from = QDate::fromString(m.value(QStringLiteral("from")).toString().left(10), Qt::ISODate);
+    o.to = QDate::fromString(m.value(QStringLiteral("to")).toString().left(10), Qt::ISODate);
+    if (!o.from.isValid()) o.from = QDate::currentDate();
+    if (!o.to.isValid()) o.to = o.from.addDays(60);
+    o.bufferMinutes = m.value(QStringLiteral("buffer"), 0).toInt();
+    const QTime ds = QTime::fromString(m.value(QStringLiteral("dayStart")).toString(), QStringLiteral("HH:mm"));
+    const QTime de = QTime::fromString(m.value(QStringLiteral("dayEnd")).toString(), QStringLiteral("HH:mm"));
+    if (ds.isValid()) o.dayStart = ds;
+    if (de.isValid()) o.dayEnd = de;
+    o.weekdaysOnly = m.value(QStringLiteral("weekdays"), true).toBool();
+    o.owner = Session::isAdmin() ? QString() : Session::user();
+    return o;
+}
+
+QVariantMap AppController::apptConflicts(const QVariantMap &options)
+{
+    QVariantMap out;
+    if (!loggedIn() || Edition::light()) return out;
+    const ApptConflicts::Options o = conflictOptions(options);
+    const ApptConflicts::Result r = ApptConflicts::check(o);
+    out.insert(QStringLiteral("error"), r.error);
+    out.insert(QStringLiteral("checked"), r.checked);
+    out.insert(QStringLiteral("persons"), r.persons);
+    out.insert(QStringLiteral("optionsText"), ApptConflicts::optionsText(o));
+    QVariantList l;
+    for (const ApptConflicts::Conflict &c : r.conflicts) {
+        QVariantMap m;
+        m.insert(QStringLiteral("aWhen"), ApptConflicts::when(c.a));
+        m.insert(QStringLiteral("aTitle"), c.a.title);
+        m.insert(QStringLiteral("aPerson"), c.personA);
+        m.insert(QStringLiteral("bWhen"), ApptConflicts::when(c.b));
+        m.insert(QStringLiteral("bTitle"), c.b.title);
+        m.insert(QStringLiteral("bPerson"), c.personB);
+        m.insert(QStringLiteral("moveB"), c.moveB);
+        m.insert(QStringLiteral("moveId"), c.moveB ? c.b.id : c.a.id);
+        m.insert(QStringLiteral("overlap"), c.overlapMinutes);
+        m.insert(QStringLiteral("overlapText"), ApptConflicts::overlapText(c, o.bufferMinutes));
+        m.insert(QStringLiteral("moveText"), tr("Ausweichtermine für %1").arg(ApptConflicts::movedTitle(c)));
+        m.insert(QStringLiteral("alternatives"), ApptConflicts::alternativesText(c));
+        l << m;
+    }
+    out.insert(QStringLiteral("conflicts"), l);
+    return out;
 }
 
 QVariantList AppController::persons()
@@ -1815,6 +1866,11 @@ QString AppController::exportReport(const QString &kind, qint64 pid, const QVari
     } else if (kind == QLatin1String("vaccinations")) {
         path = QStringLiteral("%1/Impfpass_%2_%3.pdf").arg(dir, base, stamp);
         ok = ReportPrinter::vaccinationRecordToPdf(path, *p);
+    } else if (kind == QLatin1String("conflicts")) {
+        if (Edition::light()) return {};
+        const ApptConflicts::Options o = conflictOptions(options);
+        path = QStringLiteral("%1/Terminkollisionen_%2.pdf").arg(dir, stamp);
+        ok = ReportPrinter::appointmentConflictsToPdf(path, o, ApptConflicts::check(o));
     } else if (kind == QLatin1String("preplist")) {
         const QDate day = options.contains(QStringLiteral("day"))
             ? QDate::fromString(options.value(QStringLiteral("day")).toString().left(10), Qt::ISODate) : QDate::currentDate();

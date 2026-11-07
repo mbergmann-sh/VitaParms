@@ -3,6 +3,7 @@
 //   VP_AUTOPILOT_DB   Datenbank (mit .keys), VP_AUTOPILOT_USER / _PASSWORD, VP_AUTOPILOT_OUT Zielordner
 // SPDX-License-Identifier: MIT
 #include "appcontroller.h"
+#include "edition.h"
 #include "dbtransfer.h"
 #include "usbsync.h"
 #include "peakflow.h"
@@ -288,6 +289,85 @@ static int vaccinationChecks(QQuickWindow *win, AppController &app, QObject *hom
     return fails;
 }
 
+// Terminkollisions-Check (nur VitaParms, nicht light)
+static int conflictChecks(QQuickWindow *win, AppController &app, QObject *home, const QString &out, const QString &prefix)
+{
+    int fails = 0;
+    auto check = [&](bool ok, const char *what) { if (!ok) { ++fails; qWarning("FEHLER: %s", what); } };
+    auto shot = [&](const QString &name) { wait(450); win->grabWindow().save(out + QLatin1Char('/') + prefix + name + QStringLiteral(".png")); };
+    std::function<QQuickItem *(QQuickItem *, const QString &)> findItem = [&](QQuickItem *it, const QString &name) -> QQuickItem * {
+        if (it->objectName() == name) return it;
+        for (QQuickItem *c : it->childItems()) if (QQuickItem *f = findItem(c, name)) return f;
+        return nullptr;
+    };
+    auto find = [&](const QString &name) -> QObject * {
+        if (QObject *o = win->findChild<QObject *>(name)) return o;
+        return findItem(win->contentItem()->parentItem() ? win->contentItem()->parentItem() : win->contentItem(), name);
+    };
+    if (QObject *q = find(QStringLiteral("profileQuestion"))) QMetaObject::invokeMethod(q, "close");
+    QQmlProperty::write(home, QStringLiteral("tab"), 5);
+    wait(400);
+    QObject *btn = find(QStringLiteral("apptConflictsButton"));
+    if (Edition::light()) {
+        check(!btn || !btn->property("visible").toBool(), "Kollisionen: in light nicht sichtbar");
+        check(app.apptConflicts({}).isEmpty(), "Kollisionen: in light keine Prüfung");
+        QQmlProperty::write(home, QStringLiteral("tab"), 0);
+        return fails;
+    }
+    const QVariantList ps = app.persons();
+    check(ps.size() >= 2, "Kollisionen: mindestens zwei Personen");
+    if (ps.size() < 2) return fails;
+    check(btn && btn->property("visible").toBool(), "Kollisionen: Knopf");
+    const qint64 p1 = ps.value(0).toMap().value(QStringLiteral("id")).toLongLong();
+    const qint64 p2 = ps.value(1).toMap().value(QStringLiteral("id")).toLongLong();
+    QDate d = QDate::currentDate().addDays(2);
+    while (d.dayOfWeek() > 5) d = d.addDays(1);
+    const bool en = app.language() == QStringLiteral("en");
+    auto mk = [&](qint64 pid, const QString &title, QTime t, int min) {
+        Appointment a; a.patientId = pid; a.owner = Session::user(); a.createdBy = Session::user(); a.title = title;
+        a.start = QDateTime(d, t); a.end = a.start.addSecs(60 * min);
+        Database::instance().saveAppointment(a);
+        return a.id;
+    };
+    const qint64 a1 = mk(p1, en ? QStringLiteral("Dentist") : QStringLiteral("Zahnarzt"), QTime(10, 0), 60);
+    const qint64 a2 = mk(p2, en ? QStringLiteral("Physiotherapy") : QStringLiteral("Physiotherapie"), QTime(10, 30), 45);
+    const QVariantMap r = app.apptConflicts({ { QStringLiteral("persons"), QVariantList{ p1, p2 } },
+                                              { QStringLiteral("from"), d.toString(Qt::ISODate) }, { QStringLiteral("to"), d.toString(Qt::ISODate) } });
+    check(r.value(QStringLiteral("error")).toString().isEmpty() && !r.value(QStringLiteral("conflicts")).toList().isEmpty(), "Kollisionen: gefunden");
+    if (btn) QMetaObject::invokeMethod(btn, "clicked");
+    wait(500);
+    QObject *page = find(QStringLiteral("conflictsPage"));
+    check(page != nullptr, "Kollisionen: Seite");
+    if (page) {
+        QVariantList sel{ p1, p2 };
+        QQmlProperty::write(page, QStringLiteral("selected"), sel);
+        if (QObject *t = find(QStringLiteral("conflictTo"))) QQmlProperty::write(t, QStringLiteral("isoDate"), d.addDays(7).toString(Qt::ISODate));
+        shot(QStringLiteral("kollisionen_auswahl"));
+        if (QObject *c = find(QStringLiteral("conflictCheckButton"))) QMetaObject::invokeMethod(c, "clicked");
+        wait(400);
+        const QVariantMap res = page->property("result").toMap();
+        check(!res.value(QStringLiteral("conflicts")).toList().isEmpty(), "Kollisionen: Ergebnis auf der Seite");
+        if (QObject *card = find(QStringLiteral("conflictCard_0"))) {
+            for (QQuickItem *p = qobject_cast<QQuickItem *>(card)->parentItem(); p; p = p->parentItem())
+                if (p->inherits("QQuickFlickable")) { QQmlProperty::write(p, QStringLiteral("contentY"), std::max(0.0, qobject_cast<QQuickItem *>(card)->mapToItem(p->childItems().value(0), QPointF()).y() - 160)); break; }
+        }
+        shot(QStringLiteral("kollisionen_ergebnis"));
+        const QVariantMap opts{ { QStringLiteral("persons"), sel }, { QStringLiteral("from"), QDate::currentDate().toString(Qt::ISODate) },
+                                { QStringLiteral("to"), d.addDays(7).toString(Qt::ISODate) } };
+        const QString pdf = app.exportReport(QStringLiteral("conflicts"), p1, opts);
+        QFile f(pdf);
+        check(f.open(QIODevice::ReadOnly) && f.read(5) == "%PDF-", "Kollisionen: PDF");
+        if (!pdf.isEmpty()) QFile::copy(pdf, out + QLatin1Char('/') + prefix + QStringLiteral("kollisionen.pdf"));
+        QMetaObject::invokeMethod(win, "popPage");
+        wait(300);
+    }
+    Database::instance().deleteAppointment(a1);
+    Database::instance().deleteAppointment(a2);
+    QQmlProperty::write(home, QStringLiteral("tab"), 0);
+    wait(200);
+    return fails;
+}
+
 #ifdef VP_LIGHT
 // VitaParms light: Rundgang auf dem Tablet (quer) und dem Smartphone (hoch) – Bildschirmfotos lt_… und lp_…
 static int runLightTour(QQuickWindow *win, AppController &app, const QString &out, int fails)
@@ -375,6 +455,7 @@ static int runLightTour(QQuickWindow *win, AppController &app, const QString &ou
         }
         fails += rangeChecks(win, app, h, out, pre + QStringLiteral("21_"));
         fails += vaccinationChecks(win, app, h, out, pre + QStringLiteral("22_"));
+        fails += conflictChecks(win, app, h, out, pre + QStringLiteral("23_"));
         QQmlProperty::write(h, QStringLiteral("tab"), 0);
         QMetaObject::invokeMethod(h, "measure", Q_ARG(QVariant, 0));
         check(win->findChild<QObject *>(QStringLiteral("fluidSection"))
@@ -822,6 +903,7 @@ int runAutopilot(QQmlApplicationEngine &engine, AppController &app)
     }
     fails += rangeChecks(win, app, h, out, QStringLiteral("m25_"));
     fails += vaccinationChecks(win, app, h, out, QStringLiteral("m26_"));
+    fails += conflictChecks(win, app, h, out, QStringLiteral("m27_"));
     // Termine: neuer Termin, Serie bearbeiten, Rückfrage „Für welche Termine?“
     call(h, "editAppointment", 0);
     shot(QStringLiteral("m17_termin_neu"));

@@ -38,6 +38,7 @@ SOURCES += \
     $$PWD/src/medsearchdialog.cpp \
     $$PWD/src/contactdialog.cpp \
     $$PWD/src/flowlayout.cpp \
+    $$PWD/src/apptconflictdialog.cpp \
     $$PWD/src/screenfit.cpp
 
 HEADERS += \
@@ -75,6 +76,7 @@ HEADERS += \
     $$PWD/src/medsearchdialog.h \
     $$PWD/src/contactdialog.h \
     $$PWD/src/flowlayout.h \
+    $$PWD/src/apptconflictdialog.h \
     $$PWD/src/screenfit.h
 
 win32: SOURCES += $$PWD/src/mapi_win.cpp   # E-Mail-Versand mit Anhang über Simple MAPI (Outlook, Thunderbird …)

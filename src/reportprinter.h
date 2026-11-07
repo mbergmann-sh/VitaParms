@@ -5,6 +5,7 @@
 #include "chartwidget.h"
 #include "datatypes.h"
 #include "medstock.h"
+#include "apptconflicts.h"
 
 class QWidget;
 class JournalModel;
@@ -50,6 +51,10 @@ void preparationList(QWidget *parent, const Patient &p, const QList<Medication> 
                      int slot, Target t);
 bool preparationListToPdf(const QString &path, const Patient &p, const QList<Medication> &meds, const QDate &day,
                           int days, int slot);
+
+// Terminkollisionen mehrerer Personen mit Ausweichterminen – A4 hoch (nur VitaParms, nicht light)
+void appointmentConflicts(QWidget *parent, const ApptConflicts::Options &o, const ApptConflicts::Result &r, Target t);
+bool appointmentConflictsToPdf(const QString &path, const ApptConflicts::Options &o, const ApptConflicts::Result &r);
 
 // Impfpass: alle erhaltenen Impfungen (Datum, Impfung gegen, Impfstoff, Chargennummer, Arzt) – A4 hoch
 void vaccinationRecord(QWidget *parent, const Patient &p, Target t);

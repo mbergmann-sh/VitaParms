@@ -42,6 +42,7 @@
         <file>qml/pages/AppointmentEditPage.qml</file>
         <file>qml/pages/GlucoseProfilePage.qml</file>
         <file>qml/pages/PrepPage.qml</file>
+        <file>qml/pages/ConflictsPage.qml</file>
         <file>qml/pages/StockPage.qml</file>
         <file>qml/pages/ReportsPage.qml</file>
         <file>qml/pages/AdminPage.qml</file>

@@ -591,6 +591,13 @@ void MainWindow::buildMenus()
         m_appts->newAppointment();
     });
     m_actNewAppt->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
+    if (!Edition::light()) {
+        QAction *ca = appt->addAction(tr("Termin&kollisionen prüfen…"), this, [this] {
+            m_tabs->setCurrentWidget(m_appts);
+            m_appts->checkConflicts();
+        });
+        ca->setObjectName(QStringLiteral("actApptConflicts"));
+    }
     appt->addAction(tr("Termin&planer anzeigen"), this, [this] { m_tabs->setCurrentWidget(m_appts); })
         ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_4));
     appt->addAction(tr("Erinnerungen jetzt &prüfen"), this, [this] { if (m_reminders) m_reminders->checkNow(); });
